@@ -1,31 +1,91 @@
-
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { 
   Users, FileText, BarChart3, Settings, 
-  Bell, Search, Menu, X, LogOut 
+  Bell, Search, Menu, X, LogOut, MessageSquare,
+  Newspaper, Send
 } from "lucide-react";
 import { Logo } from "@/components/Logo";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+const loginSchema = z.object({
+  username: z.string().min(1, { message: "Username is required" }),
+  password: z.string().min(1, { message: "Password is required" }),
+});
+
+const articleSchema = z.object({
+  title: z.string().min(3, { message: "Title must be at least 3 characters" }),
+  content: z.string().min(10, { message: "Content must be at least 10 characters" }),
+  category: z.string().min(1, { message: "Category is required" }),
+  published: z.boolean().default(false),
+});
+
+const requestSchema = z.object({
+  name: z.string().min(1, { message: "Name is required" }),
+  email: z.string().email({ message: "Invalid email address" }),
+  message: z.string().min(10, { message: "Message must be at least 10 characters" }),
+  status: z.enum(["new", "in-progress", "resolved", "rejected"]).default("new"),
+});
+
+const webhookSchema = z.object({
+  url: z.string().url({ message: "Invalid webhook URL" }),
+});
 
 const Admin = () => {
   const navigate = useNavigate();
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [currentTab, setCurrentTab] = useState("dashboard");
+  const [selectedArticle, setSelectedArticle] = useState(null);
+  const [selectedRequest, setSelectedRequest] = useState(null);
+  const [webhookUrl, setWebhookUrl] = useState(() => {
+    return localStorage.getItem("webhookUrl") || "";
+  });
   
-  // Mocked data - in a real app this would come from an API
   const [users, setUsers] = useState([
     { id: 1, name: "Alex Johnson", email: "alex@example.com", status: "active", role: "User" },
     { id: 2, name: "Sarah Smith", email: "sarah@example.com", status: "pending", role: "Admin" },
     { id: 3, name: "Michael Brown", email: "michael@example.com", status: "inactive", role: "User" },
     { id: 4, name: "Emily Davis", email: "emily@example.com", status: "active", role: "Manager" },
   ]);
+
+  const [articles, setArticles] = useState(() => {
+    const savedArticles = localStorage.getItem("articles");
+    return savedArticles ? JSON.parse(savedArticles) : [
+      { id: 1, title: "The Future of Fintech", content: "Exploring trends in financial technology", category: "Technology", published: true, date: "2023-05-15" },
+      { id: 2, title: "Investment Strategies for 2023", content: "How to build a resilient portfolio", category: "Investment", published: true, date: "2023-05-10" },
+      { id: 3, title: "Cryptocurrency Market Analysis", content: "Understanding the volatile crypto landscape", category: "Crypto", published: false, date: "2023-05-05" },
+    ];
+  });
+
+  const [requests, setRequests] = useState(() => {
+    const savedRequests = localStorage.getItem("requests");
+    return savedRequests ? JSON.parse(savedRequests) : [
+      { id: 1, name: "David Wilson", email: "david@example.com", message: "I'd like to know more about your investment services", status: "new", date: "2023-05-12" },
+      { id: 2, name: "Lisa Anderson", email: "lisa@example.com", message: "Having trouble with the mobile app login", status: "in-progress", date: "2023-05-11" },
+      { id: 3, name: "Robert Johnson", email: "robert@example.com", message: "Interested in a consultation about retirement planning", status: "resolved", date: "2023-05-10" },
+      { id: 4, name: "Jennifer Brown", email: "jennifer@example.com", message: "Need help with account verification", status: "rejected", date: "2023-05-09" },
+    ];
+  });
 
   const [transactions, setTransactions] = useState([
     { id: 1, user: "Alex Johnson", amount: 1250, date: "2023-05-12", status: "completed" },
@@ -34,18 +94,73 @@ const Admin = () => {
     { id: 4, user: "Emily Davis", amount: 520, date: "2023-05-09", status: "failed" },
   ]);
 
-  // Authentication check (in a real app this would check for admin rights)
   useEffect(() => {
-    // Simulating an auth check - uncomment in real implementation
-    // const isAdmin = localStorage.getItem("isAdmin");
-    // if (!isAdmin) {
-    //   navigate("/");
-    //   toast.error("Access denied. Admin permissions required.");
-    // }
+    localStorage.setItem("articles", JSON.stringify(articles));
+  }, [articles]);
+
+  useEffect(() => {
+    localStorage.setItem("requests", JSON.stringify(requests));
+  }, [requests]);
+
+  useEffect(() => {
+    localStorage.setItem("webhookUrl", webhookUrl);
+  }, [webhookUrl]);
+
+  useEffect(() => {
+    const isAdmin = localStorage.getItem("isAdmin");
+    if (isAdmin === "true") {
+      setIsAuthenticated(true);
+    }
   }, [navigate]);
 
+  const loginForm = useForm({
+    resolver: zodResolver(loginSchema),
+    defaultValues: {
+      username: "",
+      password: "",
+    },
+  });
+
+  const articleForm = useForm({
+    resolver: zodResolver(articleSchema),
+    defaultValues: {
+      title: "",
+      content: "",
+      category: "",
+      published: false,
+    },
+  });
+
+  const requestForm = useForm({
+    resolver: zodResolver(requestSchema),
+    defaultValues: {
+      name: "",
+      email: "",
+      message: "",
+      status: "new",
+    },
+  });
+
+  const webhookForm = useForm({
+    resolver: zodResolver(webhookSchema),
+    defaultValues: {
+      url: webhookUrl,
+    },
+  });
+
+  const handleLogin = (data) => {
+    if (data.username === "admin" && data.password === "password") {
+      localStorage.setItem("isAdmin", "true");
+      setIsAuthenticated(true);
+      toast.success("Logged in successfully");
+    } else {
+      toast.error("Invalid credentials");
+    }
+  };
+
   const handleLogout = () => {
-    // In a real app, this would clear auth tokens/state
+    localStorage.removeItem("isAdmin");
+    setIsAuthenticated(false);
     toast.success("Logged out successfully");
     navigate("/");
   };
@@ -54,25 +169,170 @@ const Admin = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
-  // Status badge colors
-  const getStatusColor = (status: string) => {
+  const handleArticleSubmit = (data) => {
+    if (selectedArticle) {
+      const updatedArticles = articles.map(article => 
+        article.id === selectedArticle.id 
+          ? { ...article, ...data, date: new Date().toISOString().split('T')[0] }
+          : article
+      );
+      setArticles(updatedArticles);
+      toast.success("Article updated successfully");
+    } else {
+      const newArticle = {
+        id: articles.length ? Math.max(...articles.map(a => a.id)) + 1 : 1,
+        ...data,
+        date: new Date().toISOString().split('T')[0]
+      };
+      setArticles([...articles, newArticle]);
+      toast.success("Article created successfully");
+    }
+    
+    articleForm.reset();
+    setSelectedArticle(null);
+  };
+
+  const handleEditArticle = (article) => {
+    setSelectedArticle(article);
+    articleForm.reset({
+      title: article.title,
+      content: article.content,
+      category: article.category,
+      published: article.published,
+    });
+  };
+
+  const handleDeleteArticle = (id) => {
+    setArticles(articles.filter(article => article.id !== id));
+    toast.success("Article deleted successfully");
+  };
+
+  const handleRequestSubmit = (data) => {
+    if (selectedRequest) {
+      const updatedRequests = requests.map(request => 
+        request.id === selectedRequest.id 
+          ? { ...request, ...data }
+          : request
+      );
+      setRequests(updatedRequests);
+      toast.success("Request updated successfully");
+    }
+    
+    requestForm.reset();
+    setSelectedRequest(null);
+  };
+
+  const handleViewRequest = (request) => {
+    setSelectedRequest(request);
+    requestForm.reset({
+      name: request.name,
+      email: request.email,
+      message: request.message,
+      status: request.status,
+    });
+  };
+
+  const handleWebhookSubmit = (data) => {
+    setWebhookUrl(data.url);
+    toast.success("Webhook URL saved successfully");
+  };
+
+  const handleTestWebhook = async () => {
+    if (!webhookUrl) {
+      toast.error("Please enter a webhook URL first");
+      return;
+    }
+
+    try {
+      const response = await fetch(webhookUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        mode: "no-cors",
+        body: JSON.stringify({
+          event: "test",
+          timestamp: new Date().toISOString(),
+          source: "Fintech-Assist Admin Panel"
+        }),
+      });
+      
+      toast.success("Webhook test sent");
+    } catch (error) {
+      console.error("Webhook test error:", error);
+      toast.error("Failed to test webhook");
+    }
+  };
+
+  const getStatusColor = (status) => {
     switch (status.toLowerCase()) {
       case "active":
       case "completed":
+      case "resolved":
         return "bg-green-500";
       case "pending":
+      case "in-progress":
         return "bg-yellow-500";
       case "inactive":
       case "failed":
+      case "rejected":
         return "bg-red-500";
+      case "new":
+        return "bg-blue-500";
       default:
         return "bg-gray-500";
     }
   };
 
+  if (!isAuthenticated) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-background">
+        <Card className="w-[350px]">
+          <CardHeader>
+            <CardTitle className="text-center">Admin Login</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <Form {...loginForm}>
+              <form onSubmit={loginForm.handleSubmit(handleLogin)} className="space-y-4">
+                <FormField
+                  control={loginForm.control}
+                  name="username"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Username</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Enter username" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={loginForm.control}
+                  name="password"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Password</FormLabel>
+                      <FormControl>
+                        <Input type="password" placeholder="Enter password" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <Button type="submit" className="w-full">
+                  Login
+                </Button>
+              </form>
+            </Form>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
   return (
     <div className="flex min-h-screen bg-background">
-      {/* Sidebar */}
       <aside 
         className={`fixed top-0 left-0 z-40 h-screen transition-transform ${
           isSidebarOpen ? "translate-x-0" : "-translate-x-full"
@@ -95,6 +355,24 @@ const Admin = () => {
             >
               <BarChart3 className="mr-2 h-4 w-4" />
               Dashboard
+            </Button>
+            
+            <Button 
+              variant={currentTab === "articles" ? "default" : "ghost"} 
+              onClick={() => setCurrentTab("articles")}
+              className="w-full justify-start"
+            >
+              <Newspaper className="mr-2 h-4 w-4" />
+              Articles
+            </Button>
+            
+            <Button 
+              variant={currentTab === "requests" ? "default" : "ghost"} 
+              onClick={() => setCurrentTab("requests")}
+              className="w-full justify-start"
+            >
+              <MessageSquare className="mr-2 h-4 w-4" />
+              Requests
             </Button>
             
             <Button 
@@ -138,9 +416,7 @@ const Admin = () => {
         </div>
       </aside>
 
-      {/* Main content */}
       <div className={`flex-1 ${isSidebarOpen ? "lg:ml-64" : ""}`}>
-        {/* Header */}
         <header className="bg-card shadow-sm border-b sticky top-0 z-30">
           <div className="flex items-center justify-between h-16 px-4">
             <div className="flex items-center">
@@ -175,7 +451,6 @@ const Admin = () => {
           </div>
         </header>
 
-        {/* Dashboard content */}
         <main className="p-4">
           {currentTab === "dashboard" && (
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -245,6 +520,312 @@ const Admin = () => {
                       <p className="text-sm">New feature <span className="font-medium">Mobile App</span> deployed</p>
                       <span className="ml-auto text-xs text-muted-foreground">2 days ago</span>
                     </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          )}
+
+          {currentTab === "articles" && (
+            <div className="grid gap-4 md:grid-cols-2">
+              <Card>
+                <CardHeader>
+                  <CardTitle>{selectedArticle ? "Edit Article" : "Create New Article"}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <Form {...articleForm}>
+                    <form onSubmit={articleForm.handleSubmit(handleArticleSubmit)} className="space-y-4">
+                      <FormField
+                        control={articleForm.control}
+                        name="title"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Title</FormLabel>
+                            <FormControl>
+                              <Input placeholder="Article title" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={articleForm.control}
+                        name="category"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Category</FormLabel>
+                            <FormControl>
+                              <Input placeholder="Article category" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={articleForm.control}
+                        name="content"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Content</FormLabel>
+                            <FormControl>
+                              <Textarea 
+                                placeholder="Article content" 
+                                className="min-h-[200px]"
+                                {...field} 
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={articleForm.control}
+                        name="published"
+                        render={({ field }) => (
+                          <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                            <FormControl>
+                              <Checkbox
+                                checked={field.value}
+                                onCheckedChange={field.onChange}
+                              />
+                            </FormControl>
+                            <div className="space-y-1 leading-none">
+                              <FormLabel>Published</FormLabel>
+                            </div>
+                          </FormItem>
+                        )}
+                      />
+                      <div className="flex justify-between">
+                        <Button
+                          type="button"
+                          variant="outline"
+                          onClick={() => {
+                            setSelectedArticle(null);
+                            articleForm.reset({
+                              title: "",
+                              content: "",
+                              category: "",
+                              published: false,
+                            });
+                          }}
+                        >
+                          Cancel
+                        </Button>
+                        <Button type="submit">
+                          {selectedArticle ? "Update" : "Create"}
+                        </Button>
+                      </div>
+                    </form>
+                  </Form>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>Articles</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="overflow-x-auto">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Title</TableHead>
+                          <TableHead>Category</TableHead>
+                          <TableHead>Status</TableHead>
+                          <TableHead>Date</TableHead>
+                          <TableHead>Actions</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {articles.map((article) => (
+                          <TableRow key={article.id}>
+                            <TableCell className="font-medium">{article.title}</TableCell>
+                            <TableCell>{article.category}</TableCell>
+                            <TableCell>
+                              <Badge className={article.published ? "bg-green-500" : "bg-yellow-500"}>
+                                {article.published ? "Published" : "Draft"}
+                              </Badge>
+                            </TableCell>
+                            <TableCell>{article.date}</TableCell>
+                            <TableCell>
+                              <div className="flex gap-2">
+                                <Button 
+                                  variant="outline" 
+                                  size="sm"
+                                  onClick={() => handleEditArticle(article)}
+                                >
+                                  Edit
+                                </Button>
+                                <Button 
+                                  variant="destructive" 
+                                  size="sm"
+                                  onClick={() => handleDeleteArticle(article.id)}
+                                >
+                                  Delete
+                                </Button>
+                              </div>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          )}
+
+          {currentTab === "requests" && (
+            <div className="grid gap-4 md:grid-cols-2">
+              {selectedRequest && (
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Request Details</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <Form {...requestForm}>
+                      <form onSubmit={requestForm.handleSubmit(handleRequestSubmit)} className="space-y-4">
+                        <FormField
+                          control={requestForm.control}
+                          name="name"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Name</FormLabel>
+                              <FormControl>
+                                <Input readOnly {...field} />
+                              </FormControl>
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={requestForm.control}
+                          name="email"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Email</FormLabel>
+                              <FormControl>
+                                <Input readOnly {...field} />
+                              </FormControl>
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={requestForm.control}
+                          name="message"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Message</FormLabel>
+                              <FormControl>
+                                <Textarea 
+                                  readOnly 
+                                  className="min-h-[100px]"
+                                  {...field} 
+                                />
+                              </FormControl>
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={requestForm.control}
+                          name="status"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Status</FormLabel>
+                              <FormControl>
+                                <select
+                                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                                  {...field}
+                                >
+                                  <option value="new">New</option>
+                                  <option value="in-progress">In Progress</option>
+                                  <option value="resolved">Resolved</option>
+                                  <option value="rejected">Rejected</option>
+                                </select>
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <div className="flex justify-between">
+                          <Button
+                            type="button"
+                            variant="outline"
+                            onClick={() => {
+                              setSelectedRequest(null);
+                              requestForm.reset();
+                            }}
+                          >
+                            Close
+                          </Button>
+                          <Button 
+                            type="submit"
+                            onClick={() => {
+                              if (webhookUrl) {
+                                fetch(webhookUrl, {
+                                  method: "POST",
+                                  headers: {
+                                    "Content-Type": "application/json",
+                                  },
+                                  mode: "no-cors",
+                                  body: JSON.stringify({
+                                    event: "request_status_updated",
+                                    requestId: selectedRequest.id,
+                                    status: requestForm.getValues("status"),
+                                    timestamp: new Date().toISOString()
+                                  }),
+                                }).catch(console.error);
+                              }
+                            }}
+                          >
+                            Update Status
+                          </Button>
+                        </div>
+                      </form>
+                    </Form>
+                  </CardContent>
+                </Card>
+              )}
+
+              <Card className={selectedRequest ? "md:col-span-1" : "md:col-span-2"}>
+                <CardHeader>
+                  <CardTitle>Requests</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="overflow-x-auto">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Name</TableHead>
+                          <TableHead>Email</TableHead>
+                          <TableHead>Status</TableHead>
+                          <TableHead>Date</TableHead>
+                          <TableHead>Actions</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {requests.map((request) => (
+                          <TableRow key={request.id}>
+                            <TableCell className="font-medium">{request.name}</TableCell>
+                            <TableCell>{request.email}</TableCell>
+                            <TableCell>
+                              <Badge className={getStatusColor(request.status)}>
+                                {request.status.charAt(0).toUpperCase() + request.status.slice(1)}
+                              </Badge>
+                            </TableCell>
+                            <TableCell>{request.date}</TableCell>
+                            <TableCell>
+                              <Button 
+                                variant="outline" 
+                                size="sm"
+                                onClick={() => handleViewRequest(request)}
+                              >
+                                View
+                              </Button>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
                   </div>
                 </CardContent>
               </Card>
@@ -408,6 +989,49 @@ const Admin = () => {
                     <Input id="contact-email" type="email" defaultValue="admin@fintechassist.com" className="mt-1" />
                   </div>
                   <Button onClick={() => toast.success("Settings saved successfully")}>Save Settings</Button>
+                </CardContent>
+              </Card>
+              
+              <Card>
+                <CardHeader>
+                  <CardTitle>Webhook Integration</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <Form {...webhookForm}>
+                    <form onSubmit={webhookForm.handleSubmit(handleWebhookSubmit)} className="space-y-4">
+                      <FormField
+                        control={webhookForm.control}
+                        name="url"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Webhook URL</FormLabel>
+                            <FormControl>
+                              <Input 
+                                placeholder="https://your-webhook-url.com" 
+                                {...field}
+                                onChange={(e) => {
+                                  field.onChange(e);
+                                  setWebhookUrl(e.target.value);
+                                }}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <div className="flex justify-between">
+                        <Button type="submit">Save Webhook</Button>
+                        <Button 
+                          type="button" 
+                          variant="outline"
+                          onClick={handleTestWebhook}
+                        >
+                          <Send className="mr-2 h-4 w-4" />
+                          Test Webhook
+                        </Button>
+                      </div>
+                    </form>
+                  </Form>
                 </CardContent>
               </Card>
               

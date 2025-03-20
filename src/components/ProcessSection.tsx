@@ -1,6 +1,7 @@
 
-import { Sparkles, FileStack, CheckCircle } from 'lucide-react';
+import { SquareStack, SquareCheck, Boxes } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { GlowingEffect } from './ui/glowing-effect';
 
 export function ProcessSection() {
   const { t } = useLanguage();
@@ -10,19 +11,22 @@ export function ProcessSection() {
       id: 1,
       title: t('process.step1'),
       description: t('process.step1.desc'),
-      icon: Sparkles,
+      icon: SquareStack,
+      color: 'bg-gradient-to-br from-fintech-blue to-fintech-blue-light',
     },
     {
       id: 2,
       title: t('process.step2'),
       description: t('process.step2.desc'),
-      icon: FileStack,
+      icon: Boxes,
+      color: 'bg-gradient-to-br from-fintech-orange to-fintech-orange-light',
     },
     {
       id: 3,
       title: t('process.step3'),
       description: t('process.step3.desc'),
-      icon: CheckCircle,
+      icon: SquareCheck,
+      color: 'bg-gradient-to-br from-emerald-500 to-emerald-400',
     },
   ];
 
@@ -53,13 +57,20 @@ export function ProcessSection() {
                 className="relative flex flex-col items-center text-center animate-fade-up"
                 style={{ animationDelay: `${index * 200}ms` }}
               >
-                <div className="relative z-10 glass-card rounded-full p-6 mb-6 shadow-lg hover-scale">
-                  <div className="rounded-full bg-fintech-blue dark:bg-fintech-blue p-3">
-                    <step.icon className="h-6 w-6 text-white" />
+                <div className="relative z-10 mb-6 hover-scale">
+                  <div className={`glass-card rounded-xl p-6 shadow-lg relative ${step.color}`}>
+                    <step.icon className="h-8 w-8 text-white" />
+                    <div className="absolute inset-0 rounded-xl">
+                      <GlowingEffect 
+                        blur={2} 
+                        spread={30} 
+                        glow={true} 
+                        disabled={false} 
+                        inactiveZone={0.2}
+                        proximity={60}
+                      />
+                    </div>
                   </div>
-                </div>
-                <div className="absolute top-6 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white dark:bg-gray-900 border-2 border-fintech-blue dark:border-fintech-blue flex items-center justify-center text-sm font-bold text-fintech-blue dark:text-fintech-blue z-10">
-                  {step.id}
                 </div>
                 <h3 className="text-xl font-display font-bold mb-3">{step.title}</h3>
                 <p className="text-muted-foreground">{step.description}</p>

@@ -20,9 +20,7 @@ export function AiChatbot() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [webhookUrl, setWebhookUrl] = useState(() => localStorage.getItem('webhookUrl') || '');
   const [isAnimating, setIsAnimating] = useState(false);
-  const [hasSetupWebhook, setHasSetupWebhook] = useState(!!localStorage.getItem('webhookUrl'));
   const endOfMessagesRef = useRef<HTMLDivElement>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const { toast } = useToast();
@@ -89,28 +87,6 @@ export function AiChatbot() {
     if (newState) {
       playSound('open');
     }
-  };
-
-  const handleWebhookSetup = () => {
-    if (!webhookUrl.trim()) {
-      toast({
-        title: "Error",
-        description: language === 'en' ? 
-          "Please enter a valid webhook URL" : 
-          "Пожалуйста, введите действительный URL вебхука",
-        variant: "destructive",
-      });
-      return;
-    }
-    
-    localStorage.setItem('webhookUrl', webhookUrl);
-    setHasSetupWebhook(true);
-    toast({
-      title: language === 'en' ? "Webhook Configured" : "Вебхук настроен",
-      description: language === 'en' ? 
-        "Your Make.com webhook has been successfully connected" : 
-        "Ваш вебхук Make.com успешно подключен",
-    });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -240,31 +216,6 @@ export function AiChatbot() {
               </Button>
             </div>
           </div>
-
-          {/* Make.com Webhook Setup */}
-          {!hasSetupWebhook && (
-            <div className="p-4 border-b border-border bg-muted/50">
-              <h4 className="font-medium text-sm mb-2">
-                {language === 'en' ? "Connect to Make.com" : "Подключиться к Make.com"}
-              </h4>
-              <div className="flex gap-2">
-                <Input
-                  placeholder={language === 'en' ? "Enter your Make.com webhook URL" : "Введите URL вебхука Make.com"}
-                  value={webhookUrl}
-                  onChange={(e) => setWebhookUrl(e.target.value)}
-                  className="text-xs"
-                />
-                <Button size="sm" onClick={handleWebhookSetup}>
-                  {language === 'en' ? "Save" : "Сохранить"}
-                </Button>
-              </div>
-              <p className="text-xs text-muted-foreground mt-1">
-                {language === 'en' 
-                  ? "This will connect AI chat to your Make.com workflow" 
-                  : "Это подключит ИИ-чат к вашему рабочему процессу Make.com"}
-              </p>
-            </div>
-          )}
 
           {/* Chat Messages */}
           <div className="h-96 overflow-y-auto p-4 space-y-4">

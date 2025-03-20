@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { 
   Users, FileText, BarChart3, Settings, 
   Bell, Search, Menu, X, LogOut, MessageSquare,
-  Newspaper, Send
+  Newspaper, Send, Link as LinkIcon, Globe
 } from "lucide-react";
 import { Logo } from "@/components/Logo";
 import { Button } from "@/components/ui/button";
@@ -26,6 +26,8 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const loginSchema = z.object({
   username: z.string().min(1, { message: "Username is required" }),
@@ -50,15 +52,35 @@ const webhookSchema = z.object({
   url: z.string().url({ message: "Invalid webhook URL" }),
 });
 
+const socialLinkSchema = z.object({
+  platform: z.string().min(1, { message: "Platform is required" }),
+  url: z.string().url({ message: "Invalid URL" }),
+  icon: z.string().min(1, { message: "Icon is required" }),
+});
+
 const Admin = () => {
   const navigate = useNavigate();
+  const { language } = useLanguage();
+  const isMobile = useIsMobile();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(!isMobile);
   const [currentTab, setCurrentTab] = useState("dashboard");
   const [selectedArticle, setSelectedArticle] = useState(null);
   const [selectedRequest, setSelectedRequest] = useState(null);
+  const [selectedSocialLink, setSelectedSocialLink] = useState(null);
   const [webhookUrl, setWebhookUrl] = useState(() => {
     return localStorage.getItem("webhookUrl") || "";
+  });
+
+  const [socialLinks, setSocialLinks] = useState(() => {
+    const storedLinks = localStorage.getItem("socialLinks");
+    return storedLinks ? JSON.parse(storedLinks) : [
+      { id: 1, platform: 'Facebook', url: 'https://facebook.com', icon: 'facebook' },
+      { id: 2, platform: 'Twitter', url: 'https://x.com', icon: 'twitter' },
+      { id: 3, platform: 'Instagram', url: 'https://instagram.com', icon: 'instagram' },
+      { id: 4, platform: 'Telegram', url: 'https://t.me/fintechassist', icon: 'telegram' },
+      { id: 5, platform: 'LinkedIn', url: 'https://linkedin.com', icon: 'linkedin' }
+    ];
   });
   
   const [users, setUsers] = useState([
@@ -107,11 +129,20 @@ const Admin = () => {
   }, [webhookUrl]);
 
   useEffect(() => {
+    localStorage.setItem("socialLinks", JSON.stringify(socialLinks));
+  }, [socialLinks]);
+
+  useEffect(() => {
     const isAdmin = localStorage.getItem("isAdmin");
     if (isAdmin === "true") {
       setIsAuthenticated(true);
     }
   }, [navigate]);
+
+  // Responsive: Toggle sidebar when screen size changes
+  useEffect(() => {
+    setIsSidebarOpen(!isMobile);
+  }, [isMobile]);
 
   const loginForm = useForm({
     resolver: zodResolver(loginSchema),
@@ -148,20 +179,29 @@ const Admin = () => {
     },
   });
 
+  const socialLinkForm = useForm({
+    resolver: zodResolver(socialLinkSchema),
+    defaultValues: {
+      platform: "",
+      url: "",
+      icon: "",
+    },
+  });
+
   const handleLogin = (data) => {
     if (data.username === "admin" && data.password === "password") {
       localStorage.setItem("isAdmin", "true");
       setIsAuthenticated(true);
-      toast.success("Logged in successfully");
+      toast.success(language === 'en' ? "Logged in successfully" : "Успешный вход");
     } else {
-      toast.error("Invalid credentials");
+      toast.error(language === 'en' ? "Invalid credentials" : "Неверные учетные данные");
     }
   };
 
   const handleLogout = () => {
     localStorage.removeItem("isAdmin");
     setIsAuthenticated(false);
-    toast.success("Logged out successfully");
+    toast.success(language === 'en' ? "Logged out successfully" : "Успешный выход");
     navigate("/");
   };
 
@@ -177,7 +217,7 @@ const Admin = () => {
           : article
       );
       setArticles(updatedArticles);
-      toast.success("Article updated successfully");
+      toast.success(language === 'en' ? "Article updated successfully" : "Статья успешно обновлена");
     } else {
       const newArticle = {
         id: articles.length ? Math.max(...articles.map(a => a.id)) + 1 : 1,
@@ -185,7 +225,7 @@ const Admin = () => {
         date: new Date().toISOString().split('T')[0]
       };
       setArticles([...articles, newArticle]);
-      toast.success("Article created successfully");
+      toast.success(language === 'en' ? "Article created successfully" : "Статья успешно создана");
     }
     
     articleForm.reset();
@@ -204,7 +244,7 @@ const Admin = () => {
 
   const handleDeleteArticle = (id) => {
     setArticles(articles.filter(article => article.id !== id));
-    toast.success("Article deleted successfully");
+    toast.success(language === 'en' ? "Article deleted successfully" : "Статья успешно удалена");
   };
 
   const handleRequestSubmit = (data) => {
@@ -215,7 +255,7 @@ const Admin = () => {
           : request
       );
       setRequests(updatedRequests);
-      toast.success("Request updated successfully");
+      toast.success(language === 'en' ? "Request updated successfully" : "Заявка успешно обновлена");
     }
     
     requestForm.reset();
@@ -234,17 +274,17 @@ const Admin = () => {
 
   const handleWebhookSubmit = (data) => {
     setWebhookUrl(data.url);
-    toast.success("Webhook URL saved successfully");
+    toast.success(language === 'en' ? "Webhook URL saved successfully" : "URL вебхука успешно сохранен");
   };
 
   const handleTestWebhook = async () => {
     if (!webhookUrl) {
-      toast.error("Please enter a webhook URL first");
+      toast.error(language === 'en' ? "Please enter a webhook URL first" : "Сначала введите URL вебхука");
       return;
     }
 
     try {
-      const response = await fetch(webhookUrl, {
+      await fetch(webhookUrl, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -257,11 +297,47 @@ const Admin = () => {
         }),
       });
       
-      toast.success("Webhook test sent");
+      toast.success(language === 'en' ? "Webhook test sent" : "Тестовый вебхук отправлен");
     } catch (error) {
       console.error("Webhook test error:", error);
-      toast.error("Failed to test webhook");
+      toast.error(language === 'en' ? "Failed to test webhook" : "Не удалось протестировать вебхук");
     }
+  };
+
+  const handleSocialLinkSubmit = (data) => {
+    if (selectedSocialLink) {
+      const updatedLinks = socialLinks.map(link => 
+        link.id === selectedSocialLink.id 
+          ? { ...link, ...data }
+          : link
+      );
+      setSocialLinks(updatedLinks);
+      toast.success(language === 'en' ? "Social link updated successfully" : "Социальная ссылка успешно обновлена");
+    } else {
+      const newLink = {
+        id: socialLinks.length ? Math.max(...socialLinks.map(link => link.id)) + 1 : 1,
+        ...data
+      };
+      setSocialLinks([...socialLinks, newLink]);
+      toast.success(language === 'en' ? "Social link added successfully" : "Социальная ссылка успешно добавлена");
+    }
+    
+    socialLinkForm.reset();
+    setSelectedSocialLink(null);
+  };
+
+  const handleEditSocialLink = (link) => {
+    setSelectedSocialLink(link);
+    socialLinkForm.reset({
+      platform: link.platform,
+      url: link.url,
+      icon: link.icon,
+    });
+  };
+
+  const handleDeleteSocialLink = (id) => {
+    setSocialLinks(socialLinks.filter(link => link.id !== id));
+    toast.success(language === 'en' ? "Social link deleted successfully" : "Социальная ссылка успешно удалена");
   };
 
   const getStatusColor = (status) => {
@@ -289,7 +365,7 @@ const Admin = () => {
       <div className="flex items-center justify-center min-h-screen bg-background">
         <Card className="w-[350px]">
           <CardHeader>
-            <CardTitle className="text-center">Admin Login</CardTitle>
+            <CardTitle className="text-center">{language === 'en' ? "Admin Login" : "Вход для администратора"}</CardTitle>
           </CardHeader>
           <CardContent>
             <Form {...loginForm}>
@@ -299,9 +375,9 @@ const Admin = () => {
                   name="username"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Username</FormLabel>
+                      <FormLabel>{language === 'en' ? "Username" : "Имя пользователя"}</FormLabel>
                       <FormControl>
-                        <Input placeholder="Enter username" {...field} />
+                        <Input placeholder={language === 'en' ? "Enter username" : "Введите имя пользователя"} {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -312,16 +388,16 @@ const Admin = () => {
                   name="password"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Password</FormLabel>
+                      <FormLabel>{language === 'en' ? "Password" : "Пароль"}</FormLabel>
                       <FormControl>
-                        <Input type="password" placeholder="Enter password" {...field} />
+                        <Input type="password" placeholder={language === 'en' ? "Enter password" : "Введите пароль"} {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
                 <Button type="submit" className="w-full">
-                  Login
+                  {language === 'en' ? "Login" : "Войти"}
                 </Button>
               </form>
             </Form>
@@ -354,7 +430,7 @@ const Admin = () => {
               className="w-full justify-start"
             >
               <BarChart3 className="mr-2 h-4 w-4" />
-              Dashboard
+              {language === 'en' ? "Dashboard" : "Дашборд"}
             </Button>
             
             <Button 
@@ -363,7 +439,7 @@ const Admin = () => {
               className="w-full justify-start"
             >
               <Newspaper className="mr-2 h-4 w-4" />
-              Articles
+              {language === 'en' ? "Articles" : "Статьи"}
             </Button>
             
             <Button 
@@ -372,7 +448,7 @@ const Admin = () => {
               className="w-full justify-start"
             >
               <MessageSquare className="mr-2 h-4 w-4" />
-              Requests
+              {language === 'en' ? "Requests" : "Заявки"}
             </Button>
             
             <Button 
@@ -381,7 +457,7 @@ const Admin = () => {
               className="w-full justify-start"
             >
               <Users className="mr-2 h-4 w-4" />
-              Users
+              {language === 'en' ? "Users" : "Пользователи"}
             </Button>
             
             <Button 
@@ -390,7 +466,7 @@ const Admin = () => {
               className="w-full justify-start"
             >
               <FileText className="mr-2 h-4 w-4" />
-              Transactions
+              {language === 'en' ? "Transactions" : "Транзакции"}
             </Button>
             
             <Button 
@@ -399,7 +475,25 @@ const Admin = () => {
               className="w-full justify-start"
             >
               <Settings className="mr-2 h-4 w-4" />
-              Settings
+              {language === 'en' ? "Settings" : "Настройки"}
+            </Button>
+            
+            <Button 
+              variant={currentTab === "social" ? "default" : "ghost"} 
+              onClick={() => setCurrentTab("social")}
+              className="w-full justify-start"
+            >
+              <LinkIcon className="mr-2 h-4 w-4" />
+              {language === 'en' ? "Social Links" : "Социальные ссылки"}
+            </Button>
+            
+            <Button 
+              variant={currentTab === "webhooks" ? "default" : "ghost"} 
+              onClick={() => setCurrentTab("webhooks")}
+              className="w-full justify-start"
+            >
+              <Globe className="mr-2 h-4 w-4" />
+              {language === 'en' ? "Webhooks" : "Вебхуки"}
             </Button>
           </nav>
           
@@ -410,7 +504,7 @@ const Admin = () => {
               onClick={handleLogout}
             >
               <LogOut className="mr-2 h-4 w-4" />
-              Logout
+              {language === 'en' ? "Logout" : "Выйти"}
             </Button>
           </div>
         </div>
@@ -429,7 +523,15 @@ const Admin = () => {
                 {isSidebarOpen ? <X /> : <Menu />}
               </Button>
               <h1 className="text-xl font-semibold ml-2">
-                {currentTab.charAt(0).toUpperCase() + currentTab.slice(1)}
+                {language === 'en' ? currentTab.charAt(0).toUpperCase() + currentTab.slice(1) : 
+                 currentTab === "dashboard" ? "Дашборд" :
+                 currentTab === "articles" ? "Статьи" :
+                 currentTab === "requests" ? "Заявки" :
+                 currentTab === "users" ? "Пользователи" :
+                 currentTab === "transactions" ? "Транзакции" :
+                 currentTab === "settings" ? "Настройки" :
+                 currentTab === "social" ? "Социальные ссылки" :
+                 currentTab === "webhooks" ? "Вебхуки" : ""}
               </h1>
             </div>
             
@@ -438,7 +540,7 @@ const Admin = () => {
                 <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
                 <Input
                   type="search"
-                  placeholder="Search..."
+                  placeholder={language === 'en' ? "Search..." : "Поиск..."}
                   className="pl-8 w-64 md:w-80 h-9"
                 />
               </div>
@@ -452,72 +554,73 @@ const Admin = () => {
         </header>
 
         <main className="p-4">
+          {/* Dashboard Tab */}
           {currentTab === "dashboard" && (
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
               <Card>
                 <CardHeader className="pb-2">
-                  <CardTitle className="text-sm font-medium">Total Users</CardTitle>
+                  <CardTitle className="text-sm font-medium">{language === 'en' ? "Total Users" : "Всего пользователей"}</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="text-2xl font-bold">1,248</div>
-                  <p className="text-xs text-muted-foreground">+12% from last month</p>
+                  <p className="text-xs text-muted-foreground">{language === 'en' ? "+12% from last month" : "+12% с прошлого месяца"}</p>
                 </CardContent>
               </Card>
               
               <Card>
                 <CardHeader className="pb-2">
-                  <CardTitle className="text-sm font-medium">Revenue</CardTitle>
+                  <CardTitle className="text-sm font-medium">{language === 'en' ? "Revenue" : "Доход"}</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="text-2xl font-bold">$45,231.89</div>
-                  <p className="text-xs text-muted-foreground">+5.2% from last month</p>
+                  <p className="text-xs text-muted-foreground">{language === 'en' ? "+5.2% from last month" : "+5.2% с прошлого месяца"}</p>
                 </CardContent>
               </Card>
               
               <Card>
                 <CardHeader className="pb-2">
-                  <CardTitle className="text-sm font-medium">Active Subscriptions</CardTitle>
+                  <CardTitle className="text-sm font-medium">{language === 'en' ? "Active Subscriptions" : "Активные подписки"}</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="text-2xl font-bold">892</div>
-                  <p className="text-xs text-muted-foreground">+3.1% from last month</p>
+                  <p className="text-xs text-muted-foreground">{language === 'en' ? "+3.1% from last month" : "+3.1% с прошлого месяца"}</p>
                 </CardContent>
               </Card>
               
               <Card>
                 <CardHeader className="pb-2">
-                  <CardTitle className="text-sm font-medium">Support Tickets</CardTitle>
+                  <CardTitle className="text-sm font-medium">{language === 'en' ? "Support Tickets" : "Заявки в поддержку"}</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="text-2xl font-bold">24</div>
-                  <p className="text-xs text-muted-foreground">-8% from last month</p>
+                  <p className="text-xs text-muted-foreground">{language === 'en' ? "-8% from last month" : "-8% с прошлого месяца"}</p>
                 </CardContent>
               </Card>
 
               <Card className="md:col-span-2 lg:col-span-4">
                 <CardHeader>
-                  <CardTitle>Recent Activity</CardTitle>
+                  <CardTitle>{language === 'en' ? "Recent Activity" : "Последние действия"}</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
                     <div className="flex items-center">
                       <div className="w-2 h-2 rounded-full bg-green-500 mr-2"></div>
-                      <p className="text-sm">New user <span className="font-medium">John Doe</span> registered</p>
+                      <p className="text-sm">{language === 'en' ? "New user" : "Новый пользователь"} <span className="font-medium">John Doe</span> {language === 'en' ? "registered" : "зарегистрирован"}</p>
                       <span className="ml-auto text-xs text-muted-foreground">2 hours ago</span>
                     </div>
                     <div className="flex items-center">
                       <div className="w-2 h-2 rounded-full bg-blue-500 mr-2"></div>
-                      <p className="text-sm">Payment of <span className="font-medium">$1,299</span> received</p>
+                      <p className="text-sm">{language === 'en' ? "Payment of" : "Оплата"} <span className="font-medium">$1,299</span> {language === 'en' ? "received" : "получена"}</p>
                       <span className="ml-auto text-xs text-muted-foreground">6 hours ago</span>
                     </div>
                     <div className="flex items-center">
                       <div className="w-2 h-2 rounded-full bg-yellow-500 mr-2"></div>
-                      <p className="text-sm">Support ticket <span className="font-medium">#45678</span> opened</p>
+                      <p className="text-sm">{language === 'en' ? "Support ticket" : "Заявка в поддержку"} <span className="font-medium">#45678</span> {language === 'en' ? "opened" : "открыта"}</p>
                       <span className="ml-auto text-xs text-muted-foreground">1 day ago</span>
                     </div>
                     <div className="flex items-center">
                       <div className="w-2 h-2 rounded-full bg-purple-500 mr-2"></div>
-                      <p className="text-sm">New feature <span className="font-medium">Mobile App</span> deployed</p>
+                      <p className="text-sm">{language === 'en' ? "New feature" : "Новая функция"} <span className="font-medium">Mobile App</span> {language === 'en' ? "deployed" : "развернута"}</p>
                       <span className="ml-auto text-xs text-muted-foreground">2 days ago</span>
                     </div>
                   </div>
@@ -526,11 +629,12 @@ const Admin = () => {
             </div>
           )}
 
+          {/* Articles Tab */}
           {currentTab === "articles" && (
             <div className="grid gap-4 md:grid-cols-2">
               <Card>
                 <CardHeader>
-                  <CardTitle>{selectedArticle ? "Edit Article" : "Create New Article"}</CardTitle>
+                  <CardTitle>{selectedArticle ? (language === 'en' ? "Edit Article" : "Редактировать статью") : (language === 'en' ? "Create New Article" : "Создать новую статью")}</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <Form {...articleForm}>
@@ -540,9 +644,9 @@ const Admin = () => {
                         name="title"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Title</FormLabel>
+                            <FormLabel>{language === 'en' ? "Title" : "Заголовок"}</FormLabel>
                             <FormControl>
-                              <Input placeholder="Article title" {...field} />
+                              <Input placeholder={language === 'en' ? "Article title" : "Заголовок статьи"} {...field} />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -553,9 +657,9 @@ const Admin = () => {
                         name="category"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Category</FormLabel>
+                            <FormLabel>{language === 'en' ? "Category" : "Категория"}</FormLabel>
                             <FormControl>
-                              <Input placeholder="Article category" {...field} />
+                              <Input placeholder={language === 'en' ? "Article category" : "Категория статьи"} {...field} />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -566,10 +670,10 @@ const Admin = () => {
                         name="content"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Content</FormLabel>
+                            <FormLabel>{language === 'en' ? "Content" : "Содержание"}</FormLabel>
                             <FormControl>
                               <Textarea 
-                                placeholder="Article content" 
+                                placeholder={language === 'en' ? "Article content" : "Содержание статьи"} 
                                 className="min-h-[200px]"
                                 {...field} 
                               />
@@ -590,7 +694,7 @@ const Admin = () => {
                               />
                             </FormControl>
                             <div className="space-y-1 leading-none">
-                              <FormLabel>Published</FormLabel>
+                              <FormLabel>{language === 'en' ? "Published" : "Опубликовано"}</FormLabel>
                             </div>
                           </FormItem>
                         )}
@@ -609,10 +713,10 @@ const Admin = () => {
                             });
                           }}
                         >
-                          Cancel
+                          {language === 'en' ? "Cancel" : "Отмена"}
                         </Button>
                         <Button type="submit">
-                          {selectedArticle ? "Update" : "Create"}
+                          {selectedArticle ? (language === 'en' ? "Update" : "Обновить") : (language === 'en' ? "Create" : "Создать")}
                         </Button>
                       </div>
                     </form>
@@ -622,18 +726,18 @@ const Admin = () => {
 
               <Card>
                 <CardHeader>
-                  <CardTitle>Articles</CardTitle>
+                  <CardTitle>{language === 'en' ? "Articles" : "Статьи"}</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="overflow-x-auto">
                     <Table>
                       <TableHeader>
                         <TableRow>
-                          <TableHead>Title</TableHead>
-                          <TableHead>Category</TableHead>
-                          <TableHead>Status</TableHead>
-                          <TableHead>Date</TableHead>
-                          <TableHead>Actions</TableHead>
+                          <TableHead>{language === 'en' ? "Title" : "Заголовок"}</TableHead>
+                          <TableHead>{language === 'en' ? "Category" : "Категория"}</TableHead>
+                          <TableHead>{language === 'en' ? "Status" : "Статус"}</TableHead>
+                          <TableHead>{language === 'en' ? "Date" : "Дата"}</TableHead>
+                          <TableHead>{language === 'en' ? "Actions" : "Действия"}</TableHead>
                         </TableRow>
                       </TableHeader>
                       <TableBody>
@@ -643,7 +747,7 @@ const Admin = () => {
                             <TableCell>{article.category}</TableCell>
                             <TableCell>
                               <Badge className={article.published ? "bg-green-500" : "bg-yellow-500"}>
-                                {article.published ? "Published" : "Draft"}
+                                {article.published ? (language === 'en' ? "Published" : "Опубликовано") : (language === 'en' ? "Draft" : "Черновик")}
                               </Badge>
                             </TableCell>
                             <TableCell>{article.date}</TableCell>
@@ -654,413 +758,5 @@ const Admin = () => {
                                   size="sm"
                                   onClick={() => handleEditArticle(article)}
                                 >
-                                  Edit
+                                  {language === 'en' ? "Edit" : "Редактировать"}
                                 </Button>
-                                <Button 
-                                  variant="destructive" 
-                                  size="sm"
-                                  onClick={() => handleDeleteArticle(article.id)}
-                                >
-                                  Delete
-                                </Button>
-                              </div>
-                            </TableCell>
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          )}
-
-          {currentTab === "requests" && (
-            <div className="grid gap-4 md:grid-cols-2">
-              {selectedRequest && (
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Request Details</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <Form {...requestForm}>
-                      <form onSubmit={requestForm.handleSubmit(handleRequestSubmit)} className="space-y-4">
-                        <FormField
-                          control={requestForm.control}
-                          name="name"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Name</FormLabel>
-                              <FormControl>
-                                <Input readOnly {...field} />
-                              </FormControl>
-                            </FormItem>
-                          )}
-                        />
-                        <FormField
-                          control={requestForm.control}
-                          name="email"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Email</FormLabel>
-                              <FormControl>
-                                <Input readOnly {...field} />
-                              </FormControl>
-                            </FormItem>
-                          )}
-                        />
-                        <FormField
-                          control={requestForm.control}
-                          name="message"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Message</FormLabel>
-                              <FormControl>
-                                <Textarea 
-                                  readOnly 
-                                  className="min-h-[100px]"
-                                  {...field} 
-                                />
-                              </FormControl>
-                            </FormItem>
-                          )}
-                        />
-                        <FormField
-                          control={requestForm.control}
-                          name="status"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Status</FormLabel>
-                              <FormControl>
-                                <select
-                                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                                  {...field}
-                                >
-                                  <option value="new">New</option>
-                                  <option value="in-progress">In Progress</option>
-                                  <option value="resolved">Resolved</option>
-                                  <option value="rejected">Rejected</option>
-                                </select>
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                        <div className="flex justify-between">
-                          <Button
-                            type="button"
-                            variant="outline"
-                            onClick={() => {
-                              setSelectedRequest(null);
-                              requestForm.reset();
-                            }}
-                          >
-                            Close
-                          </Button>
-                          <Button 
-                            type="submit"
-                            onClick={() => {
-                              if (webhookUrl) {
-                                fetch(webhookUrl, {
-                                  method: "POST",
-                                  headers: {
-                                    "Content-Type": "application/json",
-                                  },
-                                  mode: "no-cors",
-                                  body: JSON.stringify({
-                                    event: "request_status_updated",
-                                    requestId: selectedRequest.id,
-                                    status: requestForm.getValues("status"),
-                                    timestamp: new Date().toISOString()
-                                  }),
-                                }).catch(console.error);
-                              }
-                            }}
-                          >
-                            Update Status
-                          </Button>
-                        </div>
-                      </form>
-                    </Form>
-                  </CardContent>
-                </Card>
-              )}
-
-              <Card className={selectedRequest ? "md:col-span-1" : "md:col-span-2"}>
-                <CardHeader>
-                  <CardTitle>Requests</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="overflow-x-auto">
-                    <Table>
-                      <TableHeader>
-                        <TableRow>
-                          <TableHead>Name</TableHead>
-                          <TableHead>Email</TableHead>
-                          <TableHead>Status</TableHead>
-                          <TableHead>Date</TableHead>
-                          <TableHead>Actions</TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        {requests.map((request) => (
-                          <TableRow key={request.id}>
-                            <TableCell className="font-medium">{request.name}</TableCell>
-                            <TableCell>{request.email}</TableCell>
-                            <TableCell>
-                              <Badge className={getStatusColor(request.status)}>
-                                {request.status.charAt(0).toUpperCase() + request.status.slice(1)}
-                              </Badge>
-                            </TableCell>
-                            <TableCell>{request.date}</TableCell>
-                            <TableCell>
-                              <Button 
-                                variant="outline" 
-                                size="sm"
-                                onClick={() => handleViewRequest(request)}
-                              >
-                                View
-                              </Button>
-                            </TableCell>
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          )}
-
-          {currentTab === "users" && (
-            <Card>
-              <CardHeader>
-                <div className="flex justify-between items-center">
-                  <CardTitle>Users</CardTitle>
-                  <Dialog>
-                    <DialogTrigger asChild>
-                      <Button size="sm">Add User</Button>
-                    </DialogTrigger>
-                    <DialogContent>
-                      <DialogHeader>
-                        <DialogTitle>Add New User</DialogTitle>
-                      </DialogHeader>
-                      <div className="grid gap-4 py-4">
-                        <div className="grid gap-2">
-                          <label htmlFor="name">Name</label>
-                          <Input id="name" placeholder="Enter name" />
-                        </div>
-                        <div className="grid gap-2">
-                          <label htmlFor="email">Email</label>
-                          <Input id="email" type="email" placeholder="Enter email" />
-                        </div>
-                        <div className="grid gap-2">
-                          <label htmlFor="role">Role</label>
-                          <Input id="role" placeholder="Enter role" />
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <Checkbox id="active" />
-                          <label htmlFor="active">Active</label>
-                        </div>
-                      </div>
-                      <div className="flex justify-end">
-                        <Button onClick={() => toast.success("User added successfully")}>Save User</Button>
-                      </div>
-                    </DialogContent>
-                  </Dialog>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="overflow-x-auto">
-                  <table className="w-full">
-                    <thead>
-                      <tr className="border-b">
-                        <th className="text-left p-2">Name</th>
-                        <th className="text-left p-2">Email</th>
-                        <th className="text-left p-2">Role</th>
-                        <th className="text-left p-2">Status</th>
-                        <th className="text-left p-2">Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {users.map((user) => (
-                        <tr key={user.id} className="border-b hover:bg-muted/50">
-                          <td className="p-2">{user.name}</td>
-                          <td className="p-2">{user.email}</td>
-                          <td className="p-2">{user.role}</td>
-                          <td className="p-2">
-                            <Badge className={getStatusColor(user.status)}>
-                              {user.status.charAt(0).toUpperCase() + user.status.slice(1)}
-                            </Badge>
-                          </td>
-                          <td className="p-2">
-                            <div className="flex gap-2">
-                              <Button variant="outline" size="sm">Edit</Button>
-                              <Button 
-                                variant="destructive" 
-                                size="sm"
-                                onClick={() => {
-                                  setUsers(users.filter(u => u.id !== user.id));
-                                  toast.success("User deleted successfully");
-                                }}
-                              >
-                                Delete
-                              </Button>
-                            </div>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </CardContent>
-            </Card>
-          )}
-
-          {currentTab === "transactions" && (
-            <Card>
-              <CardHeader>
-                <CardTitle>Transactions</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="overflow-x-auto">
-                  <table className="w-full">
-                    <thead>
-                      <tr className="border-b">
-                        <th className="text-left p-2">User</th>
-                        <th className="text-left p-2">Amount</th>
-                        <th className="text-left p-2">Date</th>
-                        <th className="text-left p-2">Status</th>
-                        <th className="text-left p-2">Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {transactions.map((transaction) => (
-                        <tr key={transaction.id} className="border-b hover:bg-muted/50">
-                          <td className="p-2">{transaction.user}</td>
-                          <td className="p-2">${transaction.amount.toFixed(2)}</td>
-                          <td className="p-2">{transaction.date}</td>
-                          <td className="p-2">
-                            <Badge className={getStatusColor(transaction.status)}>
-                              {transaction.status.charAt(0).toUpperCase() + transaction.status.slice(1)}
-                            </Badge>
-                          </td>
-                          <td className="p-2">
-                            <div className="flex gap-2">
-                              <Button variant="outline" size="sm">View</Button>
-                              <Button 
-                                variant="destructive" 
-                                size="sm"
-                                onClick={() => {
-                                  setTransactions(transactions.filter(t => t.id !== transaction.id));
-                                  toast.success("Transaction deleted successfully");
-                                }}
-                              >
-                                Delete
-                              </Button>
-                            </div>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </CardContent>
-            </Card>
-          )}
-
-          {currentTab === "settings" && (
-            <div className="grid gap-4 md:grid-cols-2">
-              <Card>
-                <CardHeader>
-                  <CardTitle>General Settings</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div>
-                    <label className="text-sm font-medium" htmlFor="site-name">Site Name</label>
-                    <Input id="site-name" defaultValue="Fintech Assist" className="mt-1" />
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium" htmlFor="site-description">Site Description</label>
-                    <Input id="site-description" defaultValue="Admin Dashboard" className="mt-1" />
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium" htmlFor="contact-email">Contact Email</label>
-                    <Input id="contact-email" type="email" defaultValue="admin@fintechassist.com" className="mt-1" />
-                  </div>
-                  <Button onClick={() => toast.success("Settings saved successfully")}>Save Settings</Button>
-                </CardContent>
-              </Card>
-              
-              <Card>
-                <CardHeader>
-                  <CardTitle>Webhook Integration</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <Form {...webhookForm}>
-                    <form onSubmit={webhookForm.handleSubmit(handleWebhookSubmit)} className="space-y-4">
-                      <FormField
-                        control={webhookForm.control}
-                        name="url"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Webhook URL</FormLabel>
-                            <FormControl>
-                              <Input 
-                                placeholder="https://your-webhook-url.com" 
-                                {...field}
-                                onChange={(e) => {
-                                  field.onChange(e);
-                                  setWebhookUrl(e.target.value);
-                                }}
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <div className="flex justify-between">
-                        <Button type="submit">Save Webhook</Button>
-                        <Button 
-                          type="button" 
-                          variant="outline"
-                          onClick={handleTestWebhook}
-                        >
-                          <Send className="mr-2 h-4 w-4" />
-                          Test Webhook
-                        </Button>
-                      </div>
-                    </form>
-                  </Form>
-                </CardContent>
-              </Card>
-              
-              <Card>
-                <CardHeader>
-                  <CardTitle>Security Settings</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="flex items-center space-x-2">
-                    <Checkbox id="2fa" />
-                    <label htmlFor="2fa">Enable Two-Factor Authentication</label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <Checkbox id="session-timeout" defaultChecked />
-                    <label htmlFor="session-timeout">Enable Session Timeout</label>
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium" htmlFor="session-length">Session Length (minutes)</label>
-                    <Input id="session-length" type="number" defaultValue="30" className="mt-1" />
-                  </div>
-                  <Button onClick={() => toast.success("Security settings saved")}>Update Security</Button>
-                </CardContent>
-              </Card>
-            </div>
-          )}
-        </main>
-      </div>
-    </div>
-  );
-};
-
-export default Admin;

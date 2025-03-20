@@ -6,11 +6,12 @@ import { cn } from '@/lib/utils';
 interface LogoProps {
   className?: string;
   withGlow?: boolean;
+  showText?: boolean;
 }
 
-export function Logo({ className, withGlow = true }: LogoProps) {
+export function Logo({ className, withGlow = true, showText = true }: LogoProps) {
   return (
-    <Link to="/" className={cn("relative inline-block", className)}>
+    <Link to="/" className={cn("relative inline-flex items-center", className)}>
       <div className="relative">
         <img 
           src="/lovable-uploads/8f51558f-dcfd-4921-b6e4-112532ad0723.png" 
@@ -30,6 +31,12 @@ export function Logo({ className, withGlow = true }: LogoProps) {
           </div>
         )}
       </div>
+      {showText && (
+        <span className="ml-2 font-display font-bold text-xl">
+          <span className="text-fintech-blue dark:text-fintech-blue-light">Fintech</span>
+          <span className="text-fintech-orange">Assist</span>
+        </span>
+      )}
     </Link>
   );
 }

@@ -2,8 +2,10 @@
 import { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Sparkles, Send, X, Bot, ChevronDown } from 'lucide-react';
+import { Send, X, ChevronDown, Bot, Sparkles, Brain } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useToast } from '@/hooks/use-toast';
+import { generateAIResponse } from '@/utils/contactApi';
 
 type Message = {
   id: string;
@@ -18,10 +20,43 @@ export function AiChatbot() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [webhookUrl, setWebhookUrl] = useState(() => localStorage.getItem('webhookUrl') || '');
+  const [isAnimating, setIsAnimating] = useState(false);
+  const [hasSetupWebhook, setHasSetupWebhook] = useState(!!localStorage.getItem('webhookUrl'));
   const endOfMessagesRef = useRef<HTMLDivElement>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const { toast } = useToast();
   
-  // Replace with your actual Make webhook URL for the AI chatbot
-  const MAKE_AI_WEBHOOK_URL = "https://hook.eu1.make.com/youraichatwebhook";
+  // Create audio elements
+  useEffect(() => {
+    audioRef.current = new Audio();
+    audioRef.current.volume = 0.5;
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current = null;
+      }
+    };
+  }, []);
+
+  // Play sound effect
+  const playSound = (type: 'open' | 'message' | 'send') => {
+    if (!audioRef.current) return;
+    
+    switch (type) {
+      case 'open':
+        audioRef.current.src = '/sounds/bot-open.mp3';
+        break;
+      case 'message':
+        audioRef.current.src = '/sounds/bot-message.mp3';
+        break;
+      case 'send':
+        audioRef.current.src = '/sounds/bot-send.mp3';
+        break;
+    }
+    
+    audioRef.current.play().catch(err => console.error("Error playing sound:", err));
+  };
 
   // Initial bot greeting
   useEffect(() => {
@@ -48,9 +83,42 @@ export function AiChatbot() {
     }
   }, [messages]);
 
+  const toggleChat = () => {
+    const newState = !isOpen;
+    setIsOpen(newState);
+    if (newState) {
+      playSound('open');
+    }
+  };
+
+  const handleWebhookSetup = () => {
+    if (!webhookUrl.trim()) {
+      toast({
+        title: "Error",
+        description: language === 'en' ? 
+          "Please enter a valid webhook URL" : 
+          "Пожалуйста, введите действительный URL вебхука",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    localStorage.setItem('webhookUrl', webhookUrl);
+    setHasSetupWebhook(true);
+    toast({
+      title: language === 'en' ? "Webhook Configured" : "Вебхук настроен",
+      description: language === 'en' ? 
+        "Your Make.com webhook has been successfully connected" : 
+        "Ваш вебхук Make.com успешно подключен",
+    });
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!input.trim()) return;
+
+    // Play send sound
+    playSound('send');
 
     // Add user message
     const userMessage: Message = {
@@ -65,44 +133,41 @@ export function AiChatbot() {
     setIsLoading(true);
 
     try {
-      // Call Make webhook to process message and get AI response
-      const response = await fetch(MAKE_AI_WEBHOOK_URL, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          userMessage: input,
-          language: language,
-          timestamp: new Date().toISOString(),
-          conversation: messages.map(m => ({ type: m.type, text: m.text }))
-        }),
-        mode: 'no-cors' // Use no-cors mode since webhook may not support CORS
-      });
+      // First, use the local AI response generator
+      const aiResponse = generateAIResponse(input);
       
-      // Since we're using no-cors, we can't actually process the response
-      // In a real implementation, you would either:
-      // 1. Use a CORS-enabled endpoint
-      // 2. Use a backend proxy
-      // 3. Use a serverless function
-      
-      // For demo purposes, simulate a response
-      const demoResponse = language === 'en'
-        ? "Thank you for your message. Our team will review your inquiry and get back to you shortly. For faster assistance, please contact us at +44 7450 574905."
-        : "Спасибо за ваше сообщение. Наша команда рассмотрит ваш запрос и свяжется с вами в ближайшее время. Для более быстрой помощи, пожалуйста, свяжитесь с нами по телефону +44 7450 574905.";
+      // Then, if webhook is configured, send data to Make
+      const storedWebhookUrl = localStorage.getItem('webhookUrl');
+      if (storedWebhookUrl) {
+        await fetch(storedWebhookUrl, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          mode: "no-cors", // Handle CORS issues
+          body: JSON.stringify({
+            userMessage: input,
+            aiResponse: aiResponse,
+            language: language,
+            timestamp: new Date().toISOString(),
+            conversation: messages.map(m => ({ type: m.type, text: m.text }))
+          }),
+        });
+      }
       
       // Add bot response after a small delay to simulate processing
       setTimeout(() => {
         const botMessage: Message = {
           id: Date.now().toString(),
           type: 'bot',
-          text: demoResponse,
+          text: aiResponse,
           timestamp: new Date(),
         };
         
         setMessages(prev => [...prev, botMessage]);
         setIsLoading(false);
-      }, 1500);
+        playSound('message');
+      }, 1000);
     } catch (error) {
       console.error('Error getting AI response:', error);
       
@@ -127,11 +192,24 @@ export function AiChatbot() {
     <>
       {/* Chat Button */}
       <Button
-        onClick={() => setIsOpen(true)}
-        className="fixed bottom-6 right-6 rounded-full shadow-lg bg-fintech-blue hover:bg-fintech-blue-dark text-white p-4 z-50"
+        onClick={toggleChat}
+        className={`fixed bottom-6 right-6 rounded-full shadow-lg bg-fintech-blue hover:bg-fintech-blue-dark text-white p-4 z-50 transition-all duration-300 ${isAnimating ? 'scale-110' : 'scale-100'}`}
         size="icon"
+        onMouseEnter={() => setIsAnimating(true)}
+        onMouseLeave={() => setIsAnimating(false)}
+        onAnimationEnd={() => setIsAnimating(false)}
       >
-        <Bot className="h-6 w-6" />
+        <div className="relative flex items-center justify-center">
+          <Brain 
+            className={`h-6 w-6 absolute transition-opacity duration-300 ${isAnimating ? 'opacity-100 animate-pulse' : 'opacity-0'}`} 
+          />
+          <Bot 
+            className={`h-6 w-6 transition-opacity duration-300 ${isAnimating ? 'opacity-0' : 'opacity-100'}`} 
+          />
+          <Sparkles 
+            className={`h-3 w-3 absolute -top-1 -right-1 text-white transition-opacity duration-300 ${isAnimating ? 'opacity-100' : 'opacity-0'} animate-pulse`} 
+          />
+        </div>
       </Button>
 
       {/* Chat Window */}
@@ -140,7 +218,7 @@ export function AiChatbot() {
           {/* Chat Header */}
           <div className="flex items-center justify-between p-4 bg-fintech-blue text-white">
             <div className="flex items-center space-x-2">
-              <Sparkles className="h-5 w-5" />
+              <Brain className="h-5 w-5 animate-pulse" />
               <h3 className="font-medium">FintechAssist AI</h3>
             </div>
             <div className="flex items-center space-x-1">
@@ -162,6 +240,31 @@ export function AiChatbot() {
               </Button>
             </div>
           </div>
+
+          {/* Make.com Webhook Setup */}
+          {!hasSetupWebhook && (
+            <div className="p-4 border-b border-border bg-muted/50">
+              <h4 className="font-medium text-sm mb-2">
+                {language === 'en' ? "Connect to Make.com" : "Подключиться к Make.com"}
+              </h4>
+              <div className="flex gap-2">
+                <Input
+                  placeholder={language === 'en' ? "Enter your Make.com webhook URL" : "Введите URL вебхука Make.com"}
+                  value={webhookUrl}
+                  onChange={(e) => setWebhookUrl(e.target.value)}
+                  className="text-xs"
+                />
+                <Button size="sm" onClick={handleWebhookSetup}>
+                  {language === 'en' ? "Save" : "Сохранить"}
+                </Button>
+              </div>
+              <p className="text-xs text-muted-foreground mt-1">
+                {language === 'en' 
+                  ? "This will connect AI chat to your Make.com workflow" 
+                  : "Это подключит ИИ-чат к вашему рабочему процессу Make.com"}
+              </p>
+            </div>
+          )}
 
           {/* Chat Messages */}
           <div className="h-96 overflow-y-auto p-4 space-y-4">

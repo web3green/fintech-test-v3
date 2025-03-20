@@ -6,9 +6,11 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { toast } from 'sonner';
-import { Send } from 'lucide-react';
+import { Send, Mail, Phone } from 'lucide-react';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 export function ContactForm() {
+  const { t } = useLanguage();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
@@ -17,6 +19,9 @@ export function ContactForm() {
     service: '',
     message: '',
   });
+  
+  // Replace with your actual Make webhook URL
+  const MAKE_WEBHOOK_URL = "https://hook.eu1.make.com/yourwebhookendpoint";
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -27,14 +32,29 @@ export function ContactForm() {
     setFormData(prev => ({ ...prev, service: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
     
-    // Simulate API call
-    setTimeout(() => {
-      console.log('Form submitted:', formData);
-      toast.success('Заявка успешно отправлена! Мы свяжемся с вами в ближайшее время.');
+    try {
+      // Send data to Make webhook
+      const response = await fetch(MAKE_WEBHOOK_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ...formData,
+          timestamp: new Date().toISOString(),
+          source: window.location.href
+        }),
+        mode: 'no-cors' // Use no-cors mode since webhook may not support CORS
+      });
+      
+      console.log('Form submitted to Make webhook:', formData);
+      toast.success(t('contact.success'));
+      
+      // Reset form
       setFormData({
         name: '',
         email: '',
@@ -42,12 +62,16 @@ export function ContactForm() {
         service: '',
         message: '',
       });
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      toast.error('An error occurred while submitting the form. Please try again.');
+    } finally {
       setIsSubmitting(false);
-    }, 1500);
+    }
   };
 
   return (
-    <section className="section-padding bg-gradient-to-b from-transparent to-gray-50 dark:to-gray-900">
+    <section className="section-padding bg-gradient-to-b from-transparent to-gray-50 dark:to-gray-900 contact-form-section">
       <div className="container mx-auto px-4">
         <div className="glass-card rounded-2xl overflow-hidden max-w-5xl mx-auto shadow-xl animate-fade-up">
           <div className="grid grid-cols-1 lg:grid-cols-2">
@@ -58,44 +82,29 @@ export function ContactForm() {
               </div>
               
               <div className="relative z-10">
-                <h2 className="text-3xl font-display font-bold mb-6">Готовы начать?</h2>
+                <h2 className="text-3xl font-display font-bold mb-6">{t('contact.title')}</h2>
                 <p className="mb-8 text-white/80">
-                  Оставьте заявку, и наш специалист свяжется с вами для консультации по вашему вопросу.
+                  {t('contact.subtitle')}
                 </p>
                 
                 <div className="space-y-6">
                   <div className="flex items-center">
                     <div className="rounded-full bg-white/20 p-2 mr-4">
-                      <Send className="h-5 w-5" />
+                      <Mail className="h-5 w-5" />
                     </div>
                     <div>
-                      <h3 className="font-medium">Электронная почта</h3>
+                      <h3 className="font-medium">{t('contact.email')}</h3>
                       <p className="text-white/80">info@fintech-assist.com</p>
                     </div>
                   </div>
                   
                   <div className="flex items-center">
                     <div className="rounded-full bg-white/20 p-2 mr-4">
-                      <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                      </svg>
+                      <Phone className="h-5 w-5" />
                     </div>
                     <div>
-                      <h3 className="font-medium">Телефон</h3>
-                      <p className="text-white/80">+7 (123) 456-78-90</p>
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-center">
-                    <div className="rounded-full bg-white/20 p-2 mr-4">
-                      <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                      </svg>
-                    </div>
-                    <div>
-                      <h3 className="font-medium">Адрес</h3>
-                      <p className="text-white/80">Москва, ул. Финансовая, 123</p>
+                      <h3 className="font-medium">{t('contact.phone')}</h3>
+                      <p className="text-white/80">+44 7450 574905</p>
                     </div>
                   </div>
                 </div>
@@ -103,14 +112,14 @@ export function ContactForm() {
             </div>
             
             <div className="p-8 md:p-12">
-              <h3 className="text-2xl font-display font-bold mb-6">Оставить заявку</h3>
+              <h3 className="text-2xl font-display font-bold mb-6">{t('contact.form.title')}</h3>
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="space-y-2">
-                  <Label htmlFor="name">Ваше имя</Label>
+                  <Label htmlFor="name">{t('contact.form.name')}</Label>
                   <Input 
                     id="name" 
                     name="name" 
-                    placeholder="Иван Иванов" 
+                    placeholder="John Doe" 
                     required
                     value={formData.name}
                     onChange={handleChange}
@@ -118,7 +127,7 @@ export function ContactForm() {
                 </div>
                 
                 <div className="space-y-2">
-                  <Label htmlFor="email">Электронная почта</Label>
+                  <Label htmlFor="email">{t('contact.form.email')}</Label>
                   <Input 
                     id="email" 
                     name="email" 
@@ -131,11 +140,11 @@ export function ContactForm() {
                 </div>
                 
                 <div className="space-y-2">
-                  <Label htmlFor="phone">Телефон</Label>
+                  <Label htmlFor="phone">{t('contact.form.phone')}</Label>
                   <Input 
                     id="phone" 
                     name="phone" 
-                    placeholder="+7 (___) ___-__-__" 
+                    placeholder="+44 7123 456789" 
                     required
                     value={formData.phone}
                     onChange={handleChange}
@@ -143,28 +152,28 @@ export function ContactForm() {
                 </div>
                 
                 <div className="space-y-2">
-                  <Label htmlFor="service">Интересующая услуга</Label>
+                  <Label htmlFor="service">{t('contact.form.service')}</Label>
                   <Select value={formData.service} onValueChange={handleServiceChange}>
                     <SelectTrigger>
-                      <SelectValue placeholder="Выберите услугу" />
+                      <SelectValue placeholder={t('contact.form.select')} />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="company_registration">Регистрация компаний</SelectItem>
-                      <SelectItem value="bank_account">Открытие счетов</SelectItem>
-                      <SelectItem value="nominee_service">Номинальный сервис</SelectItem>
-                      <SelectItem value="license">Финансовые лицензии</SelectItem>
-                      <SelectItem value="other">Другое</SelectItem>
+                      <SelectItem value="company_registration">{t('contact.service.registration')}</SelectItem>
+                      <SelectItem value="bank_account">{t('contact.service.accounts')}</SelectItem>
+                      <SelectItem value="nominee_service">{t('contact.service.nominee')}</SelectItem>
+                      <SelectItem value="license">{t('contact.service.licenses')}</SelectItem>
+                      <SelectItem value="other">{t('contact.service.other')}</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
                 
                 <div className="space-y-2">
-                  <Label htmlFor="message">Комментарий</Label>
+                  <Label htmlFor="message">{t('contact.form.message')}</Label>
                   <Textarea 
                     id="message" 
                     name="message" 
                     rows={4} 
-                    placeholder="Расскажите больше о вашем запросе..."
+                    placeholder="Tell us more about your request..."
                     value={formData.message}
                     onChange={handleChange}
                   />
@@ -181,10 +190,10 @@ export function ContactForm() {
                         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                         <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                       </svg>
-                      Отправка...
+                      {t('contact.form.sending')}
                     </>
                   ) : (
-                    <>Отправить заявку</>
+                    <>{t('contact.form.submit')}</>
                   )}
                 </Button>
               </form>

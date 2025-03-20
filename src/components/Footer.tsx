@@ -1,8 +1,10 @@
 
 import { Link } from 'react-router-dom';
-import { Facebook, Twitter, Instagram, Linkedin, Mail, Phone, MapPin } from 'lucide-react';
+import { Facebook, X, Instagram, Linkedin, Mail, Phone } from 'lucide-react';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 export function Footer() {
+  const { t } = useLanguage();
   const currentYear = new Date().getFullYear();
   
   return (
@@ -14,94 +16,93 @@ export function Footer() {
               Fintech<span className="text-fintech-orange">Assist</span>
             </h3>
             <p className="text-muted-foreground max-w-xs">
-              Ваш надежный партнер в мире финансовых решений. Мы помогаем компаниям и предпринимателям развивать бизнес.
+              {t('footer.description')}
             </p>
             <div className="flex space-x-4 pt-2">
-              <a href="#" className="text-gray-500 hover:text-fintech-blue dark:hover:text-fintech-blue-light transition-colors">
+              <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-fintech-blue dark:hover:text-fintech-blue-light transition-colors">
                 <Facebook className="h-5 w-5" />
               </a>
-              <a href="#" className="text-gray-500 hover:text-fintech-blue dark:hover:text-fintech-blue-light transition-colors">
-                <Twitter className="h-5 w-5" />
+              <a href="https://x.com" target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-fintech-blue dark:hover:text-fintech-blue-light transition-colors">
+                <X className="h-5 w-5" />
               </a>
-              <a href="#" className="text-gray-500 hover:text-fintech-blue dark:hover:text-fintech-blue-light transition-colors">
+              <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-fintech-blue dark:hover:text-fintech-blue-light transition-colors">
                 <Instagram className="h-5 w-5" />
               </a>
-              <a href="#" className="text-gray-500 hover:text-fintech-blue dark:hover:text-fintech-blue-light transition-colors">
+              <a href="https://t.me/fintechassist" target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-fintech-blue dark:hover:text-fintech-blue-light transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path d="M18.384,22.779c0.322,0.228 0.737,0.285 1.107,0.145c0.37,-0.141 0.642,-0.457 0.724,-0.84c0.869,-4.084 2.977,-14.421 3.768,-18.136c0.06,-0.28 -0.04,-0.571 -0.26,-0.758c-0.22,-0.187 -0.525,-0.241 -0.797,-0.14c-4.193,1.552 -17.106,6.397 -22.384,8.35c-0.335,0.124 -0.553,0.446 -0.542,0.799c0.012,0.354 0.25,0.661 0.593,0.764c2.367,0.708 5.474,1.693 5.474,1.693c0,0 1.452,4.385 2.209,6.615c0.095,0.28 0.314,0.5 0.603,0.576c0.288,0.075 0.596,-0.004 0.811,-0.207c1.216,-1.148 3.096,-2.923 3.096,-2.923c0,0 3.572,2.619 5.598,4.062Zm-11.01,-8.677l1.679,5.538l0.373,-3.507c0,0 6.487,-5.851 10.185,-9.186c0.108,-0.098 0.123,-0.262 0.033,-0.377c-0.089,-0.115 -0.253,-0.142 -0.376,-0.064c-4.286,2.737 -11.894,7.596 -11.894,7.596Z" />
+                </svg>
+              </a>
+              <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-fintech-blue dark:hover:text-fintech-blue-light transition-colors">
                 <Linkedin className="h-5 w-5" />
               </a>
             </div>
           </div>
           
           <div>
-            <h3 className="font-display font-bold text-lg mb-4">Ссылки</h3>
+            <h3 className="font-display font-bold text-lg mb-4">{t('footer.links')}</h3>
             <ul className="space-y-2">
               <li>
                 <Link to="/" className="text-muted-foreground hover:text-fintech-blue dark:hover:text-fintech-blue-light transition-colors">
-                  Главная
+                  {t('nav.home')}
                 </Link>
               </li>
               <li>
                 <Link to="/about" className="text-muted-foreground hover:text-fintech-blue dark:hover:text-fintech-blue-light transition-colors">
-                  О нас
+                  {t('nav.about')}
                 </Link>
               </li>
               <li>
                 <Link to="/services" className="text-muted-foreground hover:text-fintech-blue dark:hover:text-fintech-blue-light transition-colors">
-                  Услуги
+                  {t('nav.services')}
                 </Link>
               </li>
               <li>
                 <Link to="/blog" className="text-muted-foreground hover:text-fintech-blue dark:hover:text-fintech-blue-light transition-colors">
-                  Блог
+                  {t('nav.blog')}
                 </Link>
               </li>
               <li>
                 <Link to="/contact" className="text-muted-foreground hover:text-fintech-blue dark:hover:text-fintech-blue-light transition-colors">
-                  Контакты
+                  {t('nav.contact')}
                 </Link>
               </li>
             </ul>
           </div>
           
           <div>
-            <h3 className="font-display font-bold text-lg mb-4">Услуги</h3>
+            <h3 className="font-display font-bold text-lg mb-4">{t('footer.services')}</h3>
             <ul className="space-y-2">
               <li>
                 <Link to="/services" className="text-muted-foreground hover:text-fintech-blue dark:hover:text-fintech-blue-light transition-colors">
-                  Регистрация компаний
+                  {t('services.registration')}
                 </Link>
               </li>
               <li>
                 <Link to="/services" className="text-muted-foreground hover:text-fintech-blue dark:hover:text-fintech-blue-light transition-colors">
-                  Открытие счетов
+                  {t('services.accounts')}
                 </Link>
               </li>
               <li>
                 <Link to="/services" className="text-muted-foreground hover:text-fintech-blue dark:hover:text-fintech-blue-light transition-colors">
-                  Номинальный сервис
+                  {t('services.nominee')}
                 </Link>
               </li>
               <li>
                 <Link to="/services" className="text-muted-foreground hover:text-fintech-blue dark:hover:text-fintech-blue-light transition-colors">
-                  Финансовые лицензии
+                  {t('services.licenses')}
                 </Link>
               </li>
             </ul>
           </div>
           
           <div>
-            <h3 className="font-display font-bold text-lg mb-4">Контакты</h3>
+            <h3 className="font-display font-bold text-lg mb-4">{t('footer.contact')}</h3>
             <ul className="space-y-4">
-              <li className="flex items-start">
-                <MapPin className="h-5 w-5 mr-2 text-fintech-blue dark:text-fintech-blue-light flex-shrink-0 mt-0.5" />
-                <span className="text-muted-foreground">
-                  Москва, ул. Финансовая, 123
-                </span>
-              </li>
               <li className="flex items-center">
                 <Phone className="h-5 w-5 mr-2 text-fintech-blue dark:text-fintech-blue-light flex-shrink-0" />
-                <a href="tel:+71234567890" className="text-muted-foreground hover:text-fintech-blue dark:hover:text-fintech-blue-light transition-colors">
-                  +7 (123) 456-78-90
+                <a href="tel:+447450574905" className="text-muted-foreground hover:text-fintech-blue dark:hover:text-fintech-blue-light transition-colors">
+                  +44 7450 574905
                 </a>
               </li>
               <li className="flex items-center">
@@ -117,14 +118,14 @@ export function Footer() {
         <div className="border-t border-gray-200 dark:border-gray-800 mt-12 pt-6">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <p className="text-muted-foreground text-sm">
-              © {currentYear} FintechAssist. Все права защищены.
+              © {currentYear} FintechAssist. {t('footer.rights')}
             </p>
             <div className="flex space-x-4 mt-4 md:mt-0">
               <Link to="/privacy" className="text-sm text-muted-foreground hover:text-fintech-blue dark:hover:text-fintech-blue-light transition-colors">
-                Политика конфиденциальности
+                {t('footer.privacy')}
               </Link>
               <Link to="/terms" className="text-sm text-muted-foreground hover:text-fintech-blue dark:hover:text-fintech-blue-light transition-colors">
-                Условия использования
+                {t('footer.terms')}
               </Link>
             </div>
           </div>

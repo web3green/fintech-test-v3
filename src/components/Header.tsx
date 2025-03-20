@@ -6,8 +6,10 @@ import { ThemeToggle } from '@/components/ThemeToggle';
 import { LanguageToggle } from '@/components/LanguageToggle';
 import { Button } from '@/components/ui/button';
 import { Menu, X } from 'lucide-react';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 export function Header() {
+  const { t } = useLanguage();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   
@@ -23,6 +25,14 @@ export function Header() {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+  
+  const scrollToContact = () => {
+    const contactSection = document.querySelector('.contact-form-section');
+    if (contactSection) {
+      contactSection.scrollIntoView({ behavior: 'smooth' });
+      setIsMobileMenuOpen(false);
+    }
+  };
   
   return (
     <header
@@ -41,19 +51,19 @@ export function Header() {
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center space-x-8">
           <Link to="/" className="text-foreground hover:text-fintech-blue dark:hover:text-fintech-blue-light transition-colors duration-200">
-            Главная
+            {t('nav.home')}
           </Link>
           <Link to="/about" className="text-foreground hover:text-fintech-blue dark:hover:text-fintech-blue-light transition-colors duration-200">
-            О нас
+            {t('nav.about')}
           </Link>
           <Link to="/services" className="text-foreground hover:text-fintech-blue dark:hover:text-fintech-blue-light transition-colors duration-200">
-            Услуги
+            {t('nav.services')}
           </Link>
           <Link to="/blog" className="text-foreground hover:text-fintech-blue dark:hover:text-fintech-blue-light transition-colors duration-200">
-            Блог
+            {t('nav.blog')}
           </Link>
           <Link to="/contact" className="text-foreground hover:text-fintech-blue dark:hover:text-fintech-blue-light transition-colors duration-200">
-            Контакты
+            {t('nav.contact')}
           </Link>
         </nav>
         
@@ -62,8 +72,11 @@ export function Header() {
           <LanguageToggle />
           
           <div className="hidden md:block">
-            <Button className="bg-fintech-blue hover:bg-fintech-blue-dark text-white button-glow">
-              Оставить заявку
+            <Button 
+              className="bg-fintech-blue hover:bg-fintech-blue-dark text-white button-glow"
+              onClick={scrollToContact}
+            >
+              {t('cta.request')}
             </Button>
           </div>
           
@@ -87,41 +100,41 @@ export function Header() {
               className="text-xl font-medium text-center py-3"
               onClick={() => setIsMobileMenuOpen(false)}
             >
-              Главная
+              {t('nav.home')}
             </Link>
             <Link 
               to="/about" 
               className="text-xl font-medium text-center py-3"
               onClick={() => setIsMobileMenuOpen(false)}
             >
-              О нас
+              {t('nav.about')}
             </Link>
             <Link 
               to="/services" 
               className="text-xl font-medium text-center py-3"
               onClick={() => setIsMobileMenuOpen(false)}
             >
-              Услуги
+              {t('nav.services')}
             </Link>
             <Link 
               to="/blog" 
               className="text-xl font-medium text-center py-3"
               onClick={() => setIsMobileMenuOpen(false)}
             >
-              Блог
+              {t('nav.blog')}
             </Link>
             <Link 
               to="/contact" 
               className="text-xl font-medium text-center py-3"
               onClick={() => setIsMobileMenuOpen(false)}
             >
-              Контакты
+              {t('nav.contact')}
             </Link>
             <Button 
               className="mt-4 bg-fintech-blue hover:bg-fintech-blue-dark text-white button-glow w-full"
-              onClick={() => setIsMobileMenuOpen(false)}
+              onClick={scrollToContact}
             >
-              Оставить заявку
+              {t('cta.request')}
             </Button>
           </nav>
         </div>

@@ -85,7 +85,7 @@ const translations = {
     'nav.services': 'Услуги',
     'nav.blog': 'Блог',
     'nav.contact': 'Контакты',
-    'cta.request': 'Оставить заявку',
+    'cta.request': 'Оставить за��вку',
     
     // Hero
     'hero.title': 'Fintech-Assist: Ваш партнер в мире финансовых решений',

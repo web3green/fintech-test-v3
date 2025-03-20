@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { 
@@ -760,3 +761,546 @@ const Admin = () => {
                                 >
                                   {language === 'en' ? "Edit" : "Редактировать"}
                                 </Button>
+                                <Button 
+                                  variant="outline" 
+                                  size="sm"
+                                  className="text-destructive hover:text-destructive"
+                                  onClick={() => handleDeleteArticle(article.id)}
+                                >
+                                  {language === 'en' ? "Delete" : "Удалить"}
+                                </Button>
+                              </div>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          )}
+
+          {/* Requests Tab */}
+          {currentTab === "requests" && (
+            <div className="grid gap-4 md:grid-cols-2">
+              <Card>
+                <CardHeader>
+                  <CardTitle>{language === 'en' ? "View Request" : "Просмотр заявки"}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  {selectedRequest ? (
+                    <Form {...requestForm}>
+                      <form onSubmit={requestForm.handleSubmit(handleRequestSubmit)} className="space-y-4">
+                        <FormField
+                          control={requestForm.control}
+                          name="name"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>{language === 'en' ? "Name" : "Имя"}</FormLabel>
+                              <FormControl>
+                                <Input readOnly {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={requestForm.control}
+                          name="email"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>{language === 'en' ? "Email" : "Email"}</FormLabel>
+                              <FormControl>
+                                <Input readOnly {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={requestForm.control}
+                          name="message"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>{language === 'en' ? "Message" : "Сообщение"}</FormLabel>
+                              <FormControl>
+                                <Textarea 
+                                  readOnly
+                                  className="min-h-[120px]"
+                                  {...field} 
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={requestForm.control}
+                          name="status"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>{language === 'en' ? "Status" : "Статус"}</FormLabel>
+                              <FormControl>
+                                <select
+                                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                                  {...field}
+                                >
+                                  <option value="new">{language === 'en' ? "New" : "Новая"}</option>
+                                  <option value="in-progress">{language === 'en' ? "In Progress" : "В обработке"}</option>
+                                  <option value="resolved">{language === 'en' ? "Resolved" : "Решена"}</option>
+                                  <option value="rejected">{language === 'en' ? "Rejected" : "Отклонена"}</option>
+                                </select>
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <div className="flex justify-between">
+                          <Button
+                            type="button"
+                            variant="outline"
+                            onClick={() => {
+                              setSelectedRequest(null);
+                              requestForm.reset();
+                            }}
+                          >
+                            {language === 'en' ? "Cancel" : "Отмена"}
+                          </Button>
+                          <Button type="submit">
+                            {language === 'en' ? "Update Status" : "Обновить статус"}
+                          </Button>
+                        </div>
+                      </form>
+                    </Form>
+                  ) : (
+                    <div className="flex items-center justify-center h-64 text-muted-foreground">
+                      {language === 'en' ? "Select a request to view details" : "Выберите заявку для просмотра деталей"}
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>{language === 'en' ? "Support Requests" : "Заявки в поддержку"}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="overflow-x-auto">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>{language === 'en' ? "Name" : "Имя"}</TableHead>
+                          <TableHead>{language === 'en' ? "Email" : "Email"}</TableHead>
+                          <TableHead>{language === 'en' ? "Status" : "Статус"}</TableHead>
+                          <TableHead>{language === 'en' ? "Date" : "Дата"}</TableHead>
+                          <TableHead>{language === 'en' ? "Actions" : "Действия"}</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {requests.map((request) => (
+                          <TableRow key={request.id}>
+                            <TableCell className="font-medium">{request.name}</TableCell>
+                            <TableCell>{request.email}</TableCell>
+                            <TableCell>
+                              <Badge className={getStatusColor(request.status)}>
+                                {request.status === "new" ? (language === 'en' ? "New" : "Новая") :
+                                 request.status === "in-progress" ? (language === 'en' ? "In Progress" : "В обработке") :
+                                 request.status === "resolved" ? (language === 'en' ? "Resolved" : "Решена") :
+                                 (language === 'en' ? "Rejected" : "Отклонена")}
+                              </Badge>
+                            </TableCell>
+                            <TableCell>{request.date}</TableCell>
+                            <TableCell>
+                              <Button 
+                                variant="outline" 
+                                size="sm"
+                                onClick={() => handleViewRequest(request)}
+                              >
+                                {language === 'en' ? "View" : "Просмотр"}
+                              </Button>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          )}
+
+          {/* Users Tab */}
+          {currentTab === "users" && (
+            <Card>
+              <CardHeader>
+                <CardTitle>{language === 'en' ? "Users" : "Пользователи"}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="overflow-x-auto">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>{language === 'en' ? "Name" : "Имя"}</TableHead>
+                        <TableHead>{language === 'en' ? "Email" : "Email"}</TableHead>
+                        <TableHead>{language === 'en' ? "Role" : "Роль"}</TableHead>
+                        <TableHead>{language === 'en' ? "Status" : "Статус"}</TableHead>
+                        <TableHead>{language === 'en' ? "Actions" : "Действия"}</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {users.map((user) => (
+                        <TableRow key={user.id}>
+                          <TableCell className="font-medium">{user.name}</TableCell>
+                          <TableCell>{user.email}</TableCell>
+                          <TableCell>{user.role}</TableCell>
+                          <TableCell>
+                            <Badge className={getStatusColor(user.status)}>
+                              {user.status.charAt(0).toUpperCase() + user.status.slice(1)}
+                            </Badge>
+                          </TableCell>
+                          <TableCell>
+                            <div className="flex gap-2">
+                              <Button variant="outline" size="sm">
+                                {language === 'en' ? "Edit" : "Редактировать"}
+                              </Button>
+                              <Button variant="outline" size="sm" className="text-destructive hover:text-destructive">
+                                {language === 'en' ? "Delete" : "Удалить"}
+                              </Button>
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Transactions Tab */}
+          {currentTab === "transactions" && (
+            <Card>
+              <CardHeader>
+                <CardTitle>{language === 'en' ? "Recent Transactions" : "Недавние транзакции"}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="overflow-x-auto">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>{language === 'en' ? "User" : "Пользователь"}</TableHead>
+                        <TableHead>{language === 'en' ? "Amount" : "Сумма"}</TableHead>
+                        <TableHead>{language === 'en' ? "Date" : "Дата"}</TableHead>
+                        <TableHead>{language === 'en' ? "Status" : "Статус"}</TableHead>
+                        <TableHead>{language === 'en' ? "Actions" : "Действия"}</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {transactions.map((transaction) => (
+                        <TableRow key={transaction.id}>
+                          <TableCell className="font-medium">{transaction.user}</TableCell>
+                          <TableCell>${transaction.amount.toFixed(2)}</TableCell>
+                          <TableCell>{transaction.date}</TableCell>
+                          <TableCell>
+                            <Badge className={getStatusColor(transaction.status)}>
+                              {transaction.status.charAt(0).toUpperCase() + transaction.status.slice(1)}
+                            </Badge>
+                          </TableCell>
+                          <TableCell>
+                            <Button variant="outline" size="sm">
+                              {language === 'en' ? "Details" : "Детали"}
+                            </Button>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Settings Tab */}
+          {currentTab === "settings" && (
+            <div className="grid gap-4 md:grid-cols-2">
+              <Card>
+                <CardHeader>
+                  <CardTitle>{language === 'en' ? "General Settings" : "Общие настройки"}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div className="flex flex-col space-y-1.5">
+                      <label htmlFor="site-name" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                        {language === 'en' ? "Site Name" : "Название сайта"}
+                      </label>
+                      <Input id="site-name" defaultValue="Fintech Assist" />
+                    </div>
+                    <div className="flex flex-col space-y-1.5">
+                      <label htmlFor="site-description" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                        {language === 'en' ? "Site Description" : "Описание сайта"}
+                      </label>
+                      <Textarea id="site-description" defaultValue="Financial technology services and assistance" />
+                    </div>
+                    <div className="flex justify-end">
+                      <Button>
+                        {language === 'en' ? "Save Changes" : "Сохранить изменения"}
+                      </Button>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>{language === 'en' ? "Account Settings" : "Настройки аккаунта"}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div className="flex flex-col space-y-1.5">
+                      <label htmlFor="current-password" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                        {language === 'en' ? "Current Password" : "Текущий пароль"}
+                      </label>
+                      <Input id="current-password" type="password" />
+                    </div>
+                    <div className="flex flex-col space-y-1.5">
+                      <label htmlFor="new-password" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                        {language === 'en' ? "New Password" : "Новый пароль"}
+                      </label>
+                      <Input id="new-password" type="password" />
+                    </div>
+                    <div className="flex flex-col space-y-1.5">
+                      <label htmlFor="confirm-password" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                        {language === 'en' ? "Confirm Password" : "Подтвердите пароль"}
+                      </label>
+                      <Input id="confirm-password" type="password" />
+                    </div>
+                    <div className="flex justify-end">
+                      <Button>
+                        {language === 'en' ? "Update Password" : "Обновить пароль"}
+                      </Button>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          )}
+
+          {/* Social Links Tab */}
+          {currentTab === "social" && (
+            <div className="grid gap-4 md:grid-cols-2">
+              <Card>
+                <CardHeader>
+                  <CardTitle>{selectedSocialLink ? (language === 'en' ? "Edit Social Link" : "Редактировать социальную ссылку") : (language === 'en' ? "Add Social Link" : "Добавить социальную ссылку")}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <Form {...socialLinkForm}>
+                    <form onSubmit={socialLinkForm.handleSubmit(handleSocialLinkSubmit)} className="space-y-4">
+                      <FormField
+                        control={socialLinkForm.control}
+                        name="platform"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>{language === 'en' ? "Platform" : "Платформа"}</FormLabel>
+                            <FormControl>
+                              <Input placeholder={language === 'en' ? "e.g. Facebook, Twitter, etc." : "напр. Facebook, Twitter и т.д."} {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={socialLinkForm.control}
+                        name="url"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>{language === 'en' ? "URL" : "URL"}</FormLabel>
+                            <FormControl>
+                              <Input placeholder={language === 'en' ? "https://..." : "https://..."} {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={socialLinkForm.control}
+                        name="icon"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>{language === 'en' ? "Icon Name" : "Название иконки"}</FormLabel>
+                            <FormControl>
+                              <Input placeholder={language === 'en' ? "e.g. facebook, twitter, instagram" : "напр. facebook, twitter, instagram"} {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <div className="flex justify-between">
+                        <Button
+                          type="button"
+                          variant="outline"
+                          onClick={() => {
+                            setSelectedSocialLink(null);
+                            socialLinkForm.reset({
+                              platform: "",
+                              url: "",
+                              icon: "",
+                            });
+                          }}
+                        >
+                          {language === 'en' ? "Cancel" : "Отмена"}
+                        </Button>
+                        <Button type="submit">
+                          {selectedSocialLink ? (language === 'en' ? "Update" : "Обновить") : (language === 'en' ? "Add" : "Добавить")}
+                        </Button>
+                      </div>
+                    </form>
+                  </Form>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>{language === 'en' ? "Social Links" : "Социальные ссылки"}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="overflow-x-auto">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>{language === 'en' ? "Platform" : "Платформа"}</TableHead>
+                          <TableHead>{language === 'en' ? "URL" : "URL"}</TableHead>
+                          <TableHead>{language === 'en' ? "Icon" : "Иконка"}</TableHead>
+                          <TableHead>{language === 'en' ? "Actions" : "Действия"}</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {socialLinks.map((link) => (
+                          <TableRow key={link.id}>
+                            <TableCell className="font-medium">{link.platform}</TableCell>
+                            <TableCell className="max-w-[200px] truncate">
+                              <a href={link.url} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">
+                                {link.url}
+                              </a>
+                            </TableCell>
+                            <TableCell>{link.icon}</TableCell>
+                            <TableCell>
+                              <div className="flex gap-2">
+                                <Button 
+                                  variant="outline" 
+                                  size="sm"
+                                  onClick={() => handleEditSocialLink(link)}
+                                >
+                                  {language === 'en' ? "Edit" : "Редактировать"}
+                                </Button>
+                                <Button 
+                                  variant="outline" 
+                                  size="sm"
+                                  className="text-destructive hover:text-destructive"
+                                  onClick={() => handleDeleteSocialLink(link.id)}
+                                >
+                                  {language === 'en' ? "Delete" : "Удалить"}
+                                </Button>
+                              </div>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          )}
+
+          {/* Webhooks Tab */}
+          {currentTab === "webhooks" && (
+            <div className="grid gap-4 md:grid-cols-2">
+              <Card>
+                <CardHeader>
+                  <CardTitle>{language === 'en' ? "Webhook Configuration" : "Настройка вебхука"}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <Form {...webhookForm}>
+                    <form onSubmit={webhookForm.handleSubmit(handleWebhookSubmit)} className="space-y-4">
+                      <FormField
+                        control={webhookForm.control}
+                        name="url"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>{language === 'en' ? "Webhook URL for AI Agent" : "URL вебхука для ИИ-агента"}</FormLabel>
+                            <FormControl>
+                              <Input placeholder={language === 'en' ? "https://hook.example.com/webhooks/ai" : "https://hook.example.com/webhooks/ai"} {...field} />
+                            </FormControl>
+                            <FormMessage />
+                            <p className="text-sm text-muted-foreground mt-2">
+                              {language === 'en' ? "Enter the webhook URL to receive AI chatbot conversations (e.g. from Make.com)" : "Введите URL вебхука для получения разговоров с ИИ-чатботом (например, из Make.com)"}
+                            </p>
+                          </FormItem>
+                        )}
+                      />
+                      <div className="flex justify-between">
+                        <Button
+                          type="button"
+                          variant="outline"
+                          onClick={handleTestWebhook}
+                        >
+                          {language === 'en' ? "Test Webhook" : "Тестировать вебхук"}
+                        </Button>
+                        <Button type="submit">
+                          {language === 'en' ? "Save Webhook" : "Сохранить вебхук"}
+                        </Button>
+                      </div>
+                    </form>
+                  </Form>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>{language === 'en' ? "Webhook Information" : "Информация о вебхуке"}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div>
+                      <h3 className="text-lg font-semibold mb-2">{language === 'en' ? "What are webhooks?" : "Что такое вебхуки?"}</h3>
+                      <p className="text-sm text-muted-foreground">
+                        {language === 'en' 
+                          ? "Webhooks allow our AI chatbot to send conversation data to external services like Make.com, Zapier, or your custom backend." 
+                          : "Вебхуки позволяют нашему ИИ-чатботу отправлять данные о разговорах во внешние сервисы, такие как Make.com, Zapier или ваш собственный бэкенд."}
+                      </p>
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-semibold mb-2">{language === 'en' ? "Payload Format" : "Формат данных"}</h3>
+                      <div className="bg-muted rounded-md p-3 text-xs font-mono">
+                        {`{
+  "event": "ai_conversation",
+  "timestamp": "2023-06-01T12:34:56Z",
+  "user_message": "How can I invest safely?",
+  "ai_response": "There are several safe investment options...",
+  "session_id": "user_12345",
+  "source": "Fintech-Assist Chatbot"
+}`}
+                      </div>
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-semibold mb-2">{language === 'en' ? "Integration with Make.com" : "Интеграция с Make.com"}</h3>
+                      <ol className="list-decimal list-inside space-y-2 text-sm text-muted-foreground">
+                        <li>{language === 'en' ? "Create a new scenario in Make.com" : "Создайте новый сценарий в Make.com"}</li>
+                        <li>{language === 'en' ? "Add a webhook trigger module" : "Добавьте модуль триггера вебхука"}</li>
+                        <li>{language === 'en' ? "Copy the webhook URL and paste it here" : "Скопируйте URL вебхука и вставьте его здесь"}</li>
+                        <li>{language === 'en' ? "Configure your Make.com workflow to process the data" : "Настройте рабочий процесс Make.com для обработки данных"}</li>
+                      </ol>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          )}
+        </main>
+      </div>
+    </div>
+  );
+};
+
+export default Admin;

@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { cn } from '@/lib/utils';
@@ -7,6 +6,7 @@ import { LanguageToggle } from '@/components/LanguageToggle';
 import { Button } from '@/components/ui/button';
 import { Menu, X } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { Logo } from '@/components/Logo';
 
 export function Header() {
   const { t } = useLanguage();
@@ -42,11 +42,7 @@ export function Header() {
       )}
     >
       <div className="container mx-auto px-4 flex items-center justify-between">
-        <Link to="/" className="flex items-center">
-          <span className="text-xl font-display font-bold text-fintech-blue dark:text-fintech-blue-light">
-            Fintech<span className="text-fintech-orange">Assist</span>
-          </span>
-        </Link>
+        <Logo withGlow={!isScrolled} />
         
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center space-x-8">

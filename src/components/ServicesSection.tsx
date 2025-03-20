@@ -2,6 +2,7 @@
 import { Building, CreditCard, Shield, Award } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { GlowingEffect } from './ui/glowing-effect';
 
 export function ServicesSection() {
   const { t } = useLanguage();
@@ -14,6 +15,7 @@ export function ServicesSection() {
       icon: Building,
       color: 'bg-blue-50 dark:bg-blue-950',
       iconColor: 'text-fintech-blue dark:text-fintech-blue-light',
+      borderColor: 'border-fintech-blue/20',
     },
     {
       id: 2,
@@ -22,6 +24,7 @@ export function ServicesSection() {
       icon: CreditCard,
       color: 'bg-orange-50 dark:bg-orange-950',
       iconColor: 'text-fintech-orange dark:text-fintech-orange-light',
+      borderColor: 'border-fintech-orange/20',
     },
     {
       id: 3,
@@ -30,6 +33,7 @@ export function ServicesSection() {
       icon: Shield,
       color: 'bg-emerald-50 dark:bg-emerald-950',
       iconColor: 'text-emerald-500',
+      borderColor: 'border-emerald-500/20',
     },
     {
       id: 4,
@@ -38,6 +42,7 @@ export function ServicesSection() {
       icon: Award,
       color: 'bg-purple-50 dark:bg-purple-950',
       iconColor: 'text-purple-500',
+      borderColor: 'border-purple-500/20',
     },
   ];
 
@@ -61,18 +66,36 @@ export function ServicesSection() {
           {services.map((service, index) => (
             <div 
               key={service.id} 
-              className="glass-card rounded-xl p-8 transition-transform duration-300 hover:translate-y-[-8px] animate-fade-up"
+              className="relative glass-card rounded-xl p-8 transition-transform duration-300 hover:translate-y-[-8px] animate-fade-up border"
               style={{ animationDelay: `${index * 100}ms` }}
             >
-              <div className={`${service.color} rounded-full p-4 inline-flex items-center justify-center mb-5`}>
-                <service.icon className={`h-6 w-6 ${service.iconColor}`} />
+              <div className="relative">
+                <div className={`${service.color} rounded-full p-4 inline-flex items-center justify-center mb-5`}>
+                  <service.icon className={`h-6 w-6 ${service.iconColor}`} />
+                </div>
+                <h3 className="text-xl font-display font-bold mb-3">{service.title}</h3>
+                <p className="text-muted-foreground mb-6">{service.description}</p>
+                <Button 
+                  variant="ghost" 
+                  className="p-0 h-auto text-fintech-blue hover:text-fintech-blue-dark dark:text-fintech-blue-light flex items-center gap-2 group"
+                  asChild
+                >
+                  <Link to="/services">
+                    {t('nav.services')}
+                    <span className="transition-transform duration-300 transform group-hover:translate-x-1">→</span>
+                  </Link>
+                </Button>
               </div>
-              <h3 className="text-xl font-display font-bold mb-3">{service.title}</h3>
-              <p className="text-muted-foreground mb-6">{service.description}</p>
-              <Button variant="ghost" className="p-0 h-auto text-fintech-blue hover:text-fintech-blue-dark dark:text-fintech-blue-light flex items-center gap-2 group">
-                {t('nav.services')}
-                <span className="transition-transform duration-300 transform group-hover:translate-x-1">→</span>
-              </Button>
+              <div className="absolute inset-0 rounded-xl">
+                <GlowingEffect 
+                  blur={1} 
+                  spread={20} 
+                  glow={true} 
+                  disabled={false} 
+                  proximity={50}
+                  inactiveZone={0}
+                />
+              </div>
             </div>
           ))}
         </div>
@@ -80,3 +103,6 @@ export function ServicesSection() {
     </section>
   );
 }
+
+// Add missing import
+import { Link } from 'react-router-dom';

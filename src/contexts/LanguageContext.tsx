@@ -40,7 +40,7 @@ const translations = {
     // Process
     'process.badge': 'How It Works',
     'process.title': 'Simple Path to a Successful Solution',
-    'process.subtitle': 'We've made the process as simple and straightforward as possible. Just three steps separate you from achieving your goals.',
+    'process.subtitle': 'We have made the process as simple and straightforward as possible. Just three steps separate you from achieving your goals.',
     'process.step1': 'Submit Request',
     'process.step1.desc': 'Fill out the form on the website or contact us in any convenient way.',
     'process.step2': 'Document Preparation',
@@ -85,7 +85,7 @@ const translations = {
     'nav.services': 'Услуги',
     'nav.blog': 'Блог',
     'nav.contact': 'Контакты',
-    'cta.request': 'Оставить за��вку',
+    'cta.request': 'Оставить заявку',
     
     // Hero
     'hero.title': 'Fintech-Assist: Ваш партнер в мире финансовых решений',

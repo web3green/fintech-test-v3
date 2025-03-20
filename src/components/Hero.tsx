@@ -1,8 +1,11 @@
 
 import { Button } from '@/components/ui/button';
 import { ChevronRight, ArrowRight } from 'lucide-react';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 export function Hero() {
+  const { t } = useLanguage();
+  
   return (
     <section className="relative pt-24 pb-16 md:pb-24 lg:pb-32 overflow-hidden">
       {/* Background effect */}
@@ -16,25 +19,25 @@ export function Hero() {
           <div className="max-w-xl mx-auto lg:mx-0 text-center lg:text-left">
             <div className="inline-flex items-center rounded-full px-3 py-1 text-sm font-medium bg-fintech-blue/10 text-fintech-blue dark:bg-fintech-blue/20 dark:text-fintech-blue-light mb-6 animate-fade-down">
               <span className="flex h-2 w-2 rounded-full bg-fintech-blue mr-2"></span>
-              Финансовые решения для бизнеса
+              {t('hero.subtitle')}
             </div>
             
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight font-display mb-6 animate-fade-down animate-delay-100">
-              <span className="text-gradient">Fintech-Assist:</span> Ваш партнер в мире финансовых решений
+              <span className="text-gradient">{t('hero.title')}</span>
             </h1>
             
             <p className="text-xl text-muted-foreground mb-8 max-w-lg mx-auto lg:mx-0 animate-fade-down animate-delay-200">
-              Открытие компаний, счетов и лицензий под ключ. Мы помогаем предпринимателям реализовать их финансовые цели.
+              {t('hero.subtitle')}
             </p>
             
             <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 animate-fade-down animate-delay-300">
               <Button size="lg" className="bg-fintech-blue hover:bg-fintech-blue-dark text-white button-glow w-full sm:w-auto">
-                Оставить заявку
+                {t('cta.request')}
                 <ChevronRight className="ml-2 h-4 w-4" />
               </Button>
               
               <Button variant="outline" size="lg" className="w-full sm:w-auto">
-                Наши услуги
+                {t('nav.services')}
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             </div>

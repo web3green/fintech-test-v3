@@ -64,6 +64,7 @@ export function Footer() {
             <h3 className="text-xl font-display font-bold">
               <span className="text-fintech-blue dark:text-fintech-blue-light">Fin</span>
               <span className="text-fintech-orange">Tech</span>
+              <span className="text-red-500 font-bold">-</span>
               <span className="text-foreground">assist</span>
             </h3>
             <p className="text-muted-foreground max-w-xs">

@@ -46,94 +46,51 @@ export function Header() {
         isScrolled ? "bg-white/90 dark:bg-gray-900/90 backdrop-blur-md shadow-sm" : "bg-transparent"
       )}
     >
-      <div className="container mx-auto px-2">
-        <div className="flex items-center justify-between">
-          {/* All components in one row */}
-          <div className="flex items-center space-x-4 w-full">
-            {/* Logo and company name */}
-            <Logo withGlow={!isScrolled} showText={true} className="h-8 w-auto" />
-            
-            {/* Desktop Navigation - now with less spacing */}
-            <NavigationMenu className="hidden md:flex ml-6 flex-grow">
-              <NavigationMenuList className="flex items-center space-x-2">
-                <NavigationMenuItem>
-                  <NavigationMenuLink 
-                    onClick={() => scrollToSection('about')}
-                    className={cn(navigationMenuTriggerStyle(), "text-base font-medium px-3")}
-                  >
-                    {t('nav.about')}
-                  </NavigationMenuLink>
-                </NavigationMenuItem>
-                <NavigationMenuItem>
-                  <NavigationMenuLink 
-                    onClick={() => scrollToSection('services')}
-                    className={cn(navigationMenuTriggerStyle(), "text-base font-medium px-3")}
-                  >
-                    {t('nav.services')}
-                  </NavigationMenuLink>
-                </NavigationMenuItem>
-                <NavigationMenuItem>
-                  <NavigationMenuLink 
-                    onClick={() => scrollToSection('how-it-works')}
-                    className={cn(navigationMenuTriggerStyle(), "text-base font-medium px-3")}
-                  >
-                    {t('nav.howItWorks')}
-                  </NavigationMenuLink>
-                </NavigationMenuItem>
-                <NavigationMenuItem>
-                  <NavigationMenuLink 
-                    onClick={() => scrollToSection('contact')}
-                    className={cn(navigationMenuTriggerStyle(), "text-base font-medium px-3")}
-                  >
-                    {t('nav.contact')}
-                  </NavigationMenuLink>
-                </NavigationMenuItem>
-              </NavigationMenuList>
-            </NavigationMenu>
-            
-            {/* Right side buttons with decreased spacing */}
-            <div className="flex items-center space-x-2 ml-auto">
-              <ThemeToggle />
-              <LanguageToggle />
-              
-              <Button 
-                className="bg-fintech-blue hover:bg-fintech-blue-dark text-white button-glow hidden md:flex text-base font-medium px-4"
-                onClick={() => scrollToSection('contact')}
-              >
-                {t('cta.getStarted')}
-              </Button>
-            </div>
+      <div className="container mx-auto px-1">
+        <div className="flex items-center justify-between space-x-2">
+          {/* Logo and company name */}
+          <Logo withGlow={!isScrolled} showText={true} className="h-8 w-auto flex-shrink-0" />
+          
+          {/* Unified Navigation - All on one row for all screen sizes */}
+          <div className="flex items-center space-x-1 overflow-x-auto scrollbar-hide">
+            <button 
+              onClick={() => scrollToSection('about')}
+              className="px-2 py-1 text-sm font-medium text-foreground hover:text-fintech-blue dark:hover:text-fintech-blue-light transition-colors whitespace-nowrap"
+            >
+              {t('nav.about')}
+            </button>
+            <button 
+              onClick={() => scrollToSection('services')}
+              className="px-2 py-1 text-sm font-medium text-foreground hover:text-fintech-blue dark:hover:text-fintech-blue-light transition-colors whitespace-nowrap"
+            >
+              {t('nav.services')}
+            </button>
+            <button 
+              onClick={() => scrollToSection('how-it-works')}
+              className="px-2 py-1 text-sm font-medium text-foreground hover:text-fintech-blue dark:hover:text-fintech-blue-light transition-colors whitespace-nowrap"
+            >
+              {t('nav.howItWorks')}
+            </button>
+            <button 
+              onClick={() => scrollToSection('contact')}
+              className="px-2 py-1 text-sm font-medium text-foreground hover:text-fintech-blue dark:hover:text-fintech-blue-light transition-colors whitespace-nowrap"
+            >
+              {t('nav.contact')}
+            </button>
           </div>
-        </div>
-      </div>
-      
-      {/* Mobile Navigation - only shown on mobile */}
-      <div className="md:hidden overflow-x-auto mt-2">
-        <div className="container mx-auto px-2 flex space-x-4 justify-between whitespace-nowrap">
-          <button 
-            onClick={() => scrollToSection('about')}
-            className="px-2 py-1 text-sm font-medium text-foreground hover:text-fintech-blue dark:hover:text-fintech-blue-light transition-colors"
-          >
-            {t('nav.about')}
-          </button>
-          <button 
-            onClick={() => scrollToSection('services')}
-            className="px-2 py-1 text-sm font-medium text-foreground hover:text-fintech-blue dark:hover:text-fintech-blue-light transition-colors"
-          >
-            {t('nav.services')}
-          </button>
-          <button 
-            onClick={() => scrollToSection('how-it-works')}
-            className="px-2 py-1 text-sm font-medium text-foreground hover:text-fintech-blue dark:hover:text-fintech-blue-light transition-colors"
-          >
-            {t('nav.howItWorks')}
-          </button>
-          <button 
-            onClick={() => scrollToSection('contact')}
-            className="px-2 py-1 text-sm font-medium text-foreground hover:text-fintech-blue dark:hover:text-fintech-blue-light transition-colors"
-          >
-            {t('nav.contact')}
-          </button>
+          
+          {/* Right side buttons with minimal spacing */}
+          <div className="flex items-center space-x-1 flex-shrink-0">
+            <ThemeToggle />
+            <LanguageToggle />
+            
+            <Button 
+              className="bg-fintech-blue hover:bg-fintech-blue-dark text-white text-sm px-3 py-1 h-8"
+              onClick={() => scrollToSection('contact')}
+            >
+              {t('cta.getStarted')}
+            </Button>
+          </div>
         </div>
       </div>
     </header>

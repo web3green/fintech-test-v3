@@ -27,7 +27,7 @@ export function Hero() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 animate-fade-up" style={{ animationDelay: '200ms' }}>
               <Button 
-                className="bg-fintech-orange hover:bg-fintech-orange-light text-white button-glow"
+                className="bg-fintech-orange hover:bg-fintech-orange-light text-white transition-all duration-300"
                 onClick={scrollToContact}
               >
                 {t('hero.cta')}

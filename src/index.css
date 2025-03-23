@@ -1,3 +1,4 @@
+
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap');
 
@@ -106,18 +107,6 @@
 
   .text-gradient {
     @apply bg-gradient-to-r from-fintech-blue to-fintech-blue-light text-transparent bg-clip-text;
-  }
-
-  .button-glow {
-    @apply relative overflow-hidden;
-  }
-
-  .button-glow::after {
-    @apply absolute content-[''] top-0 left-[-100%] w-full h-full bg-white/30 skew-x-[25deg] transition-all duration-700 ease-out;
-  }
-
-  .button-glow:hover::after {
-    @apply left-[100%];
   }
 
   .hover-scale {

@@ -151,7 +151,7 @@ export default function Services() {
                     </ul>
                     <Button 
                       onClick={scrollToContact}
-                      className="bg-fintech-blue hover:bg-fintech-blue-dark text-white button-glow"
+                      className="bg-fintech-blue hover:bg-fintech-blue-dark text-white transition-all duration-300"
                     >
                       Request Service <ArrowRight className="h-4 w-4 ml-2" />
                     </Button>
@@ -206,7 +206,7 @@ export default function Services() {
                 <div className="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-4">
                   <Button 
                     onClick={scrollToContact}
-                    className="bg-fintech-blue hover:bg-fintech-blue-dark text-white button-glow w-full sm:w-auto"
+                    className="bg-fintech-blue hover:bg-fintech-blue-dark text-white transition-all duration-300 w-full sm:w-auto"
                   >
                     Request Consultation
                   </Button>

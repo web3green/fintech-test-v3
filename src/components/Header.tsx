@@ -5,14 +5,19 @@ import { cn } from '@/lib/utils';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { LanguageToggle } from '@/components/LanguageToggle';
 import { Button } from '@/components/ui/button';
-import { Menu, X } from 'lucide-react';
+import {
+  NavigationMenu,
+  NavigationMenuList,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  navigationMenuTriggerStyle,
+} from "@/components/ui/navigation-menu";
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Logo } from '@/components/Logo';
 
 export function Header() {
   const { t } = useLanguage();
   const [isScrolled, setIsScrolled] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   
   useEffect(() => {
     const handleScroll = () => {
@@ -31,7 +36,6 @@ export function Header() {
     const section = document.getElementById(sectionId);
     if (section) {
       section.scrollIntoView({ behavior: 'smooth' });
-      setIsMobileMenuOpen(false);
     }
   };
   
@@ -53,108 +57,87 @@ export function Header() {
           </span>
         </Link>
         
-        {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center space-x-8">
-          <button 
-            onClick={() => scrollToSection('about')} 
-            className="text-foreground hover:text-fintech-blue dark:hover:text-fintech-blue-light transition-colors duration-200"
-          >
-            {t('nav.about')}
-          </button>
-          <button 
-            onClick={() => scrollToSection('how-it-works')} 
-            className="text-foreground hover:text-fintech-blue dark:hover:text-fintech-blue-light transition-colors duration-200"
-          >
-            {t('nav.howItWorks')}
-          </button>
-          <button 
-            onClick={() => scrollToSection('services')} 
-            className="text-foreground hover:text-fintech-blue dark:hover:text-fintech-blue-light transition-colors duration-200"
-          >
-            {t('nav.services')}
-          </button>
-          <Link 
-            to="/blog" 
-            className="text-foreground hover:text-fintech-blue dark:hover:text-fintech-blue-light transition-colors duration-200"
-          >
-            {t('nav.blog')}
-          </Link>
-          <button 
-            onClick={() => scrollToSection('contact')} 
-            className="text-foreground hover:text-fintech-blue dark:hover:text-fintech-blue-light transition-colors duration-200"
-          >
-            {t('nav.contact')}
-          </button>
-        </nav>
-        
-        <div className="flex items-center space-x-2">
-          <ThemeToggle />
-          <LanguageToggle />
+        <div className="flex items-center space-x-4">
+          <NavigationMenu className="hidden sm:flex">
+            <NavigationMenuList className="flex items-center space-x-1">
+              <NavigationMenuItem>
+                <NavigationMenuLink 
+                  onClick={() => scrollToSection('about')}
+                  className={navigationMenuTriggerStyle()}
+                >
+                  {t('nav.about')}
+                </NavigationMenuLink>
+              </NavigationMenuItem>
+              <NavigationMenuItem>
+                <NavigationMenuLink 
+                  onClick={() => scrollToSection('services')}
+                  className={navigationMenuTriggerStyle()}
+                >
+                  {t('nav.services')}
+                </NavigationMenuLink>
+              </NavigationMenuItem>
+              <NavigationMenuItem>
+                <NavigationMenuLink 
+                  onClick={() => scrollToSection('how-it-works')}
+                  className={navigationMenuTriggerStyle()}
+                >
+                  {t('nav.howItWorks')}
+                </NavigationMenuLink>
+              </NavigationMenuItem>
+              <NavigationMenuItem>
+                <NavigationMenuLink 
+                  onClick={() => scrollToSection('contact')}
+                  className={navigationMenuTriggerStyle()}
+                >
+                  {t('nav.contact')}
+                </NavigationMenuLink>
+              </NavigationMenuItem>
+            </NavigationMenuList>
+          </NavigationMenu>
           
-          <div className="hidden md:block">
+          <div className="flex items-center space-x-2">
+            <ThemeToggle />
+            <LanguageToggle />
+            
             <Button 
-              className="bg-fintech-blue hover:bg-fintech-blue-dark text-white button-glow"
+              className="bg-fintech-blue hover:bg-fintech-blue-dark text-white button-glow hidden sm:flex"
               onClick={() => scrollToSection('contact')}
             >
               {t('cta.getStarted')}
             </Button>
           </div>
-          
-          <Button 
-            variant="ghost" 
-            size="sm" 
-            className="md:hidden"
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          >
-            {isMobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-          </Button>
         </div>
       </div>
       
-      {/* Mobile Navigation */}
-      {isMobileMenuOpen && (
-        <div className="md:hidden fixed inset-0 bg-background/95 dark:bg-background/95 backdrop-blur-sm z-40 pt-20 animate-fade-in">
-          <nav className="container mx-auto px-4 flex flex-col space-y-6 py-6">
-            <button 
-              onClick={() => scrollToSection('about')} 
-              className="text-xl font-medium text-center py-3"
-            >
-              {t('nav.about')}
-            </button>
-            <button 
-              onClick={() => scrollToSection('how-it-works')} 
-              className="text-xl font-medium text-center py-3"
-            >
-              {t('nav.howItWorks')}
-            </button>
-            <button 
-              onClick={() => scrollToSection('services')} 
-              className="text-xl font-medium text-center py-3"
-            >
-              {t('nav.services')}
-            </button>
-            <Link 
-              to="/blog" 
-              className="text-xl font-medium text-center py-3"
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              {t('nav.blog')}
-            </Link>
-            <button 
-              onClick={() => scrollToSection('contact')} 
-              className="text-xl font-medium text-center py-3"
-            >
-              {t('nav.contact')}
-            </button>
-            <Button 
-              className="mt-4 bg-fintech-blue hover:bg-fintech-blue-dark text-white button-glow w-full"
-              onClick={() => scrollToSection('contact')}
-            >
-              {t('cta.getStarted')}
-            </Button>
-          </nav>
+      {/* Mobile Navigation - Simple row of links */}
+      <div className="sm:hidden overflow-x-auto mt-2 pb-2">
+        <div className="container mx-auto px-4 flex space-x-4 justify-between whitespace-nowrap">
+          <button 
+            onClick={() => scrollToSection('about')}
+            className="px-3 py-1 text-sm text-foreground"
+          >
+            {t('nav.about')}
+          </button>
+          <button 
+            onClick={() => scrollToSection('services')}
+            className="px-3 py-1 text-sm text-foreground"
+          >
+            {t('nav.services')}
+          </button>
+          <button 
+            onClick={() => scrollToSection('how-it-works')}
+            className="px-3 py-1 text-sm text-foreground"
+          >
+            {t('nav.howItWorks')}
+          </button>
+          <button 
+            onClick={() => scrollToSection('contact')}
+            className="px-3 py-1 text-sm text-foreground"
+          >
+            {t('nav.contact')}
+          </button>
         </div>
-      )}
+      </div>
     </header>
   );
 }

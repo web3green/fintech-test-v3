@@ -5,13 +5,6 @@ import { cn } from '@/lib/utils';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { LanguageToggle } from '@/components/LanguageToggle';
 import { Button } from '@/components/ui/button';
-import {
-  NavigationMenu,
-  NavigationMenuList,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  navigationMenuTriggerStyle,
-} from "@/components/ui/navigation-menu";
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Logo } from '@/components/Logo';
 
@@ -42,17 +35,17 @@ export function Header() {
   return (
     <header
       className={cn(
-        "fixed top-0 left-0 right-0 z-50 transition-all duration-300 py-2",
+        "fixed top-0 left-0 right-0 z-50 transition-all duration-300 py-1",
         isScrolled ? "bg-white/90 dark:bg-gray-900/90 backdrop-blur-md shadow-sm" : "bg-transparent"
       )}
     >
-      <div className="container mx-auto px-1">
-        <div className="flex items-center justify-between space-x-2">
-          {/* Logo and company name */}
-          <Logo withGlow={!isScrolled} showText={true} className="h-8 w-auto flex-shrink-0" />
+      <div className="container mx-auto px-1 max-w-full">
+        <div className="flex items-center justify-between">
+          {/* Logo and company name - with reduced margin */}
+          <Logo withGlow={!isScrolled} showText={true} className="h-8 w-auto flex-shrink-0 ml-1" />
           
-          {/* Unified Navigation - All on one row for all screen sizes */}
-          <div className="flex items-center space-x-1 overflow-x-auto scrollbar-hide">
+          {/* Navigation items with equal spacing */}
+          <div className="flex-1 flex items-center justify-center space-x-3 mx-3 overflow-x-auto scrollbar-hide">
             <button 
               onClick={() => scrollToSection('about')}
               className="px-2 py-1 text-sm font-medium text-foreground hover:text-fintech-blue dark:hover:text-fintech-blue-light transition-colors whitespace-nowrap"
@@ -79,8 +72,8 @@ export function Header() {
             </button>
           </div>
           
-          {/* Right side buttons with minimal spacing */}
-          <div className="flex items-center space-x-1 flex-shrink-0">
+          {/* Right side buttons with reduced margin */}
+          <div className="flex items-center space-x-1 flex-shrink-0 mr-1">
             <ThemeToggle />
             <LanguageToggle />
             

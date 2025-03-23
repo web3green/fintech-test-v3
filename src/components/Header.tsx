@@ -35,50 +35,58 @@ export function Header() {
   return (
     <header
       className={cn(
-        "fixed top-0 left-0 right-0 z-50 transition-all duration-300 py-1",
-        isScrolled ? "bg-white/90 dark:bg-gray-900/90 backdrop-blur-md shadow-sm" : "bg-transparent"
+        "fixed top-0 left-0 right-0 z-50 transition-all duration-300 py-3",
+        isScrolled 
+          ? "bg-white/90 dark:bg-gray-900/90 backdrop-blur-md shadow-sm" 
+          : "bg-transparent"
       )}
     >
-      <div className="container mx-auto px-1 max-w-full">
+      <div className="container mx-auto px-4 md:px-6">
         <div className="flex items-center justify-between">
-          {/* Logo and company name - with reduced margin */}
-          <Logo withGlow={!isScrolled} showText={true} className="h-8 w-auto flex-shrink-0 ml-1" />
+          {/* Logo and company name */}
+          <Logo withGlow={!isScrolled} showText={true} className="h-8 w-auto flex-shrink-0" />
           
-          {/* Navigation items with equal spacing */}
-          <div className="flex-1 flex items-center justify-center space-x-3 mx-3 overflow-x-auto scrollbar-hide">
-            <button 
-              onClick={() => scrollToSection('about')}
-              className="px-2 py-1 text-sm font-medium text-foreground hover:text-fintech-blue dark:hover:text-fintech-blue-light transition-colors whitespace-nowrap"
-            >
-              {t('nav.about')}
-            </button>
-            <button 
-              onClick={() => scrollToSection('services')}
-              className="px-2 py-1 text-sm font-medium text-foreground hover:text-fintech-blue dark:hover:text-fintech-blue-light transition-colors whitespace-nowrap"
-            >
-              {t('nav.services')}
-            </button>
-            <button 
-              onClick={() => scrollToSection('how-it-works')}
-              className="px-2 py-1 text-sm font-medium text-foreground hover:text-fintech-blue dark:hover:text-fintech-blue-light transition-colors whitespace-nowrap"
-            >
-              {t('nav.howItWorks')}
-            </button>
-            <button 
-              onClick={() => scrollToSection('contact')}
-              className="px-2 py-1 text-sm font-medium text-foreground hover:text-fintech-blue dark:hover:text-fintech-blue-light transition-colors whitespace-nowrap"
-            >
-              {t('nav.contact')}
-            </button>
+          {/* Navigation items with balanced spacing */}
+          <div className="flex-1 flex items-center justify-center max-w-2xl mx-auto overflow-x-auto scrollbar-hide">
+            <nav className="flex space-x-6 md:space-x-8">
+              <button 
+                onClick={() => scrollToSection('about')}
+                className="px-1 py-1 text-sm font-medium text-foreground hover:text-fintech-blue dark:hover:text-fintech-blue-light transition-colors whitespace-nowrap relative group"
+              >
+                {t('nav.about')}
+                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-fintech-blue dark:bg-fintech-blue-light transition-all duration-300 group-hover:w-full"></span>
+              </button>
+              <button 
+                onClick={() => scrollToSection('services')}
+                className="px-1 py-1 text-sm font-medium text-foreground hover:text-fintech-blue dark:hover:text-fintech-blue-light transition-colors whitespace-nowrap relative group"
+              >
+                {t('nav.services')}
+                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-fintech-blue dark:bg-fintech-blue-light transition-all duration-300 group-hover:w-full"></span>
+              </button>
+              <button 
+                onClick={() => scrollToSection('how-it-works')}
+                className="px-1 py-1 text-sm font-medium text-foreground hover:text-fintech-blue dark:hover:text-fintech-blue-light transition-colors whitespace-nowrap relative group"
+              >
+                {t('nav.howItWorks')}
+                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-fintech-blue dark:bg-fintech-blue-light transition-all duration-300 group-hover:w-full"></span>
+              </button>
+              <button 
+                onClick={() => scrollToSection('contact')}
+                className="px-1 py-1 text-sm font-medium text-foreground hover:text-fintech-blue dark:hover:text-fintech-blue-light transition-colors whitespace-nowrap relative group"
+              >
+                {t('nav.contact')}
+                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-fintech-blue dark:bg-fintech-blue-light transition-all duration-300 group-hover:w-full"></span>
+              </button>
+            </nav>
           </div>
           
-          {/* Right side buttons with reduced margin */}
-          <div className="flex items-center space-x-1 flex-shrink-0 mr-1">
+          {/* Right side controls with improved spacing */}
+          <div className="flex items-center space-x-3 flex-shrink-0">
             <ThemeToggle />
             <LanguageToggle />
             
             <Button 
-              className="bg-fintech-blue hover:bg-fintech-blue-dark text-white text-sm px-3 py-1 h-8"
+              className="bg-fintech-blue hover:bg-fintech-blue-dark text-white text-sm px-4 py-1 h-9 ml-1 rounded-md shadow-sm hover:shadow-md transition-all"
               onClick={() => scrollToSection('contact')}
             >
               {t('cta.getStarted')}

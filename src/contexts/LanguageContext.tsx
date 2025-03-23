@@ -13,10 +13,12 @@ const translations = {
   en: {
     // Header
     'nav.home': 'Home',
-    'nav.about': 'About Us',
+    'nav.about': 'About',
+    'nav.howItWorks': 'How It Works',
     'nav.services': 'Services',
     'nav.blog': 'Blog',
     'nav.contact': 'Contact',
+    'cta.getStarted': 'Get Started',
     'cta.request': 'Submit Request',
     
     // Hero
@@ -82,9 +84,11 @@ const translations = {
     // Header
     'nav.home': 'Главная',
     'nav.about': 'О нас',
+    'nav.howItWorks': 'Как это работает',
     'nav.services': 'Услуги',
     'nav.blog': 'Блог',
     'nav.contact': 'Контакты',
+    'cta.getStarted': 'Начать',
     'cta.request': 'Оставить заявку',
     
     // Hero

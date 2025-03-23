@@ -1,4 +1,3 @@
-
 import { Link } from 'react-router-dom';
 import { Facebook, X, Instagram, Linkedin, Mail, Phone } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -62,8 +61,10 @@ export function Footer() {
       <div className="container mx-auto px-4 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="space-y-4">
-            <h3 className="text-xl font-display font-bold text-fintech-blue dark:text-fintech-blue-light">
-              Fintech<span className="text-fintech-orange">Assist</span>
+            <h3 className="text-xl font-display font-bold">
+              <span className="text-fintech-blue dark:text-fintech-blue-light">Fin</span>
+              <span className="text-fintech-orange">Tech</span>
+              <span className="text-foreground">assist</span>
             </h3>
             <p className="text-muted-foreground max-w-xs">
               {t('footer.description')}
@@ -87,13 +88,13 @@ export function Footer() {
             <h3 className="font-display font-bold text-lg mb-4">{t('footer.links')}</h3>
             <ul className="space-y-2">
               <li>
-                <Link to="/" className="text-muted-foreground hover:text-fintech-blue dark:hover:text-fintech-blue-light transition-colors">
-                  {t('nav.home')}
+                <Link to="/about" className="text-muted-foreground hover:text-fintech-blue dark:hover:text-fintech-blue-light transition-colors">
+                  {t('nav.about')}
                 </Link>
               </li>
               <li>
-                <Link to="/about" className="text-muted-foreground hover:text-fintech-blue dark:hover:text-fintech-blue-light transition-colors">
-                  {t('nav.about')}
+                <Link to="/how-it-works" className="text-muted-foreground hover:text-fintech-blue dark:hover:text-fintech-blue-light transition-colors">
+                  {t('nav.howItWorks')}
                 </Link>
               </li>
               <li>

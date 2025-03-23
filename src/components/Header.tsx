@@ -42,100 +42,95 @@ export function Header() {
   return (
     <header
       className={cn(
-        "fixed top-0 left-0 right-0 z-50 transition-all duration-300 py-3",
+        "fixed top-0 left-0 right-0 z-50 transition-all duration-300 py-2",
         isScrolled ? "bg-white/90 dark:bg-gray-900/90 backdrop-blur-md shadow-sm" : "bg-transparent"
       )}
     >
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto px-2">
         <div className="flex items-center justify-between">
-          {/* Logo and company name in one line */}
-          <div className="flex items-center space-x-2">
-            <Logo withGlow={!isScrolled} showText={false} className="h-10 w-auto" />
-            <span className="font-display font-bold text-xl whitespace-nowrap">
-              <span className="text-fintech-blue dark:text-fintech-blue-light">Fin</span>
-              <span className="text-fintech-orange">Tech</span>
-              <span className="text-red-500 font-bold">-</span>
-              <span className="text-foreground">assist</span>
-            </span>
-          </div>
-          
-          {/* Desktop Navigation */}
-          <NavigationMenu className="hidden md:flex">
-            <NavigationMenuList className="flex items-center space-x-6">
-              <NavigationMenuItem>
-                <NavigationMenuLink 
-                  onClick={() => scrollToSection('about')}
-                  className={cn(navigationMenuTriggerStyle(), "text-base font-medium")}
-                >
-                  {t('nav.about')}
-                </NavigationMenuLink>
-              </NavigationMenuItem>
-              <NavigationMenuItem>
-                <NavigationMenuLink 
-                  onClick={() => scrollToSection('services')}
-                  className={cn(navigationMenuTriggerStyle(), "text-base font-medium")}
-                >
-                  {t('nav.services')}
-                </NavigationMenuLink>
-              </NavigationMenuItem>
-              <NavigationMenuItem>
-                <NavigationMenuLink 
-                  onClick={() => scrollToSection('how-it-works')}
-                  className={cn(navigationMenuTriggerStyle(), "text-base font-medium")}
-                >
-                  {t('nav.howItWorks')}
-                </NavigationMenuLink>
-              </NavigationMenuItem>
-              <NavigationMenuItem>
-                <NavigationMenuLink 
-                  onClick={() => scrollToSection('contact')}
-                  className={cn(navigationMenuTriggerStyle(), "text-base font-medium")}
-                >
-                  {t('nav.contact')}
-                </NavigationMenuLink>
-              </NavigationMenuItem>
-            </NavigationMenuList>
-          </NavigationMenu>
-          
-          {/* Right side buttons with increased spacing */}
-          <div className="flex items-center space-x-4">
-            <ThemeToggle />
-            <LanguageToggle />
+          {/* All components in one row */}
+          <div className="flex items-center space-x-4 w-full">
+            {/* Logo and company name */}
+            <Logo withGlow={!isScrolled} showText={true} className="h-8 w-auto" />
             
-            <Button 
-              className="bg-fintech-blue hover:bg-fintech-blue-dark text-white button-glow hidden md:flex text-base font-medium px-6"
-              onClick={() => scrollToSection('contact')}
-            >
-              {t('cta.getStarted')}
-            </Button>
+            {/* Desktop Navigation - now with less spacing */}
+            <NavigationMenu className="hidden md:flex ml-6 flex-grow">
+              <NavigationMenuList className="flex items-center space-x-2">
+                <NavigationMenuItem>
+                  <NavigationMenuLink 
+                    onClick={() => scrollToSection('about')}
+                    className={cn(navigationMenuTriggerStyle(), "text-base font-medium px-3")}
+                  >
+                    {t('nav.about')}
+                  </NavigationMenuLink>
+                </NavigationMenuItem>
+                <NavigationMenuItem>
+                  <NavigationMenuLink 
+                    onClick={() => scrollToSection('services')}
+                    className={cn(navigationMenuTriggerStyle(), "text-base font-medium px-3")}
+                  >
+                    {t('nav.services')}
+                  </NavigationMenuLink>
+                </NavigationMenuItem>
+                <NavigationMenuItem>
+                  <NavigationMenuLink 
+                    onClick={() => scrollToSection('how-it-works')}
+                    className={cn(navigationMenuTriggerStyle(), "text-base font-medium px-3")}
+                  >
+                    {t('nav.howItWorks')}
+                  </NavigationMenuLink>
+                </NavigationMenuItem>
+                <NavigationMenuItem>
+                  <NavigationMenuLink 
+                    onClick={() => scrollToSection('contact')}
+                    className={cn(navigationMenuTriggerStyle(), "text-base font-medium px-3")}
+                  >
+                    {t('nav.contact')}
+                  </NavigationMenuLink>
+                </NavigationMenuItem>
+              </NavigationMenuList>
+            </NavigationMenu>
+            
+            {/* Right side buttons with decreased spacing */}
+            <div className="flex items-center space-x-2 ml-auto">
+              <ThemeToggle />
+              <LanguageToggle />
+              
+              <Button 
+                className="bg-fintech-blue hover:bg-fintech-blue-dark text-white button-glow hidden md:flex text-base font-medium px-4"
+                onClick={() => scrollToSection('contact')}
+              >
+                {t('cta.getStarted')}
+              </Button>
+            </div>
           </div>
         </div>
       </div>
       
-      {/* Mobile Navigation - Improved scrollable row with better spacing and text size */}
-      <div className="md:hidden overflow-x-auto mt-3">
-        <div className="container mx-auto px-2 flex space-x-6 justify-between whitespace-nowrap">
+      {/* Mobile Navigation - only shown on mobile */}
+      <div className="md:hidden overflow-x-auto mt-2">
+        <div className="container mx-auto px-2 flex space-x-4 justify-between whitespace-nowrap">
           <button 
             onClick={() => scrollToSection('about')}
-            className="px-3 py-2 text-base font-medium text-foreground hover:text-fintech-blue dark:hover:text-fintech-blue-light transition-colors"
+            className="px-2 py-1 text-sm font-medium text-foreground hover:text-fintech-blue dark:hover:text-fintech-blue-light transition-colors"
           >
             {t('nav.about')}
           </button>
           <button 
             onClick={() => scrollToSection('services')}
-            className="px-3 py-2 text-base font-medium text-foreground hover:text-fintech-blue dark:hover:text-fintech-blue-light transition-colors"
+            className="px-2 py-1 text-sm font-medium text-foreground hover:text-fintech-blue dark:hover:text-fintech-blue-light transition-colors"
           >
             {t('nav.services')}
           </button>
           <button 
             onClick={() => scrollToSection('how-it-works')}
-            className="px-3 py-2 text-base font-medium text-foreground hover:text-fintech-blue dark:hover:text-fintech-blue-light transition-colors"
+            className="px-2 py-1 text-sm font-medium text-foreground hover:text-fintech-blue dark:hover:text-fintech-blue-light transition-colors"
           >
             {t('nav.howItWorks')}
           </button>
           <button 
             onClick={() => scrollToSection('contact')}
-            className="px-3 py-2 text-base font-medium text-foreground hover:text-fintech-blue dark:hover:text-fintech-blue-light transition-colors"
+            className="px-2 py-1 text-sm font-medium text-foreground hover:text-fintech-blue dark:hover:text-fintech-blue-light transition-colors"
           >
             {t('nav.contact')}
           </button>

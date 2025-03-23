@@ -22,22 +22,54 @@ const translations = {
     'cta.request': 'Submit Request',
     
     // Hero
-    'hero.title': 'Fintech-Assist: Your Partner in Financial Solutions',
+    'hero.title': 'Global Financial Solutions for Your Business Without Borders',
     'hero.subtitle': 'Business Registration, Bank Accounts and Licenses Turnkey Solutions',
     'hero.cta': 'Get Started',
+    
+    // About
+    'about.title': 'Your Trusted Partner in Global Finance',
+    'about.description': 'A reliable partner in international financial consulting. We help clients open companies and bank accounts in various jurisdictions, provide nominee services and solutions for cross-border operations with minimal prepayment.',
     
     // Services
     'services.badge': 'Our Services',
     'services.title': 'Financial Solutions for Your Business',
     'services.subtitle': 'We offer a complete range of services to help your business grow globally',
-    'services.registration': 'Company Registration',
-    'services.registration.desc': 'Quick and professional registration of companies in various jurisdictions',
-    'services.accounts': 'Bank Account Opening',
-    'services.accounts.desc': 'Opening personal and business accounts in reliable banks worldwide',
-    'services.nominee': 'Nominee Service',
-    'services.nominee.desc': 'Legal nominee service for secure business operations',
-    'services.licenses': 'Financial Licenses',
-    'services.licenses.desc': 'Help with obtaining licenses for various financial activities',
+    
+    'services.company-formation.title': 'International Company Formation',
+    'services.company-formation.short': 'Company registration in various jurisdictions (UAE, Singapore, Hong Kong, Europe)',
+    'services.company-formation.details': 'Professional assistance in registering companies in various jurisdictions, including high-risk industries (gambling, betting, crypto projects including OTC transactions). We offer individual selection of the optimal jurisdiction for your business tasks, taking into account tax advantages and regulatory features.',
+    
+    'services.financial-licensing.title': 'Financial Licensing',
+    'services.financial-licensing.short': 'Obtaining fintech licenses (EMI, PSP, payment licenses)',
+    'services.financial-licensing.details': 'Full support in obtaining EMI, VASP, SEMI and other licenses. Assistance in forming the necessary package of documents, including creating a business plan, describing compliance procedures, opening correspondent safeguarding and other accounts, in full compliance with local regulators. Advice on regulatory requirements.',
+    
+    'services.crypto-regulation.title': 'Cryptocurrency Regulation',
+    'services.crypto-regulation.short': 'Crypto exchange and trading platform licensing, VASP registration',
+    'services.crypto-regulation.details': 'Obtaining crypto licenses. Selection of the optimal jurisdiction, preparation of documentation, development of internal policies and procedures in accordance with regulatory requirements. Support in opening various accounts.',
+    
+    'services.gambling-licensing.title': 'Gambling Licensing',
+    'services.gambling-licensing.short': 'Online casino and bookmaker licenses in various jurisdictions',
+    'services.gambling-licensing.details': 'Complete support for obtaining gambling and betting licenses in various jurisdictions. We help navigate complex regulatory requirements and ensure compliance with all local laws for gaming operations.',
+    
+    'services.payment-solutions.title': 'International Payment Solutions',
+    'services.payment-solutions.short': 'Corporate account opening abroad and merchant account setup',
+    'services.payment-solutions.details': 'Comprehensive support for the process of opening accounts in banks and EMIs. Preparation of all necessary documentation, consultation on financial institution standards and assistance in passing financial monitoring procedures. We work with a wide network of international banks and payment systems.',
+    
+    'services.fiat-crypto.title': 'FIAT-CRYPTO-FIAT Exchange',
+    'services.fiat-crypto.short': 'Secure exchange operations between fiat currencies and cryptocurrencies',
+    'services.fiat-crypto.details': 'Organization of safe and confidential exchange operations between fiat currencies and cryptocurrencies. We provide competitive exchange rates and minimum transaction times in compliance with all necessary AML/KYC procedures through licensed crypto exchangers.',
+    
+    'services.tax-planning.title': 'Accounting Services and Audit',
+    'services.tax-planning.short': 'Professional accounting and financial reporting preparation',
+    'services.tax-planning.details': 'Professional accounting and financial reporting preparation. Conducting audits and consulting on tax optimization issues in accordance with international standards.',
+    
+    'services.investment.title': 'Company Restructuring',
+    'services.investment.short': 'Business restructuring strategies development and implementation',
+    'services.investment.details': 'Development and implementation of business restructuring strategies to improve operational efficiency, optimize taxation and comply with new regulatory requirements. Individual approach to each client, taking into account the specifics of the business.',
+    
+    'services.nominee.title': 'Nominee Service',
+    'services.nominee.short': 'Professional directors and shareholders for your company',
+    'services.nominee.details': 'Providing professional directors and shareholders for your company, providing legal representation and business management while maintaining the confidentiality of the real owner. All services are provided in strict accordance with international legal standards.',
     
     // Process
     'process.badge': 'How It Works',
@@ -92,22 +124,54 @@ const translations = {
     'cta.request': 'Оставить заявку',
     
     // Hero
-    'hero.title': 'Fintech-Assist: Ваш партнер в мире финансовых решений',
+    'hero.title': 'Глобальные финансовые решения для вашего бизнеса без границ',
     'hero.subtitle': 'Открытие компаний, счетов и лицензий под ключ',
     'hero.cta': 'Начать',
+    
+    // About
+    'about.title': 'Ваш надежный партнер в мире финансов',
+    'about.description': 'Надежный партнер в мире международного финансового консалтинга. Мы помогаем клиентам открывать компании и банковские счета в различных юрисдикциях, предоставляем номинальный сервис и решения для трансграничных операций с минимальной предоплатой.',
     
     // Services
     'services.badge': 'Наши услуги',
     'services.title': 'Финансовые решения для вашего бизнеса',
     'services.subtitle': 'Мы предлагаем полный комплекс услуг для развития вашего бизнеса по всему миру',
-    'services.registration': 'Регистрация компаний',
-    'services.registration.desc': 'Быстрая и профессиональная регистрация компаний в различных юрисдикциях',
-    'services.accounts': 'Открытие счетов',
-    'services.accounts.desc': 'Открытие личных и бизнес-счетов в надежных банках по всему миру',
-    'services.nominee': 'Номинальный сервис',
-    'services.nominee.desc': 'Легальный номинальный сервис для безопасного ведения бизнеса',
-    'services.licenses': 'Финансовые лицензии',
-    'services.licenses.desc': 'Помощь в получении лицензий для различных финансовых деятельностей',
+    
+    'services.company-formation.title': 'Открытие компаний по всему миру',
+    'services.company-formation.short': 'Регистрация компаний в различных юрисдикциях (ОАЭ, Сингапур, Гонконг, Европа)',
+    'services.company-formation.details': 'Профессиональное содействие в регистрации компаний в различных юрисдикциях, включая высокорисковые индустрии (гемблинг, беттинг, криптопроекты включая OTC сделки). Предлагаем индивидуальный подбор оптимальной юрисдикции под ваши бизнес-задачи, с учетом налоговых преимуществ и особенностей регулирования.',
+    
+    'services.financial-licensing.title': 'Лицензирование EMI',
+    'services.financial-licensing.short': 'Получение финтех-лицензий (EMI, PSP, платежные лицензии)',
+    'services.financial-licensing.details': 'Полное сопровождение процесса получения лицензий EMI, VASP, SEMI и других. Сопровождение в формировании необходимого пакета документов,в том числе в создании бизнес-плана, описании compliance процедур, открытие корреспондентских safeguarding и других счетов, в полном соответствии локальных регуляторов. Консультации по соблюдению регуляторных требований.',
+    
+    'services.crypto-regulation.title': 'Крипто-лицензирование',
+    'services.crypto-regulation.short': 'Лицензирование криптобирж и торговых платформ, регистрация VASP',
+    'services.crypto-regulation.details': 'Получение крипто лицензий. Подбор оптимальной юрисдикции, подготовка документации, разработка внутренних политик и процедур в соответствии с требованиями регуляторов. Сопровождение в открытии различных счетов.',
+    
+    'services.gambling-licensing.title': 'Лицензирование гемблинга',
+    'services.gambling-licensing.short': 'Лицензии для онлайн-казино и букмекеров в различных юрисдикциях',
+    'services.gambling-licensing.details': 'Полное сопровождение получения лицензий для гемблинга и беттинга в различных юрисдикциях. Мы помогаем ориентироваться в сложных нормативных требованиях и обеспечиваем соответствие всем местным законам для игровых операций.',
+    
+    'services.payment-solutions.title': 'Открытие счетов по всему миру',
+    'services.payment-solutions.short': 'Открытие корпоративных счетов за рубежом и настройка мерчант-аккаунтов',
+    'services.payment-solutions.details': 'Комплексное сопровождение процесса открытия счетов в банках и EMI. Подготовка всей необходимой документации, консультирование по стандартам финансовых учреждений и помощь в прохождении процедур финансового мониторинга. Работаем с широкой сетью международных банков и платежных систем.',
+    
+    'services.fiat-crypto.title': 'Обмен FIAT-CRYPTO-FIAT',
+    'services.fiat-crypto.short': 'Безопасные обменные операции между фиатными валютами и криптовалютами',
+    'services.fiat-crypto.details': 'Организация безопасных и конфиденциальных обменных операций между фиатными валютами и криптовалютами. Предоставляем конкурентные курсы обмена и минимальные сроки проведения транзакций с соблюдением всех необходимых процедур AML/KYC через лицензированные криптообменники.',
+    
+    'services.tax-planning.title': 'Бухгалтерское обслуживание и аудит',
+    'services.tax-planning.short': 'Профессиональное ведение бухгалтерского учета и подготовка финансовой отчетности',
+    'services.tax-planning.details': 'Профессиональное ведение бухгалтерского учета и подготовка финансовой отчетности. Проведение аудита и консультирование по вопросам оптимизации налогообложения в соответствии с международными стандартами.',
+    
+    'services.investment.title': 'Реструктуризация компаний',
+    'services.investment.short': 'Разработка и реализация стратегий реструктуризации бизнеса',
+    'services.investment.details': 'Разработка и реализация стратегий реструктуризации бизнеса для повышения операционной эффективности, оптимизации налогообложения и соответствия новым регуляторным требованиям. Индивидуальный подход к каждому клиенту с учетом специфики бизнеса.',
+    
+    'services.nominee.title': 'Номинальный сервис',
+    'services.nominee.short': 'Профессиональные директора и акционеры для вашей компании',
+    'services.nominee.details': 'Предоставление профессиональных директоров и акционеров для вашей компании, обеспечивающих юридическое представительство и управление бизнесом при сохранении конфиденциальности реального владельца. Все услуги оказываются в строгом соответствии с международными правовыми нормами.',
     
     // Process
     'process.badge': 'Как это работает',

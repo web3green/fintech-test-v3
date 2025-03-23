@@ -8,7 +8,7 @@ export function AboutSection() {
 
   return (
     <section id="about" className="section-padding">
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto px-8 md:px-12 lg:px-16">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div className="order-2 lg:order-1">
             <div className="relative rounded-xl overflow-hidden shadow-lg">
@@ -55,19 +55,15 @@ export function AboutSection() {
           <div className="order-1 lg:order-2">
             <div className="inline-flex items-center rounded-full px-3 py-1 text-sm font-medium bg-fintech-blue/10 text-fintech-blue dark:bg-fintech-blue/20 dark:text-fintech-blue-light mb-4">
               <span className="flex h-2 w-2 rounded-full bg-fintech-blue mr-2"></span>
-              About Us
+              {t('nav.about')}
             </div>
             
             <h2 className="text-3xl md:text-4xl font-display font-bold mb-6">
-              Your Trusted Partner in Global Finance
+              {t('about.title')}
             </h2>
             
-            <p className="text-muted-foreground mb-4">
-              Founded in 2015, <strong>FinTech-assist</strong> brings together experts in international business, financial licensing, and regulatory compliance to provide comprehensive consulting solutions.
-            </p>
-            
             <p className="text-muted-foreground mb-6">
-              Our team of over 30 professionals has helped more than 500 clients across 50+ countries navigate the complex world of financial regulations, international company formation, and cross-border business operations.
+              {t('about.description')}
             </p>
             
             <div className="grid grid-cols-2 gap-4 mb-8">

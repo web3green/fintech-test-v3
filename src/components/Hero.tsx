@@ -1,113 +1,122 @@
 
+import { ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { ChevronRight, ArrowRight } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { GlowingEffect } from './ui/glowing-effect';
 
 export function Hero() {
   const { t } = useLanguage();
   
+  const scrollToContact = () => {
+    const contactSection = document.getElementById('contact');
+    if (contactSection) {
+      contactSection.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+  
   return (
-    <section className="relative pt-24 pb-16 md:pb-24 lg:pb-32 overflow-hidden">
-      {/* Background effect */}
-      <div className="absolute inset-0 z-0">
-        <div className="absolute -top-[400px] -right-[400px] w-[800px] h-[800px] rounded-full bg-fintech-blue/10 blur-3xl" />
-        <div className="absolute -bottom-[400px] -left-[400px] w-[800px] h-[800px] rounded-full bg-fintech-orange/10 blur-3xl" />
-      </div>
-      
-      <div className="container relative z-10 mx-auto px-4 pt-12 md:pt-24">
+    <section className="relative overflow-hidden bg-gray-50 dark:bg-gray-900 pt-20 md:pt-24 lg:pt-28 pb-20 md:pb-24">
+      <div className="container mx-auto px-8 md:px-12 lg:px-16">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          <div className="max-w-xl mx-auto lg:mx-0 text-center lg:text-left">
-            <div className="inline-flex items-center rounded-full px-3 py-1 text-sm font-medium bg-fintech-blue/10 text-fintech-blue dark:bg-fintech-blue/20 dark:text-fintech-blue-light mb-6 animate-fade-down">
-              <span className="flex h-2 w-2 rounded-full bg-fintech-blue mr-2"></span>
-              {t('hero.subtitle')}
-            </div>
-            
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight font-display mb-6 animate-fade-down animate-delay-100">
-              <span className="text-gradient">{t('hero.title')}</span>
+          <div className="order-2 lg:order-1 z-10">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl font-display font-bold leading-tight mb-6 animate-fade-up">
+              {t('hero.title')}
             </h1>
-            
-            <p className="text-xl text-muted-foreground mb-8 max-w-lg mx-auto lg:mx-0 animate-fade-down animate-delay-200">
+            <p className="text-xl text-muted-foreground mb-8 max-w-lg animate-fade-up" style={{ animationDelay: '100ms' }}>
               {t('hero.subtitle')}
             </p>
-            
-            <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 animate-fade-down animate-delay-300">
-              <Button size="lg" className="bg-fintech-blue hover:bg-fintech-blue-dark text-white button-glow w-full sm:w-auto">
-                {t('cta.request')}
-                <ChevronRight className="ml-2 h-4 w-4" />
-              </Button>
-              
-              <Button variant="outline" size="lg" className="w-full sm:w-auto">
-                {t('nav.services')}
+            <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 animate-fade-up" style={{ animationDelay: '200ms' }}>
+              <Button 
+                className="bg-fintech-blue hover:bg-fintech-blue-dark text-white button-glow"
+                onClick={scrollToContact}
+              >
+                {t('hero.cta')}
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
-            </div>
-            
-            <div className="mt-8 grid grid-cols-3 gap-4 max-w-md mx-auto lg:mx-0 animate-fade-down animate-delay-400">
-              <div className="flex flex-col items-center lg:items-start">
-                <p className="text-3xl font-bold text-fintech-blue dark:text-fintech-blue-light">500+</p>
-                <p className="text-sm text-muted-foreground">Клиентов</p>
-              </div>
-              <div className="flex flex-col items-center lg:items-start">
-                <p className="text-3xl font-bold text-fintech-blue dark:text-fintech-blue-light">50+</p>
-                <p className="text-sm text-muted-foreground">Стран</p>
-              </div>
-              <div className="flex flex-col items-center lg:items-start">
-                <p className="text-3xl font-bold text-fintech-blue dark:text-fintech-blue-light">98%</p>
-                <p className="text-sm text-muted-foreground">Успешных кейсов</p>
-              </div>
+              <Button 
+                variant="outline" 
+                className="border-fintech-blue/20 text-fintech-blue hover:text-fintech-blue-dark dark:text-fintech-blue-light hover:bg-fintech-blue/5"
+                onClick={() => {
+                  const servicesElement = document.getElementById('services');
+                  if (servicesElement) {
+                    servicesElement.scrollIntoView({ behavior: 'smooth' });
+                  }
+                }}
+              >
+                {t('nav.services')}
+              </Button>
             </div>
           </div>
           
-          <div className="hidden lg:block relative">
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent to-white/80 dark:to-black/20 z-10"></div>
-            <div className="relative z-0 rounded-xl overflow-hidden shadow-2xl animate-float">
-              <div className="aspect-[4/3] bg-gradient-to-br from-fintech-blue/90 to-fintech-blue-dark rounded-xl">
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="glass-card rounded-xl p-6 w-4/5 mx-auto shadow-lg transform rotate-3 animate-fade-in">
-                    <div className="flex justify-between items-center mb-4">
-                      <div className="flex items-center space-x-2">
-                        <div className="h-10 w-10 rounded-full bg-fintech-orange flex items-center justify-center text-white font-bold text-sm">FA</div>
-                        <div className="text-sm font-medium">FintechAssist</div>
-                      </div>
-                      <div className="text-xs opacity-60">Лицензия №12345</div>
-                    </div>
-                    
-                    <div className="space-y-3">
-                      <div className="w-full h-4 bg-gray-200/30 rounded"></div>
-                      <div className="w-2/3 h-4 bg-gray-200/30 rounded"></div>
-                      <div className="w-3/4 h-4 bg-gray-200/30 rounded"></div>
-                    </div>
-                    
-                    <div className="mt-6 grid grid-cols-2 gap-4">
-                      <div className="text-center">
-                        <div className="text-xs opacity-60">Компания</div>
-                        <div className="mt-1 font-medium">OceanTrade Ltd</div>
-                      </div>
-                      <div className="text-center">
-                        <div className="text-xs opacity-60">Юрисдикция</div>
-                        <div className="mt-1 font-medium">Сингапур</div>
-                      </div>
-                    </div>
-                  </div>
+          <div className="order-1 lg:order-2 relative z-10">
+            <div className="relative p-4">
+              <div className="relative bg-white dark:bg-gray-800 rounded-2xl shadow-2xl overflow-hidden">
+                <div className="absolute inset-0">
+                  <div className="absolute inset-0 bg-gradient-to-br from-fintech-blue/5 to-fintech-orange/5"></div>
+                  <GlowingEffect 
+                    blur={6} 
+                    spread={60} 
+                    glow={true} 
+                    disabled={false} 
+                    inactiveZone={0.3}
+                    proximity={100}
+                  />
                 </div>
                 
-                <div className="absolute bottom-4 right-4 glass-card rounded-lg p-4 w-2/3 shadow-lg transform -rotate-6 animate-fade-in animate-delay-500">
-                  <div className="text-sm font-medium mb-2">Открытие счета</div>
-                  <div className="flex justify-between items-center">
-                    <div className="h-2 w-16 bg-gray-200/30 rounded"></div>
-                    <div className="h-8 w-8 rounded-full bg-white/20 flex items-center justify-center">
-                      <ChevronRight className="h-4 w-4" />
+                <div className="relative p-6 md:p-8">
+                  <div className="flex items-center mb-8">
+                    <div className="h-12 w-12 rounded-full bg-fintech-blue flex items-center justify-center text-white font-bold text-lg">
+                      FA
+                    </div>
+                    <div className="ml-4">
+                      <div className="font-bold text-xl">
+                        Fintech<span className="text-fintech-orange">Assist</span>
+                      </div>
+                      <div className="text-sm text-muted-foreground">Global Financial Solutions</div>
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-6">
+                    <div className="space-y-3">
+                      <div className="bg-gray-100 dark:bg-gray-700 h-10 rounded-lg w-full animate-pulse"></div>
+                      <div className="bg-gray-100 dark:bg-gray-700 h-10 rounded-lg w-3/4 animate-pulse"></div>
+                    </div>
+                    
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="bg-fintech-blue/10 dark:bg-fintech-blue/20 p-4 rounded-lg">
+                        <div className="text-xs text-muted-foreground mb-1">Banking</div>
+                        <div className="font-medium">Accounts Worldwide</div>
+                      </div>
+                      <div className="bg-fintech-orange/10 dark:bg-fintech-orange/20 p-4 rounded-lg">
+                        <div className="text-xs text-muted-foreground mb-1">Licenses</div>
+                        <div className="font-medium">EMI & Crypto</div>
+                      </div>
+                    </div>
+                    
+                    <div className="pt-4 border-t border-gray-200 dark:border-gray-700">
+                      <div className="flex items-center justify-between text-sm">
+                        <div className="text-muted-foreground">15+ Countries</div>
+                        <div className="text-muted-foreground">500+ Clients</div>
+                        <div className="text-muted-foreground">7+ Years</div>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
+              
+              <div className="absolute top-0 right-0 transform translate-x-1/4 -translate-y-1/4">
+                <div className="w-24 h-24 md:w-32 md:h-32 bg-fintech-blue/30 dark:bg-fintech-blue/20 rounded-full blur-3xl"></div>
+              </div>
+              <div className="absolute bottom-0 left-0 transform -translate-x-1/4 translate-y-1/4">
+                <div className="w-24 h-24 md:w-32 md:h-32 bg-fintech-orange/30 dark:bg-fintech-orange/20 rounded-full blur-3xl"></div>
+              </div>
             </div>
-            
-            <div className="absolute -bottom-4 -left-4 w-16 h-16 bg-fintech-orange rounded-full animate-float animate-delay-700"></div>
-            <div className="absolute top-4 right-4 w-8 h-8 bg-white dark:bg-gray-800 rounded-full shadow-lg animate-float animate-delay-1000"></div>
           </div>
         </div>
       </div>
+      
+      <div className="absolute top-0 inset-x-0 h-40 bg-gradient-to-b from-fintech-blue/5 to-transparent"></div>
+      <div className="absolute bottom-0 inset-x-0 h-40 bg-gradient-to-t from-fintech-orange/5 to-transparent"></div>
     </section>
   );
 }

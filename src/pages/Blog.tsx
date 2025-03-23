@@ -11,7 +11,7 @@ import { Pagination, PaginationContent, PaginationItem, PaginationLink, Paginati
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 
 export default function Blog() {
-  const { t, currentLanguage } = useLanguage();
+  const { t, language } = useLanguage();
   const [searchQuery, setSearchQuery] = useState('');
 
   // Sample blog posts data with bilingual content
@@ -190,7 +190,7 @@ export default function Blog() {
   // Function to get content based on current language
   const getLocalizedContent = (content) => {
     if (typeof content === 'object') {
-      return content[currentLanguage] || content.en;
+      return content[language] || content.en;
     }
     return content;
   };
@@ -245,10 +245,10 @@ export default function Blog() {
           <div className="container mx-auto px-8 md:px-12 lg:px-16">
             <div className="max-w-3xl mx-auto text-center mb-12">
               <h1 className="text-4xl md:text-5xl font-display font-bold mb-6">
-                {currentLanguage === 'en' ? 'Our Blog' : 'Наш Блог'}
+                {language === 'en' ? 'Our Blog' : 'Наш Блог'}
               </h1>
               <p className="text-xl text-muted-foreground">
-                {currentLanguage === 'en' 
+                {language === 'en' 
                   ? 'Insights, guides, and updates on international business and finance' 
                   : 'Аналитика, руководства и обновления о международном бизнесе и финансах'}
               </p>
@@ -264,7 +264,7 @@ export default function Blog() {
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
                 <Input
                   type="search"
-                  placeholder={currentLanguage === 'en' ? "Search articles..." : "Поиск статей..."}
+                  placeholder={language === 'en' ? "Search articles..." : "Поиск статей..."}
                   className="pl-10 pr-4 py-2 rounded-full"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
@@ -280,7 +280,7 @@ export default function Blog() {
             <div className="container mx-auto px-8 md:px-12 lg:px-16">
               <div className="max-w-6xl mx-auto">
                 <h2 className="text-2xl font-display font-bold mb-8">
-                  {currentLanguage === 'en' ? 'Featured Article' : 'Рекомендуемая Статья'}
+                  {language === 'en' ? 'Featured Article' : 'Рекомендуемая Статья'}
                 </h2>
                 <div className={`rounded-2xl overflow-hidden ${renderPostColor(featuredPost.colorScheme)}`}>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-0">
@@ -315,7 +315,7 @@ export default function Blog() {
                           <span>{featuredPost.readingTime}</span>
                         </div>
                         <Button className={`${getButtonStyle(featuredPost.colorScheme)} shadow-lg button-glow`}>
-                          {currentLanguage === 'en' ? 'Read Article' : 'Читать Статью'} <ArrowRight className="h-4 w-4 ml-2" />
+                          {language === 'en' ? 'Read Article' : 'Читать Статью'} <ArrowRight className="h-4 w-4 ml-2" />
                         </Button>
                       </div>
                     </div>
@@ -332,14 +332,14 @@ export default function Blog() {
             <div className="max-w-6xl mx-auto">
               <h2 className="text-2xl font-display font-bold mb-8">
                 {searchQuery 
-                  ? (currentLanguage === 'en' ? 'Search Results' : 'Результаты Поиска') 
-                  : (currentLanguage === 'en' ? 'Latest Articles' : 'Последние Статьи')}
+                  ? (language === 'en' ? 'Search Results' : 'Результаты Поиска') 
+                  : (language === 'en' ? 'Latest Articles' : 'Последние Статьи')}
               </h2>
               
               {filteredPosts.length === 0 ? (
                 <div className="text-center py-16">
                   <p className="text-xl text-muted-foreground mb-4">
-                    {currentLanguage === 'en' 
+                    {language === 'en' 
                       ? `No articles found for "${searchQuery}"` 
                       : `Статьи не найдены по запросу "${searchQuery}"`}
                   </p>
@@ -347,7 +347,7 @@ export default function Blog() {
                     variant="outline" 
                     onClick={() => setSearchQuery('')}
                   >
-                    {currentLanguage === 'en' ? 'Clear Search' : 'Очистить Поиск'}
+                    {language === 'en' ? 'Clear Search' : 'Очистить Поиск'}
                   </Button>
                 </div>
               ) : (
@@ -388,7 +388,7 @@ export default function Blog() {
                             <span>{post.readingTime}</span>
                           </div>
                           <Button variant="ghost" size="sm" className="opacity-90 hover:opacity-100 group">
-                            {currentLanguage === 'en' ? 'Read More' : 'Подробнее'}
+                            {language === 'en' ? 'Read More' : 'Подробнее'}
                             <ChevronRight className="h-4 w-4 ml-1 transition-transform group-hover:translate-x-1" />
                           </Button>
                         </div>
@@ -443,21 +443,21 @@ export default function Blog() {
               </div>
               <div className="relative z-10 text-center">
                 <h2 className="text-2xl md:text-3xl font-display font-bold mb-4">
-                  {currentLanguage === 'en' ? 'Stay Updated' : 'Будьте в курсе'}
+                  {language === 'en' ? 'Stay Updated' : 'Будьте в курсе'}
                 </h2>
                 <p className="text-white/80 mb-8 max-w-2xl mx-auto">
-                  {currentLanguage === 'en' 
+                  {language === 'en' 
                     ? 'Subscribe to our newsletter to receive the latest insights and updates on international business and finance.' 
                     : 'Подпишитесь на нашу рассылку, чтобы получать последние аналитические данные и обновления о международном бизнесе и финансах.'}
                 </p>
                 <div className="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-4">
                   <Input 
                     type="email" 
-                    placeholder={currentLanguage === 'en' ? "Your email address" : "Ваш email адрес"} 
+                    placeholder={language === 'en' ? "Your email address" : "Ваш email адрес"} 
                     className="w-full sm:w-64 bg-white/10 border-white/20 text-white placeholder:text-white/60"
                   />
                   <Button className="bg-white text-fintech-blue hover:bg-gray-100 w-full sm:w-auto button-glow">
-                    {currentLanguage === 'en' ? 'Subscribe' : 'Подписаться'}
+                    {language === 'en' ? 'Subscribe' : 'Подписаться'}
                   </Button>
                 </div>
               </div>

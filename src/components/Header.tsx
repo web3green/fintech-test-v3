@@ -86,7 +86,7 @@ export function Header() {
             <LanguageToggle />
             
             <Button 
-              className="bg-fintech-blue hover:bg-fintech-blue-dark text-white text-sm px-4 py-1 h-9 ml-1 rounded-md shadow-sm hover:shadow-md transition-all"
+              className="bg-fintech-orange hover:bg-fintech-orange-light text-white text-sm px-4 py-1 h-9 ml-1 rounded-md shadow-sm hover:shadow-md transition-all"
               onClick={() => scrollToSection('contact')}
             >
               {t('cta.getStarted')}

@@ -43,7 +43,15 @@ export function Header() {
       )}
     >
       <div className="container mx-auto px-4 flex items-center justify-between">
-        <Logo withGlow={!isScrolled} />
+        <Link to="/" className="relative inline-flex items-center">
+          <Logo withGlow={!isScrolled} showText={false} />
+          <span className="ml-2 font-display font-bold text-xl">
+            <span className="text-fintech-blue dark:text-fintech-blue-light">Fin</span>
+            <span className="text-fintech-orange">Tech</span>
+            <span className="text-red-500 font-bold">-</span>
+            <span className="text-foreground">assist</span>
+          </span>
+        </Link>
         
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center space-x-8">

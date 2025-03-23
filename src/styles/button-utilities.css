@@ -1,4 +1,7 @@
-/* Update the button-glow animation to be invisible by default */
+
+/* Button styling utilities */
+
+/* Glow effect for buttons */
 .button-glow {
   @apply relative overflow-hidden;
 }
@@ -9,4 +12,13 @@
 
 .button-glow:hover::after {
   @apply left-[100%] opacity-100;
+}
+
+/* Additional button utilities can be added here */
+.button-scale {
+  @apply transition-transform duration-300;
+}
+
+.button-scale:hover {
+  @apply scale-105;
 }

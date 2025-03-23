@@ -33,8 +33,9 @@ export function Logo({ className, withGlow = true, showText = true }: LogoProps)
       </div>
       {showText && (
         <span className="ml-2 font-display font-bold text-xl">
-          <span className="text-fintech-blue dark:text-fintech-blue-light">Fintech</span>
-          <span className="text-fintech-orange">Assist</span>
+          <span className="text-fintech-blue dark:text-fintech-blue-light">Fin</span>
+          <span className="text-fintech-orange">Tech</span>
+          <span className="text-foreground">assist</span>
         </span>
       )}
     </Link>

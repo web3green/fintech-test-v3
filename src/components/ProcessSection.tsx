@@ -31,7 +31,7 @@ export function ProcessSection() {
   ];
 
   return (
-    <section className="section-padding">
+    <section id="how-it-works" className="section-padding">
       <div className="container mx-auto px-4">
         <div className="max-w-3xl mx-auto text-center mb-16 animate-fade-up">
           <div className="inline-flex items-center rounded-full px-3 py-1 text-sm font-medium bg-fintech-blue/10 text-fintech-blue dark:bg-fintech-blue/20 dark:text-fintech-blue-light mb-4">

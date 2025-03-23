@@ -27,10 +27,10 @@ export function Header() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
   
-  const scrollToContact = () => {
-    const contactSection = document.querySelector('.contact-form-section');
-    if (contactSection) {
-      contactSection.scrollIntoView({ behavior: 'smooth' });
+  const scrollToSection = (sectionId: string) => {
+    const section = document.getElementById(sectionId);
+    if (section) {
+      section.scrollIntoView({ behavior: 'smooth' });
       setIsMobileMenuOpen(false);
     }
   };
@@ -55,21 +55,36 @@ export function Header() {
         
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center space-x-8">
-          <Link to="/about" className="text-foreground hover:text-fintech-blue dark:hover:text-fintech-blue-light transition-colors duration-200">
+          <button 
+            onClick={() => scrollToSection('about')} 
+            className="text-foreground hover:text-fintech-blue dark:hover:text-fintech-blue-light transition-colors duration-200"
+          >
             {t('nav.about')}
-          </Link>
-          <Link to="/how-it-works" className="text-foreground hover:text-fintech-blue dark:hover:text-fintech-blue-light transition-colors duration-200">
+          </button>
+          <button 
+            onClick={() => scrollToSection('how-it-works')} 
+            className="text-foreground hover:text-fintech-blue dark:hover:text-fintech-blue-light transition-colors duration-200"
+          >
             {t('nav.howItWorks')}
-          </Link>
-          <Link to="/services" className="text-foreground hover:text-fintech-blue dark:hover:text-fintech-blue-light transition-colors duration-200">
+          </button>
+          <button 
+            onClick={() => scrollToSection('services')} 
+            className="text-foreground hover:text-fintech-blue dark:hover:text-fintech-blue-light transition-colors duration-200"
+          >
             {t('nav.services')}
-          </Link>
-          <Link to="/blog" className="text-foreground hover:text-fintech-blue dark:hover:text-fintech-blue-light transition-colors duration-200">
+          </button>
+          <Link 
+            to="/blog" 
+            className="text-foreground hover:text-fintech-blue dark:hover:text-fintech-blue-light transition-colors duration-200"
+          >
             {t('nav.blog')}
           </Link>
-          <Link to="/contact" className="text-foreground hover:text-fintech-blue dark:hover:text-fintech-blue-light transition-colors duration-200">
+          <button 
+            onClick={() => scrollToSection('contact')} 
+            className="text-foreground hover:text-fintech-blue dark:hover:text-fintech-blue-light transition-colors duration-200"
+          >
             {t('nav.contact')}
-          </Link>
+          </button>
         </nav>
         
         <div className="flex items-center space-x-2">
@@ -79,7 +94,7 @@ export function Header() {
           <div className="hidden md:block">
             <Button 
               className="bg-fintech-blue hover:bg-fintech-blue-dark text-white button-glow"
-              onClick={scrollToContact}
+              onClick={() => scrollToSection('contact')}
             >
               {t('cta.getStarted')}
             </Button>
@@ -100,27 +115,24 @@ export function Header() {
       {isMobileMenuOpen && (
         <div className="md:hidden fixed inset-0 bg-background/95 dark:bg-background/95 backdrop-blur-sm z-40 pt-20 animate-fade-in">
           <nav className="container mx-auto px-4 flex flex-col space-y-6 py-6">
-            <Link 
-              to="/about" 
+            <button 
+              onClick={() => scrollToSection('about')} 
               className="text-xl font-medium text-center py-3"
-              onClick={() => setIsMobileMenuOpen(false)}
             >
               {t('nav.about')}
-            </Link>
-            <Link 
-              to="/how-it-works" 
+            </button>
+            <button 
+              onClick={() => scrollToSection('how-it-works')} 
               className="text-xl font-medium text-center py-3"
-              onClick={() => setIsMobileMenuOpen(false)}
             >
               {t('nav.howItWorks')}
-            </Link>
-            <Link 
-              to="/services" 
+            </button>
+            <button 
+              onClick={() => scrollToSection('services')} 
               className="text-xl font-medium text-center py-3"
-              onClick={() => setIsMobileMenuOpen(false)}
             >
               {t('nav.services')}
-            </Link>
+            </button>
             <Link 
               to="/blog" 
               className="text-xl font-medium text-center py-3"
@@ -128,16 +140,15 @@ export function Header() {
             >
               {t('nav.blog')}
             </Link>
-            <Link 
-              to="/contact" 
+            <button 
+              onClick={() => scrollToSection('contact')} 
               className="text-xl font-medium text-center py-3"
-              onClick={() => setIsMobileMenuOpen(false)}
             >
               {t('nav.contact')}
-            </Link>
+            </button>
             <Button 
               className="mt-4 bg-fintech-blue hover:bg-fintech-blue-dark text-white button-glow w-full"
-              onClick={scrollToContact}
+              onClick={() => scrollToSection('contact')}
             >
               {t('cta.getStarted')}
             </Button>

@@ -103,7 +103,7 @@ export function ServicesSection() {
   ];
 
   return (
-    <section className="section-padding bg-gray-50 dark:bg-gray-900">
+    <section id="services" className="section-padding bg-gray-50 dark:bg-gray-900">
       <div className="container mx-auto px-4">
         <div className="max-w-3xl mx-auto text-center mb-16 animate-fade-up">
           <div className="inline-flex items-center rounded-full px-3 py-1 text-sm font-medium bg-fintech-blue/10 text-fintech-blue dark:bg-fintech-blue/20 dark:text-fintech-blue-light mb-4">
@@ -149,11 +149,14 @@ export function ServicesSection() {
         <div className="mt-12 text-center">
           <Button 
             className="bg-fintech-blue hover:bg-fintech-blue-dark text-white button-glow"
-            asChild
+            onClick={() => {
+              const servicesDetailElement = document.getElementById('services-detail');
+              if (servicesDetailElement) {
+                servicesDetailElement.scrollIntoView({ behavior: 'smooth' });
+              }
+            }}
           >
-            <Link to="/services">
-              View All Services
-            </Link>
+            View All Services
           </Button>
         </div>
       </div>

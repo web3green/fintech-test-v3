@@ -71,7 +71,7 @@ export function ContactForm() {
   };
 
   return (
-    <section className="section-padding bg-gradient-to-b from-transparent to-gray-50 dark:to-gray-900 contact-form-section">
+    <section id="contact" className="section-padding bg-gradient-to-b from-transparent to-gray-50 dark:to-gray-900 contact-form-section">
       <div className="container mx-auto px-4">
         <div className="glass-card rounded-2xl overflow-hidden max-w-5xl mx-auto shadow-xl animate-fade-up">
           <div className="grid grid-cols-1 lg:grid-cols-2">

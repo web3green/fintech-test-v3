@@ -140,7 +140,6 @@ const Admin = () => {
     }
   }, [navigate]);
 
-  // Responsive: Toggle sidebar when screen size changes
   useEffect(() => {
     setIsSidebarOpen(!isMobile);
   }, [isMobile]);
@@ -760,4 +759,42 @@ const Admin = () => {
                             <TableCell>{article.category}</TableCell>
                             <TableCell>
                               <Badge className={article.published ? "bg-green-500" : "bg-yellow-500"}>
-                                {article.
+                                {article.published ? (language === 'en' ? "Published" : "Опубликовано") : (language === 'en' ? "Draft" : "Черновик")}
+                              </Badge>
+                            </TableCell>
+                            <TableCell>{article.date}</TableCell>
+                            <TableCell>
+                              <div className="flex items-center gap-2">
+                                <Button 
+                                  variant="ghost" 
+                                  size="sm"
+                                  onClick={() => handleEditArticle(article)}
+                                >
+                                  {language === 'en' ? "Edit" : "Редактировать"}
+                                </Button>
+                                <Button 
+                                  variant="ghost" 
+                                  size="sm"
+                                  className="text-destructive"
+                                  onClick={() => handleDeleteArticle(article.id)}
+                                >
+                                  {language === 'en' ? "Delete" : "Удалить"}
+                                </Button>
+                              </div>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          )}
+        </main>
+      </div>
+    </div>
+  );
+};
+
+export default Admin;

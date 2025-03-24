@@ -88,7 +88,7 @@ export const BlogSection = ({ expandedView = false }: BlogSectionProps) => {
       },
       excerpt: {
         en: 'A comprehensive guide to nominee services, including benefits, risks, and regulatory considerations.',
-        ru: 'Комплексное руководство по номинальным услугам, включая преимущества, риски и нормативные соображения.'
+        ru: 'Комплек��ное руководство по номинальным услугам, включая преимущества, риски и нормативные соображения.'
       },
       image: 'https://images.unsplash.com/photo-1664575599736-c5197c684172?ixlib=rb-4.0.3&auto=format&fit=crop',
       author: 'Michael Chen',

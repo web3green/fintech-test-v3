@@ -1,4 +1,3 @@
-
 import { ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -111,10 +110,10 @@ export function Hero() {
                     </div>
                     
                     <div className="grid grid-cols-2 gap-4">
-                      <div className="bg-fintech-blue/10 dark:bg-fintech-blue/20 p-4 rounded-lg">
+                      <Card className="bg-fintech-blue/10 dark:bg-fintech-blue/20 p-4 rounded-lg border-0">
                         <div className="text-xs text-muted-foreground mb-1">Banking</div>
                         <div className="font-medium">Accounts Worldwide</div>
-                      </div>
+                      </Card>
                       
                       <Card className="bg-fintech-orange/10 dark:bg-fintech-orange/20 p-4 rounded-lg border-0">
                         <div className="text-xs text-muted-foreground mb-2">Licenses</div>
@@ -129,7 +128,7 @@ export function Hero() {
                       </Card>
                     </div>
                     
-                    <div className="bg-fintech-blue/5 dark:bg-fintech-blue/10 p-4 rounded-lg">
+                    <Card className="bg-fintech-blue/10 dark:bg-fintech-blue/20 p-4 rounded-lg border-0">
                       <div className="text-xs text-muted-foreground mb-2">Global Jurisdictions</div>
                       <div className="flex flex-wrap gap-2">
                         <span className="inline-block text-xs bg-fintech-orange/20 px-2 py-1 rounded">MGA</span>
@@ -138,7 +137,7 @@ export function Hero() {
                         <span className="inline-block text-xs bg-fintech-blue/20 px-2 py-1 rounded">AML5</span>
                         <span className="inline-block text-xs bg-fintech-orange/20 px-2 py-1 rounded">Casino Compliance</span>
                       </div>
-                    </div>
+                    </Card>
                     
                     <div className="pt-4 border-t border-gray-200 dark:border-gray-700">
                       <div className="flex items-center justify-between text-sm">

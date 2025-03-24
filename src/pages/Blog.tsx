@@ -1,3 +1,4 @@
+
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -70,7 +71,7 @@ export default function Blog() {
         en: 'A comprehensive guide to nominee services, including benefits, risks, and regulatory considerations.',
         ru: 'Комплексное руководство по номинальным услугам, включая преимущества, риски и нормативные соображения.'
       },
-      image: 'https://images.unsplash.com/photo-1664575599736-c5197c684172',
+      image: 'https://images.unsplash.com/photo-1542744094-24638eff58bb?ixlib=rb-4.0.3&auto=format&fit=crop',
       author: 'Michael Chen',
       date: 'March 10, 2025',
       category: {

@@ -1,12 +1,11 @@
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'lucide-react';
-
 export function AboutSection() {
-  const { t } = useLanguage();
-
-  return (
-    <section id="about" className="section-padding">
+  const {
+    t
+  } = useLanguage();
+  return <section id="about" className="section-padding">
       <div className="container mx-auto px-8 md:px-12 lg:px-16">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div className="order-2 lg:order-1">
@@ -38,7 +37,7 @@ export function AboutSection() {
                         </div>
                         <div className="text-center">
                           <div className="text-xs text-white/70">Team</div>
-                          <div className="mt-1 font-medium text-white">30+ experts</div>
+                          <div className="mt-1 font-medium text-white">10+ experts</div>
                         </div>
                       </div>
                     </div>
@@ -81,22 +80,19 @@ export function AboutSection() {
               </div>
             </div>
             
-            <Button 
-              variant="outline" 
-              className="group"
-              onClick={() => {
-                const servicesElement = document.getElementById('services');
-                if (servicesElement) {
-                  servicesElement.scrollIntoView({ behavior: 'smooth' });
-                }
-              }}
-            >
+            <Button variant="outline" className="group" onClick={() => {
+            const servicesElement = document.getElementById('services');
+            if (servicesElement) {
+              servicesElement.scrollIntoView({
+                behavior: 'smooth'
+              });
+            }
+          }}>
               Explore Our Services
               <ArrowRight className="ml-2 h-4 w-4 transition-transform duration-300 transform group-hover:translate-x-1" />
             </Button>
           </div>
         </div>
       </div>
-    </section>
-  );
+    </section>;
 }

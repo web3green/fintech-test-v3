@@ -78,8 +78,16 @@ export function Hero() {
                   
                   <div className="space-y-6">
                     <div className="space-y-3">
-                      <div className="bg-gray-100 dark:bg-gray-700 h-10 rounded-lg w-full animate-pulse"></div>
-                      <div className="bg-gray-100 dark:bg-gray-700 h-10 rounded-lg w-3/4 animate-pulse"></div>
+                      <div className="grid grid-cols-2 gap-2">
+                        <div className="bg-gray-50 dark:bg-gray-700 p-2 rounded text-xs text-center">Fintech</div>
+                        <div className="bg-gray-50 dark:bg-gray-700 p-2 rounded text-xs text-center">E-commerce</div>
+                        <div className="bg-gray-50 dark:bg-gray-700 p-2 rounded text-xs text-center">Blockchain</div>
+                        <div className="bg-gray-50 dark:bg-gray-700 p-2 rounded text-xs text-center">Startups</div>
+                        <div className="bg-gray-50 dark:bg-gray-700 p-2 rounded text-xs text-center">Neobanks</div>
+                        <div className="bg-gray-50 dark:bg-gray-700 p-2 rounded text-xs text-center">Digital Wallets</div>
+                        <div className="bg-gray-50 dark:bg-gray-700 p-2 rounded text-xs text-center">Gaming</div>
+                        <div className="bg-gray-50 dark:bg-gray-700 p-2 rounded text-xs text-center">SaaS</div>
+                      </div>
                     </div>
                     
                     <div className="grid grid-cols-2 gap-4">

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { 
-  Users, FileText, BarChart3, Settings, 
+  FileText, BarChart3, Settings, 
   Bell, Search, Menu, X, LogOut, MessageSquare,
   Newspaper, Send, Link as LinkIcon, Globe, Webhook
 } from "lucide-react";
@@ -28,6 +28,7 @@ import { ArticlesPanel } from "@/components/admin/ArticlesPanel";
 import { DashboardPanel } from "@/components/admin/DashboardPanel";
 import { WebhookPanel } from "@/components/admin/WebhookPanel";
 import { RequestsPanel } from "@/components/admin/RequestsPanel";
+import { SocialLinksPanel } from "@/components/admin/SocialLinksPanel";
 import { toast } from "sonner";
 
 const loginSchema = z.object({
@@ -108,7 +109,7 @@ const Admin = () => {
       <div className="flex items-center justify-center min-h-screen bg-background">
         <Card className="w-[350px]">
           <CardHeader>
-            <CardTitle className="text-center">{language === 'en' ? "Admin Login" : "Вход для администратора"}</CardTitle>
+            <CardTitle className="text-center">{language === 'en' ? "Admin Login" : "В��од для администратора"}</CardTitle>
           </CardHeader>
           <CardContent>
             <Form {...loginForm}>
@@ -292,6 +293,7 @@ const Admin = () => {
           {currentTab === "articles" && <ArticlesPanel />}
           {currentTab === "webhooks" && <WebhookPanel />}
           {currentTab === "requests" && <RequestsPanel />}
+          {currentTab === "social" && <SocialLinksPanel />}
           
           {currentTab === "settings" && (
             <div className="space-y-4">
@@ -301,19 +303,6 @@ const Admin = () => {
                 </CardHeader>
                 <CardContent>
                   <p>{language === 'en' ? "Here you can manage your settings." : "Здесь вы можете управлять своими настройками."}</p>
-                </CardContent>
-              </Card>
-            </div>
-          )}
-          
-          {currentTab === "social" && (
-            <div className="space-y-4">
-              <Card>
-                <CardHeader>
-                  <CardTitle>{language === 'en' ? "Social Links" : "Социальные ссылки"}</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p>{language === 'en' ? "Manage your social media links here." : "Управляйте своими ссылками на социальные сети здесь."}</p>
                 </CardContent>
               </Card>
             </div>

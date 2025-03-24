@@ -4,7 +4,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Calendar, User, Clock, ThumbsUp, ThumbsDown, Star } from 'lucide-react';
+import { Calendar, User, Clock, ThumbsUp, ThumbsDown, Star, X } from 'lucide-react';
 import { toast } from 'sonner';
 
 interface BlogPostDialogProps {
@@ -59,27 +59,37 @@ export const BlogPostDialog = ({ post, isOpen, onClose }: BlogPostDialogProps) =
     <Dialog open={isOpen} onOpenChange={() => onClose()}>
       <DialogContent className="max-w-4xl max-h-[90vh] p-0 overflow-hidden">
         <DialogTitle className="sr-only">{getLocalizedContent(post.title)}</DialogTitle>
-        <div className="relative h-32 overflow-hidden">
+        <div className="relative h-16 sm:h-24 md:h-32 overflow-hidden">
           <img 
             src={postImage} 
             alt={getLocalizedContent(post.title)} 
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end">
-            <div className="p-6">
-              <div className="inline-flex items-center rounded-full px-3 py-1 text-sm font-medium bg-white/20 backdrop-blur-sm mb-4">
+            <div className="p-4 sm:p-6">
+              <div className="inline-flex items-center rounded-full px-3 py-1 text-sm font-medium bg-white/20 backdrop-blur-sm mb-2 sm:mb-4">
                 {getLocalizedContent(post.category)}
               </div>
-              <h2 className="text-2xl md:text-3xl font-display font-bold text-white">
+              <h2 className="text-xl sm:text-2xl md:text-3xl font-display font-bold text-white">
                 {getLocalizedContent(post.title)}
               </h2>
             </div>
           </div>
         </div>
         
-        <DialogHeader className="px-6 pt-4 pb-0">
+        <Button 
+          variant="ghost" 
+          size="icon" 
+          className="absolute right-4 top-4 rounded-full bg-black/20 backdrop-blur-sm text-white z-10 hover:bg-black/40"
+          onClick={onClose}
+        >
+          <X className="h-4 w-4" />
+          <span className="sr-only">{language === 'en' ? 'Close' : 'Закрыть'}</span>
+        </Button>
+        
+        <DialogHeader className="px-4 sm:px-6 pt-4 pb-0">
           <div className="flex items-center justify-between text-sm text-muted-foreground">
-            <div className="flex items-center space-x-4">
+            <div className="flex flex-wrap items-center gap-3 sm:gap-4">
               <div className="flex items-center">
                 <User className="h-4 w-4 mr-1" />
                 <span>{post.author}</span>
@@ -96,7 +106,7 @@ export const BlogPostDialog = ({ post, isOpen, onClose }: BlogPostDialogProps) =
           </div>
         </DialogHeader>
         
-        <ScrollArea className="p-6 max-h-[calc(90vh-250px)]">
+        <ScrollArea className="p-4 sm:p-6 max-h-[calc(90vh-180px)]">
           <div className="space-y-4">
             <p className="text-lg font-medium">
               {getLocalizedContent(post.excerpt)}
@@ -157,7 +167,7 @@ export const BlogPostDialog = ({ post, isOpen, onClose }: BlogPostDialogProps) =
               <h4 className="text-lg font-medium mb-4">
                 {language === 'en' ? 'Share your thoughts about this article:' : 'Поделитесь своим мнением об этой статье:'}
               </h4>
-              <div className="flex space-x-4">
+              <div className="flex flex-wrap gap-3">
                 <Button 
                   variant={selectedReaction === 'like' ? 'default' : 'outline'} 
                   size="sm"

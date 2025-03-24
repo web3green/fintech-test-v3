@@ -1,21 +1,41 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { Search, Calendar, User, ArrowRight, Clock, Tag, ChevronRight, ChevronDown, ChevronUp } from 'lucide-react';
+import { Search, Calendar, User, ArrowRight, Clock, Tag, ChevronRight, ChevronDown, ChevronUp, Filter } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { useNavigate } from 'react-router-dom';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { BlogPostDialog } from './BlogPostDialog';
+import { 
+  Select, 
+  SelectContent, 
+  SelectItem, 
+  SelectTrigger, 
+  SelectValue 
+} from '@/components/ui/select';
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
 
-export const BlogSection = () => {
+interface BlogSectionProps {
+  expandedView?: boolean;
+}
+
+export const BlogSection = ({ expandedView = false }: BlogSectionProps) => {
   const { t, language } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
-  const navigate = useNavigate();
   const [selectedPost, setSelectedPost] = useState(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [categoryFilter, setCategoryFilter] = useState('all');
+  const [currentPage, setCurrentPage] = useState(1);
+  const postsPerPage = expandedView ? 9 : 6;
 
-  // Sample blog posts data with bilingual content (same as in Blog.tsx) - updated for 2025
   const posts = [
     {
       id: 1,
@@ -188,7 +208,6 @@ export const BlogSection = () => {
     }
   ];
 
-  // Function to get content based on current language
   const getLocalizedContent = (content) => {
     if (typeof content === 'object') {
       return content[language] || content.en;
@@ -196,7 +215,6 @@ export const BlogSection = () => {
     return content;
   };
 
-  // Function to render color scheme for posts
   const renderPostColor = (colorScheme) => {
     switch (colorScheme) {
       case 'blue':
@@ -210,24 +228,30 @@ export const BlogSection = () => {
     }
   };
 
-  // Navigate to blog page
-  const handleViewAllClick = () => {
-    navigate('/blog');
-  };
-
-  // Handle post click
   const handlePostClick = (post, e) => {
-    e.stopPropagation(); // Prevent navigation to blog page
+    e.stopPropagation();
     setSelectedPost(post);
     setIsDialogOpen(true);
   };
 
-  // Display only the first 6 posts initially
-  const initialPosts = posts.slice(0, 6);
-  // All remaining posts
-  const expandedPosts = posts.slice(6);
+  const filteredPosts = posts.filter(post => {
+    const titleMatch = getLocalizedContent(post.title).toLowerCase().includes(searchQuery.toLowerCase());
+    const excerptMatch = getLocalizedContent(post.excerpt).toLowerCase().includes(searchQuery.toLowerCase());
+    const categoryMatch = categoryFilter === 'all' || getLocalizedContent(post.category).toLowerCase() === categoryFilter.toLowerCase();
+    return (titleMatch || excerptMatch) && categoryMatch;
+  });
 
-  // Get the correct image URL with fallback
+  const categories = ['all', ...new Set(posts.map(post => getLocalizedContent(post.category).toLowerCase()))];
+
+  const indexOfLastPost = currentPage * postsPerPage;
+  const indexOfFirstPost = indexOfLastPost - postsPerPage;
+  const currentPosts = filteredPosts.slice(indexOfFirstPost, indexOfLastPost);
+  const totalPages = Math.ceil(filteredPosts.length / postsPerPage);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery, categoryFilter]);
+
   const getImageUrl = (imageUrl) => {
     if (imageUrl && imageUrl.startsWith('http')) {
       return imageUrl;
@@ -236,7 +260,7 @@ export const BlogSection = () => {
   };
 
   return (
-    <section id="blog" className="py-20 bg-white dark:bg-gray-900">
+    <section id="blog" className={`py-20 bg-white dark:bg-gray-900 ${expandedView ? 'min-h-screen' : ''}`}>
       <div className="container mx-auto px-6 md:px-12">
         <div className="text-center mb-10">
           <h2 className="text-3xl md:text-4xl font-display font-bold mb-4">
@@ -249,9 +273,41 @@ export const BlogSection = () => {
           </p>
         </div>
 
-        {/* Initial 6 Blog Posts */}
+        {expandedView && (
+          <div className="flex flex-col md:flex-row gap-4 mb-8">
+            <div className="relative flex-grow">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+              <Input 
+                placeholder={language === 'en' ? 'Search articles...' : 'Поиск статей...'}
+                className="pl-10"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </div>
+            <div className="w-full md:w-64">
+              <Select value={categoryFilter} onValueChange={setCategoryFilter}>
+                <SelectTrigger>
+                  <div className="flex items-center">
+                    <Filter className="h-4 w-4 mr-2" />
+                    <SelectValue placeholder={language === 'en' ? 'Filter by Category' : 'Фильтр по категории'} />
+                  </div>
+                </SelectTrigger>
+                <SelectContent>
+                  {categories.map((category) => (
+                    <SelectItem key={category} value={category}>
+                      {category === 'all' 
+                        ? (language === 'en' ? 'All Categories' : 'Все категории') 
+                        : category.charAt(0).toUpperCase() + category.slice(1)}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+        )}
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-8">
-          {initialPosts.map(post => (
+          {(expandedView ? currentPosts : filteredPosts.slice(0, 6)).map(post => (
             <Card 
               key={post.id} 
               className={`overflow-hidden border-0 shadow-md hover-scale transition-all duration-300 cursor-pointer ${renderPostColor(post.colorScheme)}`}
@@ -288,87 +344,107 @@ export const BlogSection = () => {
           ))}
         </div>
 
-        {/* Collapsible Section for Additional Posts */}
-        <Collapsible
-          open={isOpen}
-          onOpenChange={setIsOpen}
-          className="w-full space-y-8"
-        >
-          <div className="flex justify-center">
-            <CollapsibleTrigger asChild>
-              <Button 
-                variant="outline" 
-                className="flex items-center gap-2 border-dashed"
-              >
-                {isOpen ? (
-                  <>
-                    {language === 'en' ? 'Show Less' : 'Показать меньше'}
-                    <ChevronUp className="h-4 w-4" />
-                  </>
-                ) : (
-                  <>
-                    {language === 'en' ? 'Load More Articles' : 'Загрузить больше статей'}
-                    <ChevronDown className="h-4 w-4" />
-                  </>
-                )}
-              </Button>
-            </CollapsibleTrigger>
-          </div>
-          
-          <CollapsibleContent className="space-y-8">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {expandedPosts.map(post => (
-                <Card 
-                  key={post.id} 
-                  className={`overflow-hidden border-0 shadow-md hover-scale transition-all duration-300 cursor-pointer ${renderPostColor(post.colorScheme)}`}
-                  onClick={(e) => handlePostClick(post, e)}
-                >
-                  <div className="h-48 overflow-hidden">
-                    <img 
-                      src={getImageUrl(post.image)} 
-                      alt={getLocalizedContent(post.title)} 
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                  <CardContent className="p-6">
-                    <div className="inline-flex items-center rounded-full px-3 py-1 text-xs font-medium bg-white/20 backdrop-blur-sm mb-4">
-                      {getLocalizedContent(post.category)}
-                    </div>
-                    <h3 className="text-xl font-display font-bold mb-3">{getLocalizedContent(post.title)}</h3>
-                    <p className="mb-6 opacity-80 line-clamp-2">
-                      {getLocalizedContent(post.excerpt)}
-                    </p>
-                    
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center text-sm opacity-70">
-                        <Clock className="h-4 w-4 mr-1" />
-                        <span>{post.readingTime}</span>
-                      </div>
-                      <Button variant="ghost" size="sm" className="opacity-90 hover:opacity-100 group">
-                        {language === 'en' ? 'Read More' : 'Подробнее'}
-                        <ChevronRight className="h-4 w-4 ml-1 transition-transform group-hover:translate-x-1" />
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
+        {expandedView && filteredPosts.length > postsPerPage && (
+          <Pagination className="my-8">
+            <PaginationContent>
+              <PaginationItem>
+                <PaginationPrevious 
+                  onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                  className={currentPage === 1 ? 'pointer-events-none opacity-50' : ''}
+                />
+              </PaginationItem>
+              
+              {[...Array(totalPages)].map((_, index) => (
+                <PaginationItem key={index}>
+                  <PaginationLink 
+                    isActive={currentPage === index + 1}
+                    onClick={() => setCurrentPage(index + 1)}
+                  >
+                    {index + 1}
+                  </PaginationLink>
+                </PaginationItem>
               ))}
-            </div>
-          </CollapsibleContent>
-        </Collapsible>
+              
+              <PaginationItem>
+                <PaginationNext 
+                  onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                  className={currentPage === totalPages ? 'pointer-events-none opacity-50' : ''}
+                />
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
+        )}
 
-        {/* View All Button */}
-        <div className="text-center mt-10">
-          <Button 
-            className="bg-fintech-blue hover:bg-fintech-blue-dark text-white"
-            onClick={handleViewAllClick}
+        {!expandedView && filteredPosts.length > 6 && (
+          <Collapsible
+            open={isOpen}
+            onOpenChange={setIsOpen}
+            className="w-full space-y-8"
           >
-            {language === 'en' ? 'View All Articles' : 'Просмотреть все статьи'}
-            <ArrowRight className="h-4 w-4 ml-2" />
-          </Button>
-        </div>
+            <div className="flex justify-center">
+              <CollapsibleTrigger asChild>
+                <Button 
+                  variant="outline" 
+                  className="flex items-center gap-2 border-dashed"
+                >
+                  {isOpen ? (
+                    <>
+                      {language === 'en' ? 'Show Less' : 'Показать меньше'}
+                      <ChevronUp className="h-4 w-4" />
+                    </>
+                  ) : (
+                    <>
+                      {language === 'en' ? 'Load More Articles' : 'Загрузить больше статей'}
+                      <ChevronDown className="h-4 w-4" />
+                    </>
+                  )}
+                </Button>
+              </CollapsibleTrigger>
+            </div>
+            
+            <CollapsibleContent className="space-y-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {filteredPosts.slice(6).map(post => (
+                  <Card 
+                    key={post.id} 
+                    className={`overflow-hidden border-0 shadow-md hover-scale transition-all duration-300 cursor-pointer ${renderPostColor(post.colorScheme)}`}
+                    onClick={(e) => handlePostClick(post, e)}
+                  >
+                    <div className="h-48 overflow-hidden">
+                      <img 
+                        src={getImageUrl(post.image)} 
+                        alt={getLocalizedContent(post.title)} 
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <CardContent className="p-6">
+                      <div className="inline-flex items-center rounded-full px-3 py-1 text-xs font-medium bg-white/20 backdrop-blur-sm mb-4">
+                        {getLocalizedContent(post.category)}
+                      </div>
+                      <h3 className="text-xl font-display font-bold mb-3">{getLocalizedContent(post.title)}</h3>
+                      <p className="mb-6 opacity-80 line-clamp-2">
+                        {getLocalizedContent(post.excerpt)}
+                      </p>
+                      
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center text-sm opacity-70">
+                          <Clock className="h-4 w-4 mr-1" />
+                          <span>{post.readingTime}</span>
+                        </div>
+                        <Button variant="ghost" size="sm" className="opacity-90 hover:opacity-100 group">
+                          {language === 'en' ? 'Read More' : 'Подробнее'}
+                          <ChevronRight className="h-4 w-4 ml-1 transition-transform group-hover:translate-x-1" />
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </CollapsibleContent>
+          </Collapsible>
+        )}
       </div>
       
-      {/* Blog Post Dialog */}
       <BlogPostDialog 
         post={selectedPost}
         isOpen={isDialogOpen}

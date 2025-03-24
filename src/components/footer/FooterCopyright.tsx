@@ -1,7 +1,9 @@
 
-import { Link } from 'react-router-dom';
+import { useState } from 'react';
 import { Heart } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { PrivacyPolicyDialog } from './PrivacyPolicyDialog';
+import { TermsOfServiceDialog } from './TermsOfServiceDialog';
 
 interface FooterCopyrightProps {
   scrollToTop: () => void;
@@ -10,6 +12,9 @@ interface FooterCopyrightProps {
 export function FooterCopyright({ scrollToTop }: FooterCopyrightProps) {
   const { t, language } = useLanguage();
   const currentYear = new Date().getFullYear();
+  
+  const [privacyDialogOpen, setPrivacyDialogOpen] = useState(false);
+  const [termsDialogOpen, setTermsDialogOpen] = useState(false);
 
   return (
     <div className="border-t border-gray-200 dark:border-gray-800 mt-8 pt-8">
@@ -21,12 +26,18 @@ export function FooterCopyright({ scrollToTop }: FooterCopyrightProps) {
           </p>
         </div>
         <div className="flex space-x-6">
-          <Link to="/privacy" className="text-sm text-muted-foreground hover:text-fintech-blue dark:hover:text-fintech-blue-light transition-colors">
+          <button 
+            onClick={() => setPrivacyDialogOpen(true)}
+            className="text-sm text-muted-foreground hover:text-fintech-blue dark:hover:text-fintech-blue-light transition-colors"
+          >
             {t('footer.privacy')}
-          </Link>
-          <Link to="/terms" className="text-sm text-muted-foreground hover:text-fintech-blue dark:hover:text-fintech-blue-light transition-colors">
+          </button>
+          <button 
+            onClick={() => setTermsDialogOpen(true)}
+            className="text-sm text-muted-foreground hover:text-fintech-blue dark:hover:text-fintech-blue-light transition-colors"
+          >
             {t('footer.terms')}
-          </Link>
+          </button>
           <a 
             href="#" 
             onClick={(e) => {
@@ -39,6 +50,16 @@ export function FooterCopyright({ scrollToTop }: FooterCopyrightProps) {
           </a>
         </div>
       </div>
+      
+      <PrivacyPolicyDialog 
+        open={privacyDialogOpen} 
+        onOpenChange={setPrivacyDialogOpen} 
+      />
+      
+      <TermsOfServiceDialog 
+        open={termsDialogOpen} 
+        onOpenChange={setTermsDialogOpen} 
+      />
     </div>
   );
 }

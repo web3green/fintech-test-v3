@@ -31,8 +31,6 @@ const App = () => {
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/admin/*" element={<Admin />} />
-            <Route path="/privacy" element={<NotFound />} />
-            <Route path="/terms" element={<NotFound />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
@@ -40,6 +38,6 @@ const App = () => {
       </TooltipProvider>
     </QueryClientProvider>
   );
-};
+}
 
 export default App;

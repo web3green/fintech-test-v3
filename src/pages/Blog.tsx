@@ -14,13 +14,13 @@ export default function Blog() {
   const { t, language } = useLanguage();
   const [searchQuery, setSearchQuery] = useState('');
 
-  // Sample blog posts data with bilingual content
+  // Sample blog posts data with bilingual content - updated for 2025
   const posts = [
     {
       id: 1,
       title: {
-        en: 'Guide to Offshore Company Registration in 2023',
-        ru: 'Руководство по регистрации оффшорных компаний в 2023 году'
+        en: 'Guide to Offshore Company Registration in 2025',
+        ru: 'Руководство по регистрации оффшорных компаний в 2025 году'
       },
       excerpt: {
         en: 'Learn about the benefits, procedures, and considerations for registering an offshore company in today\'s global business environment.',
@@ -28,7 +28,7 @@ export default function Blog() {
       },
       image: 'https://images.unsplash.com/photo-1507679799987-c73779587ccf',
       author: 'Alex Morgan',
-      date: 'June 15, 2023',
+      date: 'January 15, 2025',
       category: {
         en: 'Company Registration',
         ru: 'Регистрация компаний'
@@ -50,7 +50,7 @@ export default function Blog() {
       },
       image: 'https://images.unsplash.com/photo-1601597111158-2fceff292cdc',
       author: 'Sarah Johnson',
-      date: 'July 22, 2023',
+      date: 'February 22, 2025',
       category: {
         en: 'Banking',
         ru: 'Банковские услуги'
@@ -71,7 +71,7 @@ export default function Blog() {
       },
       image: 'https://images.unsplash.com/photo-1664575599736-c5197c684172',
       author: 'Michael Chen',
-      date: 'August 10, 2023',
+      date: 'March 10, 2025',
       category: {
         en: 'Nominee Services',
         ru: 'Номинальный сервис'
@@ -92,7 +92,7 @@ export default function Blog() {
       },
       image: 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85',
       author: 'Emma Williams',
-      date: 'September 5, 2023',
+      date: 'April 5, 2025',
       category: {
         en: 'Licensing',
         ru: 'Лицензирование'
@@ -113,7 +113,7 @@ export default function Blog() {
       },
       image: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f',
       author: 'David Brown',
-      date: 'October 12, 2023',
+      date: 'May 12, 2025',
       category: {
         en: 'Taxation',
         ru: 'Налогообложение'
@@ -125,8 +125,8 @@ export default function Blog() {
     {
       id: 6,
       title: {
-        en: 'Emerging Fintech Trends in 2023',
-        ru: 'Новые тенденции финтеха в 2023 году'
+        en: 'Emerging Fintech Trends in 2025',
+        ru: 'Новые тенденции финтеха в 2025 году'
       },
       excerpt: {
         en: 'Explore the latest financial technology trends that are reshaping the global business landscape.',
@@ -134,7 +134,7 @@ export default function Blog() {
       },
       image: 'https://images.unsplash.com/photo-1618044733300-9472054094ee',
       author: 'Jessica Lee',
-      date: 'November 18, 2023',
+      date: 'June 18, 2025',
       category: {
         en: 'Fintech',
         ru: 'Финтех'
@@ -155,7 +155,7 @@ export default function Blog() {
       },
       image: 'https://images.unsplash.com/photo-1516245834210-c4c142787335',
       author: 'Robert Zhang',
-      date: 'December 5, 2023',
+      date: 'July 5, 2025',
       category: {
         en: 'Crypto Licensing',
         ru: 'Крипто-лицензирование'
@@ -176,7 +176,7 @@ export default function Blog() {
       },
       image: 'https://images.unsplash.com/photo-1553877522-43269d4ea984',
       author: 'Thomas Wilson',
-      date: 'January 15, 2024',
+      date: 'August 15, 2025',
       category: {
         en: 'Corporate Restructuring',
         ru: 'Корпоративная реструктуризация'

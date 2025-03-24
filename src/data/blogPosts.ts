@@ -20,7 +20,7 @@ export const blogPosts = [
     readingTime: '8 min',
     tags: ['offshore', 'company registration', 'international business', 'tax optimization'],
     featured: true,
-    colorScheme: 'blue' // blue theme
+    colorScheme: 'blue' as 'blue' // explicitly type as the union type
   },
   {
     id: 2,
@@ -41,7 +41,7 @@ export const blogPosts = [
     },
     readingTime: '6 min',
     tags: ['international banking', 'business accounts', 'fintech', 'payment solutions'],
-    colorScheme: 'orange' // orange theme
+    colorScheme: 'orange' as 'orange' // explicitly type as the union type
   },
   {
     id: 3,
@@ -62,7 +62,7 @@ export const blogPosts = [
     },
     readingTime: '10 min',
     tags: ['nominee directors', 'nominee shareholders', 'business confidentiality', 'legal representation'],
-    colorScheme: 'dark' // black/white theme
+    colorScheme: 'dark' as 'dark' // explicitly type as the union type
   },
   {
     id: 4,
@@ -83,7 +83,7 @@ export const blogPosts = [
     },
     readingTime: '12 min',
     tags: ['financial licenses', 'EMI license', 'regulatory compliance', 'financial institutions'],
-    colorScheme: 'blue' // blue theme
+    colorScheme: 'blue' as 'blue' // explicitly type as the union type
   },
   {
     id: 5,
@@ -104,7 +104,7 @@ export const blogPosts = [
     },
     readingTime: '9 min',
     tags: ['tax optimization', 'international taxation', 'tax planning', 'corporate structure'],
-    colorScheme: 'orange' // orange theme
+    colorScheme: 'orange' as 'orange' // explicitly type as the union type
   },
   {
     id: 6,
@@ -125,7 +125,7 @@ export const blogPosts = [
     },
     readingTime: '7 min',
     tags: ['fintech', 'digital payments', 'blockchain', 'cryptocurrency'],
-    colorScheme: 'dark' // black/white theme
+    colorScheme: 'dark' as 'dark' // explicitly type as the union type
   },
   {
     id: 7,
@@ -146,7 +146,7 @@ export const blogPosts = [
     },
     readingTime: '11 min',
     tags: ['cryptocurrency', 'crypto exchange', 'regulations', 'compliance', 'bitcoin'],
-    colorScheme: 'blue' // blue theme
+    colorScheme: 'blue' as 'blue' // explicitly type as the union type
   },
   {
     id: 8,
@@ -167,6 +167,6 @@ export const blogPosts = [
     },
     readingTime: '10 min',
     tags: ['corporate restructuring', 'business optimization', 'reorganization', 'mergers and acquisitions'],
-    colorScheme: 'orange' // orange theme
+    colorScheme: 'orange' as 'orange' // explicitly type as the union type
   }
 ];

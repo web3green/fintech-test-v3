@@ -2,13 +2,14 @@
 import React from 'react';
 import { User, Calendar, Clock, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { BlogPost } from './BlogCard';
 
 interface FeaturedArticleProps {
-  post: any;
+  post: BlogPost;
   language: string;
   getLocalizedContent: (content: any) => string;
   getImageUrl: (imageUrl: string) => string;
-  handlePostClick: (post: any) => void;
+  handlePostClick: (post: BlogPost) => void;
 }
 
 export const FeaturedArticle = ({ 
@@ -19,7 +20,7 @@ export const FeaturedArticle = ({
   handlePostClick 
 }: FeaturedArticleProps) => {
   
-  const getButtonStyle = (colorScheme) => {
+  const getButtonStyle = (colorScheme: 'blue' | 'orange' | 'dark' | 'default') => {
     switch (colorScheme) {
       case 'blue':
         return 'bg-white text-fintech-blue hover:bg-gray-100';
@@ -68,7 +69,7 @@ export const FeaturedArticle = ({
               <Clock className="h-4 w-4 mr-1" />
               <span>{post.readingTime}</span>
             </div>
-            <Button className={`${getButtonStyle(post.colorScheme)} shadow-lg`}>
+            <Button className={`${getButtonStyle(post.colorScheme || 'default')} shadow-lg`}>
               {language === 'en' ? 'Read Article' : 'Читать Статью'} <ArrowRight className="h-4 w-4 ml-2" />
             </Button>
           </div>

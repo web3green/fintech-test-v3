@@ -1,6 +1,9 @@
+
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, UserRound, Handshake, ShieldCheck } from 'lucide-react';
+import { Card, CardContent } from '@/components/ui/card';
+
 export function AboutSection() {
   const {
     t
@@ -12,8 +15,8 @@ export function AboutSection() {
             <div className="relative rounded-xl overflow-hidden shadow-lg">
               <div className="aspect-[4/3] bg-gradient-to-br from-fintech-blue/90 to-fintech-blue-dark rounded-xl">
                 <div className="absolute inset-0 flex items-center justify-center p-8">
-                  <div className="glass-card rounded-xl p-6 w-full mx-auto shadow-lg">
-                    <div className="space-y-4">
+                  <Card className="glass-card rounded-xl w-full mx-auto shadow-lg">
+                    <CardContent className="p-6 space-y-4">
                       <div className="flex items-center space-x-4">
                         <div className="h-10 w-10 rounded-full bg-fintech-orange flex items-center justify-center text-white font-bold text-sm">FA</div>
                         <div>
@@ -24,13 +27,22 @@ export function AboutSection() {
                         </div>
                       </div>
                       
-                      <div className="space-y-2">
-                        <div className="w-full h-4 bg-white/20 rounded"></div>
-                        <div className="w-2/3 h-4 bg-white/20 rounded"></div>
-                        <div className="w-3/4 h-4 bg-white/20 rounded"></div>
+                      <div className="space-y-3">
+                        <div className="flex items-center space-x-2 text-white">
+                          <UserRound className="h-4 w-4 text-fintech-orange" />
+                          <div className="text-sm">Персональный менеджер для каждого клиента</div>
+                        </div>
+                        <div className="flex items-center space-x-2 text-white">
+                          <Handshake className="h-4 w-4 text-fintech-blue-light" />
+                          <div className="text-sm">Полное сопровождение на всех этапах</div>
+                        </div>
+                        <div className="flex items-center space-x-2 text-white">
+                          <ShieldCheck className="h-4 w-4 text-green-400" />
+                          <div className="text-sm">Работа через сервисы гаранта</div>
+                        </div>
                       </div>
                       
-                      <div className="grid grid-cols-2 gap-4 pt-4">
+                      <div className="grid grid-cols-2 gap-4 pt-2">
                         <div className="text-center">
                           <div className="text-xs text-white/70">Founded</div>
                           <div className="mt-1 font-medium text-white">2015</div>
@@ -40,8 +52,8 @@ export function AboutSection() {
                           <div className="mt-1 font-medium text-white">10+ experts</div>
                         </div>
                       </div>
-                    </div>
-                  </div>
+                    </CardContent>
+                  </Card>
                 </div>
               </div>
             </div>

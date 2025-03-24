@@ -13,17 +13,14 @@ import {
   CollapsibleContent,
   CollapsibleTrigger
 } from '@/components/ui/collapsible';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export function ServicesSection() {
   const { t } = useLanguage();
-  const [openServices, setOpenServices] = useState<string[]>([]);
+  const [openService, setOpenService] = useState<string | null>(null);
 
   const toggleService = (id: string) => {
-    setOpenServices(prev => 
-      prev.includes(id) 
-        ? prev.filter(item => item !== id) 
-        : [...prev, id]
-    );
+    setOpenService(prev => prev === id ? null : id);
   };
 
   const services = [
@@ -137,57 +134,78 @@ export function ServicesSection() {
         
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
           {services.map((service, index) => (
-            <Collapsible 
+            <motion.div
               key={service.id}
-              open={openServices.includes(service.id)}
-              onOpenChange={() => toggleService(service.id)}
+              layout
               className="animate-fade-up"
               style={{ animationDelay: `${index * 50}ms` }}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ 
+                duration: 0.3,
+                layout: { duration: 0.3, type: "spring" }
+              }}
             >
-              <Card 
-                className={`relative h-full transition-all duration-300 border ${service.borderColor} hover:shadow-lg ${openServices.includes(service.id) ? 'shadow-md' : ''}`}
+              <Collapsible 
+                open={openService === service.id}
+                onOpenChange={() => toggleService(service.id)}
+                className={`h-full transition-all duration-300 ${openService === service.id ? 'z-10 relative' : ''}`}
               >
-                <CollapsibleTrigger className="w-full text-left">
-                  <CardContent className="p-5">
-                    <div className="flex items-start justify-between">
-                      <div className={`${service.color} rounded-full p-3 inline-flex items-center justify-center mb-3 w-10 h-10`}>
-                        <service.icon className={`h-5 w-5 ${service.iconColor}`} />
+                <Card 
+                  className={`relative h-full transition-all duration-300 border ${service.borderColor} hover:shadow-lg ${openService === service.id ? 'shadow-md' : ''}`}
+                >
+                  <CollapsibleTrigger className="w-full text-left">
+                    <CardContent className="p-5">
+                      <div className="flex items-start justify-between">
+                        <div className={`${service.color} rounded-full p-3 inline-flex items-center justify-center mb-3 w-10 h-10`}>
+                          <service.icon className={`h-5 w-5 ${service.iconColor}`} />
+                        </div>
+                        <div className="ml-auto">
+                          {openService === service.id ? (
+                            <ChevronUp className="h-4 w-4 text-muted-foreground" />
+                          ) : (
+                            <ChevronDown className="h-4 w-4 text-muted-foreground" />
+                          )}
+                        </div>
                       </div>
-                      <div className="ml-auto">
-                        {openServices.includes(service.id) ? (
-                          <ChevronUp className="h-4 w-4 text-muted-foreground" />
-                        ) : (
-                          <ChevronDown className="h-4 w-4 text-muted-foreground" />
-                        )}
-                      </div>
-                    </div>
-                    <h3 className="text-base sm:text-lg font-display font-bold mb-2 line-clamp-2">{service.title}</h3>
-                    <p className="text-muted-foreground text-sm mb-0">{service.description}</p>
-                  </CardContent>
-                </CollapsibleTrigger>
+                      <h3 className="text-base sm:text-lg font-display font-bold mb-2 line-clamp-2">{service.title}</h3>
+                      <p className="text-muted-foreground text-sm mb-0">{service.description}</p>
+                    </CardContent>
+                  </CollapsibleTrigger>
 
-                <CollapsibleContent>
-                  <div className="px-5 pb-4 pt-0 border-t border-border/30 mt-1">
-                    <p className="text-sm text-foreground/90 mb-4">{service.details}</p>
-                    <Button 
-                      variant="outline" 
-                      size="sm"
-                      className={`text-xs w-full ${service.iconColor} border-${service.iconColor}`}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        // Instead of navigation, we can scroll to contact form
-                        const contactSection = document.getElementById('contact');
-                        if (contactSection) {
-                          contactSection.scrollIntoView({ behavior: 'smooth' });
-                        }
-                      }}
-                    >
-                      {t('cta.request')}
-                    </Button>
-                  </div>
-                </CollapsibleContent>
-              </Card>
-            </Collapsible>
+                  <AnimatePresence>
+                    {openService === service.id && (
+                      <CollapsibleContent forceMount>
+                        <motion.div
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{ opacity: 1, height: "auto" }}
+                          exit={{ opacity: 0, height: 0 }}
+                          transition={{ duration: 0.3 }}
+                          className="px-5 pb-4 pt-0 border-t border-border/30 mt-1"
+                        >
+                          <p className="text-sm text-foreground/90 mb-4">{service.details}</p>
+                          <Button 
+                            variant="outline" 
+                            size="sm"
+                            className={`text-xs w-full ${service.iconColor} border-${service.iconColor}`}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              // Instead of navigation, we can scroll to contact form
+                              const contactSection = document.getElementById('contact');
+                              if (contactSection) {
+                                contactSection.scrollIntoView({ behavior: 'smooth' });
+                              }
+                            }}
+                          >
+                            {t('cta.request')}
+                          </Button>
+                        </motion.div>
+                      </CollapsibleContent>
+                    )}
+                  </AnimatePresence>
+                </Card>
+              </Collapsible>
+            </motion.div>
           ))}
         </div>
         

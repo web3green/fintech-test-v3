@@ -51,12 +51,7 @@ const Admin = () => {
     { id: 4, name: "Emily Davis", email: "emily@example.com", status: "active", role: "Manager" },
   ]);
 
-  const [transactions, setTransactions] = useState([
-    { id: 1, user: "Alex Johnson", amount: 1250, date: "2023-05-12", status: "completed" },
-    { id: 2, user: "Sarah Smith", amount: 845, date: "2023-05-11", status: "pending" },
-    { id: 3, user: "Michael Brown", amount: 1650, date: "2023-05-10", status: "completed" },
-    { id: 4, user: "Emily Davis", amount: 520, date: "2023-05-09", status: "failed" },
-  ]);
+  // Removing the transactions state as it's no longer needed
 
   useEffect(() => {
     const isAdmin = localStorage.getItem("isAdmin");
@@ -227,14 +222,7 @@ const Admin = () => {
               {language === 'en' ? "Users" : "Пользователи"}
             </Button>
             
-            <Button 
-              variant={currentTab === "transactions" ? "default" : "ghost"} 
-              onClick={() => setCurrentTab("transactions")}
-              className="w-full justify-start"
-            >
-              <FileText className="mr-2 h-4 w-4" />
-              {language === 'en' ? "Transactions" : "Транзакции"}
-            </Button>
+            {/* Removed the transactions button */}
             
             <Button 
               variant={currentTab === "settings" ? "default" : "ghost"} 
@@ -296,7 +284,6 @@ const Admin = () => {
                  currentTab === "articles" ? "Статьи" :
                  currentTab === "requests" ? "Заявки" :
                  currentTab === "users" ? "Пользователи" :
-                 currentTab === "transactions" ? "Транзакции" :
                  currentTab === "settings" ? "Настройки" :
                  currentTab === "social" ? "Социальные ссылки" :
                  currentTab === "webhooks" ? "Вебхуки" : ""}
@@ -364,41 +351,7 @@ const Admin = () => {
             </div>
           )}
           
-          {currentTab === "transactions" && (
-            <div className="space-y-4">
-              <Card>
-                <CardHeader>
-                  <CardTitle>{language === 'en' ? "Transactions" : "Транзакции"}</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>{language === 'en' ? "User" : "Пользователь"}</TableHead>
-                        <TableHead>{language === 'en' ? "Amount" : "Сумма"}</TableHead>
-                        <TableHead>{language === 'en' ? "Date" : "Дата"}</TableHead>
-                        <TableHead>{language === 'en' ? "Status" : "Статус"}</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {transactions.map((transaction) => (
-                        <TableRow key={transaction.id}>
-                          <TableCell className="font-medium">{transaction.user}</TableCell>
-                          <TableCell>${transaction.amount}</TableCell>
-                          <TableCell>{transaction.date}</TableCell>
-                          <TableCell>
-                            <Badge className={getStatusColor(transaction.status)}>
-                              {transaction.status}
-                            </Badge>
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </CardContent>
-              </Card>
-            </div>
-          )}
+          {/* Removed the transactions content section */}
           
           {currentTab === "settings" && (
             <div className="space-y-4">

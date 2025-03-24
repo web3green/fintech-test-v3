@@ -6,6 +6,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Calendar, User, Clock, ThumbsUp, ThumbsDown, Star, X } from 'lucide-react';
 import { toast } from 'sonner';
+import { getLocalizedContent } from '@/services/blogService';
 
 interface BlogPostDialogProps {
   post: any;
@@ -16,14 +17,6 @@ interface BlogPostDialogProps {
 export const BlogPostDialog = ({ post, isOpen, onClose }: BlogPostDialogProps) => {
   const { language } = useLanguage();
   const [selectedReaction, setSelectedReaction] = useState<string | null>(null);
-
-  // Function to get content based on current language
-  const getLocalizedContent = (content: any) => {
-    if (typeof content === 'object') {
-      return content[language] || content.en;
-    }
-    return content;
-  };
 
   // Function to handle user reactions
   const handleReaction = (reactionType: string) => {
@@ -55,23 +48,28 @@ export const BlogPostDialog = ({ post, isOpen, onClose }: BlogPostDialogProps) =
     ? post.image 
     : 'https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80';
 
+  // Helper to get localized content
+  const getPostContent = (content) => {
+    return getLocalizedContent(content, language);
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={() => onClose()}>
       <DialogContent className="max-w-4xl max-h-[90vh] p-0 overflow-hidden">
-        <DialogTitle className="sr-only">{getLocalizedContent(post.title)}</DialogTitle>
+        <DialogTitle className="sr-only">{getPostContent(post.title)}</DialogTitle>
         <div className="relative h-16 sm:h-24 md:h-32 overflow-hidden">
           <img 
             src={postImage} 
-            alt={getLocalizedContent(post.title)} 
+            alt={getPostContent(post.title)} 
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end">
             <div className="p-4 sm:p-6">
               <div className="inline-flex items-center rounded-full px-3 py-1 text-sm font-medium bg-white/20 backdrop-blur-sm mb-2 sm:mb-4">
-                {getLocalizedContent(post.category)}
+                {getPostContent(post.category)}
               </div>
               <h2 className="text-xl sm:text-2xl md:text-3xl font-display font-bold text-white">
-                {getLocalizedContent(post.title)}
+                {getPostContent(post.title)}
               </h2>
             </div>
           </div>
@@ -109,15 +107,15 @@ export const BlogPostDialog = ({ post, isOpen, onClose }: BlogPostDialogProps) =
         <ScrollArea className="p-4 sm:p-6 max-h-[calc(90vh-180px)]">
           <div className="space-y-4">
             <p className="text-lg font-medium">
-              {getLocalizedContent(post.excerpt)}
+              {getPostContent(post.excerpt)}
             </p>
             
             {/* Full article content - This would typically come from an API */}
             <div className="prose prose-lg dark:prose-invert max-w-none">
               <p>
                 {language === 'en' 
-                  ? `In today's rapidly evolving global business landscape, understanding the intricacies of ${getLocalizedContent(post.category).toLowerCase()} is more crucial than ever. This comprehensive guide explores the key aspects that businesses need to consider in 2025.`
-                  : `В сегодняшнем быстро меняющемся глобальном бизнес-ландшафте понимание тонкостей ${getLocalizedContent(post.category).toLowerCase()} важнее, чем когда-либо. Это комплексное руководство исследует ключевые аспекты, которые бизнесу необходимо учитывать в 2025 году.`}
+                  ? `In today's rapidly evolving global business landscape, understanding the intricacies of ${getPostContent(post.category).toLowerCase()} is more crucial than ever. This comprehensive guide explores the key aspects that businesses need to consider in 2025.`
+                  : `В сегодняшнем быстро меняющемся глобальном бизнес-ландшафте понимание тонкостей ${getPostContent(post.category).toLowerCase()} важнее, чем когда-либо. Это комплексное руководство исследует ключевые аспекты, которые бизнесу необходимо учитывать в 2025 году.`}
               </p>
               
               <h3>
@@ -142,8 +140,8 @@ export const BlogPostDialog = ({ post, isOpen, onClose }: BlogPostDialogProps) =
               
               <p>
                 {language === 'en'
-                  ? `Experts predict that the ${getLocalizedContent(post.category).toLowerCase()} sector will continue to grow at a rate of approximately 15% annually through 2027. This growth is driven by increasing demand for transparent and efficient business structures that can operate across multiple jurisdictions.`
-                  : `Эксперты прогнозируют, что сектор ${getLocalizedContent(post.category).toLowerCase()} продолжит расти примерно на 15% ежегодно до 2027 года. Этот рост обусловлен растущим спросом на прозрачные и эффективные бизнес-структуры, которые могут работать в нескольких юрисдикциях.`}
+                  ? `Experts predict that the ${getPostContent(post.category).toLowerCase()} sector will continue to grow at a rate of approximately 15% annually through 2027. This growth is driven by increasing demand for transparent and efficient business structures that can operate across multiple jurisdictions.`
+                  : `Эксперты прогнозируют, что сектор ${getPostContent(post.category).toLowerCase()} продолжит расти примерно на 15% ежегодно до 2027 года. Этот рост обусловлен растущим спросом на прозрачные и эффективные бизнес-структуры, которые могут работать в нескольких юрисдикциях.`}
               </p>
               
               <p>
@@ -158,8 +156,8 @@ export const BlogPostDialog = ({ post, isOpen, onClose }: BlogPostDialogProps) =
               
               <p>
                 {language === 'en'
-                  ? `The landscape of ${getLocalizedContent(post.category).toLowerCase()} continues to evolve rapidly. Staying informed about regulatory changes, embracing technological innovations, and working with experienced professionals are essential strategies for navigating this complex environment successfully.`
-                  : `Ландшафт ${getLocalizedContent(post.category).toLowerCase()} продолжает быстро развиваться. Быть в курсе нормативных изменений, внедрять технологические инновации и работать с опытными профессионалами - это важные стратегии для успешной навигации в этой сложной среде.`}
+                  ? `The landscape of ${getPostContent(post.category).toLowerCase()} continues to evolve rapidly. Staying informed about regulatory changes, embracing technological innovations, and working with experienced professionals are essential strategies for navigating this complex environment successfully.`
+                  : `Ландшафт ${getPostContent(post.category).toLowerCase()} продолжает быстро развиваться. Быть в курсе нормативных изменений, внедрять технологические инновации и работать с опытными профессионалами - это важные стратегии для успешной навигации в этой сложной среде.`}
               </p>
             </div>
             

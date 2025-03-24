@@ -13,7 +13,7 @@ import {
   PaginationNext, 
   PaginationPrevious 
 } from "@/components/ui/pagination";
-import { blogPosts, getLocalizedContent } from '@/services/blogService';
+import { blogPosts, getLocalizedContent, renderPostColor, getImageUrl } from '@/services/blogService';
 
 export const BlogSection = () => {
   const { language } = useLanguage();
@@ -59,6 +59,11 @@ export const BlogSection = () => {
     setSelectedPost(null);
   };
 
+  // Function to get localized content specifically for this component
+  const getLocalizedPostContent = (content) => {
+    return getLocalizedContent(content, language);
+  };
+
   return (
     <section id="blog" className="py-16 bg-background">
       <div className="container mx-auto px-4">
@@ -86,8 +91,11 @@ export const BlogSection = () => {
               <BlogPostCard
                 key={post.id}
                 post={post}
+                getLocalizedContent={getLocalizedPostContent}
+                handlePostClick={handleOpenPost}
+                renderPostColor={renderPostColor}
+                getImageUrl={getImageUrl}
                 language={language}
-                onOpenPost={() => handleOpenPost(post)}
               />
             ))}
           </div>
@@ -145,7 +153,7 @@ export const BlogSection = () => {
         {selectedPost && (
           <BlogPostDialog
             post={selectedPost}
-            language={language}
+            isOpen={true}
             onClose={handleClosePost}
           />
         )}

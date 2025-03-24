@@ -44,7 +44,7 @@ export const BlogPostCard: React.FC<BlogPostCardProps> = ({
         </p>
         
         <div className="flex flex-wrap gap-2 mb-4">
-          {post.tags.slice(0, 3).map((tag: string, index: number) => (
+          {post.tags && post.tags.slice(0, 3).map((tag: string, index: number) => (
             <span key={index} className="text-xs opacity-70 flex items-center">
               <Tag className="h-3 w-3 mr-1" />
               {tag}

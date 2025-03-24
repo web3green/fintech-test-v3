@@ -1,27 +1,11 @@
-
 import React, { useState, useEffect } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { Search, Calendar, User, ArrowRight, Clock, Tag, ChevronRight, ChevronDown, ChevronUp, Filter } from 'lucide-react';
+import { Calendar, User, ArrowRight, Clock, Tag, ChevronRight, ChevronDown, ChevronUp } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { BlogPostDialog } from './BlogPostDialog';
-import { 
-  Select, 
-  SelectContent, 
-  SelectItem, 
-  SelectTrigger, 
-  SelectValue 
-} from '@/components/ui/select';
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
+import { BlogSearchBar } from './blog/BlogSearchBar';
 
 interface BlogSectionProps {
   expandedView?: boolean;
@@ -89,7 +73,7 @@ export const BlogSection = ({ expandedView = false }: BlogSectionProps) => {
       },
       excerpt: {
         en: 'A comprehensive guide to nominee services, including benefits, risks, and regulatory considerations.',
-        ru: 'Комплексное руководство по номинальным услугам, включая преимущества, риски и нормативные соображения.'
+        ru: 'Комплексное руковод��тво по номинальным услугам, включая преимущества, риски и нормативные соображения.'
       },
       image: 'https://images.unsplash.com/photo-1542744094-24638eff58bb?ixlib=rb-4.0.3&auto=format&fit=crop',
       author: 'Michael Chen',
@@ -173,7 +157,7 @@ export const BlogSection = ({ expandedView = false }: BlogSectionProps) => {
       },
       excerpt: {
         en: 'A comprehensive overview of cryptocurrency exchange regulations across different jurisdictions.',
-        ru: 'Комплексный обзор регулирования криптовалютных бирж в различных юрисдикциях.'
+        ru: 'Комплексный обзор регулирования криптовалютн��х бирж в различных юрисдикциях.'
       },
       image: 'https://images.unsplash.com/photo-1516245834210-c4c142787335?ixlib=rb-4.0.3&auto=format&fit=crop',
       author: 'Robert Zhang',
@@ -274,38 +258,14 @@ export const BlogSection = ({ expandedView = false }: BlogSectionProps) => {
           </p>
         </div>
 
-        {expandedView && (
-          <div className="flex flex-col md:flex-row gap-4 mb-8">
-            <div className="relative flex-grow">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-              <Input 
-                placeholder={language === 'en' ? 'Search articles...' : 'Поиск статей...'}
-                className="pl-10"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-            </div>
-            <div className="w-full md:w-64">
-              <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-                <SelectTrigger>
-                  <div className="flex items-center">
-                    <Filter className="h-4 w-4 mr-2" />
-                    <SelectValue placeholder={language === 'en' ? 'Filter by Category' : 'Фильтр по категории'} />
-                  </div>
-                </SelectTrigger>
-                <SelectContent>
-                  {categories.map((category) => (
-                    <SelectItem key={category} value={category}>
-                      {category === 'all' 
-                        ? (language === 'en' ? 'All Categories' : 'Все категории') 
-                        : category.charAt(0).toUpperCase() + category.slice(1)}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-        )}
+        <BlogSearchBar 
+          searchQuery={searchQuery}
+          setSearchQuery={setSearchQuery}
+          categoryFilter={categoryFilter}
+          setCategoryFilter={setCategoryFilter}
+          categories={categories}
+          language={language}
+        />
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-8">
           {(expandedView ? currentPosts : filteredPosts.slice(0, 6)).map(post => (

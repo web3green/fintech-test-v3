@@ -15,13 +15,17 @@ import {
 } from "@/components/ui/pagination";
 import { blogPosts, getLocalizedContent, renderPostColor, getImageUrl } from '@/services/blogService';
 
-export const BlogSection = () => {
+interface BlogSectionProps {
+  expandedView?: boolean;
+}
+
+export const BlogSection: React.FC<BlogSectionProps> = ({ expandedView = false }) => {
   const { language } = useLanguage();
   const [searchQuery, setSearchQuery] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('all');
   const [selectedPost, setSelectedPost] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const postsPerPage = 4;
+  const postsPerPage = expandedView ? 8 : 4;
 
   const categories = ['all', ...Array.from(new Set(blogPosts.map(post => 
     getLocalizedContent(post.category, language).toLowerCase()
@@ -76,14 +80,16 @@ export const BlogSection = () => {
           </p>
         </div>
 
-        <BlogSearchBar
-          searchQuery={searchQuery}
-          setSearchQuery={setSearchQuery}
-          categoryFilter={categoryFilter}
-          setCategoryFilter={setCategoryFilter}
-          categories={categories}
-          language={language}
-        />
+        {expandedView && (
+          <BlogSearchBar
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+            categoryFilter={categoryFilter}
+            setCategoryFilter={setCategoryFilter}
+            categories={categories}
+            language={language}
+          />
+        )}
 
         {currentPosts.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -142,13 +148,15 @@ export const BlogSection = () => {
           </div>
         )}
 
-        <div className="text-center mt-10">
-          <Button asChild variant="outline">
-            <a href="/blog">
-              {language === 'en' ? 'View All Posts' : 'Просмотреть все записи'}
-            </a>
-          </Button>
-        </div>
+        {!expandedView && (
+          <div className="text-center mt-10">
+            <Button asChild variant="outline">
+              <a href="/blog">
+                {language === 'en' ? 'View All Posts' : 'Просмотреть все записи'}
+              </a>
+            </Button>
+          </div>
+        )}
 
         {selectedPost && (
           <BlogPostDialog

@@ -6,7 +6,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { GlowingEffect } from '@/components/ui/glowing-effect';
 
 export function AboutSection() {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   
   return (
     <section id="about" className="section-padding">
@@ -29,7 +29,7 @@ export function AboutSection() {
                           <div className="text-lg font-medium text-white">
                             <span className="text-red-500">Fin</span><span className="text-fintech-blue-light">Tech</span><span className="text-fintech-orange">Assist</span>
                           </div>
-                          <div className="text-xs text-white/70">Your global fintech partner</div>
+                          <div className="text-xs text-white/70">{language === 'en' ? 'Your global fintech partner' : 'Ваш глобальный финтех-партнер'}</div>
                         </div>
                       </div>
                       
@@ -38,33 +38,33 @@ export function AboutSection() {
                           <div className="h-8 w-8 rounded-full bg-fintech-orange/20 flex items-center justify-center">
                             <UserRound className="h-4 w-4 text-fintech-orange" />
                           </div>
-                          <div className="text-sm">Персональный менеджер для каждого клиента</div>
+                          <div className="text-sm">{language === 'en' ? 'Personal manager for every client' : 'Персональный менеджер для каждого клиента'}</div>
                         </div>
                         <div className="flex items-center space-x-3 text-white group transition-all duration-300 hover:translate-x-1">
                           <div className="h-8 w-8 rounded-full bg-fintech-blue-light/20 flex items-center justify-center">
                             <Handshake className="h-4 w-4 text-fintech-blue-light" />
                           </div>
-                          <div className="text-sm">Полное сопровождение на всех этапах</div>
+                          <div className="text-sm">{language === 'en' ? 'Full support at all stages' : 'Полное сопровождение на всех этапах'}</div>
                         </div>
                         <div className="flex items-center space-x-3 text-white group transition-all duration-300 hover:translate-x-1">
                           <div className="h-8 w-8 rounded-full bg-green-400/20 flex items-center justify-center">
                             <ShieldCheck className="h-4 w-4 text-green-400" />
                           </div>
-                          <div className="text-sm">Работа через сервисы гаранта</div>
+                          <div className="text-sm">{language === 'en' ? 'Working through escrow services' : 'Работа через сервисы гаранта'}</div>
                         </div>
                       </div>
                       
                       <div className="grid grid-cols-3 gap-3 pt-2">
                         <div className="bg-gray-900/30 rounded-lg p-3 border border-white/10 text-center transition-all duration-300 hover:bg-gray-900/50">
-                          <div className="text-xs text-white/70">Founded</div>
+                          <div className="text-xs text-white/70">{language === 'en' ? 'Founded' : 'Основано'}</div>
                           <div className="mt-1 font-medium text-white">2015</div>
                         </div>
                         <div className="bg-gray-900/30 rounded-lg p-3 border border-white/10 text-center transition-all duration-300 hover:bg-gray-900/50">
-                          <div className="text-xs text-white/70">Team</div>
-                          <div className="mt-1 font-medium text-white">10+ experts</div>
+                          <div className="text-xs text-white/70">{language === 'en' ? 'Team' : 'Команда'}</div>
+                          <div className="mt-1 font-medium text-white">10+ {language === 'en' ? 'experts' : 'экспертов'}</div>
                         </div>
                         <div className="bg-gray-900/30 rounded-lg p-3 border border-white/10 text-center transition-all duration-300 hover:bg-gray-900/50">
-                          <div className="text-xs text-white/70">Clients</div>
+                          <div className="text-xs text-white/70">{language === 'en' ? 'Clients' : 'Клиенты'}</div>
                           <div className="mt-1 font-medium text-white">500+</div>
                         </div>
                       </div>
@@ -97,7 +97,7 @@ export function AboutSection() {
                   </div>
                   <div className="text-2xl font-bold text-fintech-blue dark:text-fintech-blue-light">50+</div>
                 </div>
-                <div className="text-sm text-muted-foreground">Countries</div>
+                <div className="text-sm text-muted-foreground">{language === 'en' ? 'Countries' : 'Стран'}</div>
               </div>
               <div className="bg-gray-50 dark:bg-gray-900 p-4 rounded-lg shadow-sm hover:shadow-md transition-all duration-300">
                 <div className="flex items-center gap-3 mb-2">
@@ -106,7 +106,7 @@ export function AboutSection() {
                   </div>
                   <div className="text-2xl font-bold text-fintech-orange">500+</div>
                 </div>
-                <div className="text-sm text-muted-foreground">Clients</div>
+                <div className="text-sm text-muted-foreground">{language === 'en' ? 'Clients' : 'Клиентов'}</div>
               </div>
               <div className="bg-gray-50 dark:bg-gray-900 p-4 rounded-lg shadow-sm hover:shadow-md transition-all duration-300">
                 <div className="flex items-center gap-3 mb-2">
@@ -115,7 +115,7 @@ export function AboutSection() {
                   </div>
                   <div className="text-2xl font-bold text-fintech-blue dark:text-fintech-blue-light">98%</div>
                 </div>
-                <div className="text-sm text-muted-foreground">Success Rate</div>
+                <div className="text-sm text-muted-foreground">{language === 'en' ? 'Success Rate' : 'Успешных проектов'}</div>
               </div>
               <div className="bg-gray-50 dark:bg-gray-900 p-4 rounded-lg shadow-sm hover:shadow-md transition-all duration-300">
                 <div className="flex items-center gap-3 mb-2">
@@ -124,7 +124,7 @@ export function AboutSection() {
                   </div>
                   <div className="text-2xl font-bold text-fintech-orange">7+</div>
                 </div>
-                <div className="text-sm text-muted-foreground">Years Experience</div>
+                <div className="text-sm text-muted-foreground">{language === 'en' ? 'Years Experience' : 'Лет опыта'}</div>
               </div>
             </div>
             
@@ -136,7 +136,7 @@ export function AboutSection() {
               });
             }
           }}>
-              Explore Our Services
+              {language === 'en' ? 'Explore Our Services' : 'Изучить наши услуги'}
               <ArrowRight className="ml-2 h-4 w-4 transition-transform duration-300 transform group-hover:translate-x-1" />
             </Button>
           </div>

@@ -3,46 +3,45 @@ import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { GlowingEffect } from './ui/glowing-effect';
 import { Card } from './ui/card';
-
 export function Hero() {
-  const { t } = useLanguage();
-  
+  const {
+    t
+  } = useLanguage();
   const scrollToContact = () => {
     const contactSection = document.getElementById('contact');
     if (contactSection) {
-      contactSection.scrollIntoView({ behavior: 'smooth' });
+      contactSection.scrollIntoView({
+        behavior: 'smooth'
+      });
     }
   };
-  
-  return (
-    <section className="relative overflow-hidden bg-gray-50 dark:bg-gray-900 pt-20 md:pt-24 lg:pt-28 pb-20 md:pb-24">
+  return <section className="relative overflow-hidden bg-gray-50 dark:bg-gray-900 pt-20 md:pt-24 lg:pt-28 pb-20 md:pb-24">
       <div className="container mx-auto px-8 md:px-12 lg:px-16">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div className="order-2 lg:order-1 z-10">
             <h1 className="text-4xl sm:text-5xl md:text-6xl font-display font-bold leading-tight mb-6 animate-fade-up">
               {t('hero.title')}
             </h1>
-            <p className="text-xl text-muted-foreground mb-8 max-w-lg animate-fade-up" style={{ animationDelay: '100ms' }}>
+            <p className="text-xl text-muted-foreground mb-8 max-w-lg animate-fade-up" style={{
+            animationDelay: '100ms'
+          }}>
               {t('hero.subtitle')}
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 animate-fade-up" style={{ animationDelay: '200ms' }}>
-              <Button 
-                className="bg-fintech-orange hover:bg-fintech-orange-light text-white transition-all duration-300"
-                onClick={scrollToContact}
-              >
+            <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 animate-fade-up" style={{
+            animationDelay: '200ms'
+          }}>
+              <Button className="bg-fintech-orange hover:bg-fintech-orange-light text-white transition-all duration-300" onClick={scrollToContact}>
                 {t('hero.cta')}
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
-              <Button 
-                variant="outline" 
-                className="border-fintech-blue/20 text-fintech-blue hover:text-fintech-blue-dark dark:text-fintech-blue-light hover:bg-fintech-blue/5"
-                onClick={() => {
-                  const servicesElement = document.getElementById('services');
-                  if (servicesElement) {
-                    servicesElement.scrollIntoView({ behavior: 'smooth' });
-                  }
-                }}
-              >
+              <Button variant="outline" className="border-fintech-blue/20 text-fintech-blue hover:text-fintech-blue-dark dark:text-fintech-blue-light hover:bg-fintech-blue/5" onClick={() => {
+              const servicesElement = document.getElementById('services');
+              if (servicesElement) {
+                servicesElement.scrollIntoView({
+                  behavior: 'smooth'
+                });
+              }
+            }}>
                 {t('nav.services')}
               </Button>
             </div>
@@ -53,14 +52,7 @@ export function Hero() {
               <div className="relative bg-white dark:bg-gray-800 rounded-2xl shadow-2xl overflow-hidden">
                 <div className="absolute inset-0">
                   <div className="absolute inset-0 bg-gradient-to-br from-fintech-blue/5 to-fintech-orange/5"></div>
-                  <GlowingEffect 
-                    blur={6} 
-                    spread={60} 
-                    glow={true} 
-                    disabled={false} 
-                    inactiveZone={0.3}
-                    proximity={100}
-                  />
+                  <GlowingEffect blur={6} spread={60} glow={true} disabled={false} inactiveZone={0.3} proximity={100} />
                 </div>
                 
                 <div className="relative p-6 md:p-8">
@@ -143,7 +135,7 @@ export function Hero() {
                       <div className="flex items-center justify-between text-sm">
                         <div className="text-muted-foreground">15+ Countries</div>
                         <div className="text-muted-foreground">500+ Clients</div>
-                        <div className="text-muted-foreground">7+ Years</div>
+                        <div className="text-muted-foreground">9+ Years</div>
                       </div>
                     </div>
                   </div>
@@ -163,6 +155,5 @@ export function Hero() {
       
       <div className="absolute top-0 inset-x-0 h-40 bg-gradient-to-b from-fintech-blue/5 to-transparent"></div>
       <div className="absolute bottom-0 inset-x-0 h-40 bg-gradient-to-t from-fintech-orange/5 to-transparent"></div>
-    </section>
-  );
+    </section>;
 }

@@ -1,8 +1,9 @@
 
 import { Link } from 'react-router-dom';
-import { Facebook, X, Instagram, Linkedin, Mail, Phone } from 'lucide-react';
+import { Facebook, X, Instagram, Linkedin, Mail, Phone, Building, Landmark, Wallet, Gamepad, CreditCard, BarChart3, Briefcase, Shield, ChevronRight, Globe, Heart } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useEffect, useState } from 'react';
+import { Button } from '@/components/ui/button';
 
 type SocialLink = {
   id: number;
@@ -12,7 +13,7 @@ type SocialLink = {
 };
 
 export function Footer() {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const currentYear = new Date().getFullYear();
   const [socialLinks, setSocialLinks] = useState<SocialLink[]>([]);
   
@@ -56,13 +57,48 @@ export function Footer() {
         return <X className="h-5 w-5" />;
     }
   };
+
+  // Main services from ServicesSection
+  const mainServices = [
+    {
+      id: 'company-formation',
+      title: t('services.company-formation.title'),
+      icon: Building
+    },
+    {
+      id: 'financial-licensing',
+      title: t('services.financial-licensing.title'),
+      icon: Landmark
+    },
+    {
+      id: 'crypto-regulation',
+      title: t('services.crypto-regulation.title'),
+      icon: Wallet
+    },
+    {
+      id: 'gambling-licensing',
+      title: t('services.gambling-licensing.title'),
+      icon: Gamepad
+    },
+    {
+      id: 'payment-solutions',
+      title: t('services.payment-solutions.title'),
+      icon: CreditCard
+    },
+    {
+      id: 'tax-planning',
+      title: t('services.tax-planning.title'),
+      icon: BarChart3
+    },
+  ];
   
   return (
     <footer className="bg-gray-50 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800">
-      <div className="container mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-          <div className="space-y-4">
-            <h3 className="text-xl font-display font-bold">
+      <div className="container mx-auto px-4 md:px-8 py-12 md:py-16">
+        {/* Top section with logo and description */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-10 mb-10">
+          <div className="md:col-span-4 lg:col-span-1 space-y-6">
+            <h3 className="text-2xl font-display font-bold">
               <span className="text-red-500">Fin</span>
               <span className="text-fintech-blue dark:text-fintech-blue-light">Tech</span>
               <span className="text-fintech-orange">Assist</span>
@@ -70,14 +106,16 @@ export function Footer() {
             <p className="text-muted-foreground max-w-xs">
               {t('footer.description')}
             </p>
-            <div className="flex space-x-4 pt-2">
+            
+            <div className="flex flex-wrap gap-3 pt-1">
               {socialLinks.map((link) => (
                 <a 
                   key={link.id}
                   href={link.url} 
                   target="_blank" 
                   rel="noopener noreferrer" 
-                  className="text-gray-500 hover:text-fintech-blue dark:hover:text-fintech-blue-light transition-colors"
+                  className="bg-gray-100 dark:bg-gray-800 p-2.5 rounded-full text-gray-500 hover:text-fintech-blue hover:bg-fintech-blue/10 dark:hover:text-fintech-blue-light dark:hover:bg-fintech-blue-light/10 transition-all duration-200"
+                  aria-label={link.platform}
                 >
                   {renderSocialIcon(link.icon)}
                 </a>
@@ -85,94 +123,139 @@ export function Footer() {
             </div>
           </div>
           
-          <div>
-            <h3 className="font-display font-bold text-lg mb-4">{t('footer.links')}</h3>
-            <ul className="space-y-2">
-              <li>
-                <Link to="/about" className="text-muted-foreground hover:text-fintech-blue dark:hover:text-fintech-blue-light transition-colors">
-                  {t('nav.about')}
-                </Link>
-              </li>
-              <li>
-                <Link to="/how-it-works" className="text-muted-foreground hover:text-fintech-blue dark:hover:text-fintech-blue-light transition-colors">
-                  {t('nav.howItWorks')}
-                </Link>
-              </li>
-              <li>
-                <Link to="/services" className="text-muted-foreground hover:text-fintech-blue dark:hover:text-fintech-blue-light transition-colors">
-                  {t('nav.services')}
-                </Link>
-              </li>
-              <li>
-                <Link to="/blog" className="text-muted-foreground hover:text-fintech-blue dark:hover:text-fintech-blue-light transition-colors">
-                  {t('nav.blog')}
-                </Link>
-              </li>
-              <li>
-                <Link to="/contact" className="text-muted-foreground hover:text-fintech-blue dark:hover:text-fintech-blue-light transition-colors">
-                  {t('nav.contact')}
-                </Link>
-              </li>
-            </ul>
-          </div>
-          
-          <div>
-            <h3 className="font-display font-bold text-lg mb-4">{t('footer.services')}</h3>
-            <ul className="space-y-2">
-              <li>
-                <Link to="/services" className="text-muted-foreground hover:text-fintech-blue dark:hover:text-fintech-blue-light transition-colors">
-                  {t('services.registration')}
-                </Link>
-              </li>
-              <li>
-                <Link to="/services" className="text-muted-foreground hover:text-fintech-blue dark:hover:text-fintech-blue-light transition-colors">
-                  {t('services.accounts')}
-                </Link>
-              </li>
-              <li>
-                <Link to="/services" className="text-muted-foreground hover:text-fintech-blue dark:hover:text-fintech-blue-light transition-colors">
-                  {t('services.nominee')}
-                </Link>
-              </li>
-              <li>
-                <Link to="/services" className="text-muted-foreground hover:text-fintech-blue dark:hover:text-fintech-blue-light transition-colors">
-                  {t('services.licenses')}
-                </Link>
-              </li>
-            </ul>
-          </div>
-          
-          <div>
-            <h3 className="font-display font-bold text-lg mb-4">{t('footer.contact')}</h3>
-            <ul className="space-y-4">
-              <li className="flex items-center">
-                <Phone className="h-5 w-5 mr-2 text-fintech-blue dark:text-fintech-blue-light flex-shrink-0" />
-                <a href="tel:+447450574905" className="text-muted-foreground hover:text-fintech-blue dark:hover:text-fintech-blue-light transition-colors">
-                  +44 7450 574905
-                </a>
-              </li>
-              <li className="flex items-center">
-                <Mail className="h-5 w-5 mr-2 text-fintech-blue dark:text-fintech-blue-light flex-shrink-0" />
-                <a href="mailto:info@fintech-assist.com" className="text-muted-foreground hover:text-fintech-blue dark:hover:text-fintech-blue-light transition-colors">
-                  info@fintech-assist.com
-                </a>
-              </li>
-            </ul>
+          <div className="md:col-span-4 lg:col-span-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+              {/* Navigation Links */}
+              <div>
+                <h3 className="font-display font-bold text-lg mb-4 flex items-center">
+                  <Globe className="h-4 w-4 mr-2 text-fintech-blue dark:text-fintech-blue-light" />
+                  {t('footer.links')}
+                </h3>
+                <ul className="space-y-3">
+                  <li>
+                    <Link to="/about" className="text-muted-foreground hover:text-fintech-blue dark:hover:text-fintech-blue-light transition-colors flex items-center">
+                      <ChevronRight className="h-3.5 w-3.5 text-fintech-blue/70 dark:text-fintech-blue-light/70" />
+                      <span>{t('nav.about')}</span>
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="/how-it-works" className="text-muted-foreground hover:text-fintech-blue dark:hover:text-fintech-blue-light transition-colors flex items-center">
+                      <ChevronRight className="h-3.5 w-3.5 text-fintech-blue/70 dark:text-fintech-blue-light/70" />
+                      <span>{t('nav.howItWorks')}</span>
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="/services" className="text-muted-foreground hover:text-fintech-blue dark:hover:text-fintech-blue-light transition-colors flex items-center">
+                      <ChevronRight className="h-3.5 w-3.5 text-fintech-blue/70 dark:text-fintech-blue-light/70" />
+                      <span>{t('nav.services')}</span>
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="/blog" className="text-muted-foreground hover:text-fintech-blue dark:hover:text-fintech-blue-light transition-colors flex items-center">
+                      <ChevronRight className="h-3.5 w-3.5 text-fintech-blue/70 dark:text-fintech-blue-light/70" />
+                      <span>{t('nav.blog')}</span>
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="/contact" className="text-muted-foreground hover:text-fintech-blue dark:hover:text-fintech-blue-light transition-colors flex items-center">
+                      <ChevronRight className="h-3.5 w-3.5 text-fintech-blue/70 dark:text-fintech-blue-light/70" />
+                      <span>{t('nav.contact')}</span>
+                    </Link>
+                  </li>
+                </ul>
+              </div>
+              
+              {/* Services Links - Updated with main services */}
+              <div>
+                <h3 className="font-display font-bold text-lg mb-4 flex items-center">
+                  <Briefcase className="h-4 w-4 mr-2 text-fintech-orange dark:text-fintech-orange-light" />
+                  {t('footer.services')}
+                </h3>
+                <ul className="space-y-3">
+                  {mainServices.slice(0, 5).map((service) => (
+                    <li key={service.id}>
+                      <Link 
+                        to={`/services#${service.id}`} 
+                        className="text-muted-foreground hover:text-fintech-blue dark:hover:text-fintech-blue-light transition-colors flex items-center"
+                      >
+                        <service.icon className="h-3.5 w-3.5 mr-1.5 text-fintech-orange/70 dark:text-fintech-orange-light/70" />
+                        <span>{service.title}</span>
+                      </Link>
+                    </li>
+                  ))}
+                  <li>
+                    <Link 
+                      to="/services" 
+                      className="text-fintech-blue dark:text-fintech-blue-light font-medium flex items-center hover:underline"
+                    >
+                      <ChevronRight className="h-3.5 w-3.5" />
+                      <span>{language === 'en' ? 'View All Services' : 'Все услуги'}</span>
+                    </Link>
+                  </li>
+                </ul>
+              </div>
+              
+              {/* Contact Information */}
+              <div>
+                <h3 className="font-display font-bold text-lg mb-4 flex items-center">
+                  <Mail className="h-4 w-4 mr-2 text-fintech-blue dark:text-fintech-blue-light" />
+                  {t('footer.contact')}
+                </h3>
+                <ul className="space-y-4">
+                  <li className="flex items-center">
+                    <div className="bg-fintech-blue/10 dark:bg-fintech-blue-light/10 p-2 rounded-full mr-3">
+                      <Phone className="h-4 w-4 text-fintech-blue dark:text-fintech-blue-light flex-shrink-0" />
+                    </div>
+                    <a href="tel:+447450574905" className="text-muted-foreground hover:text-fintech-blue dark:hover:text-fintech-blue-light transition-colors">
+                      +44 7450 574905
+                    </a>
+                  </li>
+                  <li className="flex items-center">
+                    <div className="bg-fintech-blue/10 dark:bg-fintech-blue-light/10 p-2 rounded-full mr-3">
+                      <Mail className="h-4 w-4 text-fintech-blue dark:text-fintech-blue-light flex-shrink-0" />
+                    </div>
+                    <a href="mailto:info@fintech-assist.com" className="text-muted-foreground hover:text-fintech-blue dark:hover:text-fintech-blue-light transition-colors">
+                      info@fintech-assist.com
+                    </a>
+                  </li>
+                  <li>
+                    <Button 
+                      className="w-full mt-2 bg-fintech-blue hover:bg-fintech-blue-dark text-white"
+                      onClick={() => {
+                        const contactSection = document.getElementById('contact');
+                        if (contactSection) {
+                          contactSection.scrollIntoView({ behavior: 'smooth' });
+                        }
+                      }}
+                    >
+                      {t('cta.request')}
+                    </Button>
+                  </li>
+                </ul>
+              </div>
+            </div>
           </div>
         </div>
         
-        <div className="border-t border-gray-200 dark:border-gray-800 mt-12 pt-6">
+        {/* Footer bottom with copyright and legal links */}
+        <div className="border-t border-gray-200 dark:border-gray-800 mt-8 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center">
-            <p className="text-muted-foreground text-sm">
-              © {currentYear} <span className="text-red-500">Fin</span><span className="text-fintech-blue dark:text-fintech-blue-light">Tech</span><span className="text-fintech-orange">Assist</span>. {t('footer.rights')}
-            </p>
-            <div className="flex space-x-4 mt-4 md:mt-0">
+            <div className="flex items-center mb-4 md:mb-0">
+              <Heart className="h-4 w-4 text-red-500 mr-2" />
+              <p className="text-muted-foreground text-sm">
+                © {currentYear} <span className="text-red-500">Fin</span><span className="text-fintech-blue dark:text-fintech-blue-light">Tech</span><span className="text-fintech-orange">Assist</span>. {t('footer.rights')}
+              </p>
+            </div>
+            <div className="flex space-x-6">
               <Link to="/privacy" className="text-sm text-muted-foreground hover:text-fintech-blue dark:hover:text-fintech-blue-light transition-colors">
                 {t('footer.privacy')}
               </Link>
               <Link to="/terms" className="text-sm text-muted-foreground hover:text-fintech-blue dark:hover:text-fintech-blue-light transition-colors">
                 {t('footer.terms')}
               </Link>
+              <a href="#" className="text-sm text-muted-foreground hover:text-fintech-blue dark:hover:text-fintech-blue-light transition-colors">
+                {language === 'en' ? 'Sitemap' : 'Карта сайта'}
+              </a>
             </div>
           </div>
         </div>

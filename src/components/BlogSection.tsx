@@ -15,17 +15,13 @@ import {
 } from "@/components/ui/pagination";
 import { blogPosts, getLocalizedContent, renderPostColor, getImageUrl } from '@/services/blogService';
 
-interface BlogSectionProps {
-  expandedView?: boolean;
-}
-
-export const BlogSection: React.FC<BlogSectionProps> = ({ expandedView = false }) => {
+export const BlogSection: React.FC = () => {
   const { language } = useLanguage();
   const [searchQuery, setSearchQuery] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('all');
   const [selectedPost, setSelectedPost] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const postsPerPage = expandedView ? 8 : 4;
+  const postsPerPage = 8;
 
   const categories = ['all', ...Array.from(new Set(blogPosts.map(post => 
     getLocalizedContent(post.category, language).toLowerCase()
@@ -80,16 +76,14 @@ export const BlogSection: React.FC<BlogSectionProps> = ({ expandedView = false }
           </p>
         </div>
 
-        {expandedView && (
-          <BlogSearchBar
-            searchQuery={searchQuery}
-            setSearchQuery={setSearchQuery}
-            categoryFilter={categoryFilter}
-            setCategoryFilter={setCategoryFilter}
-            categories={categories}
-            language={language}
-          />
-        )}
+        <BlogSearchBar
+          searchQuery={searchQuery}
+          setSearchQuery={setSearchQuery}
+          categoryFilter={categoryFilter}
+          setCategoryFilter={setCategoryFilter}
+          categories={categories}
+          language={language}
+        />
 
         {currentPosts.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -145,16 +139,6 @@ export const BlogSection: React.FC<BlogSectionProps> = ({ expandedView = false }
                 </PaginationItem>
               </PaginationContent>
             </Pagination>
-          </div>
-        )}
-
-        {!expandedView && (
-          <div className="text-center mt-10">
-            <Button asChild variant="outline">
-              <a href="/blog">
-                {language === 'en' ? 'View All Posts' : 'Просмотреть все записи'}
-              </a>
-            </Button>
           </div>
         )}
 

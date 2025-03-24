@@ -20,7 +20,7 @@ const Index = () => {
           <AboutSection />
           <ServicesSection />
           <ProcessSection />
-          <BlogSection expandedView={false} />
+          <BlogSection />
           <ContactForm />
         </main>
         <Footer />

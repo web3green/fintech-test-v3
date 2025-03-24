@@ -92,6 +92,14 @@ export function Footer() {
     },
   ];
   
+  // Function to scroll to a section
+  const scrollToSection = (sectionId: string) => {
+    const section = document.getElementById(sectionId);
+    if (section) {
+      section.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+  
   return (
     <footer className="bg-gray-50 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800">
       <div className="container mx-auto px-4 md:px-8 py-12 md:py-16">
@@ -133,34 +141,49 @@ export function Footer() {
                 </h3>
                 <ul className="space-y-3">
                   <li>
-                    <Link to="/about" className="text-muted-foreground hover:text-fintech-blue dark:hover:text-fintech-blue-light transition-colors flex items-center">
+                    <button 
+                      onClick={() => scrollToSection('about')}
+                      className="text-muted-foreground hover:text-fintech-blue dark:hover:text-fintech-blue-light transition-colors flex items-center"
+                    >
                       <ChevronRight className="h-3.5 w-3.5 text-fintech-blue/70 dark:text-fintech-blue-light/70" />
                       <span>{t('nav.about')}</span>
-                    </Link>
+                    </button>
                   </li>
                   <li>
-                    <Link to="/how-it-works" className="text-muted-foreground hover:text-fintech-blue dark:hover:text-fintech-blue-light transition-colors flex items-center">
+                    <button 
+                      onClick={() => scrollToSection('process')}
+                      className="text-muted-foreground hover:text-fintech-blue dark:hover:text-fintech-blue-light transition-colors flex items-center"
+                    >
                       <ChevronRight className="h-3.5 w-3.5 text-fintech-blue/70 dark:text-fintech-blue-light/70" />
                       <span>{t('nav.howItWorks')}</span>
-                    </Link>
+                    </button>
                   </li>
                   <li>
-                    <Link to="/services" className="text-muted-foreground hover:text-fintech-blue dark:hover:text-fintech-blue-light transition-colors flex items-center">
+                    <button 
+                      onClick={() => scrollToSection('services')}
+                      className="text-muted-foreground hover:text-fintech-blue dark:hover:text-fintech-blue-light transition-colors flex items-center"
+                    >
                       <ChevronRight className="h-3.5 w-3.5 text-fintech-blue/70 dark:text-fintech-blue-light/70" />
                       <span>{t('nav.services')}</span>
-                    </Link>
+                    </button>
                   </li>
                   <li>
-                    <Link to="/blog" className="text-muted-foreground hover:text-fintech-blue dark:hover:text-fintech-blue-light transition-colors flex items-center">
+                    <button 
+                      onClick={() => scrollToSection('blog')}
+                      className="text-muted-foreground hover:text-fintech-blue dark:hover:text-fintech-blue-light transition-colors flex items-center"
+                    >
                       <ChevronRight className="h-3.5 w-3.5 text-fintech-blue/70 dark:text-fintech-blue-light/70" />
                       <span>{t('nav.blog')}</span>
-                    </Link>
+                    </button>
                   </li>
                   <li>
-                    <Link to="/contact" className="text-muted-foreground hover:text-fintech-blue dark:hover:text-fintech-blue-light transition-colors flex items-center">
+                    <button 
+                      onClick={() => scrollToSection('contact')}
+                      className="text-muted-foreground hover:text-fintech-blue dark:hover:text-fintech-blue-light transition-colors flex items-center"
+                    >
                       <ChevronRight className="h-3.5 w-3.5 text-fintech-blue/70 dark:text-fintech-blue-light/70" />
                       <span>{t('nav.contact')}</span>
-                    </Link>
+                    </button>
                   </li>
                 </ul>
               </div>
@@ -174,23 +197,23 @@ export function Footer() {
                 <ul className="space-y-3">
                   {mainServices.slice(0, 5).map((service) => (
                     <li key={service.id}>
-                      <Link 
-                        to={`/services#${service.id}`} 
+                      <button 
+                        onClick={() => scrollToSection('services')}
                         className="text-muted-foreground hover:text-fintech-blue dark:hover:text-fintech-blue-light transition-colors flex items-center"
                       >
                         <service.icon className="h-3.5 w-3.5 mr-1.5 text-fintech-orange/70 dark:text-fintech-orange-light/70" />
                         <span>{service.title}</span>
-                      </Link>
+                      </button>
                     </li>
                   ))}
                   <li>
-                    <Link 
-                      to="/services" 
+                    <button 
+                      onClick={() => scrollToSection('services')}
                       className="text-fintech-blue dark:text-fintech-blue-light font-medium flex items-center hover:underline"
                     >
                       <ChevronRight className="h-3.5 w-3.5" />
                       <span>{language === 'en' ? 'View All Services' : 'Все услуги'}</span>
-                    </Link>
+                    </button>
                   </li>
                 </ul>
               </div>
@@ -221,12 +244,7 @@ export function Footer() {
                   <li>
                     <Button 
                       className="w-full mt-2 bg-fintech-blue hover:bg-fintech-blue-dark text-white"
-                      onClick={() => {
-                        const contactSection = document.getElementById('contact');
-                        if (contactSection) {
-                          contactSection.scrollIntoView({ behavior: 'smooth' });
-                        }
-                      }}
+                      onClick={() => scrollToSection('contact')}
                     >
                       {t('cta.request')}
                     </Button>
@@ -253,8 +271,15 @@ export function Footer() {
               <Link to="/terms" className="text-sm text-muted-foreground hover:text-fintech-blue dark:hover:text-fintech-blue-light transition-colors">
                 {t('footer.terms')}
               </Link>
-              <a href="#" className="text-sm text-muted-foreground hover:text-fintech-blue dark:hover:text-fintech-blue-light transition-colors">
-                {language === 'en' ? 'Sitemap' : 'Карта сайта'}
+              <a 
+                href="#" 
+                onClick={(e) => {
+                  e.preventDefault();
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }} 
+                className="text-sm text-muted-foreground hover:text-fintech-blue dark:hover:text-fintech-blue-light transition-colors"
+              >
+                {language === 'en' ? 'Back to Top' : 'Наверх'}
               </a>
             </div>
           </div>

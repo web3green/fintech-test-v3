@@ -55,7 +55,7 @@ export const DashboardPanel = () => {
   return (
     <div className="space-y-4">
       {!analyticsConnected && (
-        <Alert variant="warning">
+        <Alert variant="destructive">
           <AlertCircle className="h-4 w-4" />
           <AlertTitle>
             {language === 'en' ? "Analytics Not Connected" : "Аналитика не подключена"}

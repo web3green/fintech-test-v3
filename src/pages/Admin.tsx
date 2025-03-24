@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { 
@@ -8,9 +9,16 @@ import {
 import { Logo } from "@/components/Logo";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card } from "@/components/ui/card";
+import { 
+  Card, CardHeader, CardTitle, CardContent, CardFooter, CardDescription 
+} from "@/components/ui/card";
 import { Dialog } from "@/components/ui/dialog";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { 
+  Table, TableHeader, TableBody, TableFooter, 
+  TableHead, TableRow, TableCell, TableCaption 
+} from "@/components/ui/table";
+import { Badge } from "@/components/ui/badge";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";

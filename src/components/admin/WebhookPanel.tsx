@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -312,7 +311,7 @@ export const WebhookPanel = () => {
                         <p className="text-sm text-muted-foreground">{pixel.trackingId}</p>
                       </div>
                       <div className="flex items-center gap-2">
-                        <Badge variant={pixel.active ? "success" : "secondary"}>
+                        <Badge variant="default" className="bg-green-500">
                           {pixel.active 
                             ? (language === 'en' ? "Active" : "Активен") 
                             : (language === 'en' ? "Inactive" : "Неактивен")}

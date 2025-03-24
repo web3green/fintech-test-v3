@@ -3,19 +3,35 @@ import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { GlowingEffect } from '@/components/ui/glowing-effect';
-import { Search, Calendar, User, ArrowRight, Clock, Tag, ChevronRight } from 'lucide-react';
+import { Search, Calendar, User, ArrowRight, Clock, Tag, ChevronRight, Filter } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '@/components/ui/pagination';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { BlogPostDialog } from '@/components/BlogPostDialog';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 export default function Blog() {
   const { t, language } = useLanguage();
   const [searchQuery, setSearchQuery] = useState('');
+  const [categoryFilter, setCategoryFilter] = useState('all');
   const [selectedPost, setSelectedPost] = useState(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const postsPerPage = 6;
+  
+  const location = useLocation();
+  
+  useEffect(() => {
+    // Check for search query in URL
+    const params = new URLSearchParams(location.search);
+    const searchParam = params.get('search');
+    if (searchParam) {
+      setSearchQuery(searchParam);
+    }
+  }, [location.search]);
 
   const posts = [
     {
@@ -196,15 +212,23 @@ export default function Blog() {
     return content;
   };
 
-  const filteredPosts = posts.filter(post => 
-    getLocalizedContent(post.title).toLowerCase().includes(searchQuery.toLowerCase()) ||
-    getLocalizedContent(post.category).toLowerCase().includes(searchQuery.toLowerCase()) ||
-    getLocalizedContent(post.excerpt).toLowerCase().includes(searchQuery.toLowerCase()) ||
-    post.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()))
-  );
+  const categories = ['all', ...new Set(posts.map(post => getLocalizedContent(post.category).toLowerCase()))];
+
+  const filteredPosts = posts.filter(post => {
+    const titleMatch = getLocalizedContent(post.title).toLowerCase().includes(searchQuery.toLowerCase());
+    const excerptMatch = getLocalizedContent(post.excerpt).toLowerCase().includes(searchQuery.toLowerCase());
+    const tagMatch = post.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()));
+    const categoryMatch = categoryFilter === 'all' || getLocalizedContent(post.category).toLowerCase() === categoryFilter.toLowerCase();
+    
+    return (titleMatch || excerptMatch || tagMatch) && categoryMatch;
+  });
 
   const featuredPost = posts.find(post => post.featured);
-  const regularPosts = posts.filter(post => !post.featured);
+  
+  const indexOfLastPost = currentPage * postsPerPage;
+  const indexOfFirstPost = indexOfLastPost - postsPerPage;
+  const currentPosts = filteredPosts.slice(indexOfFirstPost, indexOfLastPost);
+  const totalPages = Math.ceil(filteredPosts.length / postsPerPage);
 
   const renderPostColor = (colorScheme) => {
     switch (colorScheme) {
@@ -263,11 +287,11 @@ export default function Blog() {
           </div>
         </section>
 
-        <section className="py-12 border-b border-gray-200 dark:border-gray-800">
+        <section className="py-8 border-b border-gray-200 dark:border-gray-800">
           <div className="container mx-auto px-8 md:px-12 lg:px-16">
-            <div className="max-w-2xl mx-auto">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+            <div className="flex flex-col md:flex-row gap-4 items-center">
+              <div className="relative flex-grow">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
                 <Input
                   type="search"
                   placeholder={language === 'en' ? "Search articles..." : "Поиск статей..."}
@@ -276,11 +300,30 @@ export default function Blog() {
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
               </div>
+              <div className="w-full md:w-64">
+                <Select value={categoryFilter} onValueChange={setCategoryFilter}>
+                  <SelectTrigger className="bg-background border-input">
+                    <div className="flex items-center">
+                      <Filter className="h-4 w-4 mr-2" />
+                      <SelectValue placeholder={language === 'en' ? 'Filter by Category' : 'Фильтр по категории'} />
+                    </div>
+                  </SelectTrigger>
+                  <SelectContent>
+                    {categories.map((category) => (
+                      <SelectItem key={category} value={category}>
+                        {category === 'all' 
+                          ? (language === 'en' ? 'All Categories' : 'Все категории') 
+                          : category.charAt(0).toUpperCase() + category.slice(1)}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
           </div>
         </section>
 
-        {featuredPost && searchQuery === '' && (
+        {featuredPost && searchQuery === '' && categoryFilter === 'all' && (
           <section className="py-12">
             <div className="container mx-auto px-8 md:px-12 lg:px-16">
               <div className="max-w-6xl mx-auto">
@@ -338,7 +381,7 @@ export default function Blog() {
           <div className="container mx-auto px-8 md:px-12 lg:px-16">
             <div className="max-w-6xl mx-auto">
               <h2 className="text-2xl font-display font-bold mb-8">
-                {searchQuery 
+                {searchQuery || categoryFilter !== 'all'
                   ? (language === 'en' ? 'Search Results' : 'Результаты Поиска') 
                   : (language === 'en' ? 'Latest Articles' : 'Последние Статьи')}
               </h2>
@@ -352,14 +395,17 @@ export default function Blog() {
                   </p>
                   <Button 
                     variant="outline" 
-                    onClick={() => setSearchQuery('')}
+                    onClick={() => {
+                      setSearchQuery('');
+                      setCategoryFilter('all');
+                    }}
                   >
                     {language === 'en' ? 'Clear Search' : 'Очистить Поиск'}
                   </Button>
                 </div>
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                  {(searchQuery === '' ? regularPosts : filteredPosts).map(post => (
+                  {currentPosts.map(post => (
                     <Card 
                       key={post.id} 
                       className={`overflow-hidden border-0 shadow-md hover-scale transition-all duration-300 cursor-pointer ${renderPostColor(post.colorScheme)}`}
@@ -406,24 +452,34 @@ export default function Blog() {
                 </div>
               )}
               
-              {filteredPosts.length > 0 && (
+              {filteredPosts.length > postsPerPage && (
                 <div className="mt-12">
                   <Pagination>
                     <PaginationContent>
                       <PaginationItem>
-                        <PaginationPrevious href="#" />
+                        <PaginationPrevious 
+                          onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                          className={currentPage === 1 ? 'pointer-events-none opacity-50' : 'cursor-pointer'} 
+                        />
                       </PaginationItem>
+                      
+                      {[...Array(totalPages)].map((_, index) => (
+                        <PaginationItem key={index}>
+                          <PaginationLink 
+                            isActive={currentPage === index + 1}
+                            onClick={() => setCurrentPage(index + 1)}
+                            className="cursor-pointer"
+                          >
+                            {index + 1}
+                          </PaginationLink>
+                        </PaginationItem>
+                      ))}
+                      
                       <PaginationItem>
-                        <PaginationLink href="#" isActive>1</PaginationLink>
-                      </PaginationItem>
-                      <PaginationItem>
-                        <PaginationLink href="#">2</PaginationLink>
-                      </PaginationItem>
-                      <PaginationItem>
-                        <PaginationLink href="#">3</PaginationLink>
-                      </PaginationItem>
-                      <PaginationItem>
-                        <PaginationNext href="#" />
+                        <PaginationNext 
+                          onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                          className={currentPage === totalPages ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
+                        />
                       </PaginationItem>
                     </PaginationContent>
                   </Pagination>

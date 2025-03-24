@@ -1,4 +1,3 @@
-
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'lucide-react';
@@ -20,10 +19,7 @@ export function AboutSection() {
                         <div className="h-10 w-10 rounded-full bg-fintech-orange flex items-center justify-center text-white font-bold text-sm">FA</div>
                         <div>
                           <div className="text-lg font-medium text-white">
-                            <span className="text-fintech-blue-light">Fin</span>
-                            <span className="text-fintech-orange">Tech</span>
-                            <span className="text-red-500 font-bold">-</span>
-                            <span className="text-white">assist</span>
+                            <span className="text-red-500">Fin</span><span className="text-fintech-blue-light">Tech</span><span className="text-fintech-orange">Assist</span>
                           </div>
                           <div className="text-xs text-white/70">Your global fintech partner</div>
                         </div>

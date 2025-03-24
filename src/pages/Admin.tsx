@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { 
@@ -43,15 +42,6 @@ const Admin = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(!isMobile);
   const [currentTab, setCurrentTab] = useState("dashboard");
-
-  const [users, setUsers] = useState([
-    { id: 1, name: "Alex Johnson", email: "alex@example.com", status: "active", role: "User" },
-    { id: 2, name: "Sarah Smith", email: "sarah@example.com", status: "pending", role: "Admin" },
-    { id: 3, name: "Michael Brown", email: "michael@example.com", status: "inactive", role: "User" },
-    { id: 4, name: "Emily Davis", email: "emily@example.com", status: "active", role: "Manager" },
-  ]);
-
-  // Removing the transactions state as it's no longer needed
 
   useEffect(() => {
     const isAdmin = localStorage.getItem("isAdmin");
@@ -214,17 +204,6 @@ const Admin = () => {
             </Button>
             
             <Button 
-              variant={currentTab === "users" ? "default" : "ghost"} 
-              onClick={() => setCurrentTab("users")}
-              className="w-full justify-start"
-            >
-              <Users className="mr-2 h-4 w-4" />
-              {language === 'en' ? "Users" : "Пользователи"}
-            </Button>
-            
-            {/* Removed the transactions button */}
-            
-            <Button 
               variant={currentTab === "settings" ? "default" : "ghost"} 
               onClick={() => setCurrentTab("settings")}
               className="w-full justify-start"
@@ -283,7 +262,6 @@ const Admin = () => {
                  currentTab === "blog" ? "Блог" :
                  currentTab === "articles" ? "Статьи" :
                  currentTab === "requests" ? "Заявки" :
-                 currentTab === "users" ? "Пользователи" :
                  currentTab === "settings" ? "Настройки" :
                  currentTab === "social" ? "Социальные ссылки" :
                  currentTab === "webhooks" ? "Вебхуки" : ""}
@@ -314,44 +292,6 @@ const Admin = () => {
           {currentTab === "articles" && <ArticlesPanel />}
           {currentTab === "webhooks" && <WebhookPanel />}
           {currentTab === "requests" && <RequestsPanel />}
-          
-          {currentTab === "users" && (
-            <div className="space-y-4">
-              <Card>
-                <CardHeader>
-                  <CardTitle>{language === 'en' ? "Users" : "Пользователи"}</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>{language === 'en' ? "Name" : "Имя"}</TableHead>
-                        <TableHead>{language === 'en' ? "Email" : "Email"}</TableHead>
-                        <TableHead>{language === 'en' ? "Status" : "Статус"}</TableHead>
-                        <TableHead>{language === 'en' ? "Role" : "Роль"}</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {users.map((user) => (
-                        <TableRow key={user.id}>
-                          <TableCell className="font-medium">{user.name}</TableCell>
-                          <TableCell>{user.email}</TableCell>
-                          <TableCell>
-                            <Badge className={getStatusColor(user.status)}>
-                              {user.status}
-                            </Badge>
-                          </TableCell>
-                          <TableCell>{user.role}</TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </CardContent>
-              </Card>
-            </div>
-          )}
-          
-          {/* Removed the transactions content section */}
           
           {currentTab === "settings" && (
             <div className="space-y-4">

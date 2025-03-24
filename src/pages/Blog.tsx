@@ -1,4 +1,3 @@
-
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -9,10 +8,13 @@ import { Input } from '@/components/ui/input';
 import { useState } from 'react';
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '@/components/ui/pagination';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { BlogPostDialog } from '@/components/BlogPostDialog';
 
 export default function Blog() {
   const { t, language } = useLanguage();
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedPost, setSelectedPost] = useState(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   // Sample blog posts data with bilingual content - updated for 2025
   const posts = [
@@ -236,6 +238,12 @@ export default function Blog() {
     }
   };
 
+  // Function to handle post click
+  const handlePostClick = (post) => {
+    setSelectedPost(post);
+    setIsDialogOpen(true);
+  };
+
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
@@ -282,7 +290,10 @@ export default function Blog() {
                 <h2 className="text-2xl font-display font-bold mb-8">
                   {language === 'en' ? 'Featured Article' : 'Рекомендуемая Статья'}
                 </h2>
-                <div className={`rounded-2xl overflow-hidden ${renderPostColor(featuredPost.colorScheme)}`}>
+                <div 
+                  className={`rounded-2xl overflow-hidden ${renderPostColor(featuredPost.colorScheme)} cursor-pointer hover:shadow-xl transition-shadow duration-300`}
+                  onClick={() => handlePostClick(featuredPost)}
+                >
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-0">
                     <div className="relative">
                       <div className="aspect-video bg-gray-200 dark:bg-gray-800 relative">
@@ -314,7 +325,7 @@ export default function Blog() {
                           <Clock className="h-4 w-4 mr-1" />
                           <span>{featuredPost.readingTime}</span>
                         </div>
-                        <Button className={`${getButtonStyle(featuredPost.colorScheme)} shadow-lg button-glow`}>
+                        <Button className={`${getButtonStyle(featuredPost.colorScheme)} shadow-lg`}>
                           {language === 'en' ? 'Read Article' : 'Читать Статью'} <ArrowRight className="h-4 w-4 ml-2" />
                         </Button>
                       </div>
@@ -355,7 +366,8 @@ export default function Blog() {
                   {(searchQuery === '' ? regularPosts : filteredPosts).map(post => (
                     <Card 
                       key={post.id} 
-                      className={`overflow-hidden border-0 shadow-md hover-scale transition-all duration-300 ${renderPostColor(post.colorScheme)}`}
+                      className={`overflow-hidden border-0 shadow-md hover-scale transition-all duration-300 cursor-pointer ${renderPostColor(post.colorScheme)}`}
+                      onClick={() => handlePostClick(post)}
                     >
                       <div className="h-48 overflow-hidden">
                         <img 
@@ -456,7 +468,7 @@ export default function Blog() {
                     placeholder={language === 'en' ? "Your email address" : "Ваш email адрес"} 
                     className="w-full sm:w-64 bg-white/10 border-white/20 text-white placeholder:text-white/60"
                   />
-                  <Button className="bg-white text-fintech-blue hover:bg-gray-100 w-full sm:w-auto button-glow">
+                  <Button className="bg-white text-fintech-blue hover:bg-gray-100 w-full sm:w-auto">
                     {language === 'en' ? 'Subscribe' : 'Подписаться'}
                   </Button>
                 </div>
@@ -466,6 +478,14 @@ export default function Blog() {
         </section>
       </main>
       <Footer />
+      
+      {/* Blog Post Dialog */}
+      <BlogPostDialog 
+        post={selectedPost}
+        isOpen={isDialogOpen}
+        onClose={() => setIsDialogOpen(false)}
+      />
     </div>
   );
 }
+

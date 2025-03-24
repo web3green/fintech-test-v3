@@ -7,11 +7,14 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useNavigate } from 'react-router-dom';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import { BlogPostDialog } from './BlogPostDialog';
 
 export const BlogSection = () => {
   const { t, language } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
+  const [selectedPost, setSelectedPost] = useState(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   // Sample blog posts data with bilingual content (same as in Blog.tsx) - updated for 2025
   const posts = [
@@ -213,6 +216,13 @@ export const BlogSection = () => {
     navigate('/blog');
   };
 
+  // Handle post click
+  const handlePostClick = (post, e) => {
+    e.stopPropagation(); // Prevent navigation to blog page
+    setSelectedPost(post);
+    setIsDialogOpen(true);
+  };
+
   // Display only the first 6 posts initially
   const initialPosts = posts.slice(0, 6);
   // All remaining posts
@@ -238,7 +248,7 @@ export const BlogSection = () => {
             <Card 
               key={post.id} 
               className={`overflow-hidden border-0 shadow-md hover-scale transition-all duration-300 cursor-pointer ${renderPostColor(post.colorScheme)}`}
-              onClick={() => navigate('/blog')}
+              onClick={(e) => handlePostClick(post, e)}
             >
               <div className="h-48 overflow-hidden">
                 <img 
@@ -304,7 +314,7 @@ export const BlogSection = () => {
                 <Card 
                   key={post.id} 
                   className={`overflow-hidden border-0 shadow-md hover-scale transition-all duration-300 cursor-pointer ${renderPostColor(post.colorScheme)}`}
-                  onClick={() => navigate('/blog')}
+                  onClick={(e) => handlePostClick(post, e)}
                 >
                   <div className="h-48 overflow-hidden">
                     <img 
@@ -350,6 +360,13 @@ export const BlogSection = () => {
           </Button>
         </div>
       </div>
+      
+      {/* Blog Post Dialog */}
+      <BlogPostDialog 
+        post={selectedPost}
+        isOpen={isDialogOpen}
+        onClose={() => setIsDialogOpen(false)}
+      />
     </section>
   );
 };

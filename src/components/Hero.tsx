@@ -78,15 +78,34 @@ export function Hero() {
                   
                   <div className="space-y-6">
                     <div className="space-y-3">
-                      <div className="grid grid-cols-2 gap-2">
-                        <div className="bg-gray-50 dark:bg-gray-700 p-2 rounded text-xs text-center">Fintech</div>
-                        <div className="bg-gray-50 dark:bg-gray-700 p-2 rounded text-xs text-center">E-commerce</div>
-                        <div className="bg-gray-50 dark:bg-gray-700 p-2 rounded text-xs text-center">Blockchain</div>
-                        <div className="bg-gray-50 dark:bg-gray-700 p-2 rounded text-xs text-center">Startups</div>
-                        <div className="bg-gray-50 dark:bg-gray-700 p-2 rounded text-xs text-center">Neobanks</div>
-                        <div className="bg-gray-50 dark:bg-gray-700 p-2 rounded text-xs text-center">Digital Wallets</div>
-                        <div className="bg-gray-50 dark:bg-gray-700 p-2 rounded text-xs text-center">Gaming</div>
-                        <div className="bg-gray-50 dark:bg-gray-700 p-2 rounded text-xs text-center">SaaS</div>
+                      <div className="grid grid-cols-3 sm:grid-cols-3 gap-3">
+                        <Button variant="outline" className="p-3 h-auto text-sm font-medium bg-fintech-blue/5 hover:bg-fintech-blue/10 border-fintech-blue/10 dark:text-white transition-all duration-200 hover:scale-105">
+                          Fintech
+                        </Button>
+                        <Button variant="outline" className="p-3 h-auto text-sm font-medium bg-fintech-orange/5 hover:bg-fintech-orange/10 border-fintech-orange/10 dark:text-white transition-all duration-200 hover:scale-105">
+                          E-commerce
+                        </Button>
+                        <Button variant="outline" className="p-3 h-auto text-sm font-medium bg-fintech-blue/5 hover:bg-fintech-blue/10 border-fintech-blue/10 dark:text-white transition-all duration-200 hover:scale-105">
+                          Blockchain
+                        </Button>
+                        <Button variant="outline" className="p-3 h-auto text-sm font-medium bg-fintech-orange/5 hover:bg-fintech-orange/10 border-fintech-orange/10 dark:text-white transition-all duration-200 hover:scale-105">
+                          Startups
+                        </Button>
+                        <Button variant="outline" className="p-3 h-auto text-sm font-medium bg-fintech-blue/5 hover:bg-fintech-blue/10 border-fintech-blue/10 dark:text-white transition-all duration-200 hover:scale-105">
+                          Neobanks
+                        </Button>
+                        <Button variant="outline" className="p-3 h-auto text-sm font-medium bg-fintech-orange/5 hover:bg-fintech-orange/10 border-fintech-orange/10 dark:text-white transition-all duration-200 hover:scale-105">
+                          Digital Wallets
+                        </Button>
+                        <Button variant="outline" className="p-3 h-auto text-sm font-medium bg-fintech-blue/5 hover:bg-fintech-blue/10 border-fintech-blue/10 dark:text-white transition-all duration-200 hover:scale-105">
+                          Gaming
+                        </Button>
+                        <Button variant="outline" className="p-3 h-auto text-sm font-medium bg-fintech-orange/5 hover:bg-fintech-orange/10 border-fintech-orange/10 dark:text-white transition-all duration-200 hover:scale-105">
+                          SaaS
+                        </Button>
+                        <Button variant="outline" className="p-3 h-auto text-sm font-medium bg-fintech-blue/5 hover:bg-fintech-blue/10 border-fintech-blue/10 dark:text-white transition-all duration-200 hover:scale-105">
+                          EdTech
+                        </Button>
                       </div>
                     </div>
                     

@@ -3,6 +3,7 @@ import { ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { GlowingEffect } from './ui/glowing-effect';
+import { Card } from './ui/card';
 
 export function Hero() {
   const { t } = useLanguage();
@@ -114,9 +115,28 @@ export function Hero() {
                         <div className="text-xs text-muted-foreground mb-1">Banking</div>
                         <div className="font-medium">Accounts Worldwide</div>
                       </div>
-                      <div className="bg-fintech-orange/10 dark:bg-fintech-orange/20 p-4 rounded-lg">
-                        <div className="text-xs text-muted-foreground mb-1">Licenses</div>
-                        <div className="font-medium">EMI & Crypto</div>
+                      
+                      <Card className="bg-fintech-orange/10 dark:bg-fintech-orange/20 p-4 rounded-lg border-0">
+                        <div className="text-xs text-muted-foreground mb-2">Licenses</div>
+                        <div className="flex flex-wrap gap-2">
+                          <span className="inline-block text-xs bg-fintech-blue/20 px-2 py-1 rounded">EMI</span>
+                          <span className="inline-block text-xs bg-fintech-orange/20 px-2 py-1 rounded">Crypto</span>
+                          <span className="inline-block text-xs bg-fintech-blue/20 px-2 py-1 rounded">iGaming</span>
+                          <span className="inline-block text-xs bg-fintech-orange/20 px-2 py-1 rounded">PSP</span>
+                          <span className="inline-block text-xs bg-fintech-blue/20 px-2 py-1 rounded">Gambling</span>
+                          <span className="inline-block text-xs bg-fintech-orange/20 px-2 py-1 rounded">E-Money</span>
+                        </div>
+                      </Card>
+                    </div>
+                    
+                    <div className="bg-fintech-blue/5 dark:bg-fintech-blue/10 p-4 rounded-lg">
+                      <div className="text-xs text-muted-foreground mb-2">Global Jurisdictions</div>
+                      <div className="flex flex-wrap gap-2">
+                        <span className="inline-block text-xs bg-fintech-orange/20 px-2 py-1 rounded">MGA</span>
+                        <span className="inline-block text-xs bg-fintech-blue/20 px-2 py-1 rounded">Curaçao</span>
+                        <span className="inline-block text-xs bg-fintech-orange/20 px-2 py-1 rounded">FCA</span>
+                        <span className="inline-block text-xs bg-fintech-blue/20 px-2 py-1 rounded">AML5</span>
+                        <span className="inline-block text-xs bg-fintech-orange/20 px-2 py-1 rounded">Casino Compliance</span>
                       </div>
                     </div>
                     

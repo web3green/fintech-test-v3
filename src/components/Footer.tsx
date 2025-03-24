@@ -1,3 +1,4 @@
+
 import { Link } from 'react-router-dom';
 import { Facebook, X, Instagram, Linkedin, Mail, Phone } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -62,10 +63,9 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="space-y-4">
             <h3 className="text-xl font-display font-bold">
-              <span className="text-fintech-blue dark:text-fintech-blue-light">Fin</span>
-              <span className="text-fintech-orange">Tech</span>
-              <span className="text-red-500 font-bold">-</span>
-              <span className="text-foreground">assist</span>
+              <span className="text-red-500">Fin</span>
+              <span className="text-fintech-blue dark:text-fintech-blue-light">Tech</span>
+              <span className="text-fintech-orange">Assist</span>
             </h3>
             <p className="text-muted-foreground max-w-xs">
               {t('footer.description')}
@@ -164,7 +164,7 @@ export function Footer() {
         <div className="border-t border-gray-200 dark:border-gray-800 mt-12 pt-6">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <p className="text-muted-foreground text-sm">
-              © {currentYear} FintechAssist. {t('footer.rights')}
+              © {currentYear} <span className="text-red-500">Fin</span><span className="text-fintech-blue dark:text-fintech-blue-light">Tech</span><span className="text-fintech-orange">Assist</span>. {t('footer.rights')}
             </p>
             <div className="flex space-x-4 mt-4 md:mt-0">
               <Link to="/privacy" className="text-sm text-muted-foreground hover:text-fintech-blue dark:hover:text-fintech-blue-light transition-colors">

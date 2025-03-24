@@ -85,7 +85,7 @@ export default function Services() {
           <div className="container mx-auto px-4">
             <div className="max-w-3xl mx-auto text-center mb-12">
               <h1 className="text-4xl md:text-5xl font-display font-bold mb-6">
-                Our Services
+                <span className="text-red-500">Fin</span><span className="text-fintech-blue">Tech</span><span className="text-fintech-orange">Assist</span> Services
               </h1>
               <p className="text-xl text-muted-foreground">
                 Comprehensive financial and business solutions tailored to your needs

@@ -15,7 +15,7 @@ export function Logo({ className, withGlow = true, showText = true }: LogoProps)
       <div className="relative">
         <img 
           src="/lovable-uploads/8f51558f-dcfd-4921-b6e4-112532ad0723.png" 
-          alt="Fintech-Assist Logo" 
+          alt="FinTechAssist Logo" 
           className="h-10 w-auto"
         />
         {withGlow && (
@@ -33,10 +33,9 @@ export function Logo({ className, withGlow = true, showText = true }: LogoProps)
       </div>
       {showText && (
         <span className="ml-2 font-display font-bold text-xl">
-          <span className="text-fintech-blue dark:text-fintech-blue-light">Fin</span>
-          <span className="text-fintech-orange">Tech</span>
-          <span className="text-red-500 font-bold">-</span>
-          <span className="text-foreground">assist</span>
+          <span className="text-red-500">Fin</span>
+          <span className="text-fintech-blue dark:text-fintech-blue-light">Tech</span>
+          <span className="text-fintech-orange">Assist</span>
         </span>
       )}
     </Link>

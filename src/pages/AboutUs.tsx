@@ -1,4 +1,3 @@
-
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -45,7 +44,7 @@ export default function AboutUs() {
           <div className="container mx-auto px-4">
             <div className="max-w-3xl mx-auto text-center mb-12">
               <h1 className="text-4xl md:text-5xl font-display font-bold mb-6">
-                About Fintech<span className="text-fintech-orange">Assist</span>
+                About <span className="text-red-500">Fin</span><span className="text-fintech-blue">Tech</span><span className="text-fintech-orange">Assist</span>
               </h1>
               <p className="text-xl text-muted-foreground">
                 Your trusted partner in business registration, banking, and financial licensing worldwide.
@@ -86,7 +85,7 @@ export default function AboutUs() {
                   A Decade of Excellence in Financial Solutions
                 </h2>
                 <p className="text-muted-foreground mb-6">
-                  Founded in 2013, Fintech-Assist has grown from a small consultancy to a global leader in business registration and financial services. Our journey began with a simple mission: to make international business operations accessible to entrepreneurs worldwide.
+                  Founded in 2013, <span className="text-red-500">Fin</span><span className="text-fintech-blue">Tech</span><span className="text-fintech-orange">Assist</span> has grown from a small consultancy to a global leader in business registration and financial services. Our journey began with a simple mission: to make international business operations accessible to entrepreneurs worldwide.
                 </p>
                 <p className="text-muted-foreground mb-6">
                   Today, we serve clients across 20+ countries, providing seamless solutions for company registration, bank account opening, and financial licensing. Our team of experts combines local knowledge with global expertise to deliver exceptional results.

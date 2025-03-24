@@ -26,7 +26,7 @@ export const BlogNewsletter: React.FC<BlogNewsletterProps> = ({ language }) => {
           </div>
           <div className="relative z-10 text-center">
             <h2 className="text-2xl md:text-3xl font-display font-bold mb-4">
-              {language === 'en' ? 'Stay Updated' : 'Будьте в курсе'}
+              {language === 'en' ? 'Subscribe to FinTechAssist Updates' : 'Подпишитесь на обновления FinTechAssist'}
             </h2>
             <p className="text-white/80 mb-8 max-w-2xl mx-auto">
               {language === 'en' 

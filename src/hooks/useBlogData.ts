@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { blogPosts, getLocalizedContent } from '@/services/blogService';
 
 export const useBlogData = (language: string) => {
@@ -10,6 +10,7 @@ export const useBlogData = (language: string) => {
   const postsPerPage = 6;
   
   const location = useLocation();
+  const navigate = useNavigate();
   
   useEffect(() => {
     // Check for search query in URL
@@ -18,7 +19,42 @@ export const useBlogData = (language: string) => {
     if (searchParam) {
       setSearchQuery(searchParam);
     }
+    
+    // Check for category in URL
+    const categoryParam = params.get('category');
+    if (categoryParam) {
+      setCategoryFilter(categoryParam);
+    }
   }, [location.search]);
+
+  // Update URL when search or category changes
+  const updateSearchQuery = (query: string) => {
+    setSearchQuery(query);
+    setCurrentPage(1);
+    
+    const params = new URLSearchParams(location.search);
+    if (query) {
+      params.set('search', query);
+    } else {
+      params.delete('search');
+    }
+    
+    navigate(`/blog?${params.toString()}`);
+  };
+  
+  const updateCategoryFilter = (category: string) => {
+    setCategoryFilter(category);
+    setCurrentPage(1);
+    
+    const params = new URLSearchParams(location.search);
+    if (category && category !== 'all') {
+      params.set('category', category);
+    } else {
+      params.delete('category');
+    }
+    
+    navigate(`/blog?${params.toString()}`);
+  };
 
   const filteredPosts = blogPosts.filter(post => {
     const titleMatch = getLocalizedContent(post.title, language).toLowerCase().includes(searchQuery.toLowerCase());
@@ -48,9 +84,9 @@ export const useBlogData = (language: string) => {
     currentPage,
     setCurrentPage,
     searchQuery,
-    setSearchQuery,
+    setSearchQuery: updateSearchQuery,
     categoryFilter,
-    setCategoryFilter,
+    setCategoryFilter: updateCategoryFilter,
     categories
   };
 };

@@ -3,6 +3,7 @@ import React from 'react';
 import { Search, Filter } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Button } from '@/components/ui/button';
 
 interface BlogSearchBarProps {
   searchQuery: string;
@@ -21,10 +22,15 @@ export const BlogSearchBar: React.FC<BlogSearchBarProps> = ({
   categories,
   language
 }) => {
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    // The search is already handled by the input onChange
+  };
+
   return (
     <section className="py-8 border-b border-gray-200 dark:border-gray-800">
       <div className="container mx-auto px-8 md:px-12 lg:px-16">
-        <div className="flex flex-col md:flex-row gap-4 items-center">
+        <form onSubmit={handleSubmit} className="flex flex-col md:flex-row gap-4 items-center">
           <div className="relative flex-grow">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
             <Input
@@ -54,7 +60,8 @@ export const BlogSearchBar: React.FC<BlogSearchBarProps> = ({
               </SelectContent>
             </Select>
           </div>
-        </div>
+          <Button type="submit" className="hidden">Search</Button>
+        </form>
       </div>
     </section>
   );

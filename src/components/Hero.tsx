@@ -70,7 +70,7 @@ export function Hero() {
                     </div>
                     <div className="ml-4">
                       <div className="font-bold text-xl">
-                        Fintech<span className="text-fintech-orange">Assist</span>
+                        <span className="text-red-500">Fin</span><span className="text-fintech-blue">Tech</span><span className="text-fintech-orange">Assist</span>
                       </div>
                       <div className="text-sm text-muted-foreground">Global Financial Solutions</div>
                     </div>
@@ -120,3 +120,4 @@ export function Hero() {
     </section>
   );
 }
+

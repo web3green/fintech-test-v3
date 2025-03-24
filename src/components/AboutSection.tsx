@@ -1,24 +1,30 @@
 
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';
-import { ArrowRight, UserRound, Handshake, ShieldCheck } from 'lucide-react';
+import { ArrowRight, UserRound, Handshake, ShieldCheck, Award, Clock, Globe } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
+import { GlowingEffect } from '@/components/ui/glowing-effect';
 
 export function AboutSection() {
-  const {
-    t
-  } = useLanguage();
-  return <section id="about" className="section-padding">
+  const { t } = useLanguage();
+  
+  return (
+    <section id="about" className="section-padding">
       <div className="container mx-auto px-8 md:px-12 lg:px-16">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div className="order-2 lg:order-1">
-            <div className="relative rounded-xl overflow-hidden shadow-lg">
+            <div className="relative rounded-xl overflow-hidden shadow-xl transition-all duration-300 hover:shadow-2xl">
               <div className="aspect-[4/3] bg-gradient-to-br from-fintech-blue/90 to-fintech-blue-dark rounded-xl">
                 <div className="absolute inset-0 flex items-center justify-center p-8">
-                  <Card className="glass-card rounded-xl w-full mx-auto shadow-lg">
-                    <CardContent className="p-6 space-y-4">
+                  <Card className="glass-card rounded-xl w-full mx-auto shadow-lg relative transition-all duration-300 hover:-translate-y-1">
+                    <div className="absolute inset-0 rounded-xl overflow-hidden">
+                      <GlowingEffect glow={true} variant="default" spread={30} blur={20} />
+                    </div>
+                    <CardContent className="p-6 space-y-4 relative z-10">
                       <div className="flex items-center space-x-4">
-                        <div className="h-10 w-10 rounded-full bg-fintech-orange flex items-center justify-center text-white font-bold text-sm">FA</div>
+                        <div className="h-12 w-12 rounded-full bg-gradient-to-br from-fintech-orange to-fintech-orange-light flex items-center justify-center text-white font-bold text-base shadow-md">
+                          FA
+                        </div>
                         <div>
                           <div className="text-lg font-medium text-white">
                             <span className="text-red-500">Fin</span><span className="text-fintech-blue-light">Tech</span><span className="text-fintech-orange">Assist</span>
@@ -27,29 +33,39 @@ export function AboutSection() {
                         </div>
                       </div>
                       
-                      <div className="space-y-3">
-                        <div className="flex items-center space-x-2 text-white">
-                          <UserRound className="h-4 w-4 text-fintech-orange" />
+                      <div className="space-y-3 bg-gray-900/30 p-3 rounded-lg backdrop-blur-sm border border-white/10">
+                        <div className="flex items-center space-x-3 text-white group transition-all duration-300 hover:translate-x-1">
+                          <div className="h-8 w-8 rounded-full bg-fintech-orange/20 flex items-center justify-center">
+                            <UserRound className="h-4 w-4 text-fintech-orange" />
+                          </div>
                           <div className="text-sm">Персональный менеджер для каждого клиента</div>
                         </div>
-                        <div className="flex items-center space-x-2 text-white">
-                          <Handshake className="h-4 w-4 text-fintech-blue-light" />
+                        <div className="flex items-center space-x-3 text-white group transition-all duration-300 hover:translate-x-1">
+                          <div className="h-8 w-8 rounded-full bg-fintech-blue-light/20 flex items-center justify-center">
+                            <Handshake className="h-4 w-4 text-fintech-blue-light" />
+                          </div>
                           <div className="text-sm">Полное сопровождение на всех этапах</div>
                         </div>
-                        <div className="flex items-center space-x-2 text-white">
-                          <ShieldCheck className="h-4 w-4 text-green-400" />
+                        <div className="flex items-center space-x-3 text-white group transition-all duration-300 hover:translate-x-1">
+                          <div className="h-8 w-8 rounded-full bg-green-400/20 flex items-center justify-center">
+                            <ShieldCheck className="h-4 w-4 text-green-400" />
+                          </div>
                           <div className="text-sm">Работа через сервисы гаранта</div>
                         </div>
                       </div>
                       
-                      <div className="grid grid-cols-2 gap-4 pt-2">
-                        <div className="text-center">
+                      <div className="grid grid-cols-3 gap-3 pt-2">
+                        <div className="bg-gray-900/30 rounded-lg p-3 border border-white/10 text-center transition-all duration-300 hover:bg-gray-900/50">
                           <div className="text-xs text-white/70">Founded</div>
                           <div className="mt-1 font-medium text-white">2015</div>
                         </div>
-                        <div className="text-center">
+                        <div className="bg-gray-900/30 rounded-lg p-3 border border-white/10 text-center transition-all duration-300 hover:bg-gray-900/50">
                           <div className="text-xs text-white/70">Team</div>
                           <div className="mt-1 font-medium text-white">10+ experts</div>
+                        </div>
+                        <div className="bg-gray-900/30 rounded-lg p-3 border border-white/10 text-center transition-all duration-300 hover:bg-gray-900/50">
+                          <div className="text-xs text-white/70">Clients</div>
+                          <div className="mt-1 font-medium text-white">500+</div>
                         </div>
                       </div>
                     </CardContent>
@@ -74,20 +90,40 @@ export function AboutSection() {
             </p>
             
             <div className="grid grid-cols-2 gap-4 mb-8">
-              <div className="bg-gray-50 dark:bg-gray-900 p-4 rounded-lg">
-                <div className="text-2xl font-bold text-fintech-blue dark:text-fintech-blue-light">50+</div>
+              <div className="bg-gray-50 dark:bg-gray-900 p-4 rounded-lg shadow-sm hover:shadow-md transition-all duration-300">
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="h-8 w-8 rounded-full bg-fintech-blue/10 dark:bg-fintech-blue/20 flex items-center justify-center">
+                    <Globe className="h-4 w-4 text-fintech-blue dark:text-fintech-blue-light" />
+                  </div>
+                  <div className="text-2xl font-bold text-fintech-blue dark:text-fintech-blue-light">50+</div>
+                </div>
                 <div className="text-sm text-muted-foreground">Countries</div>
               </div>
-              <div className="bg-gray-50 dark:bg-gray-900 p-4 rounded-lg">
-                <div className="text-2xl font-bold text-fintech-orange">500+</div>
+              <div className="bg-gray-50 dark:bg-gray-900 p-4 rounded-lg shadow-sm hover:shadow-md transition-all duration-300">
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="h-8 w-8 rounded-full bg-fintech-orange/10 dark:bg-fintech-orange/20 flex items-center justify-center">
+                    <UserRound className="h-4 w-4 text-fintech-orange" />
+                  </div>
+                  <div className="text-2xl font-bold text-fintech-orange">500+</div>
+                </div>
                 <div className="text-sm text-muted-foreground">Clients</div>
               </div>
-              <div className="bg-gray-50 dark:bg-gray-900 p-4 rounded-lg">
-                <div className="text-2xl font-bold text-fintech-blue dark:text-fintech-blue-light">98%</div>
+              <div className="bg-gray-50 dark:bg-gray-900 p-4 rounded-lg shadow-sm hover:shadow-md transition-all duration-300">
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="h-8 w-8 rounded-full bg-fintech-blue/10 dark:bg-fintech-blue/20 flex items-center justify-center">
+                    <Award className="h-4 w-4 text-fintech-blue dark:text-fintech-blue-light" />
+                  </div>
+                  <div className="text-2xl font-bold text-fintech-blue dark:text-fintech-blue-light">98%</div>
+                </div>
                 <div className="text-sm text-muted-foreground">Success Rate</div>
               </div>
-              <div className="bg-gray-50 dark:bg-gray-900 p-4 rounded-lg">
-                <div className="text-2xl font-bold text-fintech-orange">7+</div>
+              <div className="bg-gray-50 dark:bg-gray-900 p-4 rounded-lg shadow-sm hover:shadow-md transition-all duration-300">
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="h-8 w-8 rounded-full bg-fintech-orange/10 dark:bg-fintech-orange/20 flex items-center justify-center">
+                    <Clock className="h-4 w-4 text-fintech-orange" />
+                  </div>
+                  <div className="text-2xl font-bold text-fintech-orange">7+</div>
+                </div>
                 <div className="text-sm text-muted-foreground">Years Experience</div>
               </div>
             </div>
@@ -106,5 +142,6 @@ export function AboutSection() {
           </div>
         </div>
       </div>
-    </section>;
+    </section>
+  );
 }

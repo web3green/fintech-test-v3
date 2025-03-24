@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Search, Calendar, User, ArrowRight, Clock, Tag, ChevronRight, ChevronDown, ChevronUp } from 'lucide-react';
@@ -28,7 +27,7 @@ export const BlogSection = () => {
         en: 'Learn about the benefits, procedures, and considerations for registering an offshore company in today\'s global business environment.',
         ru: 'Узнайте о преимуществах, процедурах и особенностях регистрации оффшорной компании в современной глобальной бизнес-среде.'
       },
-      image: 'https://images.unsplash.com/photo-1507679799987-c73779587ccf',
+      image: 'https://images.unsplash.com/photo-1507679799987-c73779587ccf?ixlib=rb-4.0.3&auto=format&fit=crop',
       author: 'Alex Morgan',
       date: 'January 15, 2025',
       category: {
@@ -50,7 +49,7 @@ export const BlogSection = () => {
         en: 'Explore the best banking solutions for international businesses, from traditional banks to modern fintech platforms.',
         ru: 'Исследуйте лучшие банковские решения для международного бизнеса, от традиционных банков до современных финтех-платформ.'
       },
-      image: 'https://images.unsplash.com/photo-1601597111158-2fceff292cdc',
+      image: 'https://images.unsplash.com/photo-1601597111158-2fceff292cdc?ixlib=rb-4.0.3&auto=format&fit=crop',
       author: 'Sarah Johnson',
       date: 'February 22, 2025',
       category: {
@@ -71,7 +70,7 @@ export const BlogSection = () => {
         en: 'A comprehensive guide to nominee services, including benefits, risks, and regulatory considerations.',
         ru: 'Комплексное руководство по номинальным услугам, включая преимущества, риски и нормативные соображения.'
       },
-      image: 'https://images.unsplash.com/photo-1664575599736-c5197c684172',
+      image: 'https://images.unsplash.com/photo-1664575599736-c5197c684172?ixlib=rb-4.0.3&auto=format&fit=crop',
       author: 'Michael Chen',
       date: 'March 10, 2025',
       category: {
@@ -92,7 +91,7 @@ export const BlogSection = () => {
         en: 'Everything you need to know about obtaining financial licenses in different jurisdictions around the world.',
         ru: 'Все, что вам нужно знать о получении финансовых лицензий в различных юрисдикциях по всему миру.'
       },
-      image: 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85',
+      image: 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?ixlib=rb-4.0.3&auto=format&fit=crop',
       author: 'Emma Williams',
       date: 'April 5, 2025',
       category: {
@@ -113,7 +112,7 @@ export const BlogSection = () => {
         en: 'Legal and effective strategies to optimize your tax structure when operating internationally.',
         ru: 'Законные и эффективные стратегии оптимизации налоговой структуры при ведении международного бизнеса.'
       },
-      image: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f',
+      image: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?ixlib=rb-4.0.3&auto=format&fit=crop',
       author: 'David Brown',
       date: 'May 12, 2025',
       category: {
@@ -134,7 +133,7 @@ export const BlogSection = () => {
         en: 'Explore the latest financial technology trends that are reshaping the global business landscape.',
         ru: 'Изучите последние тенденции финансовых технологий, которые меняют глобальный бизнес-ландшафт.'
       },
-      image: 'https://images.unsplash.com/photo-1618044733300-9472054094ee',
+      image: 'https://images.unsplash.com/photo-1618044733300-9472054094ee?ixlib=rb-4.0.3&auto=format&fit=crop',
       author: 'Jessica Lee',
       date: 'June 18, 2025',
       category: {
@@ -155,7 +154,7 @@ export const BlogSection = () => {
         en: 'A comprehensive overview of cryptocurrency exchange regulations across different jurisdictions.',
         ru: 'Комплексный обзор регулирования криптовалютных бирж в различных юрисдикциях.'
       },
-      image: 'https://images.unsplash.com/photo-1516245834210-c4c142787335',
+      image: 'https://images.unsplash.com/photo-1516245834210-c4c142787335?ixlib=rb-4.0.3&auto=format&fit=crop',
       author: 'Robert Zhang',
       date: 'July 5, 2025',
       category: {
@@ -176,7 +175,7 @@ export const BlogSection = () => {
         en: 'Learn about the strategic approaches to corporate restructuring that maximize efficiency and minimize risks.',
         ru: 'Узнайте о стратегических подходах к корпоративной реструктуризации, которые максимизируют эффективность и минимизируют риски.'
       },
-      image: 'https://images.unsplash.com/photo-1553877522-43269d4ea984',
+      image: 'https://images.unsplash.com/photo-1553877522-43269d4ea984?ixlib=rb-4.0.3&auto=format&fit=crop',
       author: 'Thomas Wilson',
       date: 'August 15, 2025',
       category: {
@@ -228,6 +227,14 @@ export const BlogSection = () => {
   // All remaining posts
   const expandedPosts = posts.slice(6);
 
+  // Get the correct image URL with fallback
+  const getImageUrl = (imageUrl) => {
+    if (imageUrl && imageUrl.startsWith('http')) {
+      return imageUrl;
+    }
+    return 'https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?ixlib=rb-4.0.3&auto=format&fit=crop';
+  };
+
   return (
     <section id="blog" className="py-20 bg-white dark:bg-gray-900">
       <div className="container mx-auto px-6 md:px-12">
@@ -252,7 +259,7 @@ export const BlogSection = () => {
             >
               <div className="h-48 overflow-hidden">
                 <img 
-                  src={post.image} 
+                  src={getImageUrl(post.image)} 
                   alt={getLocalizedContent(post.title)} 
                   className="w-full h-full object-cover"
                 />
@@ -318,7 +325,7 @@ export const BlogSection = () => {
                 >
                   <div className="h-48 overflow-hidden">
                     <img 
-                      src={post.image} 
+                      src={getImageUrl(post.image)} 
                       alt={getLocalizedContent(post.title)} 
                       className="w-full h-full object-cover"
                     />

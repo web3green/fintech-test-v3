@@ -50,12 +50,18 @@ export const BlogPostDialog = ({ post, isOpen, onClose }: BlogPostDialogProps) =
 
   if (!post) return null;
 
+  // Verify that post image exists and set a fallback if not
+  const postImage = post.image && post.image.startsWith('http') 
+    ? post.image 
+    : 'https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80';
+
   return (
     <Dialog open={isOpen} onOpenChange={() => onClose()}>
       <DialogContent className="max-w-4xl max-h-[90vh] p-0 overflow-hidden">
-        <div className="relative h-64 overflow-hidden">
+        <DialogTitle className="sr-only">{getLocalizedContent(post.title)}</DialogTitle>
+        <div className="relative h-32 overflow-hidden">
           <img 
-            src={post.image} 
+            src={postImage} 
             alt={getLocalizedContent(post.title)} 
             className="w-full h-full object-cover"
           />
@@ -90,7 +96,7 @@ export const BlogPostDialog = ({ post, isOpen, onClose }: BlogPostDialogProps) =
           </div>
         </DialogHeader>
         
-        <ScrollArea className="p-6 max-h-[calc(90vh-350px)]">
+        <ScrollArea className="p-6 max-h-[calc(90vh-250px)]">
           <div className="space-y-4">
             <p className="text-lg font-medium">
               {getLocalizedContent(post.excerpt)}

@@ -16,7 +16,6 @@ export default function Blog() {
   const [selectedPost, setSelectedPost] = useState(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-  // Sample blog posts data with bilingual content - updated for 2025
   const posts = [
     {
       id: 1,
@@ -28,7 +27,7 @@ export default function Blog() {
         en: 'Learn about the benefits, procedures, and considerations for registering an offshore company in today\'s global business environment.',
         ru: 'Узнайте о преимуществах, процедурах и особенностях регистрации оффшорной компании в современной глобальной бизнес-среде.'
       },
-      image: 'https://images.unsplash.com/photo-1507679799987-c73779587ccf',
+      image: 'https://images.unsplash.com/photo-1507679799987-c73779587ccf?ixlib=rb-4.0.3&auto=format&fit=crop',
       author: 'Alex Morgan',
       date: 'January 15, 2025',
       category: {
@@ -50,7 +49,7 @@ export default function Blog() {
         en: 'Explore the best banking solutions for international businesses, from traditional banks to modern fintech platforms.',
         ru: 'Исследуйте лучшие банковские решения для международного бизнеса, от традиционных банков до современных финтех-платформ.'
       },
-      image: 'https://images.unsplash.com/photo-1601597111158-2fceff292cdc',
+      image: 'https://images.unsplash.com/photo-1601597111158-2fceff292cdc?ixlib=rb-4.0.3&auto=format&fit=crop',
       author: 'Sarah Johnson',
       date: 'February 22, 2025',
       category: {
@@ -189,7 +188,6 @@ export default function Blog() {
     }
   ];
 
-  // Function to get content based on current language
   const getLocalizedContent = (content) => {
     if (typeof content === 'object') {
       return content[language] || content.en;
@@ -197,7 +195,6 @@ export default function Blog() {
     return content;
   };
 
-  // Filter posts based on search query
   const filteredPosts = posts.filter(post => 
     getLocalizedContent(post.title).toLowerCase().includes(searchQuery.toLowerCase()) ||
     getLocalizedContent(post.category).toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -205,12 +202,9 @@ export default function Blog() {
     post.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()))
   );
 
-  // Get featured post
   const featuredPost = posts.find(post => post.featured);
-  // Get regular posts (excluding the featured one)
   const regularPosts = posts.filter(post => !post.featured);
 
-  // Function to render color scheme for posts
   const renderPostColor = (colorScheme) => {
     switch (colorScheme) {
       case 'blue':
@@ -224,7 +218,6 @@ export default function Blog() {
     }
   };
 
-  // Function to get contrasting button color based on color scheme
   const getButtonStyle = (colorScheme) => {
     switch (colorScheme) {
       case 'blue':
@@ -238,17 +231,22 @@ export default function Blog() {
     }
   };
 
-  // Function to handle post click
   const handlePostClick = (post) => {
     setSelectedPost(post);
     setIsDialogOpen(true);
+  };
+
+  const getImageUrl = (imageUrl) => {
+    if (imageUrl && imageUrl.startsWith('http')) {
+      return imageUrl;
+    }
+    return 'https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?ixlib=rb-4.0.3&auto=format&fit=crop';
   };
 
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
       <main className="flex-grow pt-20">
-        {/* Hero Section */}
         <section className="py-20 md:py-28 bg-gray-50 dark:bg-gray-900">
           <div className="container mx-auto px-8 md:px-12 lg:px-16">
             <div className="max-w-3xl mx-auto text-center mb-12">
@@ -264,7 +262,6 @@ export default function Blog() {
           </div>
         </section>
 
-        {/* Search Section */}
         <section className="py-12 border-b border-gray-200 dark:border-gray-800">
           <div className="container mx-auto px-8 md:px-12 lg:px-16">
             <div className="max-w-2xl mx-auto">
@@ -282,7 +279,6 @@ export default function Blog() {
           </div>
         </section>
 
-        {/* Featured Post */}
         {featuredPost && searchQuery === '' && (
           <section className="py-12">
             <div className="container mx-auto px-8 md:px-12 lg:px-16">
@@ -298,7 +294,7 @@ export default function Blog() {
                     <div className="relative">
                       <div className="aspect-video bg-gray-200 dark:bg-gray-800 relative">
                         <img 
-                          src={featuredPost.image} 
+                          src={getImageUrl(featuredPost.image)} 
                           alt={getLocalizedContent(featuredPost.title)} 
                           className="w-full h-full object-cover"
                         />
@@ -337,7 +333,6 @@ export default function Blog() {
           </section>
         )}
 
-        {/* All Posts with Contrasting Blocks */}
         <section className="py-12 md:py-16">
           <div className="container mx-auto px-8 md:px-12 lg:px-16">
             <div className="max-w-6xl mx-auto">
@@ -371,7 +366,7 @@ export default function Blog() {
                     >
                       <div className="h-48 overflow-hidden">
                         <img 
-                          src={post.image} 
+                          src={getImageUrl(post.image)} 
                           alt={getLocalizedContent(post.title)} 
                           className="w-full h-full object-cover"
                         />
@@ -410,7 +405,6 @@ export default function Blog() {
                 </div>
               )}
               
-              {/* Pagination */}
               {filteredPosts.length > 0 && (
                 <div className="mt-12">
                   <Pagination>
@@ -438,7 +432,6 @@ export default function Blog() {
           </div>
         </section>
 
-        {/* Newsletter */}
         <section className="py-16 bg-gray-50 dark:bg-gray-900">
           <div className="container mx-auto px-8 md:px-12 lg:px-16">
             <div className="max-w-4xl mx-auto bg-fintech-blue text-white dark:bg-fintech-blue-dark rounded-2xl p-8 md:p-12 shadow-lg relative overflow-hidden">
@@ -479,7 +472,6 @@ export default function Blog() {
       </main>
       <Footer />
       
-      {/* Blog Post Dialog */}
       <BlogPostDialog 
         post={selectedPost}
         isOpen={isDialogOpen}
@@ -488,4 +480,3 @@ export default function Blog() {
     </div>
   );
 }
-

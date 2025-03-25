@@ -6,7 +6,7 @@
 // Define the image URL with both absolute and relative paths
 export const getLogoUrl = (withTimestamp = true) => {
   const timestamp = withTimestamp ? `?t=${Date.now()}` : '';
-  const relativeLogoPath = `/lovable-uploads/8f51558f-dcfd-4921-b6e4-112532ad0723.png${timestamp}`;
+  const relativeLogoPath = `/lovable-uploads/6bfd57a2-6c6a-4507-bb1d-2cde1517ebd1.png${timestamp}`;
   
   // Use window.location.origin to get the current domain dynamically
   const origin = window.location.origin;
@@ -22,7 +22,7 @@ export const getLogoUrl = (withTimestamp = true) => {
 export const updateSocialMetaTags = () => {
   const { absolute: logoUrl } = getLogoUrl();
   const origin = window.location.origin;
-  const fullUrl = `${origin}/lovable-uploads/8f51558f-dcfd-4921-b6e4-112532ad0723.png`;
+  const fullUrl = `${origin}/lovable-uploads/6bfd57a2-6c6a-4507-bb1d-2cde1517ebd1.png`;
   
   // Helper function to create or update meta tags
   const updateMetaTag = (selector: string, value: string, isProperty = true) => {

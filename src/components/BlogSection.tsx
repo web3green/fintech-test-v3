@@ -64,16 +64,20 @@ export const BlogSection: React.FC = () => {
     return getLocalizedContent(content, language);
   };
 
+  // Prepare the description text with brand highlighting
+  const blogDescription = language === 'en' 
+    ? 'Stay up-to-date with the latest industry insights and company news from <span class="text-red-500">Fin</span><span class="text-fintech-blue">Tech</span><span class="text-fintech-orange">Assist</span>.' 
+    : 'Будьте в курсе последних отраслевых идей и новостей компании <span class="text-red-500">Fin</span><span class="text-fintech-blue">Tech</span><span class="text-fintech-orange">Assist</span>.';
+
   return (
     <section id="blog" className="py-16 bg-background">
       <div className="container mx-auto px-4">
         <div className="max-w-4xl mx-auto mb-10 text-center">
           <h2 className="text-3xl font-bold mb-4">{language === 'en' ? 'Our Blog' : 'Наш Блог'}</h2>
-          <p className="text-muted-foreground">
-            {language === 'en' 
-              ? 'Stay up-to-date with the latest industry insights and company news from <span class="text-red-500">Fin</span><span class="text-fintech-blue">Tech</span><span class="text-fintech-orange">Assist</span>.' 
-              : 'Будьте в курсе последних отраслевых идей и новостей компании <span class="text-red-500">Fin</span><span class="text-fintech-blue">Tech</span><span class="text-fintech-orange">Assist</span>.'}
-          </p>
+          <p 
+            className="text-muted-foreground"
+            dangerouslySetInnerHTML={{ __html: blogDescription }}
+          />
         </div>
 
         <BlogSearchBar

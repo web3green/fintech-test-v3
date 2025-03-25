@@ -10,8 +10,9 @@ interface LogoProps {
 }
 
 export function Logo({ className, withGlow = true, showText = true }: LogoProps) {
-  // Используем абсолютный путь к изображению
-  const logoPath = "/lovable-uploads/8f51558f-dcfd-4921-b6e4-112532ad0723.png";
+  // Добавляем метку времени для предотвращения кэширования
+  const timestamp = Date.now();
+  const logoPath = `/lovable-uploads/8f51558f-dcfd-4921-b6e4-112532ad0723.png?nocache=${timestamp}`;
   const absoluteLogoUrl = `https://test.mcaweb.xyz${logoPath}`;
   
   return (

@@ -11,45 +11,56 @@ import Admin from "./pages/Admin";
 
 const queryClient = new QueryClient();
 
-// Компонент для управления метатегами
+// Enhanced component for managing meta tags
 const MetaTagUpdater = () => {
   useEffect(() => {
-    // Функция для установки метатегов
+    // Function to update all meta tags with fresh cache-busting
     const updateMetaTags = () => {
-      const logoUrl = 'https://test.mcaweb.xyz/lovable-uploads/8f51558f-dcfd-4921-b6e4-112532ad0723.png';
+      const timestamp = Date.now();
+      const logoUrl = `https://test.mcaweb.xyz/lovable-uploads/8f51558f-dcfd-4921-b6e4-112532ad0723.png?nocache=${timestamp}`;
       
-      // Обновляем все OG и Twitter метатеги с изображениями
-      const metaTags = {
-        'og:image': logoUrl,
-        'og:image:url': logoUrl,
-        'og:image:secure_url': logoUrl,
-        'twitter:image': logoUrl
+      // Create or update meta tags
+      const updateOrCreateMetaTag = (selectorOrProperty, value, isProperty = true) => {
+        let meta;
+        if (isProperty) {
+          meta = document.querySelector(`meta[property="${selectorOrProperty}"]`);
+          if (!meta) {
+            meta = document.createElement('meta');
+            meta.setAttribute('property', selectorOrProperty);
+            document.head.appendChild(meta);
+          }
+        } else {
+          meta = document.querySelector(`meta[name="${selectorOrProperty}"]`);
+          if (!meta) {
+            meta = document.createElement('meta');
+            meta.setAttribute('name', selectorOrProperty);
+            document.head.appendChild(meta);
+          }
+        }
+        meta.setAttribute('content', value);
       };
       
-      for (const [property, content] of Object.entries(metaTags)) {
-        // Ищем существующий тег
-        let meta = document.querySelector(`meta[property="${property}"]`) as HTMLMetaElement;
-        
-        // Если тег не существует, создаем новый
-        if (!meta) {
-          meta = document.createElement('meta');
-          meta.setAttribute('property', property);
-          document.head.appendChild(meta);
-        }
-        
-        // Устанавливаем содержимое
-        meta.setAttribute('content', `${content}?v=${Date.now()}`);
-      }
+      // Update all relevant meta tags
+      updateOrCreateMetaTag('og:image', logoUrl);
+      updateOrCreateMetaTag('og:image:url', logoUrl);
+      updateOrCreateMetaTag('og:image:secure_url', logoUrl);
+      updateOrCreateMetaTag('twitter:image', logoUrl, false);
       
-      console.log("Метатеги проверены и обновлены");
+      // Update cache control headers
+      updateOrCreateMetaTag('Cache-Control', 'no-cache, no-store, must-revalidate', false);
+      updateOrCreateMetaTag('Pragma', 'no-cache', false);
+      updateOrCreateMetaTag('Expires', '0', false);
+      
+      console.log("Метатеги обновлены с временной меткой:", timestamp);
     };
 
-    // Вызываем функцию обновления
+    // Initial update
     updateMetaTags();
     
-    // Устанавливаем интервал обновления метатегов
-    const interval = setInterval(updateMetaTags, 10000);
+    // Set up interval for periodic updates
+    const interval = setInterval(updateMetaTags, 3000);
     
+    // Clean up interval on unmount
     return () => clearInterval(interval);
   }, []);
 

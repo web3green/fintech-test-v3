@@ -11,19 +11,19 @@ export function AboutSection() {
   const isMobile = useIsMobile();
   
   return (
-    <section id="about" className="section-padding py-16 md:py-20">
+    <section id="about" className="section-padding py-16 md:py-24">
       <div className="container mx-auto px-4 md:px-8 lg:px-16">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 lg:gap-16 items-center">
           <div className="order-2 lg:order-1">
             <div className="relative rounded-xl overflow-hidden shadow-xl transition-all duration-300 hover:shadow-2xl my-4 md:my-0">
               {/* Adjusted background gradient for light mode */}
               <div className="aspect-[4/3] bg-gradient-to-br from-fintech-blue/80 to-fintech-blue-dark dark:from-fintech-blue/90 dark:to-fintech-blue-dark rounded-xl">
-                <div className="absolute inset-0 flex items-center justify-center p-6 md:p-8">
+                <div className="absolute inset-0 flex items-center justify-center p-3 md:p-8">
                   <Card className="glass-card rounded-xl w-full mx-auto shadow-lg relative transition-all duration-300 hover:-translate-y-1">
                     <div className="absolute inset-0 rounded-xl overflow-hidden">
                       <GlowingEffect glow={true} variant="default" spread={30} blur={20} />
                     </div>
-                    <CardContent className="p-5 md:p-6 space-y-4 md:space-y-5 relative z-10">
+                    <CardContent className="p-4 md:p-6 space-y-3 md:space-y-5 relative z-10">
                       <div className="flex items-center space-x-3 md:space-x-4">
                         <div className="h-10 w-10 md:h-12 md:w-12 rounded-full bg-gradient-to-br from-fintech-orange to-fintech-orange-light flex items-center justify-center text-white font-bold text-base shadow-md">
                           FA
@@ -37,40 +37,40 @@ export function AboutSection() {
                       </div>
                       
                       {/* Mobile optimized feature list with improved spacing */}
-                      <div className="space-y-3 bg-white/80 dark:bg-gray-900/30 p-3 rounded-lg backdrop-blur-sm border border-gray-200 dark:border-white/10 shadow-sm">
-                        <div className="flex items-center space-x-3 text-gray-800 dark:text-white group transition-all duration-300 hover:translate-x-1">
-                          <div className="h-8 w-8 rounded-full bg-fintech-orange/20 flex items-center justify-center">
-                            <UserRound className="h-4 w-4 text-fintech-orange" />
+                      <div className="space-y-2 md:space-y-3 bg-white/80 dark:bg-gray-900/30 p-3 rounded-lg backdrop-blur-sm border border-gray-200 dark:border-white/10 shadow-sm">
+                        <div className="flex items-center space-x-2 md:space-x-3 text-gray-800 dark:text-white group transition-all duration-300 hover:translate-x-1">
+                          <div className="h-7 w-7 md:h-8 md:w-8 rounded-full bg-fintech-orange/20 flex items-center justify-center">
+                            <UserRound className="h-3.5 w-3.5 md:h-4 md:w-4 text-fintech-orange" />
                           </div>
-                          <div className="text-sm font-medium">{language === 'en' ? 'Personal manager for every client' : 'Персональный менеджер для каждого клиента'}</div>
+                          <div className="text-xs md:text-sm font-medium">{language === 'en' ? 'Personal manager for every client' : 'Персональный менеджер для каждого клиента'}</div>
                         </div>
-                        <div className="flex items-center space-x-3 text-gray-800 dark:text-white group transition-all duration-300 hover:translate-x-1">
-                          <div className="h-8 w-8 rounded-full bg-fintech-blue-light/20 flex items-center justify-center">
-                            <Handshake className="h-4 w-4 text-fintech-blue-light" />
+                        <div className="flex items-center space-x-2 md:space-x-3 text-gray-800 dark:text-white group transition-all duration-300 hover:translate-x-1">
+                          <div className="h-7 w-7 md:h-8 md:w-8 rounded-full bg-fintech-blue-light/20 flex items-center justify-center">
+                            <Handshake className="h-3.5 w-3.5 md:h-4 md:w-4 text-fintech-blue-light" />
                           </div>
-                          <div className="text-sm font-medium">{language === 'en' ? 'Full support at all stages' : 'Полное сопровождение на всех этапах'}</div>
+                          <div className="text-xs md:text-sm font-medium">{language === 'en' ? 'Full support at all stages' : 'Полное сопровождение на всех этапах'}</div>
                         </div>
-                        <div className="flex items-center space-x-3 text-gray-800 dark:text-white group transition-all duration-300 hover:translate-x-1">
-                          <div className="h-8 w-8 rounded-full bg-green-400/20 flex items-center justify-center">
-                            <ShieldCheck className="h-4 w-4 text-green-500" />
+                        <div className="flex items-center space-x-2 md:space-x-3 text-gray-800 dark:text-white group transition-all duration-300 hover:translate-x-1">
+                          <div className="h-7 w-7 md:h-8 md:w-8 rounded-full bg-green-400/20 flex items-center justify-center">
+                            <ShieldCheck className="h-3.5 w-3.5 md:h-4 md:w-4 text-green-500" />
                           </div>
-                          <div className="text-sm font-medium">{language === 'en' ? 'Working through escrow services' : 'Работа через сервисы гаранта'}</div>
+                          <div className="text-xs md:text-sm font-medium">{language === 'en' ? 'Working through escrow services' : 'Работа через сервисы гаранта'}</div>
                         </div>
                       </div>
                       
                       {/* Mobile optimized stats grid with improved sizing */}
-                      <div className="grid grid-cols-3 gap-3 pt-2">
-                        <div className="bg-white/80 dark:bg-gray-900/30 rounded-lg p-3 border border-gray-200 dark:border-white/10 text-center transition-all duration-300 hover:bg-white/100 dark:hover:bg-gray-900/50 shadow-sm">
-                          <div className="text-xs text-gray-500 dark:text-white/70">{language === 'en' ? 'Founded' : 'Основано'}</div>
-                          <div className="mt-1 font-semibold text-sm text-gray-900 dark:text-white">2015</div>
+                      <div className="grid grid-cols-3 gap-2 md:gap-3 pt-1 md:pt-2">
+                        <div className="bg-white/80 dark:bg-gray-900/30 rounded-lg p-2 md:p-3 border border-gray-200 dark:border-white/10 text-center transition-all duration-300 hover:bg-white/100 dark:hover:bg-gray-900/50 shadow-sm">
+                          <div className="text-2xs md:text-xs text-gray-500 dark:text-white/70">{language === 'en' ? 'Founded' : 'Основано'}</div>
+                          <div className="mt-0.5 md:mt-1 font-semibold text-xs md:text-sm text-gray-900 dark:text-white">2015</div>
                         </div>
-                        <div className="bg-white/80 dark:bg-gray-900/30 rounded-lg p-3 border border-gray-200 dark:border-white/10 text-center transition-all duration-300 hover:bg-white/100 dark:hover:bg-gray-900/50 shadow-sm">
-                          <div className="text-xs text-gray-500 dark:text-white/70">{language === 'en' ? 'Team' : 'Команда'}</div>
-                          <div className="mt-1 font-semibold text-sm text-gray-900 dark:text-white">10+ {language === 'en' ? 'experts' : 'экспертов'}</div>
+                        <div className="bg-white/80 dark:bg-gray-900/30 rounded-lg p-2 md:p-3 border border-gray-200 dark:border-white/10 text-center transition-all duration-300 hover:bg-white/100 dark:hover:bg-gray-900/50 shadow-sm">
+                          <div className="text-2xs md:text-xs text-gray-500 dark:text-white/70">{language === 'en' ? 'Team' : 'Команда'}</div>
+                          <div className="mt-0.5 md:mt-1 font-semibold text-xs md:text-sm text-gray-900 dark:text-white">10+ {language === 'en' ? 'experts' : 'экспертов'}</div>
                         </div>
-                        <div className="bg-white/80 dark:bg-gray-900/30 rounded-lg p-3 border border-gray-200 dark:border-white/10 text-center transition-all duration-300 hover:bg-white/100 dark:hover:bg-gray-900/50 shadow-sm">
-                          <div className="text-xs text-gray-500 dark:text-white/70">{language === 'en' ? 'Clients' : 'Клиенты'}</div>
-                          <div className="mt-1 font-semibold text-sm text-gray-900 dark:text-white">500+</div>
+                        <div className="bg-white/80 dark:bg-gray-900/30 rounded-lg p-2 md:p-3 border border-gray-200 dark:border-white/10 text-center transition-all duration-300 hover:bg-white/100 dark:hover:bg-gray-900/50 shadow-sm">
+                          <div className="text-2xs md:text-xs text-gray-500 dark:text-white/70">{language === 'en' ? 'Clients' : 'Клиенты'}</div>
+                          <div className="mt-0.5 md:mt-1 font-semibold text-xs md:text-sm text-gray-900 dark:text-white">500+</div>
                         </div>
                       </div>
                     </CardContent>

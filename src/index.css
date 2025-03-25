@@ -98,7 +98,7 @@
 
 @layer components {
   .glass-card {
-    @apply bg-white/95 dark:bg-gray-900/70 backdrop-blur-md border border-gray-100/80 dark:border-gray-800/50 shadow-lg;
+    @apply bg-white/95 dark:bg-gray-900/80 backdrop-blur-md border border-gray-100/90 dark:border-gray-800/70 shadow-lg;
   }
   
   .text-balance {
@@ -115,6 +115,11 @@
   
   .section-padding {
     @apply py-12 md:py-16 lg:py-24;
+  }
+  
+  .text-2xs {
+    font-size: 0.65rem;
+    line-height: 1rem;
   }
 }
 

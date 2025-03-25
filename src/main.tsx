@@ -17,6 +17,12 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
   }
+  
+  // Дополнительно создаем метатег для прояснения ссылки
+  const linkPreviewMeta = document.createElement('meta');
+  linkPreviewMeta.setAttribute('property', 'og:image:secure_url');
+  linkPreviewMeta.setAttribute('content', 'https://test.mcaweb.xyz/lovable-uploads/8f51558f-dcfd-4921-b6e4-112532ad0723.png?nocache=' + new Date().getTime());
+  document.head.appendChild(linkPreviewMeta);
 });
 
 createRoot(document.getElementById("root")!).render(<App />);

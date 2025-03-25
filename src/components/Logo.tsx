@@ -10,6 +10,9 @@ interface LogoProps {
 }
 
 export function Logo({ className, withGlow = true, showText = true }: LogoProps) {
+  // Используем абсолютный путь с временной меткой для избежания кэширования
+  const logoUrl = `https://test.mcaweb.xyz/lovable-uploads/8f51558f-dcfd-4921-b6e4-112532ad0723.png?v=${Date.now()}`;
+  
   return (
     <Link to="/" className={cn("relative inline-flex items-center", className)}>
       <div className="relative">
@@ -17,6 +20,11 @@ export function Logo({ className, withGlow = true, showText = true }: LogoProps)
           src="/lovable-uploads/8f51558f-dcfd-4921-b6e4-112532ad0723.png" 
           alt="FinTechAssist Logo" 
           className="h-10 w-auto"
+          onError={(e) => {
+            console.error("Error loading logo:", e);
+            // При ошибке загрузки пытаемся еще раз с другим путем
+            (e.target as HTMLImageElement).src = logoUrl;
+          }}
         />
         {withGlow && (
           <div className="absolute inset-0">

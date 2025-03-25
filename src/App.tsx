@@ -14,37 +14,42 @@ const queryClient = new QueryClient();
 // Компонент для управления метатегами
 const MetaTagUpdater = () => {
   useEffect(() => {
-    // Устанавливаем приоритетные мета-теги для превью
+    // Функция для установки метатегов
     const updateMetaTags = () => {
-      // Очищаем существующие метатеги с аналогичными свойствами
-      document.querySelectorAll('meta[property^="og:image"]').forEach(tag => {
-        if (tag.getAttribute('property') !== 'og:image:alt' && 
-            tag.getAttribute('property') !== 'og:image:width' && 
-            tag.getAttribute('property') !== 'og:image:height') {
-          tag.remove();
+      const logoUrl = 'https://test.mcaweb.xyz/lovable-uploads/8f51558f-dcfd-4921-b6e4-112532ad0723.png';
+      
+      // Обновляем все OG и Twitter метатеги с изображениями
+      const metaTags = {
+        'og:image': logoUrl,
+        'og:image:url': logoUrl,
+        'og:image:secure_url': logoUrl,
+        'twitter:image': logoUrl
+      };
+      
+      for (const [property, content] of Object.entries(metaTags)) {
+        // Ищем существующий тег
+        let meta = document.querySelector(`meta[property="${property}"]`) as HTMLMetaElement;
+        
+        // Если тег не существует, создаем новый
+        if (!meta) {
+          meta = document.createElement('meta');
+          meta.setAttribute('property', property);
+          document.head.appendChild(meta);
         }
-      });
-
-      // Создаем новые метатеги с актуальными данными
-      const metaTags = [
-        {property: 'og:image', content: `https://test.mcaweb.xyz/lovable-uploads/8f51558f-dcfd-4921-b6e4-112532ad0723.png?v=${Date.now()}`},
-        {property: 'og:image:secure_url', content: `https://test.mcaweb.xyz/lovable-uploads/8f51558f-dcfd-4921-b6e4-112532ad0723.png?v=${Date.now()}`},
-        {property: 'og:image:url', content: `https://test.mcaweb.xyz/lovable-uploads/8f51558f-dcfd-4921-b6e4-112532ad0723.png?v=${Date.now()}`},
-        {property: 'twitter:image', content: `https://test.mcaweb.xyz/lovable-uploads/8f51558f-dcfd-4921-b6e4-112532ad0723.png?v=${Date.now()}`}
-      ];
-
-      metaTags.forEach(({property, content}) => {
-        const meta = document.createElement('meta');
-        meta.setAttribute('property', property);
-        meta.setAttribute('content', content);
-        document.head.appendChild(meta);
-      });
+        
+        // Устанавливаем содержимое
+        meta.setAttribute('content', `${content}?v=${Date.now()}`);
+      }
+      
+      console.log("Метатеги проверены и обновлены");
     };
 
+    // Вызываем функцию обновления
     updateMetaTags();
     
-    // Обновляем метатеги каждые 5 секунд для случая, если кто-то попытается получить превью
-    const interval = setInterval(updateMetaTags, 5000);
+    // Устанавливаем интервал обновления метатегов
+    const interval = setInterval(updateMetaTags, 10000);
+    
     return () => clearInterval(interval);
   }, []);
 

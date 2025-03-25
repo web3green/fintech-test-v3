@@ -5,24 +5,37 @@ import './index.css'
 
 // Принудительная загрузка всех метаданных при инициализации приложения
 document.addEventListener('DOMContentLoaded', () => {
-  // Устанавливаем мета-теги программно, чтобы гарантировать их присутствие
-  const metaTags = document.getElementsByTagName('meta');
-  for (let i = 0; i < metaTags.length; i++) {
-    if (metaTags[i].getAttribute('property') === 'og:image' || 
-        metaTags[i].getAttribute('property') === 'twitter:image') {
-      // Перезаписываем атрибут, чтобы вызвать обновление кэша
-      const currentValue = metaTags[i].getAttribute('content');
-      if (currentValue) {
-        metaTags[i].setAttribute('content', currentValue + '?v=' + new Date().getTime());
-      }
+  // Удаляем все существующие OG метатеги изображений
+  document.querySelectorAll('meta[property^="og:image"]').forEach(tag => {
+    if (tag.getAttribute('property') !== 'og:image:alt' && 
+        tag.getAttribute('property') !== 'og:image:width' && 
+        tag.getAttribute('property') !== 'og:image:height') {
+      tag.remove();
     }
-  }
+  });
   
-  // Дополнительно создаем метатег для прояснения ссылки
-  const linkPreviewMeta = document.createElement('meta');
-  linkPreviewMeta.setAttribute('property', 'og:image:secure_url');
-  linkPreviewMeta.setAttribute('content', 'https://test.mcaweb.xyz/lovable-uploads/8f51558f-dcfd-4921-b6e4-112532ad0723.png?nocache=' + new Date().getTime());
-  document.head.appendChild(linkPreviewMeta);
+  // Удаляем все существующие Twitter метатеги изображений
+  document.querySelectorAll('meta[property^="twitter:image"]').forEach(tag => {
+    tag.remove();
+  });
+  
+  // Создаем новые метатеги с правильными URL
+  const metaTagsToAdd = [
+    {property: 'og:image', content: 'https://test.mcaweb.xyz/lovable-uploads/8f51558f-dcfd-4921-b6e4-112532ad0723.png'},
+    {property: 'og:image:url', content: 'https://test.mcaweb.xyz/lovable-uploads/8f51558f-dcfd-4921-b6e4-112532ad0723.png'},
+    {property: 'og:image:secure_url', content: 'https://test.mcaweb.xyz/lovable-uploads/8f51558f-dcfd-4921-b6e4-112532ad0723.png'},
+    {property: 'twitter:image', content: 'https://test.mcaweb.xyz/lovable-uploads/8f51558f-dcfd-4921-b6e4-112532ad0723.png'}
+  ];
+  
+  metaTagsToAdd.forEach(({property, content}) => {
+    const meta = document.createElement('meta');
+    meta.setAttribute('property', property);
+    meta.setAttribute('content', content);
+    document.head.appendChild(meta);
+  });
+  
+  // Выводим в консоль для отладки
+  console.log("Метатеги обновлены:", document.querySelectorAll('meta[property^="og:image"], meta[property^="twitter:image"]'));
 });
 
 createRoot(document.getElementById("root")!).render(<App />);

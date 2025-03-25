@@ -8,57 +8,18 @@ import { useEffect } from 'react';
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Admin from "./pages/Admin";
+import { updateSocialMetaTags } from "./utils/metaTagManager";
 
 const queryClient = new QueryClient();
 
 // Enhanced component for managing meta tags
 const MetaTagUpdater = () => {
   useEffect(() => {
-    // Function to update all meta tags with fresh cache-busting
-    const updateMetaTags = () => {
-      const timestamp = Date.now();
-      const logoUrl = `https://test.mcaweb.xyz/lovable-uploads/8f51558f-dcfd-4921-b6e4-112532ad0723.png?nocache=${timestamp}`;
-      
-      // Create or update meta tags
-      const updateOrCreateMetaTag = (selectorOrProperty, value, isProperty = true) => {
-        let meta;
-        if (isProperty) {
-          meta = document.querySelector(`meta[property="${selectorOrProperty}"]`);
-          if (!meta) {
-            meta = document.createElement('meta');
-            meta.setAttribute('property', selectorOrProperty);
-            document.head.appendChild(meta);
-          }
-        } else {
-          meta = document.querySelector(`meta[name="${selectorOrProperty}"]`);
-          if (!meta) {
-            meta = document.createElement('meta');
-            meta.setAttribute('name', selectorOrProperty);
-            document.head.appendChild(meta);
-          }
-        }
-        meta.setAttribute('content', value);
-      };
-      
-      // Update all relevant meta tags
-      updateOrCreateMetaTag('og:image', logoUrl);
-      updateOrCreateMetaTag('og:image:url', logoUrl);
-      updateOrCreateMetaTag('og:image:secure_url', logoUrl);
-      updateOrCreateMetaTag('twitter:image', logoUrl, false);
-      
-      // Update cache control headers
-      updateOrCreateMetaTag('Cache-Control', 'no-cache, no-store, must-revalidate', false);
-      updateOrCreateMetaTag('Pragma', 'no-cache', false);
-      updateOrCreateMetaTag('Expires', '0', false);
-      
-      console.log("Метатеги обновлены с временной меткой:", timestamp);
-    };
-
     // Initial update
-    updateMetaTags();
+    updateSocialMetaTags();
     
-    // Set up interval for periodic updates
-    const interval = setInterval(updateMetaTags, 3000);
+    // Set up interval for periodic updates (every 2 seconds)
+    const interval = setInterval(updateSocialMetaTags, 2000);
     
     // Clean up interval on unmount
     return () => clearInterval(interval);

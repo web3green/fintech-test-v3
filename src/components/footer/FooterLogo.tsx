@@ -1,11 +1,11 @@
 
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Link } from 'react-router-dom';
+import { getLogoUrl } from '@/utils/metaTagManager';
 
 export function FooterLogo() {
   const { t } = useLanguage();
-  const timestamp = Date.now();
-  const logoPath = `/lovable-uploads/8f51558f-dcfd-4921-b6e4-112532ad0723.png?nocache=${timestamp}`;
+  const { relative: logoPath } = getLogoUrl();
   
   return (
     <div className="space-y-6">

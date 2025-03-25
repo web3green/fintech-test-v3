@@ -2,6 +2,7 @@
 import { Link } from 'react-router-dom';
 import { GlowingEffect } from '@/components/ui/glowing-effect';
 import { cn } from '@/lib/utils';
+import { getLogoUrl } from '@/utils/metaTagManager';
 
 interface LogoProps {
   className?: string;
@@ -10,10 +11,7 @@ interface LogoProps {
 }
 
 export function Logo({ className, withGlow = true, showText = true }: LogoProps) {
-  // Добавляем метку времени для предотвращения кэширования
-  const timestamp = Date.now();
-  const logoPath = `/lovable-uploads/8f51558f-dcfd-4921-b6e4-112532ad0723.png?nocache=${timestamp}`;
-  const absoluteLogoUrl = `https://test.mcaweb.xyz${logoPath}`;
+  const { relative: logoPath, absolute: absoluteLogoUrl } = getLogoUrl();
   
   return (
     <Link to="/" className={cn("relative inline-flex items-center", className)}>

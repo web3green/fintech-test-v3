@@ -35,7 +35,7 @@ export function ContactInfo() {
                 <item.icon className="h-6 w-6 text-white" />
               </div>
               <div>
-                <h3 className="text-xl font-display font-semibold mb-1 text-black">{item.title}</h3>
+                <h3 className="text-xl font-display font-semibold mb-1 dark:text-white text-black">{item.title}</h3>
                 <p className="text-white">{item.description}</p>
               </div>
             </div>

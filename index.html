@@ -12,6 +12,23 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
     <meta http-equiv="Pragma" content="no-cache" />
     <meta http-equiv="Expires" content="0" />
+
+    <!-- Preload empty favicon -->
+    <link rel="icon" href="data:," />
+    
+    <!-- Block heart and undesired icons with CSS -->
+    <style>
+      [rel="icon"][href*="heart"], 
+      [rel*="icon"][href*="heart"],
+      [rel="icon"][href*="favicon.ico"],
+      [rel*="icon"][href*="favicon.ico"],
+      [rel="icon"][href*="gptengineer"],
+      [rel*="icon"][href*="gptengineer"],
+      [rel="icon"][href*="gpteng"],
+      [rel*="icon"][href*="gpteng"] {
+        display: none !important;
+      }
+    </style>
     
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
@@ -38,6 +55,9 @@
     <meta name="robots" content="max-image-preview:large" />
     <meta name="keywords" content="открытие компаний, финансовые лицензии, номинальный сервис, открытие счетов, финтех" />
     
+    <!-- Base64 embedded logo directly in HTML -->
+    <link rel="icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAA/0lEQVR42mNkGGDAOOqAUQeMOmDUAaMO4D4AH2egFQAAgL7gNAOwAICvBzx+/Jjl4cOH8p8/f2YihJmZmbmYmJg3CQkJP6Fyn6H0F3Fxca+QkJCvKSkpX+Pi4r7/hYI/f/68//Tp09OJiYmvO39sEdZVNzU7evToWxkZme8gR/z8+fPPnz9/fv/69evv79+//0HB/4H4HxD/B+E/UP5/EP0fCYP4/xkYGBmA8v+A4vA4AMXRTwYsBuAK/FetWnVm7969x48cOXLi8ePHN27evHnj1q1bd+7cuXMPiO/CcBbQ9OfPn79y48aNG1euXLly+fLly5cuXbpw/vz5M2fOnDlNU1sAB1+QqgkWAlsAAAAASUVORK5CYII=" type="image/png" />
+    
     <!-- Favicon configuration explicitly set to use the company logo, not heart icon -->
     <link rel="icon" href="https://preview--fintech-simplicity.lovable.app/lovable-uploads/3655bf6b-6880-47b7-b1f7-9129d0f48bc0.png" type="image/png" />
     <link rel="shortcut icon" href="https://preview--fintech-simplicity.lovable.app/lovable-uploads/3655bf6b-6880-47b7-b1f7-9129d0f48bc0.png" type="image/png" />
@@ -46,7 +66,6 @@
 
   <body>
     <div id="root"></div>
-    <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

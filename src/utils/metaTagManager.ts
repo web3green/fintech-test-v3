@@ -109,15 +109,19 @@ const removeFaviconByHref = (href: string) => {
   });
 };
 
-// Функция блокировки сердечка
+// Функция блокировки сердечка и других нежелательных иконок
 const blockHeartIcon = () => {
-  // Добавляем CSS для блокировки сердечка
+  // Добавляем CSS для блокировки сердечка и других нежелательных иконок
   const style = document.createElement('style');
   style.textContent = `
     [rel="icon"][href*="heart"],
     [rel="icon"][href*="favicon.ico"],
     [rel*="icon"][href*="heart"],
-    [rel*="icon"][href*="favicon.ico"] {
+    [rel*="icon"][href*="favicon.ico"],
+    [rel="icon"][href*="gptengineer"],
+    [rel*="icon"][href*="gptengineer"],
+    [rel="icon"][href*="gpteng"],
+    [rel*="icon"][href*="gpteng"] {
       display: none !important;
     }
   `;
@@ -129,15 +133,17 @@ export const initializeFavicon = () => {
   try {
     const { absolute: logoUrl } = getLogoUrl(false);
     
-    // Блокируем сердечко CSS правилом
+    // Блокируем сердечко и другие нежелательные иконки CSS правилом
     blockHeartIcon();
     
     // Блокируем стандартный фавикон сначала
     blockDefaultFavicon();
     
-    // Специально ищем и удаляем любую сердечную иконку или favicon.ico
+    // Специально ищем и удаляем любую сердечную иконку, favicon.ico и иконки от gpteng
     removeFaviconByHref('favicon.ico');
     removeFaviconByHref('heart');
+    removeFaviconByHref('gpteng');
+    removeFaviconByHref('gptengineer');
     
     // Удаляем все существующие ссылки на фавиконы - более агрессивный подход
     const existingIcons = document.querySelectorAll('link[rel^="icon"], link[rel="shortcut icon"], link[rel="apple-touch-icon"]');

@@ -1,3 +1,4 @@
+
 import { ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -31,7 +32,7 @@ export function Hero() {
             animationDelay: '200ms'
           }}>
               <Button className="bg-fintech-blue hover:bg-fintech-blue-light text-white transition-all duration-300" onClick={scrollToContact}>
-                {t('cta.getStarted')}
+                {t('cta.consultation')}
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
               <Button variant="outline" className="border-fintech-blue/20 text-fintech-blue hover:text-fintech-blue-dark dark:text-fintech-blue-light hover:bg-fintech-blue/5" onClick={() => {
@@ -103,12 +104,12 @@ export function Hero() {
                     
                     <div className="grid grid-cols-2 gap-4">
                       <Card className="p-4 rounded-lg border-0 bg-blue-200">
-                        <div className="text-xs text-black dark:text-white mb-1">Banking</div>
+                        <div className="text-xs text-white dark:text-white mb-1">Banking</div>
                         <div className="font-medium text-black dark:text-white">Accounts Worldwide</div>
                       </Card>
                       
                       <Card className="bg-blue-200 dark:bg-blue-800/30 p-4 rounded-lg border-0">
-                        <div className="text-xs text-black dark:text-white mb-2">Licenses</div>
+                        <div className="text-xs text-white dark:text-white mb-2">Licenses</div>
                         <div className="flex flex-wrap gap-2">
                           <span className="inline-block text-xs bg-blue-300 dark:bg-blue-700/70 text-black dark:text-white px-2 py-1 rounded">EMI</span>
                           <span className="inline-block text-xs bg-blue-400 dark:bg-blue-700/70 text-black dark:text-white px-2 py-1 rounded">Crypto</span>
@@ -121,7 +122,7 @@ export function Hero() {
                     </div>
                     
                     <Card className="bg-blue-100 dark:bg-blue-800/50 p-4 rounded-lg border-0">
-                      <div className="text-xs text-black dark:text-white mb-2">Global Jurisdictions</div>
+                      <div className="text-xs text-white dark:text-white mb-2">Global Jurisdictions</div>
                       <div className="flex flex-wrap gap-2">
                         <span className="inline-block text-xs bg-blue-400 dark:bg-blue-700/70 text-black dark:text-white px-2 py-1 rounded">MGA</span>
                         <span className="inline-block text-xs bg-blue-300 dark:bg-blue-700/70 text-black dark:text-white px-2 py-1 rounded">Curaçao</span>

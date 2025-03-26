@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { cn } from '@/lib/utils';
@@ -75,8 +74,8 @@ export function Header() {
     >
       <div className="container mx-auto px-8 md:px-12 lg:px-16">
         <div className="flex items-center justify-between">
-          {/* Logo and company name */}
-          <Logo withGlow={!isScrolled} showText={true} className="h-8 w-auto flex-shrink-0" />
+          {/* Logo and company name with slogan */}
+          <Logo withGlow={!isScrolled} showText={true} showSlogan={true} className="h-8 w-auto flex-shrink-0" />
           
           {/* Navigation items with balanced spacing */}
           <div className="flex-1 flex items-center justify-center max-w-2xl mx-auto overflow-x-auto scrollbar-hide">

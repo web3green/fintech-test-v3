@@ -1,4 +1,3 @@
-
 import { ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -103,7 +102,7 @@ export function Hero() {
                     </div>
                     
                     <div className="grid grid-cols-2 gap-4">
-                      <Card className="p-4 rounded-lg border-0 bg-blue-300">
+                      <Card className="p-4 rounded-lg border-0 bg-blue-400">
                         <div className="text-xs text-white dark:text-white mb-1">Banking</div>
                         <div className="font-medium text-white dark:text-white">Accounts Worldwide</div>
                       </Card>

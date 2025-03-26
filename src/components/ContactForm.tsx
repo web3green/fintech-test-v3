@@ -1,5 +1,6 @@
 
 import { useLanguage } from '@/contexts/LanguageContext';
+import { ContactBanner } from './contact/ContactBanner';
 
 export function ContactForm() {
   const { t } = useLanguage();
@@ -18,6 +19,9 @@ export function ContactForm() {
             {t('contact.subtitle')}
           </p>
         </div>
+        
+        {/* Telegram Contact Banner */}
+        <ContactBanner telegramLink="https://t.me/fintech_assist" />
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 animate-fade-up" style={{ animationDelay: '200ms' }}>
           <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20 hover:bg-white/15 transition-all duration-300 flex flex-col items-center text-center shadow-lg hover:shadow-xl transform hover:-translate-y-1">

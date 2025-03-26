@@ -70,35 +70,35 @@ export const updateSocialMetaTags = () => {
   return logoUrl;
 };
 
-// Our exact company logo as a base64 string - directly embedded to avoid any network requests
-// This is a square blue icon matching our brand
+// Наше точное лого компании как base64 строка - напрямую встроена чтобы избежать любых сетевых запросов
+// Это квадратная синяя иконка соответствующая нашему бренду
 const OUR_LOGO_BASE64 = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAA/0lEQVR42mNkGGDAOOqAUQeMOmDUAaMO4D4AH2egFQAAgL7gNAOwAICvBzx+/Jjl4cOH8p8/f2YihJmZmbmYmJg3CQkJP6Fyn6H0F3Fxca+QkJCvKSkpX+Pi4r7/hYI/f/68//Tp09OJiYmvO39sEdZVNzU7evToWxkZme8gR/z8+fPPnz9/fv/69evv79+//0HB/4H4HxD/B+E/UP5/EP0fCYP4/xkYGBmA8v+A4vA4AMXRTwYsBuAK/FetWnVm7969x48cOXLi8ePHN27evHnj1q1bd+7cuXMPiO/CcBbQ9OfPn79y48aNG1euXLly+fLly5cuXbpw/vz5M2fOnDlNU1sAB1+QqgkWAlsAAAAASUVORK5CYII=';
 
-// Function to directly create and inject a new favicon.ico in the DOM
-// This approach intercepts browser requests for favicon.ico
+// Функция для прямого создания и вставки новой favicon.ico в DOM
+// Этот подход перехватывает запросы браузера для favicon.ico
 const createFaviconElementFromBase64 = () => {
-  // Create a link element for the favicon using our embedded base64 logo
+  // Создаем элемент ссылки для фавикона используя нашу встроенную base64 лого
   const link = document.createElement('link');
   link.type = 'image/x-icon';
   link.rel = 'icon';
   link.href = OUR_LOGO_BASE64;
   
-  // Add the favicon to the document head with highest priority
+  // Добавляем фавикон в head документа с наивысшим приоритетом
   document.head.insertBefore(link, document.head.firstChild);
   
   return link;
 };
 
-// Function to prevent browser from requesting the default favicon.ico
+// Функция для предотвращения запроса браузером дефолтного favicon.ico
 const blockDefaultFavicon = () => {
-  // Create empty favicon to prevent browser from requesting favicon.ico
+  // Создаем пустой фавикон чтобы предотвратить запрос браузером favicon.ico
   const link = document.createElement('link');
   link.rel = 'icon';
   link.href = 'data:,';
   document.head.insertBefore(link, document.head.firstChild);
 };
 
-// Completely remove a favicon.ico if it exists by path
+// Полностью удаляем favicon.ico если он существует по пути
 const removeFaviconByHref = (href: string) => {
   const links = document.querySelectorAll('link');
   links.forEach(link => {
@@ -109,32 +109,50 @@ const removeFaviconByHref = (href: string) => {
   });
 };
 
-// Function to initialize favicon immediately with extreme priority
+// Функция блокировки сердечка
+const blockHeartIcon = () => {
+  // Добавляем CSS для блокировки сердечка
+  const style = document.createElement('style');
+  style.textContent = `
+    [rel="icon"][href*="heart"],
+    [rel="icon"][href*="favicon.ico"],
+    [rel*="icon"][href*="heart"],
+    [rel*="icon"][href*="favicon.ico"] {
+      display: none !important;
+    }
+  `;
+  document.head.appendChild(style);
+};
+
+// Функция для инициализации фавикона с экстремальным приоритетом
 export const initializeFavicon = () => {
   try {
     const { absolute: logoUrl } = getLogoUrl(false);
     
-    // Block the default favicon first
+    // Блокируем сердечко CSS правилом
+    blockHeartIcon();
+    
+    // Блокируем стандартный фавикон сначала
     blockDefaultFavicon();
     
-    // Specifically target and remove any heart icon or favicon.ico
+    // Специально ищем и удаляем любую сердечную иконку или favicon.ico
     removeFaviconByHref('favicon.ico');
     removeFaviconByHref('heart');
     
-    // Remove any existing favicon links - more aggressive approach
+    // Удаляем все существующие ссылки на фавиконы - более агрессивный подход
     const existingIcons = document.querySelectorAll('link[rel^="icon"], link[rel="shortcut icon"], link[rel="apple-touch-icon"]');
     console.log('Removing existing favicons:', existingIcons.length);
     existingIcons.forEach(icon => icon.remove());
     
-    // First create a base64 favicon to immediately override any default
+    // Сначала создаем base64 фавикон, чтобы немедленно переопределить любые стандартные
     createFaviconElementFromBase64();
     
-    // Then add our normal favicon links
+    // Затем добавляем наши обычные ссылки на фавикон
     const favIcon = document.createElement('link');
     favIcon.rel = 'icon';
     favIcon.href = logoUrl;
     favIcon.type = 'image/png';
-    // Add higher priority by inserting at the beginning of head
+    // Добавляем более высокий приоритет, вставляя в начало head
     document.head.insertBefore(favIcon, document.head.firstChild);
     
     const shortcutIcon = document.createElement('link');
@@ -148,13 +166,13 @@ export const initializeFavicon = () => {
     appleIcon.href = logoUrl;
     document.head.insertBefore(appleIcon, document.head.firstChild);
     
-    // Create a mask icon to override any default favicon
+    // Создаем маску иконки, чтобы переопределить любой стандартный фавикон
     const maskIcon = document.createElement('link');
     maskIcon.rel = 'mask-icon';
     maskIcon.href = logoUrl;
     document.head.insertBefore(maskIcon, document.head.firstChild);
     
-    // Try to override favicon.ico directly with a link
+    // Пытаемся переопределить favicon.ico напрямую ссылкой
     const faviconIco = document.createElement('link');
     faviconIco.rel = 'icon';
     faviconIco.href = logoUrl;

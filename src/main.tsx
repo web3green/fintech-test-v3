@@ -4,65 +4,106 @@ import App from './App.tsx'
 import './index.css'
 import { updateSocialMetaTags, initializeFavicon } from './utils/metaTagManager'
 
-// Block the default favicon.ico ASAP
+// Блокируем дефолтный favicon.ico как можно раньше
 document.head.insertAdjacentHTML('afterbegin', `
   <link rel="icon" href="data:," />
   <style>
-    [rel="icon"][href*="heart"], [rel="icon"][href*="favicon.ico"] {
+    [rel="icon"][href*="heart"], 
+    [rel*="icon"][href*="heart"],
+    [rel="icon"][href*="favicon.ico"],
+    [rel*="icon"][href*="favicon.ico"] {
       display: none !important;
     }
   </style>
 `);
 
-// Function to aggressively override heart favicon
+// Функция для агрессивного переопределения сердечного фавикона
 const overrideHeartFavicon = () => {
   console.log('Aggressively overriding heart favicon...');
   
-  // Initialize favicon immediately
+  // Инициализация фавикона немедленно
   initializeFavicon();
   
-  // Update meta tags
+  // Обновление мета-тегов
   updateSocialMetaTags();
   
-  // Force browser to show our favicon by repeatedly initializing
-  for (let i = 0; i < 10; i++) {
+  // Заставляем браузер показать наш фавикон путем неоднократной инициализации
+  for (let i = 0; i < 15; i++) {
     setTimeout(() => {
       initializeFavicon();
       updateSocialMetaTags();
-    }, i * 200); // More frequent updates (every 200ms)
+    }, i * 150); // Более частые обновления (каждые 150мс)
   }
 };
 
-// Attempt to override the default favicon.ico before anything else loads
-document.addEventListener('DOMContentLoaded', () => {
+// Перехватываем кэшированный favicon.ico перед загрузкой всего остального
+window.addEventListener('DOMContentLoaded', () => {
   console.log('DOM loaded, aggressively updating favicon...');
   
-  // Create a fake favicon link to redirect browser requests
+  // Создаем фиктивную ссылку favicon, чтобы перенаправить запросы браузера
   const link = document.createElement('link');
   link.rel = 'icon';
-  link.href = 'data:,'; // Empty favicon to prevent browser from requesting favicon.ico
+  link.href = 'data:,'; // Пустой фавикон для предотвращения запросов браузером favicon.ico
   document.head.appendChild(link);
   
-  // Then override with our real favicon
+  // Затем переопределяем нашим реальным фавиконом
   overrideHeartFavicon();
+  
+  // Также проверяем наличие 'favicon.ico' в document.head и удаляем его
+  const links = document.querySelectorAll('link');
+  links.forEach(link => {
+    if (link.href.includes('favicon.ico') || link.href.includes('heart')) {
+      console.log('Removing link with heart or favicon.ico in URL:', link.href);
+      link.remove();
+    }
+  });
 });
 
-// Call before any other code
+// Вызов перед любым другим кодом
 overrideHeartFavicon();
 
-// Set up interval for periodic updates to ensure favicon stays updated
+// Устанавливаем интервал для периодических обновлений, чтобы фавикон оставался обновленным
 window.addEventListener('load', () => {
   console.log('Window loaded, setting up continuous monitoring');
   
-  // Initial aggressive override
-  for (let i = 0; i < 5; i++) {
+  // Начальное агрессивное переопределение
+  for (let i = 0; i < 8; i++) {
     setTimeout(() => {
       overrideHeartFavicon();
-    }, i * 300);
+    }, i * 200);
   }
   
+  // Создаем MutationObserver для отслеживания изменений в head элементе
+  const observer = new MutationObserver((mutations) => {
+    mutations.forEach((mutation) => {
+      if (mutation.type === 'childList') {
+        const addedNodes = Array.from(mutation.addedNodes);
+        const heartIconAdded = addedNodes.some(node => {
+          if (node.nodeName === 'LINK') {
+            const href = (node as HTMLLinkElement).href;
+            return href && (href.includes('heart') || href.includes('favicon.ico'));
+          }
+          return false;
+        });
+        
+        if (heartIconAdded) {
+          console.log('Heart icon detected in DOM mutation, removing it');
+          overrideHeartFavicon();
+        }
+      }
+    });
+  });
+  
+  // Начинаем наблюдение за DOM
+  observer.observe(document.head, {
+    childList: true,
+    subtree: true,
+    attributes: true,
+    attributeFilter: ['href']
+  });
+  
   setInterval(() => {
-    // Check if heart favicon has returned and replace it
+    // Проверяем, не вернулся ли сердечный фавикон, и заменяем его
     const icons = document.querySelectorAll('link[rel^="icon"]');
     let foundHeart = false;
     
@@ -80,10 +121,10 @@ window.addEventListener('load', () => {
     } else {
       initializeFavicon();
     }
-  }, 1000); // Check more frequently (every second)
+  }, 800); // Проверяем чаще (каждые 800мс)
 });
 
-// Additional mechanism to override cached favicon
+// Дополнительный механизм для переопределения кэшированного фавикона
 window.addEventListener('pageshow', (event) => {
   if (event.persisted) {
     console.log('Page restored from cache, reinitializing favicon');

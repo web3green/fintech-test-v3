@@ -11,35 +11,56 @@ import { updateSocialMetaTags, initializeFavicon } from "./utils/metaTagManager"
 
 const queryClient = new QueryClient();
 
-// Enhanced component for managing meta tags with aggressive favicon updates
+// Улучшенный компонент для управления мета-тегами с агрессивными обновлениями фавикона
 const MetaTagUpdater = () => {
   const heartCheckInterval = useRef<number | null>(null);
   
   useEffect(() => {
-    // Create mutation observer to detect any changes to head elements
+    // Создаем MutationObserver для обнаружения любых изменений элементов head
     const observer = new MutationObserver((mutations) => {
+      let needsUpdate = false;
+      
       for (const mutation of mutations) {
         if (mutation.type === 'childList') {
           const addedNodes = Array.from(mutation.addedNodes);
-          // Check if any added nodes are icon links that could be heart favicons
+          // Проверяем, не добавлены ли какие-либо узлы с иконками сердца
           const faviconAdded = addedNodes.some(node => {
             if (node.nodeName === 'LINK') {
               const rel = (node as HTMLLinkElement).rel;
               const href = (node as HTMLLinkElement).href;
-              return rel && (rel.includes('icon') && (href.includes('favicon.ico') || href.includes('heart')));
+              return rel && ((rel.includes('icon') || rel === 'shortcut icon') && 
+                (href.includes('favicon.ico') || href.includes('heart')));
             }
             return false;
           });
           
           if (faviconAdded) {
             console.log('Heart favicon detected, overriding immediately');
-            initializeFavicon();
+            needsUpdate = true;
           }
+        }
+        
+        // Также проверяем изменения атрибутов существующих элементов
+        if (mutation.type === 'attributes' && mutation.attributeName === 'href') {
+          const target = mutation.target as HTMLLinkElement;
+          if (target.rel && target.rel.includes('icon') && 
+              (target.href.includes('heart') || target.href.includes('favicon.ico'))) {
+            console.log('Heart favicon attribute detected, overriding immediately');
+            needsUpdate = true;
+          }
+        }
+      }
+      
+      if (needsUpdate) {
+        initializeFavicon();
+        // Агрессивная серия обновле��ий при обнаружении нежелательного фавикона
+        for (let i = 0; i < 5; i++) {
+          setTimeout(() => initializeFavicon(), i * 100);
         }
       }
     });
     
-    // Start observing document head for changes
+    // Начинаем наблюдение за document.head для изменений
     observer.observe(document.head, {
       childList: true,
       subtree: true,
@@ -47,51 +68,54 @@ const MetaTagUpdater = () => {
       attributeFilter: ['href']
     });
     
-    // Initial updates with aggressive favicon initialization
-    initializeFavicon();
-    updateSocialMetaTags();
-    
-    // CSS-based approach to hide heart favicons
+    // CSS-подход для скрытия сердечных фавиконов
     const style = document.createElement('style');
     style.textContent = `
       [rel="icon"][href*="heart"], 
-      [rel="icon"][href*="favicon.ico"] {
+      [rel="icon"][href*="favicon.ico"],
+      [rel*="icon"][href*="heart"],
+      [rel*="icon"][href*="favicon.ico"] {
         display: none !important;
       }
     `;
     document.head.appendChild(style);
     
-    // Rapid initial updates
-    for (let i = 0; i < 10; i++) {
+    // Начальные быстрые обновления
+    for (let i = 0; i < 15; i++) {
       setTimeout(() => {
         initializeFavicon();
         updateSocialMetaTags();
-      }, i * 300);
+      }, i * 200);
     }
     
-    // Create a timed interval to keep checking for heart icons
+    // Создаем временной интервал для постоянной проверки на сердечные иконки
     heartCheckInterval.current = window.setInterval(() => {
-      // Look specifically for heart favicon
+      // Ищем специально сердечные фавиконы
       const heartIcons = document.querySelectorAll('link[href*="heart"], link[href*="favicon.ico"]');
       if (heartIcons.length > 0) {
         console.log('Found and removing heart icons:', heartIcons.length);
         heartIcons.forEach(icon => icon.remove());
         initializeFavicon();
+        
+        // Агрессивный подход: несколько последовательных инициализаций
+        for (let i = 0; i < 3; i++) {
+          setTimeout(() => initializeFavicon(), i * 100);
+        }
       } else {
-        // Periodically reinitialize anyway
-        if (Date.now() % 10000 < 100) {
+        // Периодически реинициализируем в любом случае
+        if (Date.now() % 8000 < 100) {
           initializeFavicon();
         }
       }
-    }, 1000) as unknown as number;
+    }, 700) as unknown as number;
     
-    // Set up interval for periodic updates
+    // Устанавливаем интервал для периодических обновлений
     const interval = setInterval(() => {
       initializeFavicon();
       updateSocialMetaTags();
-    }, 5000);
+    }, 3000);
     
-    // Clean up interval and observer on unmount
+    // Очищаем интервал и наблюдатель при размонтировании
     return () => {
       clearInterval(interval);
       if (heartCheckInterval.current !== null) {

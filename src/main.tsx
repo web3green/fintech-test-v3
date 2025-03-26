@@ -1,4 +1,3 @@
-
 import { createRoot } from 'react-dom/client'
 import App from './App.tsx'
 import './index.css'
@@ -31,7 +30,9 @@ const blockGptEngineerScripts = () => {
   const originalAppendChild = Node.prototype.appendChild;
   Node.prototype.appendChild = function(child) {
     if (child.nodeName === 'LINK') {
-      const href = child.href || '';
+      // Fix TS error by properly casting to HTMLLinkElement
+      const linkElement = child as HTMLLinkElement;
+      const href = linkElement.href || '';
       if (href.includes('heart') || 
           href.includes('favicon.ico') ||
           href.includes('gpteng') ||
@@ -42,7 +43,9 @@ const blockGptEngineerScripts = () => {
       }
     }
     if (child.nodeName === 'SCRIPT') {
-      const src = child.src || '';
+      // Fix TS error by properly casting to HTMLScriptElement
+      const scriptElement = child as HTMLScriptElement;
+      const src = scriptElement.src || '';
       if (src.includes('gpteng') || 
           src.includes('gptengineer') ||
           src.includes('engine')) {

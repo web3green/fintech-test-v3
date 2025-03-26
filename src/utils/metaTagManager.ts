@@ -74,6 +74,18 @@ export const updateSocialMetaTags = () => {
 // Это квадратная синяя иконка соответствующая нашему бренду
 const OUR_LOGO_BASE64 = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAA/0lEQVR42mNkGGDAOOqAUQeMOmDUAaMO4D4AH2egFQAAgL7gNAOwAICvBzx+/Jjl4cOH8p8/f2YihJmZmbmYmJg3CQkJP6Fyn6H0F3Fxca+QkJCvKSkpX+Pi4r7/hYI/f/68//Tp09OJiYmvO39sEdZVNzU7evToWxkZme8gR/z8+fPPnz9/fv/69evv79+//0HB/4H4HxD/B+E/UP5/EP0fCYP4/xkYGBmA8v+A4vA4AMXRTwYsBuAK/FetWnVm7969x48cOXLi8ePHN27evHnj1q1bd+7cuXMPiO/CcBbQ9OfPn79y48aNG1euXLly+fLly5cuXbpw/vz5M2fOnDlNU1sAB1+QqgkWAlsAAAAASUVORK5CYII=';
 
+// Функция для поиска и блокировки всех нежелательных скриптов
+const blockUndesiredScripts = () => {
+  const scripts = document.querySelectorAll('script');
+  scripts.forEach(script => {
+    const src = script.src || '';
+    if (src.includes('gpteng') || src.includes('gptengineer') || src.includes('engine')) {
+      console.log('Blocking undesired script:', src);
+      script.remove();
+    }
+  });
+};
+
 // Функция для прямого создания и вставки новой favicon.ico в DOM
 // Этот подход перехватывает запросы браузера для favicon.ico
 const createFaviconElementFromBase64 = () => {
@@ -89,7 +101,7 @@ const createFaviconElementFromBase64 = () => {
   return link;
 };
 
-// Функция для предотвращения запроса браузером дефолтного favicon.ico
+// Создание пустой картинки для блокировки стандартного favicon.ico запроса
 const blockDefaultFavicon = () => {
   // Создаем пустой фавикон чтобы предотвратить запрос браузером favicon.ico
   const link = document.createElement('link');
@@ -98,22 +110,39 @@ const blockDefaultFavicon = () => {
   document.head.insertBefore(link, document.head.firstChild);
 };
 
-// Полностью удаляем favicon.ico если он существует по пути
-const removeFaviconByHref = (href: string) => {
+// Массовое удаление всех favicon.ico и сердечных иконок
+const removeAllUnwantedFavicons = () => {
   const links = document.querySelectorAll('link');
   links.forEach(link => {
-    if (link.href.includes(href)) {
-      console.log('Removing specific favicon by href:', href);
-      link.remove();
+    const href = link.href || '';
+    const rel = link.rel || '';
+    
+    if (rel.includes('icon') || rel === 'shortcut icon' || rel === 'apple-touch-icon') {
+      if (href.includes('heart') || 
+          href.includes('favicon.ico') ||
+          href.includes('gpteng') || 
+          href.includes('gptengineer') ||
+          href.includes('engine') ||
+          !href.includes(OUR_LOGO_BASE64.substring(0, 30))) {
+        console.log('Removing unwanted favicon:', href);
+        link.remove();
+      }
     }
   });
 };
 
-// Функция блокировки сердечка и других нежелательных иконок
+// Функция блокировки сердечка и других нежелательных иконок CSS-правилами
 const blockHeartIcon = () => {
+  // Проверяем существует ли уже наш стиль
+  if (document.getElementById('favicon-blocker')) {
+    return;
+  }
+  
   // Добавляем CSS для блокировки сердечка и других нежелательных иконок
   const style = document.createElement('style');
+  style.id = 'favicon-blocker';
   style.textContent = `
+    /* Блокируем все нежелательные иконки */
     [rel="icon"][href*="heart"],
     [rel="icon"][href*="favicon.ico"],
     [rel*="icon"][href*="heart"],
@@ -121,71 +150,153 @@ const blockHeartIcon = () => {
     [rel="icon"][href*="gptengineer"],
     [rel*="icon"][href*="gptengineer"],
     [rel="icon"][href*="gpteng"],
-    [rel*="icon"][href*="gpteng"] {
+    [rel*="icon"][href*="gpteng"],
+    [rel="icon"][href*="engine"],
+    [rel*="icon"][href*="engine"] {
       display: none !important;
+      visibility: hidden !important;
+      opacity: 0 !important;
+      position: absolute !important;
+      left: -9999px !important;
+      top: -9999px !important;
+    }
+    
+    /* Разрешаем только наши иконки */
+    [rel="icon"][href^="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAA"],
+    [rel="shortcut icon"][href^="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAA"],
+    [rel="apple-touch-icon"][href^="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAA"] {
+      display: block !important;
+      visibility: visible !important;
+      opacity: 1 !important;
+      position: static !important;
     }
   `;
   document.head.appendChild(style);
 };
 
+// Блокировка скрипта gpteng.co
+const blockGptEngScript = () => {
+  // Поиск скрипта от gpteng.co
+  const scripts = document.querySelectorAll('script');
+  scripts.forEach(script => {
+    if (script.src && (
+      script.src.includes('gpteng.co') || 
+      script.src.includes('gptengineer') ||
+      script.src.includes('engine')
+    )) {
+      console.log('Found and blocking GPTEngineer script:', script.src);
+      
+      // Удаляем скрипт
+      script.remove();
+      
+      // Также блокируем все потенциальные будущие скрипты от того же домена
+      const scriptBlocking = document.createElement('script');
+      scriptBlocking.textContent = `
+        // Блокируем все скрипты от gptengineer
+        const originalCreateElement = document.createElement;
+        document.createElement = function(tagName) {
+          const element = originalCreateElement.call(document, tagName);
+          if (tagName.toLowerCase() === 'script') {
+            const originalSetAttribute = element.setAttribute;
+            element.setAttribute = function(name, value) {
+              if (name === 'src' && (
+                value.includes('gpteng.co') || 
+                value.includes('gptengineer') ||
+                value.includes('engine')
+              )) {
+                console.log('Blocking script:', value);
+                return;
+              }
+              return originalSetAttribute.call(this, name, value);
+            };
+          }
+          return element;
+        };
+      `;
+      document.head.appendChild(scriptBlocking);
+    }
+  });
+};
+
+// Функция для агрессивного переписывания тегов head, чтобы заблокировать нежелательные иконки
+const overrideHeadTags = () => {
+  // Блокируем нежелательные скрипты
+  blockGptEngScript();
+  blockUndesiredScripts();
+  
+  // Удаляем все нежелательные иконки
+  removeAllUnwantedFavicons();
+  
+  // Блокируем стандартный favicon.ico запрос
+  blockDefaultFavicon();
+  
+  // Добавляем CSS правила для блокировки нежелательных иконок
+  blockHeartIcon();
+  
+  // Создаем новую favicon с нашим логотипом
+  createFaviconElementFromBase64();
+  
+  // Добавляем еще иконки с нашим логотипом
+  const { absolute: logoUrl } = getLogoUrl(false);
+  
+  // Создаем дополнительные иконки
+  const iconTypes = [
+    { rel: 'icon', type: 'image/png' },
+    { rel: 'shortcut icon', type: 'image/png' },
+    { rel: 'apple-touch-icon' }
+  ];
+  
+  // Создаем все типы иконок
+  iconTypes.forEach(iconType => {
+    const link = document.createElement('link');
+    link.rel = iconType.rel;
+    link.href = logoUrl;
+    if (iconType.type) {
+      link.type = iconType.type;
+    }
+    document.head.insertBefore(link, document.head.firstChild);
+  });
+};
+
 // Функция для инициализации фавикона с экстремальным приоритетом
 export const initializeFavicon = () => {
   try {
-    const { absolute: logoUrl } = getLogoUrl(false);
-    
     // Блокируем сердечко и другие нежелательные иконки CSS правилом
     blockHeartIcon();
     
-    // Блокируем стандартный фавикон сначала
-    blockDefaultFavicon();
+    // Полностью переопределяем все теги в head для блокировки нежелательных иконок
+    overrideHeadTags();
     
-    // Специально ищем и удаляем любую сердечную иконку, favicon.ico и иконки от gpteng
-    removeFaviconByHref('favicon.ico');
-    removeFaviconByHref('heart');
-    removeFaviconByHref('gpteng');
-    removeFaviconByHref('gptengineer');
+    console.log('Favicon initialized successfully');
     
-    // Удаляем все существующие ссылки на фавиконы - более агрессивный подход
-    const existingIcons = document.querySelectorAll('link[rel^="icon"], link[rel="shortcut icon"], link[rel="apple-touch-icon"]');
-    console.log('Removing existing favicons:', existingIcons.length);
-    existingIcons.forEach(icon => icon.remove());
-    
-    // Сначала создаем base64 фавикон, чтобы немедленно переопределить любые стандартные
-    createFaviconElementFromBase64();
-    
-    // Затем добавляем наши обычные ссылки на фавикон
-    const favIcon = document.createElement('link');
-    favIcon.rel = 'icon';
-    favIcon.href = logoUrl;
-    favIcon.type = 'image/png';
-    // Добавляем более высокий приоритет, вставляя в начало head
-    document.head.insertBefore(favIcon, document.head.firstChild);
-    
-    const shortcutIcon = document.createElement('link');
-    shortcutIcon.rel = 'shortcut icon';
-    shortcutIcon.href = logoUrl;
-    shortcutIcon.type = 'image/png';
-    document.head.insertBefore(shortcutIcon, document.head.firstChild);
-    
-    const appleIcon = document.createElement('link');
-    appleIcon.rel = 'apple-touch-icon';
-    appleIcon.href = logoUrl;
-    document.head.insertBefore(appleIcon, document.head.firstChild);
-    
-    // Создаем маску иконки, чтобы переопределить любой стандартный фавикон
-    const maskIcon = document.createElement('link');
-    maskIcon.rel = 'mask-icon';
-    maskIcon.href = logoUrl;
-    document.head.insertBefore(maskIcon, document.head.firstChild);
-    
-    // Пытаемся переопределить favicon.ico напрямую ссылкой
-    const faviconIco = document.createElement('link');
-    faviconIco.rel = 'icon';
-    faviconIco.href = logoUrl;
-    faviconIco.type = 'image/x-icon';
-    document.head.insertBefore(faviconIco, document.head.firstChild);
-    
-    console.log('Favicon initialized successfully with:', logoUrl);
+    // Обеспечиваем, что наша функция будет вызвана снова, если что-то изменится в DOM
+    if (!window['faviconObserver']) {
+      const observer = new MutationObserver((mutations) => {
+        let needsUpdate = false;
+        
+        for (const mutation of mutations) {
+          if (mutation.type === 'childList' || mutation.type === 'attributes') {
+            needsUpdate = true;
+            break;
+          }
+        }
+        
+        if (needsUpdate) {
+          console.log('DOM changed, reinitializing favicon');
+          overrideHeadTags();
+        }
+      });
+      
+      // Наблюдаем за изменениями в head
+      observer.observe(document.head, {
+        childList: true,
+        subtree: true,
+        attributes: true,
+        attributeFilter: ['href', 'rel']
+      });
+      
+      window['faviconObserver'] = observer;
+    }
   } catch (error) {
     console.error('Error initializing favicon:', error);
   }

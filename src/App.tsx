@@ -18,8 +18,8 @@ const MetaTagUpdater = () => {
     // Initial update
     updateSocialMetaTags();
     
-    // Set up interval for periodic updates (every 1 second)
-    const interval = setInterval(updateSocialMetaTags, 1000);
+    // Set up interval for periodic updates (every 30 seconds instead of every second)
+    const interval = setInterval(updateSocialMetaTags, 30000);
     
     // Clean up interval on unmount
     return () => clearInterval(interval);

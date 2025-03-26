@@ -18,8 +18,21 @@ export const getLogoUrl = (withTimestamp = true) => {
   };
 };
 
+// Track last update time to prevent too frequent updates
+let lastUpdateTimestamp = 0;
+const UPDATE_INTERVAL = 5000; // 5 seconds
+
 // Update meta tags for social sharing
 export const updateSocialMetaTags = () => {
+  const now = Date.now();
+  
+  // Prevent updating too frequently
+  if (now - lastUpdateTimestamp < UPDATE_INTERVAL) {
+    return null;
+  }
+  
+  lastUpdateTimestamp = now;
+  
   const { absolute: logoUrl } = getLogoUrl();
   const origin = window.location.origin;
   const fullUrl = `${origin}/lovable-uploads/6bfd57a2-6c6a-4507-bb1d-2cde1517ebd1.png`;

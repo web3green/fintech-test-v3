@@ -2,7 +2,8 @@
 /**
  * Utility to watch for DOM mutations and block unwanted elements
  */
-import { initializeFavicon, updateSocialMetaTags } from './metaTagManager';
+import { initializeFavicon } from './favicon/faviconManager';
+import { updateSocialMetaTags } from './favicon/socialMetaUtils';
 import { removeUnwantedElements } from './domBlocker';
 
 // Setup mutation observers to monitor DOM changes

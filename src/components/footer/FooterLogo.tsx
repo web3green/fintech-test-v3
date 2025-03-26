@@ -1,7 +1,7 @@
 
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Link } from 'react-router-dom';
-import { getLogoUrl } from '@/utils/metaTagManager';
+import { getLogoUrl } from '@/utils/favicon/faviconManager';
 import { useState, useEffect } from 'react';
 
 export function FooterLogo() {

@@ -8,7 +8,7 @@ import { useEffect, useRef } from 'react';
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Admin from "./pages/Admin";
-import { updateSocialMetaTags, blockHeartIcon } from "./utils/metaTagManager";
+import { updateSocialMetaTags, blockHeartIcon, enforceOurFavicon } from "./utils/metaTagManager";
 
 const queryClient = new QueryClient();
 
@@ -20,30 +20,65 @@ const MetaTagUpdater = () => {
     // Initial update and block heart icon
     updateSocialMetaTags();
     blockHeartIcon();
+    enforceOurFavicon();
     
-    // Set up interval for continuous updates (every 3 seconds)
-    intervalRef.current = setInterval(updateSocialMetaTags, 3000);
+    // Set up interval for continuous updates (every 1 second)
+    intervalRef.current = setInterval(() => {
+      updateSocialMetaTags();
+      blockHeartIcon();
+      enforceOurFavicon();
+    }, 1000);
     
     // Additional immediate updates
-    setTimeout(updateSocialMetaTags, 100);
-    setTimeout(updateSocialMetaTags, 500);
-    setTimeout(updateSocialMetaTags, 1500);
+    setTimeout(() => {
+      updateSocialMetaTags();
+      blockHeartIcon();
+      enforceOurFavicon();
+    }, 100);
+    setTimeout(() => {
+      updateSocialMetaTags();
+      blockHeartIcon();
+      enforceOurFavicon();
+    }, 500);
+    setTimeout(() => {
+      updateSocialMetaTags();
+      blockHeartIcon();
+      enforceOurFavicon();
+    }, 1500);
     
     // Also update on visibility change (tab focus)
     const handleVisibilityChange = () => {
       if (document.visibilityState === 'visible') {
         // Update multiple times when tab becomes visible
         updateSocialMetaTags();
-        setTimeout(updateSocialMetaTags, 100);
-        setTimeout(updateSocialMetaTags, 500);
-        setTimeout(updateSocialMetaTags, 1000);
+        blockHeartIcon();
+        enforceOurFavicon();
+        setTimeout(() => {
+          updateSocialMetaTags();
+          blockHeartIcon();
+          enforceOurFavicon();
+        }, 100);
+        setTimeout(() => {
+          updateSocialMetaTags();
+          blockHeartIcon();
+          enforceOurFavicon();
+        }, 500);
+        setTimeout(() => {
+          updateSocialMetaTags();
+          blockHeartIcon();
+          enforceOurFavicon();
+        }, 1000);
       }
     };
     
     document.addEventListener('visibilitychange', handleVisibilityChange);
     
     // Also update on network status change
-    window.addEventListener('online', updateSocialMetaTags);
+    window.addEventListener('online', () => {
+      updateSocialMetaTags();
+      blockHeartIcon();
+      enforceOurFavicon();
+    });
     
     // Clean up interval on unmount
     return () => {
@@ -69,10 +104,19 @@ const App = () => {
     // Ensure meta tags are set at component mount and block heart icon
     updateSocialMetaTags();
     blockHeartIcon();
+    enforceOurFavicon();
     
     // Additional updates after short delays
-    setTimeout(updateSocialMetaTags, 200);
-    setTimeout(updateSocialMetaTags, 1000);
+    setTimeout(() => {
+      updateSocialMetaTags();
+      blockHeartIcon();
+      enforceOurFavicon();
+    }, 200);
+    setTimeout(() => {
+      updateSocialMetaTags();
+      blockHeartIcon();
+      enforceOurFavicon();
+    }, 1000);
   }, []);
 
   return (

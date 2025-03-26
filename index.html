@@ -19,9 +19,9 @@
     <meta property="og:title" content="FinTechAssist: Финансовые решения для бизнеса" />
     <meta property="og:description" content="Открытие компаний, счетов и лицензий под ключ. FinTechAssist — ваш надежный партнер в мире финансовых решений." />
     <!-- Explicitly set multiple OG image URLs with timestamps -->
-    <meta property="og:image" content="https://test.mcaweb.xyz/lovable-uploads/6bfd57a2-6c6a-4507-bb1d-2cde1517ebd1.png" />
-    <meta property="og:image:url" content="https://test.mcaweb.xyz/lovable-uploads/6bfd57a2-6c6a-4507-bb1d-2cde1517ebd1.png" />
-    <meta property="og:image:secure_url" content="https://test.mcaweb.xyz/lovable-uploads/6bfd57a2-6c6a-4507-bb1d-2cde1517ebd1.png" />
+    <meta property="og:image" content="https://test.mcaweb.xyz/lovable-uploads/6bfd57a2-6c6a-4507-bb1d-2cde1517ebd1.png?t=1" />
+    <meta property="og:image:url" content="https://test.mcaweb.xyz/lovable-uploads/6bfd57a2-6c6a-4507-bb1d-2cde1517ebd1.png?t=2" />
+    <meta property="og:image:secure_url" content="https://test.mcaweb.xyz/lovable-uploads/6bfd57a2-6c6a-4507-bb1d-2cde1517ebd1.png?t=3" />
     <meta property="og:image:alt" content="FinTechAssist Logo" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
@@ -33,33 +33,49 @@
     <meta property="twitter:url" content="https://test.mcaweb.xyz/" />
     <meta property="twitter:title" content="FinTechAssist: Финансовые решения для бизнеса" />
     <meta property="twitter:description" content="Открытие компаний, счетов и лицензий под ключ. FinTechAssist — ваш надежный партнер в мире финансовых решений." />
-    <meta property="twitter:image" content="https://test.mcaweb.xyz/lovable-uploads/6bfd57a2-6c6a-4507-bb1d-2cde1517ebd1.png" />
+    <meta property="twitter:image" content="https://test.mcaweb.xyz/lovable-uploads/6bfd57a2-6c6a-4507-bb1d-2cde1517ebd1.png?t=4" />
     
     <!-- Additional meta tags -->
     <meta name="robots" content="max-image-preview:large" />
     <meta name="keywords" content="открытие компаний, финансовые лицензии, номинальный сервис, открытие счетов, финтех" />
     
     <!-- Explicitly set multiple favicon tags -->
-    <link rel="icon" href="/lovable-uploads/6bfd57a2-6c6a-4507-bb1d-2cde1517ebd1.png" />
-    <link rel="shortcut icon" href="/lovable-uploads/6bfd57a2-6c6a-4507-bb1d-2cde1517ebd1.png" />
-    <link rel="apple-touch-icon" href="/lovable-uploads/6bfd57a2-6c6a-4507-bb1d-2cde1517ebd1.png" />
+    <link rel="icon" href="/lovable-uploads/6bfd57a2-6c6a-4507-bb1d-2cde1517ebd1.png?t=5" />
+    <link rel="shortcut icon" href="/lovable-uploads/6bfd57a2-6c6a-4507-bb1d-2cde1517ebd1.png?t=6" />
+    <link rel="apple-touch-icon" href="/lovable-uploads/6bfd57a2-6c6a-4507-bb1d-2cde1517ebd1.png?t=7" />
     
     <!-- Preload logo image -->
-    <link rel="preload" as="image" href="/lovable-uploads/6bfd57a2-6c6a-4507-bb1d-2cde1517ebd1.png" />
-    <link rel="prefetch" href="/lovable-uploads/6bfd57a2-6c6a-4507-bb1d-2cde1517ebd1.png" />
+    <link rel="preload" as="image" href="/lovable-uploads/6bfd57a2-6c6a-4507-bb1d-2cde1517ebd1.png?t=8" />
+    <link rel="prefetch" href="/lovable-uploads/6bfd57a2-6c6a-4507-bb1d-2cde1517ebd1.png?t=9" />
     
     <!-- Explicitly disable any other favicons and prevent heart icon -->
     <style>
       /* Override any link with rel that might contain 'icon' but isn't our logo */
       link[rel*="icon"]:not([href*="6bfd57a2-6c6a-4507-bb1d-2cde1517ebd1"]) {
         display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        position: absolute !important;
+        z-index: -9999 !important;
       }
       
-      /* Block any heart icons */
-      img[src*="heart"], img[src*="Heart"], [src*="heart-icon"], [src*="heart_icon"] {
+      /* Block any heart icons from GPTEngineer or any similar service */
+      img[src*="heart"], img[src*="Heart"], [src*="heart-icon"], [src*="heart_icon"],
+      img[src*="gptengineer"], img[src*="gpteng"],
+      a[href*="gptengineer"], a[href*="gpteng"],
+      link[href*="heart"], link[href*="Heart"],
+      link[rel*="icon"]:not([href*="6bfd57a2-6c6a-4507-bb1d-2cde1517ebd1"]) {
         display: none !important;
         visibility: hidden !important;
         opacity: 0 !important;
+        position: absolute !important;
+        z-index: -9999 !important;
+        width: 0 !important;
+        height: 0 !important;
+        max-width: 0 !important;
+        max-height: 0 !important;
+        overflow: hidden !important;
+        pointer-events: none !important;
       }
     </style>
   </head>

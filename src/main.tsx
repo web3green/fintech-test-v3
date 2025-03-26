@@ -2,7 +2,10 @@
 import { createRoot } from 'react-dom/client'
 import App from './App.tsx'
 import './index.css'
-import { updateSocialMetaTags } from './utils/metaTagManager'
+import { updateSocialMetaTags, initializeFavicon } from './utils/metaTagManager'
+
+// Initialize favicon immediately even before DOM is fully loaded
+initializeFavicon();
 
 // Initialize meta tags before React loads
 document.addEventListener('DOMContentLoaded', () => {
@@ -15,6 +18,13 @@ document.addEventListener('DOMContentLoaded', () => {
   setTimeout(() => updateSocialMetaTags(), 500);
   setTimeout(() => updateSocialMetaTags(), 1500);
   setTimeout(() => updateSocialMetaTags(), 3000);
+});
+
+// Set up interval for periodic updates to ensure favicon stays updated
+window.addEventListener('load', () => {
+  setInterval(() => {
+    updateSocialMetaTags();
+  }, 10000); // Check every 10 seconds
 });
 
 createRoot(document.getElementById("root")!).render(<App />);

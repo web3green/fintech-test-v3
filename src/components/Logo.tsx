@@ -19,7 +19,7 @@ export function Logo({ className, withGlow = true, showText = true, showSlogan =
   // Слоганы для разных языков
   const slogan = language === 'en' 
     ? "Get Licensed, Get Ready, Go Steady" 
-    : "Бизнес растёт — Fintech Assist всё учтёт";
+    : "Бизнес растёт — FintechAssist всё учтёт";
   
   return (
     <Link to="/" className={cn("relative inline-flex flex-col items-start", className)}>

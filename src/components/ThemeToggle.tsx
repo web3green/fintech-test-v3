@@ -37,6 +37,7 @@ export function ThemeToggle() {
       size="sm" 
       onClick={toggleTheme}
       className="transition-all duration-300"
+      aria-label={isDarkMode ? "Switch to light mode" : "Switch to dark mode"}
     >
       {isDarkMode ? (
         <Sun className="h-4 w-4" />

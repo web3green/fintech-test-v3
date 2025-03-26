@@ -1,3 +1,4 @@
+
 import { Briefcase, ChevronRight } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 interface FooterServiceLinksProps {
@@ -27,7 +28,7 @@ export function FooterServiceLinks({
         {mainServices.slice(0, 5).map(service => <li key={service.id}>
             <button onClick={() => scrollToSection('services')} className="text-muted-foreground hover:text-fintech-blue dark:hover:text-fintech-blue-light transition-colors flex items-center">
               <service.icon className="h-3.5 w-3.5 mr-1.5 text-fintech-orange/70 dark:text-fintech-orange-light/70" />
-              <span className="text-center">{service.title}</span>
+              <span className="text-center text-sm">{service.title}</span>
             </button>
           </li>)}
         <li>

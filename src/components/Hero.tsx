@@ -104,39 +104,39 @@ export function Hero() {
                     
                     <div className="grid grid-cols-2 gap-4">
                       <Card className="bg-blue-100 dark:bg-blue-800/50 p-4 rounded-lg border-0">
-                        <div className="text-xs text-blue-700 dark:text-blue-200 mb-1">Banking</div>
-                        <div className="font-medium text-blue-900 dark:text-blue-50">Accounts Worldwide</div>
+                        <div className="text-xs text-black dark:text-white mb-1">Banking</div>
+                        <div className="font-medium text-black dark:text-white">Accounts Worldwide</div>
                       </Card>
                       
                       <Card className="bg-blue-200 dark:bg-blue-800/30 p-4 rounded-lg border-0">
-                        <div className="text-xs text-blue-700 dark:text-blue-200 mb-2">Licenses</div>
+                        <div className="text-xs text-black dark:text-white mb-2">Licenses</div>
                         <div className="flex flex-wrap gap-2">
-                          <span className="inline-block text-xs bg-blue-300 dark:bg-blue-700/70 text-blue-800 dark:text-blue-100 px-2 py-1 rounded">EMI</span>
-                          <span className="inline-block text-xs bg-blue-400 dark:bg-blue-700/70 text-blue-800 dark:text-blue-100 px-2 py-1 rounded">Crypto</span>
-                          <span className="inline-block text-xs bg-blue-300 dark:bg-blue-700/70 text-blue-800 dark:text-blue-100 px-2 py-1 rounded">iGaming</span>
-                          <span className="inline-block text-xs bg-blue-400 dark:bg-blue-700/70 text-blue-800 dark:text-blue-100 px-2 py-1 rounded">PSP</span>
-                          <span className="inline-block text-xs bg-blue-300 dark:bg-blue-700/70 text-blue-800 dark:text-blue-100 px-2 py-1 rounded">Gambling</span>
-                          <span className="inline-block text-xs bg-blue-400 dark:bg-blue-700/70 text-blue-800 dark:text-blue-100 px-2 py-1 rounded">E-Money</span>
+                          <span className="inline-block text-xs bg-blue-300 dark:bg-blue-700/70 text-black dark:text-white px-2 py-1 rounded">EMI</span>
+                          <span className="inline-block text-xs bg-blue-400 dark:bg-blue-700/70 text-black dark:text-white px-2 py-1 rounded">Crypto</span>
+                          <span className="inline-block text-xs bg-blue-300 dark:bg-blue-700/70 text-black dark:text-white px-2 py-1 rounded">iGaming</span>
+                          <span className="inline-block text-xs bg-blue-400 dark:bg-blue-700/70 text-black dark:text-white px-2 py-1 rounded">PSP</span>
+                          <span className="inline-block text-xs bg-blue-300 dark:bg-blue-700/70 text-black dark:text-white px-2 py-1 rounded">Gambling</span>
+                          <span className="inline-block text-xs bg-blue-400 dark:bg-blue-700/70 text-black dark:text-white px-2 py-1 rounded">E-Money</span>
                         </div>
                       </Card>
                     </div>
                     
                     <Card className="bg-blue-100 dark:bg-blue-800/50 p-4 rounded-lg border-0">
-                      <div className="text-xs text-blue-700 dark:text-blue-200 mb-2">Global Jurisdictions</div>
+                      <div className="text-xs text-black dark:text-white mb-2">Global Jurisdictions</div>
                       <div className="flex flex-wrap gap-2">
-                        <span className="inline-block text-xs bg-blue-400 dark:bg-blue-700/70 text-blue-800 dark:text-blue-100 px-2 py-1 rounded">MGA</span>
-                        <span className="inline-block text-xs bg-blue-300 dark:bg-blue-700/70 text-blue-800 dark:text-blue-100 px-2 py-1 rounded">Curaçao</span>
-                        <span className="inline-block text-xs bg-blue-400 dark:bg-blue-700/70 text-blue-800 dark:text-blue-100 px-2 py-1 rounded">FCA</span>
-                        <span className="inline-block text-xs bg-blue-300 dark:bg-blue-700/70 text-blue-800 dark:text-blue-100 px-2 py-1 rounded">AML5</span>
-                        <span className="inline-block text-xs bg-blue-400 dark:bg-blue-700/70 text-blue-800 dark:text-blue-100 px-2 py-1 rounded">Casino Compliance</span>
+                        <span className="inline-block text-xs bg-blue-400 dark:bg-blue-700/70 text-black dark:text-white px-2 py-1 rounded">MGA</span>
+                        <span className="inline-block text-xs bg-blue-300 dark:bg-blue-700/70 text-black dark:text-white px-2 py-1 rounded">Curaçao</span>
+                        <span className="inline-block text-xs bg-blue-400 dark:bg-blue-700/70 text-black dark:text-white px-2 py-1 rounded">FCA</span>
+                        <span className="inline-block text-xs bg-blue-300 dark:bg-blue-700/70 text-black dark:text-white px-2 py-1 rounded">AML5</span>
+                        <span className="inline-block text-xs bg-blue-400 dark:bg-blue-700/70 text-black dark:text-white px-2 py-1 rounded">Casino Compliance</span>
                       </div>
                     </Card>
                     
                     <div className="pt-4 border-t border-blue-100 dark:border-blue-800">
                       <div className="flex items-center justify-between text-sm">
-                        <div className="text-blue-600 dark:text-blue-300">15+ Countries</div>
-                        <div className="text-blue-600 dark:text-blue-300">500+ Clients</div>
-                        <div className="text-blue-600 dark:text-blue-300">9+ Years</div>
+                        <div className="text-black dark:text-white">15+ Countries</div>
+                        <div className="text-black dark:text-white">500+ Clients</div>
+                        <div className="text-black dark:text-white">9+ Years</div>
                       </div>
                     </div>
                   </div>

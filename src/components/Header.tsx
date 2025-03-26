@@ -71,6 +71,13 @@ export function Header() {
                 <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-fintech-blue dark:bg-fintech-blue-light transition-all duration-300 group-hover:w-full"></span>
               </button>
               <button 
+                onClick={() => scrollToSection('blog')}
+                className="px-1 py-1 text-sm font-medium text-foreground hover:text-fintech-blue dark:hover:text-fintech-blue-light transition-colors whitespace-nowrap relative group"
+              >
+                {t('nav.blog')}
+                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-fintech-blue dark:bg-fintech-blue-light transition-all duration-300 group-hover:w-full"></span>
+              </button>
+              <button 
                 onClick={() => scrollToSection('contact')}
                 className="px-1 py-1 text-sm font-medium text-foreground hover:text-fintech-blue dark:hover:text-fintech-blue-light transition-colors whitespace-nowrap relative group"
               >

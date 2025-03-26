@@ -1,4 +1,3 @@
-
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, UserRound, Handshake, ShieldCheck, Award, Clock, Globe } from 'lucide-react';
@@ -29,7 +28,7 @@ export function AboutSection() {
                         </div>
                         <div>
                           <div className="text-sm md:text-base font-medium text-gray-900 dark:text-white">
-                            <span className="text-red-500">Fin</span><span className="text-fintech-blue-light">Tech</span><span className="text-fintech-orange">Assist</span>
+                            <span className="text-foreground dark:text-foreground">FinTechAssist</span>
                           </div>
                           <div className="text-xs text-gray-600 dark:text-white/70">{language === 'en' ? 'Your global fintech partner' : 'Ваш глобальный финтех-партнер'}</div>
                         </div>
@@ -147,4 +146,3 @@ export function AboutSection() {
     </section>
   );
 }
-

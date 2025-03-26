@@ -3,7 +3,7 @@ import { ContactBanner } from './contact/ContactBanner';
 import { ContactCard } from './contact/ContactCard';
 
 export function ContactForm() {
-  // Telegram link - replace with your actual Telegram username or link
+  // Telegram link
   const telegramLink = "https://t.me/fintech_assist";
 
   return (

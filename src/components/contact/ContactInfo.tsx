@@ -1,5 +1,5 @@
 
-import { MapPin, Globe, Landmark, Mail, Phone } from 'lucide-react';
+import { Mail, Phone } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 export function ContactInfo() {
@@ -7,42 +7,6 @@ export function ContactInfo() {
 
   return (
     <div className="bg-gradient-to-br from-fintech-blue to-fintech-blue-dark p-8 md:p-12 flex flex-col justify-between">
-      <div>
-        <h2 className="text-3xl font-display font-bold mb-8 text-white">{t('contact.getInTouch')}</h2>
-        
-        <div className="space-y-8">
-          <div className="flex items-start gap-4">
-            <div className="bg-white/10 p-3 rounded-full">
-              <MapPin className="h-6 w-6 text-white" />
-            </div>
-            <div>
-              <h3 className="text-xl font-display font-semibold mb-1 text-white">Global</h3>
-              <p className="text-white">contact.global</p>
-            </div>
-          </div>
-          
-          <div className="flex items-start gap-4">
-            <div className="bg-white/10 p-3 rounded-full">
-              <Landmark className="h-6 w-6 text-white" />
-            </div>
-            <div>
-              <h3 className="text-xl font-display font-semibold mb-1 text-white">Jurisdictions</h3>
-              <p className="text-white">contact.jurisdictions</p>
-            </div>
-          </div>
-          
-          <div className="flex items-start gap-4">
-            <div className="bg-white/10 p-3 rounded-full">
-              <Globe className="h-6 w-6 text-white" />
-            </div>
-            <div>
-              <h3 className="text-xl font-display font-semibold mb-1 text-white">Licenses</h3>
-              <p className="text-white">contact.licenses</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
       <div className="mt-12">
         <h3 className="text-xl font-display font-semibold mb-4 text-white">{t('contact.ourSocials')}</h3>
         <div className="flex flex-col space-y-6">

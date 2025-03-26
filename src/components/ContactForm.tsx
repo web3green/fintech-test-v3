@@ -6,7 +6,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { toast } from 'sonner';
-import { Send, Mail, Phone } from 'lucide-react';
+import { Send, Mail, Phone, MessageCircle } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 export function ContactForm() {
@@ -70,9 +70,39 @@ export function ContactForm() {
     }
   };
 
+  // Telegram link - replace with your actual Telegram username or link
+  const telegramLink = "https://t.me/fintech_assist";
+
   return (
     <section id="contact" className="section-padding bg-gradient-to-b from-transparent to-gray-50 dark:to-gray-900 contact-form-section">
       <div className="container mx-auto px-4">
+        {/* Instant Contact Banner */}
+        <div className="mb-10 animate-fade-up">
+          <div className="bg-fintech-blue rounded-xl p-6 md:p-8 text-white shadow-lg relative overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-r from-fintech-blue to-transparent opacity-80"></div>
+            <div className="absolute top-0 right-0 w-64 h-64 bg-fintech-orange/20 rounded-full mix-blend-overlay filter blur-3xl"></div>
+            
+            <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
+              <div className="text-center md:text-left">
+                <h3 className="text-2xl md:text-3xl font-display font-bold mb-2">{t('contact.instant.title') || 'Нужна консультация прямо сейчас?'}</h3>
+                <p className="text-white/80 max-w-lg">
+                  {t('contact.instant.subtitle') || 'Свяжитесь с нашим специалистом через Telegram и получите мгновенную консультацию без ожидания.'}
+                </p>
+              </div>
+              
+              <a 
+                href={telegramLink} 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="flex items-center gap-2 bg-white text-fintech-blue font-medium px-6 py-3 rounded-full hover:bg-opacity-90 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-1"
+              >
+                <MessageCircle className="h-5 w-5" />
+                <span>{t('contact.instant.button') || 'Написать в Telegram'}</span>
+              </a>
+            </div>
+          </div>
+        </div>
+
         <div className="glass-card rounded-2xl overflow-hidden max-w-5xl mx-auto shadow-xl animate-fade-up">
           <div className="grid grid-cols-1 lg:grid-cols-2">
             <div className="p-8 md:p-12 bg-fintech-blue text-white relative overflow-hidden">
@@ -105,6 +135,16 @@ export function ContactForm() {
                     <div>
                       <h3 className="font-medium">{t('contact.phone')}</h3>
                       <p className="text-white/80">+44 7450 574905</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center">
+                    <div className="rounded-full bg-white/20 p-2 mr-4">
+                      <MessageCircle className="h-5 w-5" />
+                    </div>
+                    <div>
+                      <h3 className="font-medium">{t('contact.telegram')}</h3>
+                      <p className="text-white/80">@fintech_assist</p>
                     </div>
                   </div>
                 </div>

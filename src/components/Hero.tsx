@@ -16,7 +16,7 @@ export function Hero() {
       });
     }
   };
-  return <section className="relative overflow-hidden bg-gray-50 dark:bg-gray-900 pt-20 md:pt-24 lg:pt-28 pb-20 md:pb-24">
+  return <section className="relative overflow-hidden bg-blue-50 dark:bg-blue-950/90 pt-20 md:pt-24 lg:pt-28 pb-20 md:pb-24">
       <div className="container mx-auto px-8 md:px-12 lg:px-16">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div className="order-2 lg:order-1 z-10">
@@ -50,7 +50,7 @@ export function Hero() {
           
           <div className="order-1 lg:order-2 relative z-10">
             <div className="relative p-4">
-              <div className="relative bg-white dark:bg-gray-800 rounded-2xl shadow-2xl overflow-hidden">
+              <div className="relative bg-white dark:bg-blue-900 rounded-2xl shadow-2xl overflow-hidden">
                 <div className="absolute inset-0">
                   <div className="absolute inset-0 bg-gradient-to-br from-fintech-blue/5 to-fintech-orange/5"></div>
                   <GlowingEffect blur={6} spread={60} glow={true} disabled={false} inactiveZone={0.3} proximity={100} />
@@ -103,40 +103,40 @@ export function Hero() {
                     </div>
                     
                     <div className="grid grid-cols-2 gap-4">
-                      <Card className="bg-blue-100 dark:bg-blue-900/30 p-4 rounded-lg border-0">
+                      <Card className="bg-blue-100 dark:bg-blue-800/50 p-4 rounded-lg border-0">
                         <div className="text-xs text-blue-700 dark:text-blue-200 mb-1">Banking</div>
                         <div className="font-medium text-blue-900 dark:text-blue-50">Accounts Worldwide</div>
                       </Card>
                       
-                      <Card className="bg-indigo-100 dark:bg-indigo-900/30 p-4 rounded-lg border-0">
-                        <div className="text-xs text-indigo-700 dark:text-indigo-200 mb-2">Licenses</div>
+                      <Card className="bg-blue-200 dark:bg-blue-800/30 p-4 rounded-lg border-0">
+                        <div className="text-xs text-blue-700 dark:text-blue-200 mb-2">Licenses</div>
                         <div className="flex flex-wrap gap-2">
-                          <span className="inline-block text-xs bg-blue-200 dark:bg-blue-800/70 text-blue-800 dark:text-blue-100 px-2 py-1 rounded">EMI</span>
-                          <span className="inline-block text-xs bg-indigo-200 dark:bg-indigo-800/70 text-indigo-800 dark:text-indigo-100 px-2 py-1 rounded">Crypto</span>
-                          <span className="inline-block text-xs bg-blue-200 dark:bg-blue-800/70 text-blue-800 dark:text-blue-100 px-2 py-1 rounded">iGaming</span>
-                          <span className="inline-block text-xs bg-indigo-200 dark:bg-indigo-800/70 text-indigo-800 dark:text-indigo-100 px-2 py-1 rounded">PSP</span>
-                          <span className="inline-block text-xs bg-blue-200 dark:bg-blue-800/70 text-blue-800 dark:text-blue-100 px-2 py-1 rounded">Gambling</span>
-                          <span className="inline-block text-xs bg-indigo-200 dark:bg-indigo-800/70 text-indigo-800 dark:text-indigo-100 px-2 py-1 rounded">E-Money</span>
+                          <span className="inline-block text-xs bg-blue-300 dark:bg-blue-700/70 text-blue-800 dark:text-blue-100 px-2 py-1 rounded">EMI</span>
+                          <span className="inline-block text-xs bg-blue-400 dark:bg-blue-700/70 text-blue-800 dark:text-blue-100 px-2 py-1 rounded">Crypto</span>
+                          <span className="inline-block text-xs bg-blue-300 dark:bg-blue-700/70 text-blue-800 dark:text-blue-100 px-2 py-1 rounded">iGaming</span>
+                          <span className="inline-block text-xs bg-blue-400 dark:bg-blue-700/70 text-blue-800 dark:text-blue-100 px-2 py-1 rounded">PSP</span>
+                          <span className="inline-block text-xs bg-blue-300 dark:bg-blue-700/70 text-blue-800 dark:text-blue-100 px-2 py-1 rounded">Gambling</span>
+                          <span className="inline-block text-xs bg-blue-400 dark:bg-blue-700/70 text-blue-800 dark:text-blue-100 px-2 py-1 rounded">E-Money</span>
                         </div>
                       </Card>
                     </div>
                     
-                    <Card className="bg-blue-100 dark:bg-blue-900/30 p-4 rounded-lg border-0">
+                    <Card className="bg-blue-100 dark:bg-blue-800/50 p-4 rounded-lg border-0">
                       <div className="text-xs text-blue-700 dark:text-blue-200 mb-2">Global Jurisdictions</div>
                       <div className="flex flex-wrap gap-2">
-                        <span className="inline-block text-xs bg-indigo-200 dark:bg-indigo-800/70 text-indigo-800 dark:text-indigo-100 px-2 py-1 rounded">MGA</span>
-                        <span className="inline-block text-xs bg-blue-200 dark:bg-blue-800/70 text-blue-800 dark:text-blue-100 px-2 py-1 rounded">Curaçao</span>
-                        <span className="inline-block text-xs bg-indigo-200 dark:bg-indigo-800/70 text-indigo-800 dark:text-indigo-100 px-2 py-1 rounded">FCA</span>
-                        <span className="inline-block text-xs bg-blue-200 dark:bg-blue-800/70 text-blue-800 dark:text-blue-100 px-2 py-1 rounded">AML5</span>
-                        <span className="inline-block text-xs bg-indigo-200 dark:bg-indigo-800/70 text-indigo-800 dark:text-indigo-100 px-2 py-1 rounded">Casino Compliance</span>
+                        <span className="inline-block text-xs bg-blue-400 dark:bg-blue-700/70 text-blue-800 dark:text-blue-100 px-2 py-1 rounded">MGA</span>
+                        <span className="inline-block text-xs bg-blue-300 dark:bg-blue-700/70 text-blue-800 dark:text-blue-100 px-2 py-1 rounded">Curaçao</span>
+                        <span className="inline-block text-xs bg-blue-400 dark:bg-blue-700/70 text-blue-800 dark:text-blue-100 px-2 py-1 rounded">FCA</span>
+                        <span className="inline-block text-xs bg-blue-300 dark:bg-blue-700/70 text-blue-800 dark:text-blue-100 px-2 py-1 rounded">AML5</span>
+                        <span className="inline-block text-xs bg-blue-400 dark:bg-blue-700/70 text-blue-800 dark:text-blue-100 px-2 py-1 rounded">Casino Compliance</span>
                       </div>
                     </Card>
                     
-                    <div className="pt-4 border-t border-gray-200 dark:border-gray-700">
+                    <div className="pt-4 border-t border-blue-100 dark:border-blue-800">
                       <div className="flex items-center justify-between text-sm">
-                        <div className="text-muted-foreground">15+ Countries</div>
-                        <div className="text-muted-foreground">500+ Clients</div>
-                        <div className="text-muted-foreground">9+ Years</div>
+                        <div className="text-blue-600 dark:text-blue-300">15+ Countries</div>
+                        <div className="text-blue-600 dark:text-blue-300">500+ Clients</div>
+                        <div className="text-blue-600 dark:text-blue-300">9+ Years</div>
                       </div>
                     </div>
                   </div>
@@ -144,17 +144,17 @@ export function Hero() {
               </div>
               
               <div className="absolute top-0 right-0 transform translate-x-1/4 -translate-y-1/4">
-                <div className="w-24 h-24 md:w-32 md:h-32 bg-fintech-blue/30 dark:bg-fintech-blue/20 rounded-full blur-3xl"></div>
+                <div className="w-24 h-24 md:w-32 md:h-32 bg-blue-400/30 dark:bg-blue-500/20 rounded-full blur-3xl"></div>
               </div>
               <div className="absolute bottom-0 left-0 transform -translate-x-1/4 translate-y-1/4">
-                <div className="w-24 h-24 md:w-32 md:h-32 bg-fintech-orange/30 dark:bg-fintech-orange/20 rounded-full blur-3xl"></div>
+                <div className="w-24 h-24 md:w-32 md:h-32 bg-blue-500/30 dark:bg-blue-400/20 rounded-full blur-3xl"></div>
               </div>
             </div>
           </div>
         </div>
       </div>
       
-      <div className="absolute top-0 inset-x-0 h-40 bg-gradient-to-b from-fintech-blue/5 to-transparent"></div>
-      <div className="absolute bottom-0 inset-x-0 h-40 bg-gradient-to-t from-fintech-orange/5 to-transparent"></div>
+      <div className="absolute top-0 inset-x-0 h-40 bg-gradient-to-b from-blue-200/30 dark:from-blue-700/10 to-transparent"></div>
+      <div className="absolute bottom-0 inset-x-0 h-40 bg-gradient-to-t from-blue-200/30 dark:from-blue-700/10 to-transparent"></div>
     </section>;
 }

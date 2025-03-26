@@ -8,22 +8,33 @@ import { useEffect } from 'react';
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Admin from "./pages/Admin";
-import { updateSocialMetaTags } from "./utils/metaTagManager";
+import { updateSocialMetaTags, initializeFavicon } from "./utils/metaTagManager";
 
 const queryClient = new QueryClient();
 
 // Enhanced component for managing meta tags
 const MetaTagUpdater = () => {
   useEffect(() => {
-    // Initial update
+    // Initial updates with favicon initialization
+    initializeFavicon();
     updateSocialMetaTags();
     
     // Set up interval for periodic updates
-    const interval = setInterval(updateSocialMetaTags, 15000);
+    const interval = setInterval(() => {
+      initializeFavicon(); // Periodically re-initialize favicon
+      updateSocialMetaTags();
+    }, 15000);
     
     // Attempt additional early updates to ensure proper loading
-    setTimeout(updateSocialMetaTags, 1000);
-    setTimeout(updateSocialMetaTags, 5000);
+    setTimeout(() => {
+      initializeFavicon();
+      updateSocialMetaTags();
+    }, 1000);
+    
+    setTimeout(() => {
+      initializeFavicon();
+      updateSocialMetaTags();
+    }, 5000);
     
     // Clean up interval on unmount
     return () => clearInterval(interval);

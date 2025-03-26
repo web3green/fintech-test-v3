@@ -17,7 +17,7 @@ export function ContactInfo() {
             </div>
             <div>
               <h3 className="text-xl font-display font-semibold mb-1 text-white">Global</h3>
-              <p className="text-white">{t('contact.global')}</p>
+              <p className="text-white">contact.global</p>
             </div>
           </div>
           
@@ -27,7 +27,7 @@ export function ContactInfo() {
             </div>
             <div>
               <h3 className="text-xl font-display font-semibold mb-1 text-white">Jurisdictions</h3>
-              <p className="text-white">{t('contact.jurisdictions')}</p>
+              <p className="text-white">contact.jurisdictions</p>
             </div>
           </div>
           
@@ -37,7 +37,7 @@ export function ContactInfo() {
             </div>
             <div>
               <h3 className="text-xl font-display font-semibold mb-1 text-white">Licenses</h3>
-              <p className="text-white">{t('contact.licenses')}</p>
+              <p className="text-white">contact.licenses</p>
             </div>
           </div>
         </div>

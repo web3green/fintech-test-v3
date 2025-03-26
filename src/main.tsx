@@ -15,26 +15,42 @@ const overrideHeartFavicon = () => {
   updateSocialMetaTags();
   
   // Force browser to show our favicon by repeatedly initializing
-  for (let i = 0; i < 5; i++) {
+  for (let i = 0; i < 10; i++) {
     setTimeout(() => {
       initializeFavicon();
       updateSocialMetaTags();
-    }, i * 500);
+    }, i * 200); // More frequent updates (every 200ms)
   }
 };
+
+// Attempt to override the default favicon.ico before anything else loads
+document.addEventListener('DOMContentLoaded', () => {
+  console.log('DOM loaded, aggressively updating favicon...');
+  
+  // Create a fake favicon link to redirect browser requests
+  const link = document.createElement('link');
+  link.rel = 'icon';
+  link.href = 'data:,'; // Empty favicon to prevent browser from requesting favicon.ico
+  document.head.appendChild(link);
+  
+  // Then override with our real favicon
+  overrideHeartFavicon();
+});
 
 // Call before any other code
 overrideHeartFavicon();
 
-// Initialize again when DOM is loaded
-document.addEventListener('DOMContentLoaded', () => {
-  console.log('DOM loaded, aggressively updating favicon...');
-  overrideHeartFavicon();
-});
-
 // Set up interval for periodic updates to ensure favicon stays updated
 window.addEventListener('load', () => {
   console.log('Window loaded, setting up continuous monitoring');
+  
+  // Initial aggressive override
+  for (let i = 0; i < 5; i++) {
+    setTimeout(() => {
+      overrideHeartFavicon();
+    }, i * 300);
+  }
+  
   setInterval(() => {
     // Check if heart favicon has returned and replace it
     const icons = document.querySelectorAll('link[rel^="icon"]');
@@ -49,12 +65,12 @@ window.addEventListener('load', () => {
       }
     });
     
-    if (foundHeart || Date.now() % 10000 < 100) {
+    if (foundHeart || Date.now() % 5000 < 100) {
       overrideHeartFavicon();
     } else {
       initializeFavicon();
     }
-  }, 2000); // Check every 2 seconds
+  }, 1000); // Check more frequently (every second)
 });
 
 // Additional mechanism to override cached favicon
@@ -66,4 +82,3 @@ window.addEventListener('pageshow', (event) => {
 });
 
 createRoot(document.getElementById("root")!).render(<App />);
-

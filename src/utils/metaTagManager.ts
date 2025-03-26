@@ -70,6 +70,24 @@ export const updateSocialMetaTags = () => {
   return logoUrl;
 };
 
+// Function to directly create and inject a new favicon.ico in the DOM
+// This approach intercepts browser requests for favicon.ico
+const createFaviconElementFromBase64 = () => {
+  // Define a base64 representation of our logo to override the default favicon.ico
+  const faviconBase64 = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAA/0lEQVR42mNkGGDAOOqAUQeMOmDUAaMO4D4AH2egFQAAgL7gNAOwAICvBzx+/Jjl4cOH8p8/f2YihJmZmbmYmJg3CQkJP6Fyn6H0F3Fxca+QkJCvKSkpX+Pi4r7/hYI/f/68//Tp09OJiYmvO39sEdZVNzU7evToWxkZme8gR/z8+fPPnz9/fv/69evv79+//0HB/4H4HxD/B+E/UP5/EP0fCYP4/xkYGBmA8v+A4vA4AMXRTwYsBuAK/FetWnVm7969x48cOXLi8ePHN27evHnj1q1bd+7cuXMPiO/CcBbQ9OfPn79y48aNG1euXLly+fLly5cuXbpw/vz5M2fOnDlNU1sAB1+QqgkWAlsAAAAASUVORK5CYII=';
+  
+  // Create a link element for the favicon
+  const link = document.createElement('link');
+  link.type = 'image/x-icon';
+  link.rel = 'icon';
+  link.href = faviconBase64;
+  
+  // Add the favicon to the document head with highest priority
+  document.head.insertBefore(link, document.head.firstChild);
+  
+  return link;
+};
+
 // Function to initialize favicon immediately
 export const initializeFavicon = () => {
   try {
@@ -80,7 +98,10 @@ export const initializeFavicon = () => {
     console.log('Removing existing favicons:', existingIcons.length);
     existingIcons.forEach(icon => icon.remove());
     
-    // Override favicon.ico with a clearer priority
+    // First create a base64 favicon to immediately override any default
+    createFaviconElementFromBase64();
+    
+    // Then add our normal favicon links
     const favIcon = document.createElement('link');
     favIcon.rel = 'icon';
     favIcon.href = logoUrl;
@@ -117,4 +138,3 @@ export const initializeFavicon = () => {
     console.error('Error initializing favicon:', error);
   }
 };
-

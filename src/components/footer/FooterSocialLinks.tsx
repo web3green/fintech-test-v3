@@ -20,11 +20,11 @@ export function FooterSocialLinks() {
     } else {
       // Default social links
       const defaultLinks = [
-        { id: 1, platform: 'facebook', url: 'https://facebook.com', icon: 'facebook' },
-        { id: 2, platform: 'twitter', url: 'https://x.com', icon: 'twitter' },
-        { id: 3, platform: 'instagram', url: 'https://instagram.com', icon: 'instagram' },
-        { id: 4, platform: 'telegram', url: 'https://t.me/fintechassist', icon: 'telegram' },
-        { id: 5, platform: 'linkedin', url: 'https://linkedin.com', icon: 'linkedin' }
+        { id: 1, platform: 'Facebook', url: 'https://facebook.com', icon: 'facebook' },
+        { id: 2, platform: 'Twitter', url: 'https://x.com', icon: 'twitter' },
+        { id: 3, platform: 'Instagram', url: 'https://instagram.com', icon: 'instagram' },
+        { id: 4, platform: 'Telegram', url: 'https://t.me/fintechassist', icon: 'telegram' },
+        { id: 5, platform: 'LinkedIn', url: 'https://linkedin.com', icon: 'linkedin' }
       ];
       setSocialLinks(defaultLinks);
       localStorage.setItem('socialLinks', JSON.stringify(defaultLinks));

@@ -7,15 +7,12 @@
 export const getLogoUrl = (withTimestamp = true) => {
   const timestamp = withTimestamp ? `?t=${Date.now()}` : '';
   
-  // Use the new URL as requested
-  const relativeLogoPath = `https://test.mcaweb.xyz/`;
-  
-  // For absolute URL, use the same URL
-  const absoluteUrl = relativeLogoPath;
+  // Use the exact URL as requested
+  const logoUrl = `https://test.mcaweb.xyz/`;
   
   return {
-    relative: relativeLogoPath,
-    absolute: absoluteUrl
+    relative: logoUrl,
+    absolute: logoUrl
   };
 };
 
@@ -66,6 +63,19 @@ export const updateSocialMetaTags = () => {
   updateMetaTag('Expires', '0', false);
   
   console.log('Meta tags updated with new URL:', logoUrl);
+  
+  // Update favicon links
+  const updateLinkHref = (rel: string, href: string) => {
+    let link = document.querySelector(`link[rel="${rel}"]`);
+    if (link) {
+      link.setAttribute('href', href);
+    }
+  };
+  
+  // Update favicon and apple-touch-icon
+  updateLinkHref('icon', logoUrl);
+  updateLinkHref('shortcut icon', logoUrl);
+  updateLinkHref('apple-touch-icon', logoUrl);
   
   // For debugging and preloading
   const linkElement = document.createElement('link');

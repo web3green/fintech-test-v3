@@ -4,6 +4,7 @@ import { GlowingEffect } from '@/components/ui/glowing-effect';
 import { cn } from '@/lib/utils';
 import { getLogoUrl } from '@/utils/metaTagManager';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useEffect, useState } from 'react';
 
 interface LogoProps {
   className?: string;
@@ -13,8 +14,15 @@ interface LogoProps {
 }
 
 export function Logo({ className, withGlow = true, showText = true, showSlogan = false }: LogoProps) {
-  const { relative: logoPath, absolute: absoluteLogoUrl } = getLogoUrl();
+  const { relative: logoPath, absolute: absoluteLogoUrl } = getLogoUrl(false);
   const { language } = useLanguage();
+  const [key, setKey] = useState(0);
+  
+  // Force re-render occasionally to ensure logo loads
+  useEffect(() => {
+    const timer = setTimeout(() => setKey(prev => prev + 1), 2000);
+    return () => clearTimeout(timer);
+  }, []);
   
   // Слоганы для разных языков
   const slogan = language === 'en' 
@@ -26,6 +34,7 @@ export function Logo({ className, withGlow = true, showText = true, showSlogan =
       <div className="flex items-center">
         <div className="relative">
           <img 
+            key={`logo-${key}`}
             src={logoPath}
             alt="FinTechAssist Logo" 
             className="h-10 w-auto"

@@ -18,11 +18,23 @@ const MetaTagUpdater = () => {
     // Initial update
     updateSocialMetaTags();
     
-    // Set up interval for periodic updates (every 30 seconds instead of every second)
-    const interval = setInterval(updateSocialMetaTags, 30000);
+    // Set up interval for more frequent updates in production
+    const interval = setInterval(updateSocialMetaTags, 10000);
+    
+    // Also update on visibility change (tab focus)
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        updateSocialMetaTags();
+      }
+    };
+    
+    document.addEventListener('visibilitychange', handleVisibilityChange);
     
     // Clean up interval on unmount
-    return () => clearInterval(interval);
+    return () => {
+      clearInterval(interval);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
   }, []);
 
   return null;

@@ -6,11 +6,14 @@ import { updateSocialMetaTags } from './utils/metaTagManager'
 
 // Initialize meta tags before React loads
 document.addEventListener('DOMContentLoaded', () => {
-  // Update meta tags once when the page loads
+  // Update meta tags multiple times to ensure they're picked up by social media platforms
   updateSocialMetaTags();
   
-  // Attempt one more update after a delay to ensure socials get the tags
+  // Schedule multiple updates with increasing delays
+  setTimeout(updateSocialMetaTags, 500);
+  setTimeout(updateSocialMetaTags, 1000);
   setTimeout(updateSocialMetaTags, 1500);
+  setTimeout(updateSocialMetaTags, 2000);
 });
 
 createRoot(document.getElementById("root")!).render(<App />);

@@ -20,13 +20,13 @@ export const getLogoUrl = (withTimestamp = true) => {
 
 // Track last update time to prevent too frequent updates
 let lastUpdateTimestamp = 0;
-const UPDATE_INTERVAL = 5000; // 5 seconds
+const UPDATE_INTERVAL = 1000; // 1 second for more frequent updates
 
 // Update meta tags for social sharing
 export const updateSocialMetaTags = () => {
   const now = Date.now();
   
-  // Prevent updating too frequently
+  // Allow more frequent updates for debugging
   if (now - lastUpdateTimestamp < UPDATE_INTERVAL) {
     return null;
   }
@@ -35,7 +35,8 @@ export const updateSocialMetaTags = () => {
   
   const { absolute: logoUrl } = getLogoUrl();
   const origin = window.location.origin;
-  const fullUrl = `${origin}/lovable-uploads/6bfd57a2-6c6a-4507-bb1d-2cde1517ebd1.png`;
+  // Always use the full URL with origin
+  const fullUrl = `${origin}/lovable-uploads/6bfd57a2-6c6a-4507-bb1d-2cde1517ebd1.png?t=${Date.now()}`;
   
   // Helper function to create or update meta tags
   const updateMetaTag = (selector: string, value: string, isProperty = true) => {
@@ -67,6 +68,25 @@ export const updateSocialMetaTags = () => {
   updateMetaTag('Expires', '0', false);
   
   console.log('Meta tags updated with absolute URL:', fullUrl);
+  
+  // Update favicon links to ensure they're always fresh
+  const updateFavicon = (rel: string) => {
+    const links = document.querySelectorAll(`link[rel="${rel}"]`);
+    
+    // Remove existing favicon links
+    links.forEach(link => link.remove());
+    
+    // Create new favicon link
+    const linkElement = document.createElement('link');
+    linkElement.rel = rel;
+    linkElement.href = `${origin}/lovable-uploads/6bfd57a2-6c6a-4507-bb1d-2cde1517ebd1.png?t=${Date.now()}`;
+    document.head.appendChild(linkElement);
+  };
+  
+  // Update all favicon related links
+  updateFavicon('icon');
+  updateFavicon('shortcut icon');
+  updateFavicon('apple-touch-icon');
   
   // For debugging and preloading
   const linkElement = document.createElement('link');

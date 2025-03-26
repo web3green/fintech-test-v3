@@ -20,18 +20,12 @@ export const getLogoUrl = (withTimestamp = true) => {
 
 // Track last update time to prevent too frequent updates
 let lastUpdateTimestamp = 0;
-const UPDATE_INTERVAL = 1000; // 1 second for more frequent updates
+const UPDATE_INTERVAL = 200; // 200ms for more frequent updates
 
 // Update meta tags for social sharing
 export const updateSocialMetaTags = () => {
-  const now = Date.now();
-  
-  // Allow more frequent updates for debugging
-  if (now - lastUpdateTimestamp < UPDATE_INTERVAL) {
-    return null;
-  }
-  
-  lastUpdateTimestamp = now;
+  // Force update every time without throttling
+  lastUpdateTimestamp = Date.now();
   
   const { absolute: logoUrl } = getLogoUrl();
   const origin = window.location.origin;
@@ -40,20 +34,17 @@ export const updateSocialMetaTags = () => {
   
   // Helper function to create or update meta tags
   const updateMetaTag = (selector: string, value: string, isProperty = true) => {
-    let meta = isProperty 
-      ? document.querySelector(`meta[property="${selector}"]`)
-      : document.querySelector(`meta[name="${selector}"]`);
-      
-    if (!meta) {
-      meta = document.createElement('meta');
-      if (isProperty) {
-        meta.setAttribute('property', selector);
-      } else {
-        meta.setAttribute('name', selector);
-      }
-      document.head.appendChild(meta);
+    // Remove all existing tags first to prevent duplicates
+    document.querySelectorAll(`meta[${isProperty ? 'property' : 'name'}="${selector}"]`).forEach(tag => tag.remove());
+    
+    const meta = document.createElement('meta');
+    if (isProperty) {
+      meta.setAttribute('property', selector);
+    } else {
+      meta.setAttribute('name', selector);
     }
     meta.setAttribute('content', value);
+    document.head.appendChild(meta);
   };
   
   // Update all social media tags with absolute URL that includes domain
@@ -71,10 +62,8 @@ export const updateSocialMetaTags = () => {
   
   // Update favicon links to ensure they're always fresh
   const updateFavicon = (rel: string) => {
-    const links = document.querySelectorAll(`link[rel="${rel}"]`);
-    
-    // Remove existing favicon links
-    links.forEach(link => link.remove());
+    // Remove all existing favicon links first
+    document.querySelectorAll(`link[rel="${rel}"]`).forEach(link => link.remove());
     
     // Create new favicon link
     const linkElement = document.createElement('link');

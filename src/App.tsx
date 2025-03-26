@@ -1,10 +1,9 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Admin from "./pages/Admin";
@@ -14,26 +13,35 @@ const queryClient = new QueryClient();
 
 // Enhanced component for managing meta tags
 const MetaTagUpdater = () => {
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  
   useEffect(() => {
     // Initial update
     updateSocialMetaTags();
     
-    // Set up interval for more frequent updates in production
-    const interval = setInterval(updateSocialMetaTags, 10000);
+    // Set up interval for continuous updates
+    intervalRef.current = setInterval(updateSocialMetaTags, 5000);
     
     // Also update on visibility change (tab focus)
     const handleVisibilityChange = () => {
       if (document.visibilityState === 'visible') {
+        // Update multiple times when tab becomes visible
         updateSocialMetaTags();
+        setTimeout(updateSocialMetaTags, 100);
+        setTimeout(updateSocialMetaTags, 500);
       }
     };
     
     document.addEventListener('visibilitychange', handleVisibilityChange);
     
+    // Also update on network status change
+    window.addEventListener('online', updateSocialMetaTags);
+    
     // Clean up interval on unmount
     return () => {
-      clearInterval(interval);
+      if (intervalRef.current) clearInterval(intervalRef.current);
       document.removeEventListener('visibilitychange', handleVisibilityChange);
+      window.removeEventListener('online', updateSocialMetaTags);
     };
   }, []);
 
@@ -49,6 +57,9 @@ const App = () => {
     if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
       document.documentElement.classList.add('dark');
     }
+    
+    // Ensure meta tags are set at component mount
+    updateSocialMetaTags();
   }, []);
 
   return (

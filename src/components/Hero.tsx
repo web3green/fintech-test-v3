@@ -1,3 +1,4 @@
+
 import { ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -121,7 +122,7 @@ export function Hero() {
                     </div>
                     
                     <Card className="p-4 rounded-lg border-0 bg-blue-500">
-                      <div className="text-xs text-white dark:text-white mb-2">Global Jurisdictions</div>
+                      <div className="text-xs text-white mb-2">Global Jurisdictions</div>
                       <div className="flex flex-wrap gap-2">
                         <span className="inline-block text-xs bg-blue-400 dark:bg-blue-700/70 text-black dark:text-white px-2 py-1 rounded">MGA</span>
                         <span className="inline-block text-xs bg-blue-300 dark:bg-blue-700/70 text-black dark:text-white px-2 py-1 rounded">Curaçao</span>

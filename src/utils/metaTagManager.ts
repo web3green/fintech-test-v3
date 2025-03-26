@@ -70,17 +70,18 @@ export const updateSocialMetaTags = () => {
   return logoUrl;
 };
 
+// Our exact company logo as a base64 string - directly embedded to avoid any network requests
+// This is a square blue icon matching our brand
+const OUR_LOGO_BASE64 = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAA/0lEQVR42mNkGGDAOOqAUQeMOmDUAaMO4D4AH2egFQAAgL7gNAOwAICvBzx+/Jjl4cOH8p8/f2YihJmZmbmYmJg3CQkJP6Fyn6H0F3Fxca+QkJCvKSkpX+Pi4r7/hYI/f/68//Tp09OJiYmvO39sEdZVNzU7evToWxkZme8gR/z8+fPPnz9/fv/69evv79+//0HB/4H4HxD/B+E/UP5/EP0fCYP4/xkYGBmA8v+A4vA4AMXRTwYsBuAK/FetWnVm7969x48cOXLi8ePHN27evHnj1q1bd+7cuXMPiO/CcBbQ9OfPn79y48aNG1euXLly+fLly5cuXbpw/vz5M2fOnDlNU1sAB1+QqgkWAlsAAAAASUVORK5CYII=';
+
 // Function to directly create and inject a new favicon.ico in the DOM
 // This approach intercepts browser requests for favicon.ico
 const createFaviconElementFromBase64 = () => {
-  // Define a base64 representation of our logo to override the default favicon.ico
-  const faviconBase64 = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAA/0lEQVR42mNkGGDAOOqAUQeMOmDUAaMO4D4AH2egFQAAgL7gNAOwAICvBzx+/Jjl4cOH8p8/f2YihJmZmbmYmJg3CQkJP6Fyn6H0F3Fxca+QkJCvKSkpX+Pi4r7/hYI/f/68//Tp09OJiYmvO39sEdZVNzU7evToWxkZme8gR/z8+fPPnz9/fv/69evv79+//0HB/4H4HxD/B+E/UP5/EP0fCYP4/xkYGBmA8v+A4vA4AMXRTwYsBuAK/FetWnVm7969x48cOXLi8ePHN27evHnj1q1bd+7cuXMPiO/CcBbQ9OfPn79y48aNG1euXLly+fLly5cuXbpw/vz5M2fOnDlNU1sAB1+QqgkWAlsAAAAASUVORK5CYII=';
-  
-  // Create a link element for the favicon
+  // Create a link element for the favicon using our embedded base64 logo
   const link = document.createElement('link');
   link.type = 'image/x-icon';
   link.rel = 'icon';
-  link.href = faviconBase64;
+  link.href = OUR_LOGO_BASE64;
   
   // Add the favicon to the document head with highest priority
   document.head.insertBefore(link, document.head.firstChild);
@@ -88,10 +89,37 @@ const createFaviconElementFromBase64 = () => {
   return link;
 };
 
-// Function to initialize favicon immediately
+// Function to prevent browser from requesting the default favicon.ico
+const blockDefaultFavicon = () => {
+  // Create empty favicon to prevent browser from requesting favicon.ico
+  const link = document.createElement('link');
+  link.rel = 'icon';
+  link.href = 'data:,';
+  document.head.insertBefore(link, document.head.firstChild);
+};
+
+// Completely remove a favicon.ico if it exists by path
+const removeFaviconByHref = (href: string) => {
+  const links = document.querySelectorAll('link');
+  links.forEach(link => {
+    if (link.href.includes(href)) {
+      console.log('Removing specific favicon by href:', href);
+      link.remove();
+    }
+  });
+};
+
+// Function to initialize favicon immediately with extreme priority
 export const initializeFavicon = () => {
   try {
     const { absolute: logoUrl } = getLogoUrl(false);
+    
+    // Block the default favicon first
+    blockDefaultFavicon();
+    
+    // Specifically target and remove any heart icon or favicon.ico
+    removeFaviconByHref('favicon.ico');
+    removeFaviconByHref('heart');
     
     // Remove any existing favicon links - more aggressive approach
     const existingIcons = document.querySelectorAll('link[rel^="icon"], link[rel="shortcut icon"], link[rel="apple-touch-icon"]');

@@ -4,6 +4,16 @@ import App from './App.tsx'
 import './index.css'
 import { updateSocialMetaTags, initializeFavicon } from './utils/metaTagManager'
 
+// Block the default favicon.ico ASAP
+document.head.insertAdjacentHTML('afterbegin', `
+  <link rel="icon" href="data:," />
+  <style>
+    [rel="icon"][href*="heart"], [rel="icon"][href*="favicon.ico"] {
+      display: none !important;
+    }
+  </style>
+`);
+
 // Function to aggressively override heart favicon
 const overrideHeartFavicon = () => {
   console.log('Aggressively overriding heart favicon...');

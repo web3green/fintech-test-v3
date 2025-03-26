@@ -33,8 +33,6 @@ export function ServicesSection() {
       color: 'bg-blue-50 dark:bg-blue-950',
       iconColor: 'text-fintech-blue dark:text-fintech-blue-light',
       borderColor: 'border-fintech-blue/20',
-      textColor: 'text-white dark:text-black',
-      bgColor: 'bg-black dark:bg-white',
     },
     {
       id: 'financial-licensing',
@@ -45,8 +43,6 @@ export function ServicesSection() {
       color: 'bg-orange-50 dark:bg-orange-950',
       iconColor: 'text-fintech-orange dark:text-fintech-orange-light',
       borderColor: 'border-fintech-orange/20',
-      textColor: 'text-white dark:text-black',
-      bgColor: 'bg-black dark:bg-white',
     },
     {
       id: 'crypto-regulation',
@@ -57,8 +53,6 @@ export function ServicesSection() {
       color: 'bg-purple-50 dark:bg-purple-950',
       iconColor: 'text-purple-500',
       borderColor: 'border-purple-500/20',
-      textColor: 'text-white dark:text-black',
-      bgColor: 'bg-black dark:bg-white',
     },
     {
       id: 'gambling-licensing',
@@ -69,8 +63,6 @@ export function ServicesSection() {
       color: 'bg-emerald-50 dark:bg-emerald-950',
       iconColor: 'text-emerald-500',
       borderColor: 'border-emerald-500/20',
-      textColor: 'text-white dark:text-black',
-      bgColor: 'bg-black dark:bg-white',
     },
     {
       id: 'payment-solutions',
@@ -81,8 +73,6 @@ export function ServicesSection() {
       color: 'bg-blue-50 dark:bg-blue-950',
       iconColor: 'text-fintech-blue dark:text-fintech-blue-light',
       borderColor: 'border-fintech-blue/20',
-      textColor: 'text-white dark:text-black',
-      bgColor: 'bg-black dark:bg-white',
     },
     {
       id: 'fiat-crypto',
@@ -93,8 +83,6 @@ export function ServicesSection() {
       color: 'bg-purple-50 dark:bg-purple-950',
       iconColor: 'text-purple-500',
       borderColor: 'border-purple-500/20',
-      textColor: 'text-white dark:text-black',
-      bgColor: 'bg-black dark:bg-white',
     },
     {
       id: 'tax-planning',
@@ -105,8 +93,6 @@ export function ServicesSection() {
       color: 'bg-orange-50 dark:bg-orange-950',
       iconColor: 'text-fintech-orange dark:text-fintech-orange-light',
       borderColor: 'border-fintech-orange/20',
-      textColor: 'text-white dark:text-black',
-      bgColor: 'bg-black dark:bg-white',
     },
     {
       id: 'investment',
@@ -117,8 +103,6 @@ export function ServicesSection() {
       color: 'bg-purple-50 dark:bg-purple-950',
       iconColor: 'text-purple-500',
       borderColor: 'border-purple-500/20',
-      textColor: 'text-white dark:text-black',
-      bgColor: 'bg-black dark:bg-white',
     },
     {
       id: 'nominee',
@@ -129,8 +113,6 @@ export function ServicesSection() {
       color: 'bg-emerald-50 dark:bg-emerald-950',
       iconColor: 'text-emerald-500',
       borderColor: 'border-emerald-500/20',
-      textColor: 'text-white dark:text-black',
-      bgColor: 'bg-black dark:bg-white',
     },
   ];
 
@@ -170,7 +152,7 @@ export function ServicesSection() {
                 className={`h-full transition-all duration-300 ${openService === service.id ? 'z-10 relative' : ''}`}
               >
                 <Card 
-                  className={`relative h-full transition-all duration-300 border ${service.borderColor} hover:shadow-lg ${openService === service.id ? 'shadow-md' : ''} ${service.bgColor}`}
+                  className={`relative h-full transition-all duration-300 border ${service.borderColor} hover:shadow-lg ${openService === service.id ? 'shadow-md' : ''}`}
                 >
                   <CollapsibleTrigger className="w-full text-left">
                     <CardContent className="p-5">
@@ -180,14 +162,14 @@ export function ServicesSection() {
                         </div>
                         <div className="ml-auto">
                           {openService === service.id ? (
-                            <ChevronUp className={`h-4 w-4 ${service.textColor}`} />
+                            <ChevronUp className="h-4 w-4 text-muted-foreground" />
                           ) : (
-                            <ChevronDown className={`h-4 w-4 ${service.textColor}`} />
+                            <ChevronDown className="h-4 w-4 text-muted-foreground" />
                           )}
                         </div>
                       </div>
-                      <h3 className={`text-base sm:text-lg font-display font-bold mb-2 line-clamp-2 ${service.textColor}`}>{service.title}</h3>
-                      <p className={`${service.textColor} text-opacity-75 text-sm mb-0`}>{service.description}</p>
+                      <h3 className="text-base sm:text-lg font-display font-bold mb-2 line-clamp-2">{service.title}</h3>
+                      <p className="text-muted-foreground text-sm mb-0">{service.description}</p>
                     </CardContent>
                   </CollapsibleTrigger>
 
@@ -201,11 +183,11 @@ export function ServicesSection() {
                           transition={{ duration: 0.3 }}
                           className="px-5 pb-4 pt-0 border-t border-border/30 mt-1"
                         >
-                          <p className={`text-sm ${service.textColor} text-opacity-90 mb-4`}>{service.details}</p>
+                          <p className="text-sm text-foreground/90 mb-4">{service.details}</p>
                           <Button 
                             variant="outline" 
                             size="sm"
-                            className={`text-xs w-full ${service.textColor} border-${service.iconColor}`}
+                            className={`text-xs w-full ${service.iconColor} border-${service.iconColor}`}
                             onClick={(e) => {
                               e.stopPropagation();
                               // Instead of navigation, we can scroll to contact form

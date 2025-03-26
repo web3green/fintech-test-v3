@@ -1,4 +1,3 @@
-
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap');
 
@@ -120,15 +119,6 @@
   .text-2xs {
     font-size: 0.65rem;
     line-height: 0.9rem;
-  }
-  
-  /* Inverted color scheme for service cards */
-  .inverted-text {
-    @apply text-white dark:text-black;
-  }
-  
-  .inverted-bg {
-    @apply bg-black dark:bg-white;
   }
 }
 

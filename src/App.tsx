@@ -12,32 +12,61 @@ import { updateSocialMetaTags, initializeFavicon } from "./utils/metaTagManager"
 
 const queryClient = new QueryClient();
 
-// Enhanced component for managing meta tags
+// Enhanced component for managing meta tags with aggressive favicon updates
 const MetaTagUpdater = () => {
   useEffect(() => {
-    // Initial updates with favicon initialization
+    // Create mutation observer to detect any changes to favicon links
+    const observer = new MutationObserver((mutations) => {
+      for (const mutation of mutations) {
+        if (mutation.type === 'childList') {
+          const addedNodes = Array.from(mutation.addedNodes);
+          // Check if any added nodes are icon links that could be heart favicons
+          const faviconAdded = addedNodes.some(node => {
+            if (node.nodeName === 'LINK') {
+              const rel = (node as HTMLLinkElement).rel;
+              const href = (node as HTMLLinkElement).href;
+              return rel && (rel.includes('icon') && (href.includes('favicon.ico') || href.includes('heart')));
+            }
+            return false;
+          });
+          
+          if (faviconAdded) {
+            console.log('Heart favicon detected, overriding immediately');
+            initializeFavicon();
+          }
+        }
+      }
+    });
+    
+    // Start observing document head for changes
+    observer.observe(document.head, {
+      childList: true,
+      subtree: true
+    });
+    
+    // Initial updates with aggressive favicon initialization
     initializeFavicon();
     updateSocialMetaTags();
     
+    // Rapid initial updates
+    for (let i = 0; i < 5; i++) {
+      setTimeout(() => {
+        initializeFavicon();
+        updateSocialMetaTags();
+      }, i * 500);
+    }
+    
     // Set up interval for periodic updates
     const interval = setInterval(() => {
-      initializeFavicon(); // Periodically re-initialize favicon
-      updateSocialMetaTags();
-    }, 15000);
-    
-    // Attempt additional early updates to ensure proper loading
-    setTimeout(() => {
-      initializeFavicon();
-      updateSocialMetaTags();
-    }, 1000);
-    
-    setTimeout(() => {
       initializeFavicon();
       updateSocialMetaTags();
     }, 5000);
     
-    // Clean up interval on unmount
-    return () => clearInterval(interval);
+    // Clean up interval and observer on unmount
+    return () => {
+      clearInterval(interval);
+      observer.disconnect();
+    };
   }, []);
 
   return null;
@@ -52,6 +81,9 @@ const App = () => {
     if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
       document.documentElement.classList.add('dark');
     }
+    
+    // Prevent heart icon by initializing favicon again after app mounts
+    initializeFavicon();
   }, []);
 
   return (
@@ -74,3 +106,4 @@ const App = () => {
 }
 
 export default App;
+

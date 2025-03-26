@@ -4,27 +4,66 @@ import App from './App.tsx'
 import './index.css'
 import { updateSocialMetaTags, initializeFavicon } from './utils/metaTagManager'
 
-// Initialize favicon immediately even before DOM is fully loaded
-initializeFavicon();
-
-// Initialize meta tags before React loads
-document.addEventListener('DOMContentLoaded', () => {
-  console.log('DOM loaded, updating meta tags...');
+// Function to aggressively override heart favicon
+const overrideHeartFavicon = () => {
+  console.log('Aggressively overriding heart favicon...');
   
-  // Update meta tags immediately when the page loads
+  // Initialize favicon immediately
+  initializeFavicon();
+  
+  // Update meta tags
   updateSocialMetaTags();
   
-  // Attempt additional updates at different times to ensure the logo is loaded
-  setTimeout(() => updateSocialMetaTags(), 500);
-  setTimeout(() => updateSocialMetaTags(), 1500);
-  setTimeout(() => updateSocialMetaTags(), 3000);
+  // Force browser to show our favicon by repeatedly initializing
+  for (let i = 0; i < 5; i++) {
+    setTimeout(() => {
+      initializeFavicon();
+      updateSocialMetaTags();
+    }, i * 500);
+  }
+};
+
+// Call before any other code
+overrideHeartFavicon();
+
+// Initialize again when DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
+  console.log('DOM loaded, aggressively updating favicon...');
+  overrideHeartFavicon();
 });
 
 // Set up interval for periodic updates to ensure favicon stays updated
 window.addEventListener('load', () => {
+  console.log('Window loaded, setting up continuous monitoring');
   setInterval(() => {
-    updateSocialMetaTags();
-  }, 10000); // Check every 10 seconds
+    // Check if heart favicon has returned and replace it
+    const icons = document.querySelectorAll('link[rel^="icon"]');
+    let foundHeart = false;
+    
+    icons.forEach(icon => {
+      const href = icon.getAttribute('href');
+      if (href && (href.includes('heart') || href.includes('favicon.ico'))) {
+        console.log('Found heart icon, removing:', href);
+        icon.remove();
+        foundHeart = true;
+      }
+    });
+    
+    if (foundHeart || Date.now() % 10000 < 100) {
+      overrideHeartFavicon();
+    } else {
+      initializeFavicon();
+    }
+  }, 2000); // Check every 2 seconds
+});
+
+// Additional mechanism to override cached favicon
+window.addEventListener('pageshow', (event) => {
+  if (event.persisted) {
+    console.log('Page restored from cache, reinitializing favicon');
+    overrideHeartFavicon();
+  }
 });
 
 createRoot(document.getElementById("root")!).render(<App />);
+

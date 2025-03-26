@@ -64,38 +64,8 @@ export const updateSocialMetaTags = () => {
   
   console.log('Meta tags updated with new URL:', logoUrl);
   
-  // Update favicon links - ensure the function properly creates links if they don't exist
-  const updateLinkHref = (rel: string, href: string, type = 'image/png') => {
-    try {
-      // First, remove any existing links to ensure clean state
-      const existingLinks = document.querySelectorAll(`link[rel="${rel}"]`);
-      existingLinks.forEach(link => link.remove());
-      
-      // Create a new link element
-      const link = document.createElement('link');
-      link.setAttribute('rel', rel);
-      link.setAttribute('href', href);
-      if (type) {
-        link.setAttribute('type', type);
-      }
-      document.head.appendChild(link);
-      
-      console.log(`Updated ${rel} link with: ${href}`);
-    } catch (error) {
-      console.error(`Error updating ${rel} link:`, error);
-    }
-  };
-  
-  // Aggressively update favicon and apple-touch-icon with logo to replace heart icon
-  updateLinkHref('icon', logoUrl);
-  updateLinkHref('shortcut icon', logoUrl);
-  updateLinkHref('apple-touch-icon', logoUrl, '');
-  
-  // For debugging and preloading
-  const linkElement = document.createElement('link');
-  linkElement.rel = 'prefetch';
-  linkElement.href = logoUrl;
-  document.head.appendChild(linkElement);
+  // Update favicon links
+  initializeFavicon();
   
   return logoUrl;
 };
@@ -105,30 +75,46 @@ export const initializeFavicon = () => {
   try {
     const { absolute: logoUrl } = getLogoUrl(false);
     
-    // Remove any existing favicon links
-    const existingIcons = document.querySelectorAll('link[rel="icon"], link[rel="shortcut icon"], link[rel="apple-touch-icon"]');
+    // Remove any existing favicon links - more aggressive approach
+    const existingIcons = document.querySelectorAll('link[rel^="icon"], link[rel="shortcut icon"], link[rel="apple-touch-icon"]');
+    console.log('Removing existing favicons:', existingIcons.length);
     existingIcons.forEach(icon => icon.remove());
     
-    // Create new favicon links
+    // Override favicon.ico with a clearer priority
     const favIcon = document.createElement('link');
     favIcon.rel = 'icon';
     favIcon.href = logoUrl;
     favIcon.type = 'image/png';
-    document.head.appendChild(favIcon);
+    // Add higher priority by inserting at the beginning of head
+    document.head.insertBefore(favIcon, document.head.firstChild);
     
     const shortcutIcon = document.createElement('link');
     shortcutIcon.rel = 'shortcut icon';
     shortcutIcon.href = logoUrl;
     shortcutIcon.type = 'image/png';
-    document.head.appendChild(shortcutIcon);
+    document.head.insertBefore(shortcutIcon, document.head.firstChild);
     
     const appleIcon = document.createElement('link');
     appleIcon.rel = 'apple-touch-icon';
     appleIcon.href = logoUrl;
-    document.head.appendChild(appleIcon);
+    document.head.insertBefore(appleIcon, document.head.firstChild);
+    
+    // Create a mask icon to override any default favicon
+    const maskIcon = document.createElement('link');
+    maskIcon.rel = 'mask-icon';
+    maskIcon.href = logoUrl;
+    document.head.insertBefore(maskIcon, document.head.firstChild);
+    
+    // Try to override favicon.ico directly with a link
+    const faviconIco = document.createElement('link');
+    faviconIco.rel = 'icon';
+    faviconIco.href = logoUrl;
+    faviconIco.type = 'image/x-icon';
+    document.head.insertBefore(faviconIco, document.head.firstChild);
     
     console.log('Favicon initialized successfully with:', logoUrl);
   } catch (error) {
     console.error('Error initializing favicon:', error);
   }
 };
+

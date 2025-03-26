@@ -2,7 +2,12 @@
 import { createRoot } from 'react-dom/client'
 import App from './App.tsx'
 import './index.css'
-import { updateSocialMetaTags, blockHeartIcon, enforceOurFavicon, scanAndRemoveHeartIcons } from './utils/metaTagManager'
+import { 
+  updateSocialMetaTags, 
+  blockHeartIcon, 
+  enforceOurFavicon, 
+  scanAndRemoveHeartIcons 
+} from './utils/metaTagManager'
 
 // Function to ensure our meta tags and favicon are set
 const ensureOurBranding = () => {

@@ -42,10 +42,10 @@ export function Logo({ className, withGlow = true, showText = true, showSlogan =
     const element = e.target as HTMLImageElement;
     
     // При ошибке загрузки пробуем другой источник
-    if (element.src !== LOGO_URL) {
-      element.src = LOGO_URL;
-    } else if (element.src !== LOGO_BASE64) {
+    if (element.src.includes(LOGO_URL)) {
       element.src = LOGO_BASE64;
+    } else if (!element.src.includes(LOGO_BASE64)) {
+      element.src = LOGO_URL;
     }
   };
   

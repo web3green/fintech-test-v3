@@ -95,10 +95,11 @@ Document.prototype.createElement = function(tagName) {
 
 // Также перехватываем appendChild для предотвращения добавления нежелательных элементов
 const originalAppendChild = Node.prototype.appendChild;
-Node.prototype.appendChild = function(child) {
+Node.prototype.appendChild = function<T extends Node>(child: T): T {
   if (child.nodeName === 'LINK') {
-    const rel = child.rel || '';
-    const href = child.href || '';
+    const linkElement = child as unknown as HTMLLinkElement;
+    const rel = linkElement.rel || '';
+    const href = linkElement.href || '';
     if (rel.includes('icon') && (
       href.includes('heart') || 
       href.includes('favicon.ico') ||
@@ -110,7 +111,8 @@ Node.prototype.appendChild = function(child) {
     }
   }
   if (child.nodeName === 'SCRIPT') {
-    const src = child.src || '';
+    const scriptElement = child as unknown as HTMLScriptElement;
+    const src = scriptElement.src || '';
     if (src.includes('gpteng') || 
         src.includes('gptengineer') ||
         src.includes('engine')) {

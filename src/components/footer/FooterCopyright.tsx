@@ -1,6 +1,6 @@
 
 import { useState } from 'react';
-import { Check } from 'lucide-react'; // Changed from Heart to Check
+import { Check } from 'lucide-react'; // Using Check icon instead of Heart
 import { useLanguage } from '@/contexts/LanguageContext';
 import { PrivacyPolicyDialog } from './PrivacyPolicyDialog';
 import { TermsOfServiceDialog } from './TermsOfServiceDialog';
@@ -20,7 +20,7 @@ export function FooterCopyright({ scrollToTop }: FooterCopyrightProps) {
     <div className="border-t border-gray-200 dark:border-gray-800 mt-8 pt-8">
       <div className="flex flex-col md:flex-row justify-between items-center">
         <div className="flex items-center mb-4 md:mb-0">
-          <Check className="h-4 w-4 text-green-500 mr-2" /> {/* Changed from Heart to Check */}
+          <Check className="h-4 w-4 text-green-500 mr-2" /> {/* Using Check icon instead of Heart */}
           <p className="text-muted-foreground text-sm">
             © {currentYear} <span className="text-foreground dark:text-foreground">FinTechAssist</span>. {t('footer.rights')}
           </p>

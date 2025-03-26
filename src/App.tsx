@@ -12,11 +12,13 @@ import { updateSocialMetaTags, blockHeartIcon, enforceOurFavicon, scanAndRemoveH
 
 const queryClient = new QueryClient();
 
-// Enhanced component for managing meta tags
+// Enhanced component for managing meta tags - let's add more logging for debugging
 const MetaTagUpdater = () => {
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   
   useEffect(() => {
+    console.log('MetaTagUpdater mounted - setting up watchers');
+    
     // Initial update and block heart icon
     updateSocialMetaTags();
     blockHeartIcon();
@@ -25,6 +27,7 @@ const MetaTagUpdater = () => {
     
     // Set up interval for continuous updates (every 500ms)
     intervalRef.current = setInterval(() => {
+      console.log('MetaTagUpdater interval check');
       updateSocialMetaTags();
       blockHeartIcon();
       enforceOurFavicon();
@@ -44,6 +47,7 @@ const MetaTagUpdater = () => {
     // Also update on visibility change (tab focus)
     const handleVisibilityChange = () => {
       if (document.visibilityState === 'visible') {
+        console.log('Tab became visible - updating branding');
         // Update multiple times when tab becomes visible
         updateSocialMetaTags();
         blockHeartIcon();
@@ -66,6 +70,7 @@ const MetaTagUpdater = () => {
     
     // Also update on network status change
     window.addEventListener('online', () => {
+      console.log('Network came online - updating branding');
       updateSocialMetaTags();
       blockHeartIcon();
       enforceOurFavicon();
@@ -74,6 +79,7 @@ const MetaTagUpdater = () => {
     
     // Clean up interval on unmount
     return () => {
+      console.log('MetaTagUpdater unmounting - cleaning up');
       if (intervalRef.current) clearInterval(intervalRef.current);
       document.removeEventListener('visibilitychange', handleVisibilityChange);
       window.removeEventListener('online', updateSocialMetaTags);
@@ -86,6 +92,8 @@ const MetaTagUpdater = () => {
 const App = () => {
   // Check and apply saved theme on initial load
   useEffect(() => {
+    console.log('App component mounted - initial branding setup');
+    
     const savedTheme = localStorage.getItem('theme');
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
     
@@ -119,11 +127,20 @@ const App = () => {
           mutation.addedNodes.forEach(node => {
             if (node.nodeType === Node.ELEMENT_NODE) {
               const element = node as Element;
+              
+              // Look for any newly added favicon links
               if (
                 element.tagName === 'LINK' && 
                 element.getAttribute('rel')?.includes('icon') &&
                 !element.getAttribute('href')?.includes('6bfd57a2-6c6a-4507-bb1d-2cde1517ebd1')
               ) {
+                console.log('Detected non-FinTechAssist favicon:', element.getAttribute('href'));
+                needsUpdate = true;
+              }
+              
+              // Look for any SVG elements that might contain heart paths
+              if (element.tagName === 'SVG') {
+                console.log('New SVG element detected - checking for heart paths');
                 needsUpdate = true;
               }
             }
@@ -132,6 +149,7 @@ const App = () => {
       });
       
       if (needsUpdate) {
+        console.log('DOM mutations detected - updating branding');
         updateSocialMetaTags();
         blockHeartIcon();
         enforceOurFavicon();
@@ -139,12 +157,12 @@ const App = () => {
       }
     });
     
-    // Start observing the document
+    // Start observing the document with all possible options for maximum detection
     observer.observe(document, {
       childList: true,
       subtree: true,
       attributes: true,
-      attributeFilter: ['rel', 'href']
+      attributeFilter: ['rel', 'href', 'src', 'class', 'id']
     });
     
     // Clean up observer on unmount

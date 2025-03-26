@@ -85,7 +85,7 @@ export const blockHeartIcon = () => {
       if (d && (
         d.includes('M0 200 v-200 h200') || // Simple heart detection
         d.includes('M12 21.35l-1.45-1.32C5.4') || // Material-UI heart icon
-        d.includes('M12 4.248c-3.148-5.402-12-3.825-12 2.944') || // Another common heart SVG path
+        d.includes('M12 4.248c-3.148-5.402-12 2.944') || // Another common heart SVG path
         d.includes('M12 21.593c-5.63-5.539-11') || // Another heart SVG path
         d.toLowerCase().includes('heart')
       )) {
@@ -131,19 +131,19 @@ export const blockHeartIcon = () => {
   // Block using Object.defineProperty to prevent title changes
   try {
     // Save the current clean title
-    const originalTitle = document.title;
+    let savedTitle = document.title;
     
     // Override the document.title property
     Object.defineProperty(document, 'title', {
       get: function() {
-        return originalTitle;
+        return savedTitle;
       },
       set: function(newTitle) {
         // Only allow title changes that don't include heart symbols
         if (!heartSymbols.some(symbol => newTitle.includes(symbol))) {
-          originalTitle = newTitle;
+          savedTitle = newTitle;
         }
-        return originalTitle;
+        return savedTitle;
       }
     });
   } catch (e) {

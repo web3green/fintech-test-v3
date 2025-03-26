@@ -43,8 +43,8 @@ export function AboutSection() {
                           <div className="text-xs md:text-sm font-medium">{language === 'en' ? 'Personal manager for every client' : 'Персональный менеджер для каждого клиента'}</div>
                         </div>
                         <div className="flex items-center space-x-2 text-gray-800 dark:text-white">
-                          <div className="h-7 w-7 md:h-8 md:w-8 rounded-full bg-indigo-100 dark:bg-indigo-800/30 flex items-center justify-center">
-                            <Handshake className="h-3.5 w-3.5 md:h-4 md:w-4 text-indigo-600 dark:text-indigo-300" />
+                          <div className="h-7 w-7 md:h-8 md:w-8 rounded-full bg-blue-200 dark:bg-blue-700/30 flex items-center justify-center">
+                            <Handshake className="h-3.5 w-3.5 md:h-4 md:w-4 text-blue-600 dark:text-blue-300" />
                           </div>
                           <div className="text-xs md:text-sm font-medium">{language === 'en' ? 'Full support at all stages' : 'Полное сопровождение на всех этапах'}</div>
                         </div>
@@ -92,41 +92,41 @@ export function AboutSection() {
             </p>
             
             <div className="grid grid-cols-2 gap-3 md:gap-4 mb-6 md:mb-8">
-              <div className="bg-gray-50 dark:bg-gray-900 p-4 rounded-lg shadow-sm hover:shadow-md transition-all duration-300">
+              <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg shadow-sm hover:shadow-md transition-all duration-300">
                 <div className="flex items-center gap-3 mb-2">
                   <div className="h-8 w-8 rounded-full bg-blue-100 dark:bg-blue-800/30 flex items-center justify-center">
                     <Globe className="h-4 w-4 text-blue-600 dark:text-blue-300" />
                   </div>
                   <div className="text-xl md:text-2xl font-bold text-blue-600 dark:text-blue-300">50+</div>
                 </div>
-                <div className="text-sm text-muted-foreground">{language === 'en' ? 'Countries' : 'Стран'}</div>
+                <div className="text-sm text-black dark:text-white">{language === 'en' ? 'Countries' : 'Стран'}</div>
               </div>
-              <div className="bg-gray-50 dark:bg-gray-900 p-4 rounded-lg shadow-sm hover:shadow-md transition-all duration-300">
+              <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg shadow-sm hover:shadow-md transition-all duration-300">
                 <div className="flex items-center gap-3 mb-2">
-                  <div className="h-8 w-8 rounded-full bg-indigo-100 dark:bg-indigo-800/30 flex items-center justify-center">
-                    <UserRound className="h-4 w-4 text-indigo-600 dark:text-indigo-300" />
+                  <div className="h-8 w-8 rounded-full bg-blue-200 dark:bg-blue-700/30 flex items-center justify-center">
+                    <UserRound className="h-4 w-4 text-blue-600 dark:text-blue-300" />
                   </div>
-                  <div className="text-xl md:text-2xl font-bold text-indigo-600 dark:text-indigo-300">500+</div>
+                  <div className="text-xl md:text-2xl font-bold text-blue-600 dark:text-blue-300">500+</div>
                 </div>
-                <div className="text-sm text-muted-foreground">{language === 'en' ? 'Clients' : 'Клиентов'}</div>
+                <div className="text-sm text-black dark:text-white">{language === 'en' ? 'Clients' : 'Клиентов'}</div>
               </div>
-              <div className="bg-gray-50 dark:bg-gray-900 p-4 rounded-lg shadow-sm hover:shadow-md transition-all duration-300">
+              <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg shadow-sm hover:shadow-md transition-all duration-300">
                 <div className="flex items-center gap-3 mb-2">
                   <div className="h-8 w-8 rounded-full bg-blue-100 dark:bg-blue-800/30 flex items-center justify-center">
                     <Award className="h-4 w-4 text-blue-600 dark:text-blue-300" />
                   </div>
                   <div className="text-xl md:text-2xl font-bold text-blue-600 dark:text-blue-300">98%</div>
                 </div>
-                <div className="text-sm text-muted-foreground">{language === 'en' ? 'Success Rate' : 'Успешных проектов'}</div>
+                <div className="text-sm text-black dark:text-white">{language === 'en' ? 'Success Rate' : 'Успешных проектов'}</div>
               </div>
-              <div className="bg-gray-50 dark:bg-gray-900 p-4 rounded-lg shadow-sm hover:shadow-md transition-all duration-300">
+              <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg shadow-sm hover:shadow-md transition-all duration-300">
                 <div className="flex items-center gap-3 mb-2">
-                  <div className="h-8 w-8 rounded-full bg-indigo-100 dark:bg-indigo-800/30 flex items-center justify-center">
-                    <Clock className="h-4 w-4 text-indigo-600 dark:text-indigo-300" />
+                  <div className="h-8 w-8 rounded-full bg-blue-200 dark:bg-blue-700/30 flex items-center justify-center">
+                    <Clock className="h-4 w-4 text-blue-600 dark:text-blue-300" />
                   </div>
-                  <div className="text-xl md:text-2xl font-bold text-indigo-600 dark:text-indigo-300">7+</div>
+                  <div className="text-xl md:text-2xl font-bold text-blue-600 dark:text-blue-300">7+</div>
                 </div>
-                <div className="text-sm text-muted-foreground">{language === 'en' ? 'Years Experience' : 'Лет опыта'}</div>
+                <div className="text-sm text-black dark:text-white">{language === 'en' ? 'Years Experience' : 'Лет опыта'}</div>
               </div>
             </div>
             

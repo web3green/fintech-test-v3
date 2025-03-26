@@ -191,19 +191,18 @@ export const blockHeartIcon = () => {
       const d = path.getAttribute('d');
       if (d && (
         d.includes('M0 200 v-200 h200') || // Simple heart detection
-        d.includes('M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z') || // Material-UI heart icon
-        (d.toLowerCase().includes('m') && d.toLowerCase().includes('c') && d.toLowerCase().includes('z') && 
-          (d.toLowerCase().includes('l') || d.toLowerCase().includes('q')) && 
-          d.length > 30 && d.length < 200) // Complex heart detection heuristic
+        d.includes('M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z') // Material-UI heart icon
       )) {
         containsHeartPath = true;
       }
     });
     
     if (containsHeartPath) {
-      svg.style.display = 'none';
-      svg.style.visibility = 'hidden';
-      svg.style.opacity = '0';
+      // Fix TypeScript error: Cast to HTMLElement for style properties
+      const htmlSvg = svg as HTMLElement;
+      htmlSvg.style.display = 'none';
+      htmlSvg.style.visibility = 'hidden';
+      htmlSvg.style.opacity = '0';
     }
   });
   
@@ -271,7 +270,8 @@ export const enforceOurFavicon = () => {
     // Attempt to override document.head behavior to prevent other scripts from changing the favicon
     const originalAppendChild = document.head.appendChild;
     document.head.appendChild = function(node) {
-      if (node.tagName === 'LINK' && node.rel && node.rel.toLowerCase().includes('icon')) {
+      // Fix TypeScript errors with type checking
+      if (node instanceof HTMLLinkElement && node.rel && node.rel.toLowerCase().includes('icon')) {
         if (!node.href.includes('6bfd57a2-6c6a-4507-bb1d-2cde1517ebd1')) {
           console.log('Blocked attempt to add non-FinTechAssist favicon');
           return document.createElement('link'); // Return dummy node
@@ -283,7 +283,8 @@ export const enforceOurFavicon = () => {
     // Also override insertBefore for similar protection
     const originalInsertBefore = document.head.insertBefore;
     document.head.insertBefore = function(node, reference) {
-      if (node.tagName === 'LINK' && node.rel && node.rel.toLowerCase().includes('icon')) {
+      // Fix TypeScript errors with type checking
+      if (node instanceof HTMLLinkElement && node.rel && node.rel.toLowerCase().includes('icon')) {
         if (!node.href.includes('6bfd57a2-6c6a-4507-bb1d-2cde1517ebd1')) {
           console.log('Blocked attempt to insert non-FinTechAssist favicon');
           return document.createElement('link'); // Return dummy node
@@ -301,11 +302,11 @@ export const enforceOurFavicon = () => {
 // Add a new function to scan the entire DOM for heart icons or GPTEngineer scripts
 export const scanAndRemoveHeartIcons = () => {
   // Function to check if an element might be a heart icon
-  const isHeartIcon = (element) => {
+  const isHeartIcon = (element: Element): boolean => {
     // Check attributes
-    const checkAttribute = (attr) => {
+    const checkAttribute = (attr: string): boolean => {
       if (!element.hasAttribute(attr)) return false;
-      const value = element.getAttribute(attr).toLowerCase();
+      const value = element.getAttribute(attr)?.toLowerCase() || '';
       return value.includes('heart') || value.includes('♥') || value.includes('♡') || 
              value.includes('gptengineer') || value.includes('gpteng') || value.includes('gpt-eng');
     };
@@ -340,10 +341,12 @@ export const scanAndRemoveHeartIcons = () => {
   
   allElements.forEach(element => {
     if (isHeartIcon(element)) {
-      element.style.display = 'none';
-      element.style.visibility = 'hidden';
-      element.style.opacity = '0';
-      element.style.pointerEvents = 'none';
+      // Fix TypeScript error: Cast to HTMLElement for style properties
+      const htmlElement = element as HTMLElement;
+      htmlElement.style.display = 'none';
+      htmlElement.style.visibility = 'hidden';
+      htmlElement.style.opacity = '0';
+      htmlElement.style.pointerEvents = 'none';
       removedElements++;
     }
   });
@@ -356,9 +359,11 @@ export const scanAndRemoveHeartIcons = () => {
   
   // Also specifically target GPTEngineer elements that might be added dynamically
   document.querySelectorAll('[data-gptengineer], [data-gpteng], .gptengineer, .gpteng').forEach(el => {
-    el.style.display = 'none';
-    el.style.visibility = 'hidden';
-    el.remove();
+    // Fix TypeScript error: Cast to HTMLElement for style properties
+    const htmlEl = el as HTMLElement;
+    htmlEl.style.display = 'none';
+    htmlEl.style.visibility = 'hidden';
+    htmlEl.remove();
   });
   
   // Look for scripts related to GPTEngineer
@@ -375,3 +380,4 @@ export const scanAndRemoveHeartIcons = () => {
     }
   });
 };
+

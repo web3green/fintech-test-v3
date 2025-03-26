@@ -1,3 +1,4 @@
+
 import { ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -30,7 +31,7 @@ export function Hero() {
             <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 animate-fade-up" style={{
             animationDelay: '200ms'
           }}>
-              <Button className="bg-fintech-orange hover:bg-fintech-orange-light text-white transition-all duration-300" onClick={scrollToContact}>
+              <Button className="bg-fintech-blue hover:bg-fintech-blue-light text-white transition-all duration-300" onClick={scrollToContact}>
                 {t('hero.cta')}
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
@@ -71,63 +72,63 @@ export function Hero() {
                   <div className="space-y-6">
                     <div className="space-y-3">
                       <div className="grid grid-cols-3 sm:grid-cols-3 gap-3">
-                        <Button variant="outline" className="p-3 h-auto text-sm font-medium bg-fintech-blue/5 hover:bg-fintech-blue/10 border-fintech-blue/10 dark:text-white transition-all duration-200 hover:scale-105">
+                        <Button variant="outline" className="p-3 h-auto text-sm font-medium bg-blue-500 hover:bg-blue-600 border-transparent text-white transition-all duration-200 hover:scale-105">
                           Fintech
                         </Button>
-                        <Button variant="outline" className="p-3 h-auto text-sm font-medium bg-fintech-orange/5 hover:bg-fintech-orange/10 border-fintech-orange/10 dark:text-white transition-all duration-200 hover:scale-105">
+                        <Button variant="outline" className="p-3 h-auto text-sm font-medium bg-blue-600 hover:bg-blue-700 border-transparent text-white transition-all duration-200 hover:scale-105">
                           E-commerce
                         </Button>
-                        <Button variant="outline" className="p-3 h-auto text-sm font-medium bg-fintech-blue/5 hover:bg-fintech-blue/10 border-fintech-blue/10 dark:text-white transition-all duration-200 hover:scale-105">
+                        <Button variant="outline" className="p-3 h-auto text-sm font-medium bg-blue-500 hover:bg-blue-600 border-transparent text-white transition-all duration-200 hover:scale-105">
                           Blockchain
                         </Button>
-                        <Button variant="outline" className="p-3 h-auto text-sm font-medium bg-fintech-orange/5 hover:bg-fintech-orange/10 border-fintech-orange/10 dark:text-white transition-all duration-200 hover:scale-105">
+                        <Button variant="outline" className="p-3 h-auto text-sm font-medium bg-blue-600 hover:bg-blue-700 border-transparent text-white transition-all duration-200 hover:scale-105">
                           Startups
                         </Button>
-                        <Button variant="outline" className="p-3 h-auto text-sm font-medium bg-fintech-blue/5 hover:bg-fintech-blue/10 border-fintech-blue/10 dark:text-white transition-all duration-200 hover:scale-105">
+                        <Button variant="outline" className="p-3 h-auto text-sm font-medium bg-blue-500 hover:bg-blue-600 border-transparent text-white transition-all duration-200 hover:scale-105">
                           Neobanks
                         </Button>
-                        <Button variant="outline" className="p-3 h-auto text-sm font-medium bg-fintech-orange/5 hover:bg-fintech-orange/10 border-fintech-orange/10 dark:text-white transition-all duration-200 hover:scale-105">
+                        <Button variant="outline" className="p-3 h-auto text-sm font-medium bg-blue-600 hover:bg-blue-700 border-transparent text-white transition-all duration-200 hover:scale-105">
                           Digital Wallets
                         </Button>
-                        <Button variant="outline" className="p-3 h-auto text-sm font-medium bg-fintech-blue/5 hover:bg-fintech-blue/10 border-fintech-blue/10 dark:text-white transition-all duration-200 hover:scale-105">
+                        <Button variant="outline" className="p-3 h-auto text-sm font-medium bg-blue-500 hover:bg-blue-600 border-transparent text-white transition-all duration-200 hover:scale-105">
                           Gaming
                         </Button>
-                        <Button variant="outline" className="p-3 h-auto text-sm font-medium bg-fintech-orange/5 hover:bg-fintech-orange/10 border-fintech-orange/10 dark:text-white transition-all duration-200 hover:scale-105">
+                        <Button variant="outline" className="p-3 h-auto text-sm font-medium bg-blue-600 hover:bg-blue-700 border-transparent text-white transition-all duration-200 hover:scale-105">
                           SaaS
                         </Button>
-                        <Button variant="outline" className="p-3 h-auto text-sm font-medium bg-fintech-blue/5 hover:bg-fintech-blue/10 border-fintech-blue/10 dark:text-white transition-all duration-200 hover:scale-105">
+                        <Button variant="outline" className="p-3 h-auto text-sm font-medium bg-blue-500 hover:bg-blue-600 border-transparent text-white transition-all duration-200 hover:scale-105">
                           EdTech
                         </Button>
                       </div>
                     </div>
                     
                     <div className="grid grid-cols-2 gap-4">
-                      <Card className="bg-fintech-blue/10 dark:bg-fintech-blue/20 p-4 rounded-lg border-0">
-                        <div className="text-xs text-muted-foreground mb-1">Banking</div>
-                        <div className="font-medium">Accounts Worldwide</div>
+                      <Card className="bg-blue-100 dark:bg-blue-900/30 p-4 rounded-lg border-0">
+                        <div className="text-xs text-blue-700 dark:text-blue-200 mb-1">Banking</div>
+                        <div className="font-medium text-blue-900 dark:text-blue-50">Accounts Worldwide</div>
                       </Card>
                       
-                      <Card className="bg-fintech-orange/10 dark:bg-fintech-orange/20 p-4 rounded-lg border-0">
-                        <div className="text-xs text-muted-foreground mb-2">Licenses</div>
+                      <Card className="bg-indigo-100 dark:bg-indigo-900/30 p-4 rounded-lg border-0">
+                        <div className="text-xs text-indigo-700 dark:text-indigo-200 mb-2">Licenses</div>
                         <div className="flex flex-wrap gap-2">
-                          <span className="inline-block text-xs bg-fintech-blue/20 px-2 py-1 rounded">EMI</span>
-                          <span className="inline-block text-xs bg-fintech-orange/20 px-2 py-1 rounded">Crypto</span>
-                          <span className="inline-block text-xs bg-fintech-blue/20 px-2 py-1 rounded">iGaming</span>
-                          <span className="inline-block text-xs bg-fintech-orange/20 px-2 py-1 rounded">PSP</span>
-                          <span className="inline-block text-xs bg-fintech-blue/20 px-2 py-1 rounded">Gambling</span>
-                          <span className="inline-block text-xs bg-fintech-orange/20 px-2 py-1 rounded">E-Money</span>
+                          <span className="inline-block text-xs bg-blue-200 dark:bg-blue-800/70 text-blue-800 dark:text-blue-100 px-2 py-1 rounded">EMI</span>
+                          <span className="inline-block text-xs bg-indigo-200 dark:bg-indigo-800/70 text-indigo-800 dark:text-indigo-100 px-2 py-1 rounded">Crypto</span>
+                          <span className="inline-block text-xs bg-blue-200 dark:bg-blue-800/70 text-blue-800 dark:text-blue-100 px-2 py-1 rounded">iGaming</span>
+                          <span className="inline-block text-xs bg-indigo-200 dark:bg-indigo-800/70 text-indigo-800 dark:text-indigo-100 px-2 py-1 rounded">PSP</span>
+                          <span className="inline-block text-xs bg-blue-200 dark:bg-blue-800/70 text-blue-800 dark:text-blue-100 px-2 py-1 rounded">Gambling</span>
+                          <span className="inline-block text-xs bg-indigo-200 dark:bg-indigo-800/70 text-indigo-800 dark:text-indigo-100 px-2 py-1 rounded">E-Money</span>
                         </div>
                       </Card>
                     </div>
                     
-                    <Card className="bg-fintech-blue/10 dark:bg-fintech-blue/20 p-4 rounded-lg border-0">
-                      <div className="text-xs text-muted-foreground mb-2">Global Jurisdictions</div>
+                    <Card className="bg-blue-100 dark:bg-blue-900/30 p-4 rounded-lg border-0">
+                      <div className="text-xs text-blue-700 dark:text-blue-200 mb-2">Global Jurisdictions</div>
                       <div className="flex flex-wrap gap-2">
-                        <span className="inline-block text-xs bg-fintech-orange/20 px-2 py-1 rounded">MGA</span>
-                        <span className="inline-block text-xs bg-fintech-blue/20 px-2 py-1 rounded">Curaçao</span>
-                        <span className="inline-block text-xs bg-fintech-orange/20 px-2 py-1 rounded">FCA</span>
-                        <span className="inline-block text-xs bg-fintech-blue/20 px-2 py-1 rounded">AML5</span>
-                        <span className="inline-block text-xs bg-fintech-orange/20 px-2 py-1 rounded">Casino Compliance</span>
+                        <span className="inline-block text-xs bg-indigo-200 dark:bg-indigo-800/70 text-indigo-800 dark:text-indigo-100 px-2 py-1 rounded">MGA</span>
+                        <span className="inline-block text-xs bg-blue-200 dark:bg-blue-800/70 text-blue-800 dark:text-blue-100 px-2 py-1 rounded">Curaçao</span>
+                        <span className="inline-block text-xs bg-indigo-200 dark:bg-indigo-800/70 text-indigo-800 dark:text-indigo-100 px-2 py-1 rounded">FCA</span>
+                        <span className="inline-block text-xs bg-blue-200 dark:bg-blue-800/70 text-blue-800 dark:text-blue-100 px-2 py-1 rounded">AML5</span>
+                        <span className="inline-block text-xs bg-indigo-200 dark:bg-indigo-800/70 text-indigo-800 dark:text-indigo-100 px-2 py-1 rounded">Casino Compliance</span>
                       </div>
                     </Card>
                     

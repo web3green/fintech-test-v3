@@ -30,9 +30,9 @@ export function ServicesSection() {
       description: t('services.company-formation.short'),
       details: t('services.company-formation.details'),
       icon: Building,
-      color: 'bg-blue-50 dark:bg-blue-900/30',
-      iconColor: 'text-blue-600 dark:text-blue-400',
-      borderColor: 'border-blue-200 dark:border-blue-800/50',
+      color: 'bg-blue-50 dark:bg-blue-950',
+      iconColor: 'text-fintech-blue dark:text-fintech-blue-light',
+      borderColor: 'border-fintech-blue/20',
     },
     {
       id: 'financial-licensing',
@@ -40,9 +40,9 @@ export function ServicesSection() {
       description: t('services.financial-licensing.short'),
       details: t('services.financial-licensing.details'),
       icon: Landmark,
-      color: 'bg-blue-100/80 dark:bg-blue-950/40',
-      iconColor: 'text-blue-700 dark:text-blue-300',
-      borderColor: 'border-blue-200 dark:border-blue-800/50',
+      color: 'bg-orange-50 dark:bg-orange-950',
+      iconColor: 'text-fintech-orange dark:text-fintech-orange-light',
+      borderColor: 'border-fintech-orange/20',
     },
     {
       id: 'crypto-regulation',
@@ -50,9 +50,9 @@ export function ServicesSection() {
       description: t('services.crypto-regulation.short'),
       details: t('services.crypto-regulation.details'),
       icon: Wallet,
-      color: 'bg-blue-50 dark:bg-blue-900/30',
-      iconColor: 'text-blue-600 dark:text-blue-400',
-      borderColor: 'border-blue-200 dark:border-blue-800/50',
+      color: 'bg-purple-50 dark:bg-purple-950',
+      iconColor: 'text-purple-500',
+      borderColor: 'border-purple-500/20',
     },
     {
       id: 'gambling-licensing',
@@ -60,9 +60,9 @@ export function ServicesSection() {
       description: t('services.gambling-licensing.short'),
       details: t('services.gambling-licensing.details'),
       icon: Gamepad,
-      color: 'bg-blue-100/80 dark:bg-blue-950/40',
-      iconColor: 'text-blue-700 dark:text-blue-300',
-      borderColor: 'border-blue-200 dark:border-blue-800/50',
+      color: 'bg-emerald-50 dark:bg-emerald-950',
+      iconColor: 'text-emerald-500',
+      borderColor: 'border-emerald-500/20',
     },
     {
       id: 'payment-solutions',
@@ -70,9 +70,9 @@ export function ServicesSection() {
       description: t('services.payment-solutions.short'),
       details: t('services.payment-solutions.details'),
       icon: CreditCard,
-      color: 'bg-blue-50 dark:bg-blue-900/30',
-      iconColor: 'text-blue-600 dark:text-blue-400',
-      borderColor: 'border-blue-200 dark:border-blue-800/50',
+      color: 'bg-blue-50 dark:bg-blue-950',
+      iconColor: 'text-fintech-blue dark:text-fintech-blue-light',
+      borderColor: 'border-fintech-blue/20',
     },
     {
       id: 'fiat-crypto',
@@ -80,9 +80,9 @@ export function ServicesSection() {
       description: t('services.fiat-crypto.short'),
       details: t('services.fiat-crypto.details'),
       icon: Banknote,
-      color: 'bg-blue-100/80 dark:bg-blue-950/40',
-      iconColor: 'text-blue-700 dark:text-blue-300',
-      borderColor: 'border-blue-200 dark:border-blue-800/50',
+      color: 'bg-purple-50 dark:bg-purple-950',
+      iconColor: 'text-purple-500',
+      borderColor: 'border-purple-500/20',
     },
     {
       id: 'tax-planning',
@@ -90,9 +90,9 @@ export function ServicesSection() {
       description: t('services.tax-planning.short'),
       details: t('services.tax-planning.details'),
       icon: BarChart3,
-      color: 'bg-blue-50 dark:bg-blue-900/30',
-      iconColor: 'text-blue-600 dark:text-blue-400',
-      borderColor: 'border-blue-200 dark:border-blue-800/50',
+      color: 'bg-orange-50 dark:bg-orange-950',
+      iconColor: 'text-fintech-orange dark:text-fintech-orange-light',
+      borderColor: 'border-fintech-orange/20',
     },
     {
       id: 'investment',
@@ -100,9 +100,9 @@ export function ServicesSection() {
       description: t('services.investment.short'),
       details: t('services.investment.details'),
       icon: Briefcase,
-      color: 'bg-blue-100/80 dark:bg-blue-950/40',
-      iconColor: 'text-blue-700 dark:text-blue-300',
-      borderColor: 'border-blue-200 dark:border-blue-800/50',
+      color: 'bg-purple-50 dark:bg-purple-950',
+      iconColor: 'text-purple-500',
+      borderColor: 'border-purple-500/20',
     },
     {
       id: 'nominee',
@@ -110,9 +110,9 @@ export function ServicesSection() {
       description: t('services.nominee.short'),
       details: t('services.nominee.details'),
       icon: Shield,
-      color: 'bg-blue-50 dark:bg-blue-900/30',
-      iconColor: 'text-blue-600 dark:text-blue-400',
-      borderColor: 'border-blue-200 dark:border-blue-800/50',
+      color: 'bg-emerald-50 dark:bg-emerald-950',
+      iconColor: 'text-emerald-500',
+      borderColor: 'border-emerald-500/20',
     },
   ];
 
@@ -120,8 +120,8 @@ export function ServicesSection() {
     <section id="services" className="section-padding bg-gray-50 dark:bg-gray-900">
       <div className="container mx-auto px-8 md:px-12 lg:px-16">
         <div className="max-w-3xl mx-auto text-center mb-16 animate-fade-up">
-          <div className="inline-flex items-center rounded-full px-3 py-1 text-sm font-medium bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300 mb-4">
-            <span className="flex h-2 w-2 rounded-full bg-blue-600 dark:bg-blue-400 mr-2"></span>
+          <div className="inline-flex items-center rounded-full px-3 py-1 text-sm font-medium bg-fintech-blue/10 text-fintech-blue dark:bg-fintech-blue/20 dark:text-fintech-blue-light mb-4">
+            <span className="flex h-2 w-2 rounded-full bg-fintech-blue mr-2"></span>
             {t('services.badge')}
           </div>
           <h2 className="text-3xl md:text-4xl font-display font-bold mb-6">
@@ -187,7 +187,7 @@ export function ServicesSection() {
                           <Button 
                             variant="outline" 
                             size="sm"
-                            className="text-xs w-full text-fintech-orange border-fintech-orange hover:bg-fintech-orange/10"
+                            className={`text-xs w-full ${service.iconColor} border-${service.iconColor}`}
                             onClick={(e) => {
                               e.stopPropagation();
                               // Instead of navigation, we can scroll to contact form

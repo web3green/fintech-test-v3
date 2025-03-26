@@ -32,7 +32,7 @@ export function Hero() {
             animationDelay: '200ms'
           }}>
               <Button className="bg-fintech-blue hover:bg-fintech-blue-light text-white transition-all duration-300" onClick={scrollToContact}>
-                {t('hero.cta')}
+                {t('cta.getStarted')}
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
               <Button variant="outline" className="border-fintech-blue/20 text-fintech-blue hover:text-fintech-blue-dark dark:text-fintech-blue-light hover:bg-fintech-blue/5" onClick={() => {

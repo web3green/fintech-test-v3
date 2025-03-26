@@ -18,7 +18,7 @@ const translations = {
     'nav.services': 'Services',
     'nav.blog': 'Blog',
     'nav.contact': 'Contact',
-    'cta.getStarted': 'Get Started',
+    'cta.getStarted': 'Consultation',
     'cta.request': 'Submit Request',
     
     // Hero
@@ -120,7 +120,7 @@ const translations = {
     'nav.services': 'Услуги',
     'nav.blog': 'Блог',
     'nav.contact': 'Контакты',
-    'cta.getStarted': 'Начать',
+    'cta.getStarted': 'Консультация',
     'cta.request': 'Оставить заявку',
     
     // Hero

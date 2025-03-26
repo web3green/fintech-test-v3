@@ -38,7 +38,7 @@ export function FooterContactInfo({ scrollToSection }: FooterContactInfoProps) {
             className="w-full mt-2 bg-fintech-blue hover:bg-fintech-blue-dark text-white"
             onClick={() => scrollToSection('contact')}
           >
-            {t('cta.request')}
+            {t('cta.getStarted')}
           </Button>
         </li>
       </ul>

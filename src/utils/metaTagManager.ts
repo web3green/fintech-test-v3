@@ -67,12 +67,15 @@ export const updateSocialMetaTags = () => {
   // Update favicon links
   const updateLinkHref = (rel: string, href: string) => {
     let link = document.querySelector(`link[rel="${rel}"]`);
-    if (link) {
-      link.setAttribute('href', href);
+    if (!link) {
+      link = document.createElement('link');
+      link.setAttribute('rel', rel);
+      document.head.appendChild(link);
     }
+    link.setAttribute('href', href);
   };
   
-  // Update favicon and apple-touch-icon
+  // Update favicon and apple-touch-icon with logo instead of heart icon
   updateLinkHref('icon', logoUrl);
   updateLinkHref('shortcut icon', logoUrl);
   updateLinkHref('apple-touch-icon', logoUrl);

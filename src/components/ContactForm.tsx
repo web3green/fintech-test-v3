@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -84,9 +83,9 @@ export function ContactForm() {
             
             <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
               <div className="text-center md:text-left">
-                <h3 className="text-2xl md:text-3xl font-display font-bold mb-2">{t('contact.instant.title') || 'Нужна консультация прямо сейчас?'}</h3>
+                <h3 className="text-2xl md:text-3xl font-display font-bold mb-2">{t('contact.instant.title')}</h3>
                 <p className="text-white/80 max-w-lg">
-                  {t('contact.instant.subtitle') || 'Свяжитесь с нашим специалистом через Telegram и получите мгновенную консультацию без ожидания.'}
+                  {t('contact.instant.subtitle')}
                 </p>
               </div>
               
@@ -97,7 +96,7 @@ export function ContactForm() {
                 className="flex items-center gap-2 bg-white text-fintech-blue font-medium px-6 py-3 rounded-full hover:bg-opacity-90 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-1"
               >
                 <MessageCircle className="h-5 w-5" />
-                <span>{t('contact.instant.button') || 'Написать в Telegram'}</span>
+                <span>{t('contact.instant.button')}</span>
               </a>
             </div>
           </div>

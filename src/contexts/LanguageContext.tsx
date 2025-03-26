@@ -1,4 +1,3 @@
-
 import React, { createContext, useState, useContext, useEffect, ReactNode } from 'react';
 
 type Language = 'en' | 'ru';
@@ -88,6 +87,10 @@ const translations = {
     'contact.subtitle': 'Leave a request and our specialist will contact you for a consultation on your issue.',
     'contact.email': 'Email',
     'contact.phone': 'Phone',
+    'contact.telegram': 'Telegram',
+    'contact.instant.title': 'Need Assistance Right Now?',
+    'contact.instant.subtitle': 'Connect with our company manager directly through Telegram messenger for immediate consultation and support.',
+    'contact.instant.button': 'Message on Telegram',
     'contact.form.title': 'Submit Request',
     'contact.form.name': 'Your Name',
     'contact.form.email': 'Email',
@@ -173,7 +176,7 @@ const translations = {
     
     'services.nominee.title': 'Номинальный сервис',
     'services.nominee.short': 'Профессиональные директора и акционеры для вашей компании',
-    'services.nominee.details': 'Предоставление профессиональных директоров и акционеров для вашей компании, обеспечивающих юридическое представительство и управление бизнесом при сохранении конфиденциальности реального владельца. Все услуги оказываются в строгом соответствии с международными правовыми нормами.',
+    'services.nominee.details': 'Предоставление профессиональных директоров и акционеров для вашей компании, обеспечивающих юридическое представительство и управление бизнесом при сохранении конфиденциальности р��ального владельца. Все услуги оказываются в строгом соответствии с международными правовыми нормами.',
     
     // Process
     'process.badge': 'Как это работает',
@@ -191,6 +194,10 @@ const translations = {
     'contact.subtitle': 'Оставьте заявку, и наш специалист свяжется с вами для консультации по вашему вопросу.',
     'contact.email': 'Электронная почта',
     'contact.phone': 'Телефон',
+    'contact.telegram': 'Телеграм',
+    'contact.instant.title': 'Нужна помощь прямо сейчас?',
+    'contact.instant.subtitle': 'Свяжитесь с менеджером компании напрямую через Телеграм для мгновенной консультации и поддержки.',
+    'contact.instant.button': 'Написать в Телеграм',
     'contact.form.title': 'Оставить заявку',
     'contact.form.name': 'Ваше имя',
     'contact.form.email': 'Электронная почта',

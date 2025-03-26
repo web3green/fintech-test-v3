@@ -1,3 +1,4 @@
+
 import { ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -110,12 +111,12 @@ export function Hero() {
                       <Card className="p-4 rounded-lg border-0 bg-blue-500">
                         <div className="text-xs text-white dark:text-white mb-2">Licenses</div>
                         <div className="flex flex-wrap gap-2">
-                          <span className="inline-block text-xs bg-blue-300 dark:bg-blue-700/70 text-black dark:text-white px-2 py-1 rounded">EMI</span>
-                          <span className="inline-block text-xs bg-blue-400 dark:bg-blue-700/70 text-black dark:text-white px-2 py-1 rounded">Crypto</span>
-                          <span className="inline-block text-xs bg-blue-300 dark:bg-blue-700/70 text-black dark:text-white px-2 py-1 rounded">iGaming</span>
-                          <span className="inline-block text-xs bg-blue-400 dark:bg-blue-700/70 text-black dark:text-white px-2 py-1 rounded">PSP</span>
-                          <span className="inline-block text-xs bg-blue-300 dark:bg-blue-700/70 text-black dark:text-white px-2 py-1 rounded">Gambling</span>
-                          <span className="inline-block text-xs bg-blue-400 dark:bg-blue-700/70 text-black dark:text-white px-2 py-1 rounded">E-Money</span>
+                          <span className="inline-block text-xs bg-blue-300 dark:bg-blue-700/70 text-white dark:text-white px-2 py-1 rounded">EMI</span>
+                          <span className="inline-block text-xs bg-blue-400 dark:bg-blue-700/70 text-white dark:text-white px-2 py-1 rounded">Crypto</span>
+                          <span className="inline-block text-xs bg-blue-300 dark:bg-blue-700/70 text-white dark:text-white px-2 py-1 rounded">iGaming</span>
+                          <span className="inline-block text-xs bg-blue-400 dark:bg-blue-700/70 text-white dark:text-white px-2 py-1 rounded">PSP</span>
+                          <span className="inline-block text-xs bg-blue-300 dark:bg-blue-700/70 text-white dark:text-white px-2 py-1 rounded">Gambling</span>
+                          <span className="inline-block text-xs bg-blue-400 dark:bg-blue-700/70 text-white dark:text-white px-2 py-1 rounded">E-Money</span>
                         </div>
                       </Card>
                     </div>
@@ -123,19 +124,19 @@ export function Hero() {
                     <Card className="p-4 rounded-lg border-0 bg-blue-500">
                       <div className="text-xs text-white mb-2">Global Jurisdictions</div>
                       <div className="flex flex-wrap gap-2">
-                        <span className="inline-block text-xs bg-blue-400 dark:bg-blue-700/70 text-black dark:text-white px-2 py-1 rounded">MGA</span>
-                        <span className="inline-block text-xs bg-blue-300 dark:bg-blue-700/70 text-black dark:text-white px-2 py-1 rounded">Curaçao</span>
-                        <span className="inline-block text-xs bg-blue-400 dark:bg-blue-700/70 text-black dark:text-white px-2 py-1 rounded">FCA</span>
-                        <span className="inline-block text-xs bg-blue-300 dark:bg-blue-700/70 text-black dark:text-white px-2 py-1 rounded">AML5</span>
-                        <span className="inline-block text-xs bg-blue-400 dark:bg-blue-700/70 text-black dark:text-white px-2 py-1 rounded">Casino Compliance</span>
+                        <span className="inline-block text-xs bg-blue-400 dark:bg-blue-700/70 text-white dark:text-white px-2 py-1 rounded">MGA</span>
+                        <span className="inline-block text-xs bg-blue-300 dark:bg-blue-700/70 text-white dark:text-white px-2 py-1 rounded">Curaçao</span>
+                        <span className="inline-block text-xs bg-blue-400 dark:bg-blue-700/70 text-white dark:text-white px-2 py-1 rounded">FCA</span>
+                        <span className="inline-block text-xs bg-blue-300 dark:bg-blue-700/70 text-white dark:text-white px-2 py-1 rounded">AML5</span>
+                        <span className="inline-block text-xs bg-blue-400 dark:bg-blue-700/70 text-white dark:text-white px-2 py-1 rounded">Casino Compliance</span>
                       </div>
                     </Card>
                     
                     <div className="pt-4 border-t border-blue-100 dark:border-blue-800">
                       <div className="flex items-center justify-between text-sm">
-                        <div className="text-black dark:text-white">15+ Countries</div>
-                        <div className="text-black dark:text-white">500+ Clients</div>
-                        <div className="text-black dark:text-white">9+ Years</div>
+                        <div className="text-white dark:text-white">15+ Countries</div>
+                        <div className="text-white dark:text-white">500+ Clients</div>
+                        <div className="text-white dark:text-white">9+ Years</div>
                       </div>
                     </div>
                   </div>

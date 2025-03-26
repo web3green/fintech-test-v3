@@ -66,8 +66,8 @@ export const BlogSection: React.FC = () => {
 
   // Prepare the description text with brand highlighting
   const blogDescription = language === 'en' 
-    ? 'Stay up-to-date with the latest industry insights and company news from <span class="text-red-500">Fin</span><span class="text-fintech-blue">Tech</span><span class="text-fintech-orange">Assist</span>.' 
-    : 'Будьте в курсе последних отраслевых идей и новостей компании <span class="text-red-500">Fin</span><span class="text-fintech-blue">Tech</span><span class="text-fintech-orange">Assist</span>.';
+    ? 'Stay up-to-date with the latest industry insights and company news from <span class="text-foreground dark:text-foreground">FinTechAssist</span>.' 
+    : 'Будьте в курсе последних отраслевых идей и новостей компании <span class="text-foreground dark:text-foreground">FinTechAssist</span>.';
 
   return (
     <section id="blog" className="py-16 bg-background">

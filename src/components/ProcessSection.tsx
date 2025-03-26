@@ -42,7 +42,7 @@ export function ProcessSection() {
             {t('process.title')}
           </h2>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            {t('process.subtitle')}
+            {t('process.subtitle').replace('<FinTechAssist>', '<span class="text-foreground dark:text-foreground">FinTechAssist</span>')}
           </p>
         </div>
         

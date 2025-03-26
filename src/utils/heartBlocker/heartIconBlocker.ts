@@ -24,6 +24,7 @@ export const blockHeartIcon = () => {
     link[rel*="icon"]:not([href*="6bfd57a2-6c6a-4507-bb1d-2cde1517ebd1"]),
     svg[*|href*="heart"], svg[*|href*="Heart"],
     svg path[d*="M0 200 v-200 h200"], /* This is a heart-like SVG path */
+    svg path[d*="M12 21.35l-1.45-1.32C5.4"], /* Material-UI heart icon */
     iframe[src*="gptengineer"], iframe[src*="gpteng"],
     [id*="heart"], [class*="heart"], [class*="Heart"],
     [aria-label*="heart"], [aria-label*="Heart"],
@@ -83,14 +84,16 @@ export const blockHeartIcon = () => {
       const d = path.getAttribute('d');
       if (d && (
         d.includes('M0 200 v-200 h200') || // Simple heart detection
-        d.includes('M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z') // Material-UI heart icon
+        d.includes('M12 21.35l-1.45-1.32C5.4') || // Material-UI heart icon
+        d.includes('M12 4.248c-3.148-5.402-12-3.825-12 2.944') || // Another common heart SVG path
+        d.includes('M12 21.593c-5.63-5.539-11') || // Another heart SVG path
+        d.toLowerCase().includes('heart')
       )) {
         containsHeartPath = true;
       }
     });
     
     if (containsHeartPath) {
-      // Fix TypeScript error: properly handle SVGSVGElement by checking the type first
       if (svg instanceof SVGElement) {
         svg.style.display = 'none';
         svg.style.visibility = 'hidden';
@@ -111,6 +114,40 @@ export const blockHeartIcon = () => {
     }
   } catch (e) {
     console.error('Error overriding favicon APIs:', e);
+  }
+  
+  // NEW: Override the entire title element
+  // First save the original title text without any heart symbols
+  let cleanTitle = document.title.replace(/[♥♡❤]/g, '').trim();
+  
+  // Ensure the title doesn't have any heart unicode characters
+  const heartSymbols = ['♥', '♡', '❤', '❥', '❣', '❦', '❧', '♥️', '❤️'];
+  heartSymbols.forEach(symbol => {
+    if (document.title.includes(symbol)) {
+      document.title = cleanTitle;
+    }
+  });
+  
+  // Block using Object.defineProperty to prevent title changes
+  try {
+    // Save the current clean title
+    const originalTitle = document.title;
+    
+    // Override the document.title property
+    Object.defineProperty(document, 'title', {
+      get: function() {
+        return originalTitle;
+      },
+      set: function(newTitle) {
+        // Only allow title changes that don't include heart symbols
+        if (!heartSymbols.some(symbol => newTitle.includes(symbol))) {
+          originalTitle = newTitle;
+        }
+        return originalTitle;
+      }
+    });
+  } catch (e) {
+    console.error('Error overriding document title:', e);
   }
 };
 
@@ -140,7 +177,10 @@ export const scanAndRemoveHeartIcons = () => {
         const d = path.getAttribute('d');
         if (d && (
           d.includes('M0 200') || // Heart-like path
-          d.includes('M12 21.35l-1.45-1.32C') // Material heart icon
+          d.includes('M12 21.35l-1.45-1.32C') || // Material heart icon
+          d.includes('M12 4.248c-3.148-5.402-12') || // Another common heart SVG
+          d.includes('M12 21.593c-5.63-5.539-11') || // Another heart SVG path
+          d.toLowerCase().includes('heart')
         )) {
           return true;
         }
@@ -162,11 +202,18 @@ export const scanAndRemoveHeartIcons = () => {
         element.style.visibility = 'hidden';
         element.style.opacity = '0';
         element.style.pointerEvents = 'none';
+        element.innerHTML = ''; // Clear contents as well
       } else if (element instanceof SVGElement) {
         // Handle SVG elements
         element.style.display = 'none';
         element.style.visibility = 'hidden';
         element.style.opacity = '0';
+        try {
+          // Try to remove the SVG completely
+          element.remove();
+        } catch (e) {
+          console.log('Could not remove SVG element', e);
+        }
       }
       removedElements++;
     }
@@ -205,6 +252,16 @@ export const scanAndRemoveHeartIcons = () => {
       blockHeartIcon();
     }
   });
+  
+  // NEW: Also check for heart icons in the page title
+  const heartSymbols = ['♥', '♡', '❤', '❥', '❣', '❦', '❧', '♥️', '❤️'];
+  if (heartSymbols.some(symbol => document.title.includes(symbol))) {
+    document.title = document.title.replace(/[♥♡❤❥❣❦❧♥️❤️]/g, '').trim();
+    // Ensure something exists in the title
+    if (!document.title) {
+      document.title = 'FinTechAssist: Финансовые решения для бизнеса';
+    }
+  }
 };
 
 // Import the enforceOurFavicon function to use it in the script scanning

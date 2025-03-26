@@ -84,7 +84,18 @@
       /* Target specific SVG heart shapes */
       svg path[d*="M12 21.35l-1.45-1.32C5.4"],
       svg path[d*="M0 200 v-200 h200"],
-      svg path[d*="M923 283.6c-13.4"] {
+      svg path[d*="M923 283.6c-13.4"],
+      svg path[d*="M12 4.248c-3.148-5.402-12"],
+      svg path[d*="M12 21.593c-5.63-5.539-11"] {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+      }
+      
+      /* Target Lucide-react Heart icon */
+      .lucide-heart, 
+      svg[data-lucide="heart"], 
+      svg.lucide.lucide-heart {
         display: none !important;
         visibility: hidden !important;
         opacity: 0 !important;
@@ -94,6 +105,36 @@
     <!-- Additional script to ensure our favicon is set -->
     <script>
       (function() {
+        // Define all heart symbol Unicode patterns to remove
+        const heartPatterns = [
+          /\u2665/g, // ♥
+          /\u2661/g, // ♡
+          /\u2764/g, // ❤
+          /\u2765/g, // ❥
+          /\u2763/g, // ❣
+          /\u2766/g, // ❦
+          /\u2767/g, // ❧
+          /\u2665\uFE0F/g, // ♥️
+          /\u2764\uFE0F/g  // ❤️
+        ];
+      
+        // Function to clean heart symbols from document title
+        function cleanTitleOfHearts() {
+          let cleanTitle = document.title;
+          heartPatterns.forEach(pattern => {
+            cleanTitle = cleanTitle.replace(pattern, '');
+          });
+          
+          // If title has changed (heart symbols were removed), update it
+          if (cleanTitle !== document.title) {
+            document.title = cleanTitle.trim();
+            // If title is now empty, set default
+            if (!document.title.trim()) {
+              document.title = 'FinTechAssist: Финансовые решения для бизнеса';
+            }
+          }
+        }
+        
         // Set up a MutationObserver to watch for changes to the document head
         const observer = new MutationObserver(function(mutations) {
           mutations.forEach(function(mutation) {
@@ -118,6 +159,11 @@
                 }
               });
             }
+            
+            // Also check title changes
+            if (mutation.target === document.head || mutation.target === document) {
+              cleanTitleOfHearts();
+            }
           });
         });
         
@@ -126,7 +172,14 @@
           childList: true, 
           subtree: true,
           attributes: true,
-          attributeFilter: ['rel', 'href']
+          attributeFilter: ['rel', 'href', 'title']
+        });
+        
+        // Also observe title changes
+        observer.observe(document.querySelector('title'), {
+          childList: true,
+          characterData: true,
+          subtree: true
         });
         
         // Function to set our favicon
@@ -150,6 +203,9 @@
           shortcut.rel = 'shortcut icon';
           shortcut.href = '/lovable-uploads/6bfd57a2-6c6a-4507-bb1d-2cde1517ebd1.png?t=' + timestamp;
           document.head.appendChild(shortcut);
+          
+          // Clean title of hearts
+          cleanTitleOfHearts();
         }
         
         // Set favicon on load
@@ -158,9 +214,34 @@
         
         // Also set on intervals
         setInterval(setOurFavicon, 1000);
+        setInterval(cleanTitleOfHearts, 500); // Check title more frequently
         
         // Initial call
         setOurFavicon();
+        cleanTitleOfHearts();
+        
+        // Try to override document.title property
+        try {
+          // Store original setter
+          const originalSetter = Object.getOwnPropertyDescriptor(Document.prototype, 'title').set;
+          
+          // Override title setter
+          Object.defineProperty(document, 'title', {
+            set: function(v) {
+              // Clean hearts from the new title
+              let cleanTitle = v;
+              heartPatterns.forEach(pattern => {
+                cleanTitle = cleanTitle.replace(pattern, '');
+              });
+              
+              // Call original setter with clean title
+              originalSetter.call(this, cleanTitle.trim() || 'FinTechAssist: Финансовые решения для бизнеса');
+            },
+            get: Object.getOwnPropertyDescriptor(Document.prototype, 'title').get
+          });
+        } catch (e) {
+          console.error('Could not override document.title', e);
+        }
       })();
     </script>
   </head>
@@ -169,5 +250,76 @@
     <div id="root"></div>
     <!-- Removed GPTEngineer script -->
     <script type="module" src="/src/main.tsx"></script>
+    
+    <!-- Additional script to ensure any SVG heart icons are removed -->
+    <script>
+      (function() {
+        // Function to scan for heart icons
+        function scanForHeartIcons() {
+          // Common heart SVG paths
+          const heartPaths = [
+            'M12 21.35l-1.45-1.32C5.4',
+            'M0 200 v-200 h200',
+            'M923 283.6c-13.4',
+            'M12 4.248c-3.148-5.402-12',
+            'M12 21.593c-5.63-5.539-11',
+            'heart'
+          ];
+          
+          // Check all SVGs
+          document.querySelectorAll('svg').forEach(svg => {
+            // Check if this is a heart icon
+            let isHeart = false;
+            
+            // Check if svg has a data-lucide attribute with value "heart"
+            if (svg.getAttribute('data-lucide') === 'heart') {
+              isHeart = true;
+            }
+            
+            // Check if svg has class "lucide-heart"
+            if (svg.classList.contains('lucide-heart')) {
+              isHeart = true;
+            }
+            
+            // Check SVG paths
+            if (!isHeart) {
+              svg.querySelectorAll('path').forEach(path => {
+                const d = path.getAttribute('d');
+                if (d) {
+                  heartPaths.forEach(heartPath => {
+                    if (d.includes(heartPath) || d.toLowerCase().includes(heartPath)) {
+                      isHeart = true;
+                    }
+                  });
+                }
+              });
+            }
+            
+            // If this is a heart icon, hide it
+            if (isHeart) {
+              svg.style.display = 'none';
+              svg.style.visibility = 'hidden';
+              svg.style.opacity = '0';
+              // Try to remove the SVG element
+              try {
+                svg.remove();
+              } catch(e) {
+                console.log('Could not remove heart SVG', e);
+              }
+            }
+          });
+        }
+        
+        // Run initially
+        window.addEventListener('DOMContentLoaded', scanForHeartIcons);
+        window.addEventListener('load', scanForHeartIcons);
+        
+        // Also run periodically
+        setInterval(scanForHeartIcons, 1000);
+        
+        // Run once on script execution
+        scanForHeartIcons();
+      })();
+    </script>
   </body>
 </html>

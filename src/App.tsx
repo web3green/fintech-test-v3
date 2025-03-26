@@ -8,167 +8,129 @@ import { useEffect, useRef } from 'react';
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Admin from "./pages/Admin";
-import { updateSocialMetaTags, initializeFavicon } from "./utils/metaTagManager";
 
 const queryClient = new QueryClient();
 
-// Улучшенный компонент для управления мета-тегами с агрессивными обновлениями фавикона
-const MetaTagUpdater = () => {
-  const heartCheckInterval = useRef<number | null>(null);
+// Константа нашего фавикона для блокировки нежелательных иконок
+const OUR_FAVICON_BASE64 = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAA/0lEQVR42mNkGGDAOOqAUQeMOmDUAaMO4D4AH2egFQAAgL7gNAOwAICvBzx+/Jjl4cOH8p8/f2YihJmZmbmYmJg3CQkJP6Fyn6H0F3Fxca+QkJCvKSkpX+Pi4r7/hYI/f/68//Tp09OJiYmvO39sEdZVNzU7evToWxkZme8gR/z8+fPPnz9/fv/69evv79+//0HB/4H4HxD/B+E/UP5/EP0fCYP4/xkYGBmA8v+A4vA4AMXRTwYsBuAK/FetWnVm7969x48cOXLi8ePHN27evHnj1q1bd+7cuXMPiO/CcBbQ9OfPn79y48aNG1euXLly+fLly5cuXbpw/vz5M2fOnDlNU1sAB1+QqgkWAlsAAAAASUVORK5CYII=';
+
+// Компонент для агрессивного управления фавиконом
+const FaviconManager = () => {
+  const checkIntervalRef = useRef<number | null>(null);
+  
+  // Функция установки нашего фавикона
+  const setOurFavicon = () => {
+    // Удаляем все нежелательные иконки
+    const unwantedIcons = document.querySelectorAll(
+      'link[href*="heart"], link[href*="favicon.ico"], link[href*="gpteng"], link[href*="gptengineer"]'
+    );
+    
+    if (unwantedIcons.length > 0) {
+      console.log('Found and removing unwanted icons:', unwantedIcons.length);
+      unwantedIcons.forEach(icon => icon.remove());
+    }
+    
+    // Добавляем наш фавикон
+    const link = document.createElement('link');
+    link.rel = 'icon';
+    link.type = 'image/png';
+    link.href = OUR_FAVICON_BASE64;
+    document.head.appendChild(link);
+    
+    // Добавляем дополнительные типы иконок для максимального охвата браузеров
+    const iconTypes = [
+      { rel: 'shortcut icon', type: 'image/png' },
+      { rel: 'apple-touch-icon' }
+    ];
+    
+    iconTypes.forEach(iconType => {
+      const link = document.createElement('link');
+      link.rel = iconType.rel;
+      link.href = OUR_FAVICON_BASE64;
+      if (iconType.type) {
+        link.type = iconType.type;
+      }
+      document.head.appendChild(link);
+    });
+  };
   
   useEffect(() => {
-    // Создаем MutationObserver для обнаружения любых изменений элементов head
+    // Создаем MutationObserver для отслеживания изменений в <head>
     const observer = new MutationObserver((mutations) => {
       let needsUpdate = false;
       
       for (const mutation of mutations) {
         if (mutation.type === 'childList') {
           const addedNodes = Array.from(mutation.addedNodes);
-          // Проверяем добавленные узлы на нежелательные иконки
-          const unwantedIconAdded = addedNodes.some(node => {
-            if (node.nodeName === 'LINK') {
-              const rel = (node as HTMLLinkElement).rel;
-              const href = (node as HTMLLinkElement).href;
-              return rel && ((rel.includes('icon') || rel === 'shortcut icon') && 
-                (href.includes('favicon.ico') || 
-                 href.includes('heart') ||
-                 href.includes('gpteng') ||
-                 href.includes('gptengineer')));
-            }
-            return false;
-          });
           
-          if (unwantedIconAdded) {
-            console.log('Unwanted favicon detected, overriding immediately');
-            needsUpdate = true;
-          }
-        }
-        
-        // Также проверяем изменения атрибутов существующих элементов
-        if (mutation.type === 'attributes' && mutation.attributeName === 'href') {
-          const target = mutation.target as HTMLLinkElement;
-          if (target.rel && target.rel.includes('icon') && 
-              (target.href.includes('heart') || 
-               target.href.includes('favicon.ico') ||
-               target.href.includes('gpteng') ||
-               target.href.includes('gptengineer'))) {
-            console.log('Unwanted favicon attribute detected, overriding immediately');
-            needsUpdate = true;
-          }
+          // Проверяем добавленные элементы на нежелательные иконки
+          addedNodes.forEach(node => {
+            if (node.nodeName === 'LINK') {
+              const linkElement = node as HTMLLinkElement;
+              const href = linkElement.href || '';
+              const rel = linkElement.rel || '';
+              
+              if (rel.includes('icon') && (
+                href.includes('heart') || 
+                href.includes('favicon.ico') ||
+                href.includes('gpteng') || 
+                href.includes('gptengineer') ||
+                href.includes('engine')
+              )) {
+                console.log('Detected unwanted favicon:', href);
+                needsUpdate = true;
+                linkElement.remove();
+              }
+            }
+          });
         }
       }
       
       if (needsUpdate) {
-        initializeFavicon();
-        // Агрессивная серия обновлений при обнаружении нежелательного фавикона
-        for (let i = 0; i < 10; i++) {
-          setTimeout(() => initializeFavicon(), i * 50);
-        }
+        console.log('DOM changed, reinitializing favicon');
+        setOurFavicon();
       }
     });
     
-    // Начинаем наблюдение за document.head для изменений
+    // Начинаем наблюдение за <head>
     observer.observe(document.head, {
       childList: true,
       subtree: true,
       attributes: true,
-      attributeFilter: ['href']
+      attributeFilter: ['href', 'rel']
     });
     
-    // CSS-подход для скрытия нежелательных фавиконов
-    const style = document.createElement('style');
-    style.textContent = `
-      [rel="icon"][href*="heart"], 
-      [rel="icon"][href*="favicon.ico"],
-      [rel*="icon"][href*="heart"],
-      [rel*="icon"][href*="favicon.ico"],
-      [rel="icon"][href*="gptengineer"],
-      [rel*="icon"][href*="gptengineer"],
-      [rel="icon"][href*="gpteng"],
-      [rel*="icon"][href*="gpteng"] {
-        display: none !important;
-      }
-    `;
-    document.head.appendChild(style);
+    // Устанавливаем фавикон немедленно
+    setOurFavicon();
     
-    // Блокируем внешний скрипт из gpteng.co если он пытается добавить favicon
-    const scriptObserver = new MutationObserver((mutations) => {
-      for (const mutation of mutations) {
-        if (mutation.type === 'childList') {
-          const addedNodes = Array.from(mutation.addedNodes);
-          const gptengineerScriptAdded = addedNodes.some(node => {
-            return node.nodeName === 'SCRIPT' && 
-                  ((node as HTMLScriptElement).src || '').includes('gpteng');
-          });
-          
-          if (gptengineerScriptAdded) {
-            console.log('GPTEngineer script detected, scheduling extra favicon updates');
-            // Запускаем агрессивную серию обновлений фавикона
-            for (let i = 0; i < 20; i++) {
-              setTimeout(() => {
-                initializeFavicon();
-                updateSocialMetaTags();
-              }, 500 + i * 100); // Начинаем через 500мс после обнаружения скрипта
-            }
-          }
-        }
-      }
-    });
-    
-    // Наблюдаем за body для обнаружения добавления скриптов
-    scriptObserver.observe(document.body, {
-      childList: true,
-      subtree: true
-    });
-    
-    // Начальные быстрые обновления
-    for (let i = 0; i < 20; i++) {
-      setTimeout(() => {
-        initializeFavicon();
-        updateSocialMetaTags();
-      }, i * 100);
-    }
-    
-    // Создаем временной интервал для постоянной проверки на нежелательные иконки
-    heartCheckInterval.current = window.setInterval(() => {
+    // Устанавливаем интервал для регулярных проверок
+    checkIntervalRef.current = window.setInterval(() => {
       // Ищем нежелательные фавиконы
       const unwantedIcons = document.querySelectorAll(
-        'link[href*="heart"], link[href*="favicon.ico"], link[href*="gpteng"], link[href*="gptengineer"]'
+        'link[href*="heart"], link[href*="favicon.ico"], link[href*="gpteng"], link[href*="gptengineer"], link[href*="engine"]'
       );
+      
       if (unwantedIcons.length > 0) {
-        console.log('Found and removing unwanted icons:', unwantedIcons.length);
+        console.log('Interval check found unwanted icons:', unwantedIcons.length);
         unwantedIcons.forEach(icon => icon.remove());
-        initializeFavicon();
-        
-        // Агрессивный подход: несколько последовательных инициализаций
-        for (let i = 0; i < 5; i++) {
-          setTimeout(() => initializeFavicon(), i * 50);
-        }
-      } else {
-        // Периодически реинициализируем в любом случае
-        if (Date.now() % 5000 < 100) {
-          initializeFavicon();
-        }
+        setOurFavicon();
       }
-    }, 300) as unknown as number;
+    }, 200) as unknown as number;
     
-    // Устанавливаем интервал для периодических обновлений
-    const interval = setInterval(() => {
-      initializeFavicon();
-      updateSocialMetaTags();
-    }, 2000);
+    // Начальные частые обновления для повышения надежности
+    for (let i = 0; i < 20; i++) {
+      setTimeout(setOurFavicon, i * 100);
+    }
     
-    // Очищаем интервалы и наблюдатели при размонтировании
+    // Очистка при размонтировании
     return () => {
-      clearInterval(interval);
-      if (heartCheckInterval.current !== null) {
-        clearInterval(heartCheckInterval.current);
-      }
       observer.disconnect();
-      scriptObserver.disconnect();
+      if (checkIntervalRef.current !== null) {
+        clearInterval(checkIntervalRef.current);
+      }
     };
   }, []);
-
+  
   return null;
 };
 
@@ -182,51 +144,36 @@ const App = () => {
       document.documentElement.classList.add('dark');
     }
     
-    // Prevent unwanted icons by initializing favicon again after app mounts
-    initializeFavicon();
-    
-    // Prevent external scripts from adding unwanted favicons
-    const blockExternalFavicons = () => {
-      // Block any potential favicon.ico request
+    // Блокируем нежелательные фавиконы сразу при загрузке
+    const blockUnwantedFavicons = () => {
+      // Удаляем все нежелательные иконки
+      const unwantedIcons = document.querySelectorAll(
+        'link[href*="heart"], link[href*="favicon.ico"], link[href*="gpteng"], link[href*="gptengineer"], link[href*="engine"]'
+      );
+      
+      if (unwantedIcons.length > 0) {
+        console.log('Initial cleanup found unwanted icons:', unwantedIcons.length);
+        unwantedIcons.forEach(icon => icon.remove());
+      }
+      
+      // Добавляем наш фавикон
       const link = document.createElement('link');
       link.rel = 'icon';
-      link.href = 'data:,'; // Empty favicon
-      document.head.insertBefore(link, document.head.firstChild);
-      
-      // Add CSS to block unwanted favicons
-      const style = document.createElement('style');
-      style.textContent = `
-        [rel="icon"][href*="heart"], 
-        [rel="icon"][href*="favicon.ico"],
-        [rel*="icon"][href*="heart"],
-        [rel*="icon"][href*="favicon.ico"],
-        [rel="icon"][href*="gptengineer"],
-        [rel*="icon"][href*="gptengineer"],
-        [rel="icon"][href*="gpteng"],
-        [rel*="icon"][href*="gpteng"] {
-          display: none !important;
-        }
-      `;
-      document.head.appendChild(style);
-      
-      // Remove any unwanted favicons
-      const unwantedLinks = document.querySelectorAll(
-        'link[href*="heart"], link[href*="favicon.ico"], link[href*="gpteng"], link[href*="gptengineer"]'
-      );
-      unwantedLinks.forEach(link => link.remove());
+      link.href = OUR_FAVICON_BASE64;
+      document.head.appendChild(link);
     };
     
-    // Вызываем блокировку сразу и через небольшие интервалы для надежности
-    blockExternalFavicons();
+    // Выполняем блокировку сразу и через небольшие интервалы
+    blockUnwantedFavicons();
     for (let i = 0; i < 10; i++) {
-      setTimeout(blockExternalFavicons, 100 * i);
+      setTimeout(blockUnwantedFavicons, i * 100);
     }
   }, []);
 
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
-        <MetaTagUpdater />
+        <FaviconManager />
         <Toaster />
         <Sonner position="top-right" />
         <BrowserRouter>

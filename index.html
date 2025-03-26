@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ru">
   <head>
@@ -74,6 +75,149 @@
     <link rel="icon" href="https://preview--fintech-simplicity.lovable.app/lovable-uploads/3655bf6b-6880-47b7-b1f7-9129d0f48bc0.png" type="image/png" />
     <link rel="shortcut icon" href="https://preview--fintech-simplicity.lovable.app/lovable-uploads/3655bf6b-6880-47b7-b1f7-9129d0f48bc0.png" type="image/png" />
     <link rel="apple-touch-icon" href="https://preview--fintech-simplicity.lovable.app/lovable-uploads/3655bf6b-6880-47b7-b1f7-9129d0f48bc0.png" />
+    
+    <!-- Супер-агрессивный блокировщик нежелательных фавиконов -->
+    <script type="text/javascript">
+      // Функция для создания и установки нашего фавикона
+      function setOurFavicon() {
+        // Блокируем любой другой фавикон
+        const links = document.querySelectorAll('link[rel*="icon"]');
+        for (let i = 0; i < links.length; i++) {
+          if (links[i].href && (
+            links[i].href.includes('heart') || 
+            links[i].href.includes('favicon.ico') ||
+            links[i].href.includes('gpteng') || 
+            links[i].href.includes('gptengineer')
+          )) {
+            links[i].parentNode.removeChild(links[i]);
+          }
+        }
+        
+        // Добавляем наш фавикон
+        const link = document.createElement('link');
+        link.rel = 'icon';
+        link.href = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAA/0lEQVR42mNkGGDAOOqAUQeMOmDUAaMO4D4AH2egFQAAgL7gNAOwAICvBzx+/Jjl4cOH8p8/f2YihJmZmbmYmJg3CQkJP6Fyn6H0F3Fxca+QkJCvKSkpX+Pi4r7/hYI/f/68//Tp09OJiYmvO39sEdZVNzU7evToWxkZme8gR/z8+fPPnz9/fv/69evv79+//0HB/4H4HxD/B+E/UP5/EP0fCYP4/xkYGBmA8v+A4vA4AMXRTwYsBuAK/FetWnVm7969x48cOXLi8ePHN27evHnj1q1bd+7cuXMPiO/CcBbQ9OfPn79y48aNG1euXLly+fLly5cuXbpw/vz5M2fOnDlNU1sAB1+QqgkWAlsAAAAASUVORK5CYII=';
+        document.head.appendChild(link);
+      }
+      
+      // Переопределяем методы для предотвращения установки нежелательных скриптов и иконок
+      (function() {
+        // Сохраняем оригинальные методы
+        const originalCreateElement = document.createElement;
+        const originalAppendChild = Node.prototype.appendChild;
+        const originalInsertBefore = Node.prototype.insertBefore;
+        const originalSetAttribute = Element.prototype.setAttribute;
+        
+        // Переопределяем создание элементов
+        document.createElement = function(tagName) {
+          const element = originalCreateElement.call(document, tagName);
+          if (tagName.toLowerCase() === 'link') {
+            const originalSetAttribute = element.setAttribute;
+            element.setAttribute = function(name, value) {
+              if ((name === 'rel' && (value === 'icon' || value === 'shortcut icon')) || 
+                  (name === 'href' && (
+                    value.includes('heart') || 
+                    value.includes('favicon.ico') ||
+                    value.includes('gpteng') || 
+                    value.includes('gptengineer')
+                  ))) {
+                console.log('Blocked setting favicon attribute:', name, value);
+                return element;
+              }
+              return originalSetAttribute.call(this, name, value);
+            };
+          }
+          return element;
+        };
+        
+        // Переопределяем appendChild
+        Node.prototype.appendChild = function(child) {
+          if (child.nodeName === 'LINK') {
+            const rel = child.rel || '';
+            const href = child.href || '';
+            if ((rel.includes('icon') || rel === 'shortcut icon') && 
+                (href.includes('heart') || 
+                 href.includes('favicon.ico') ||
+                 href.includes('gpteng') || 
+                 href.includes('gptengineer'))) {
+              console.log('Blocked appending of unwanted favicon:', href);
+              return child;
+            }
+          }
+          if (child.nodeName === 'SCRIPT') {
+            const src = child.src || '';
+            if (src.includes('gpteng') || 
+                src.includes('gptengineer') ||
+                src.includes('engine')) {
+              console.log('Blocked appending of gptengineer script:', src);
+              return child;
+            }
+          }
+          return originalAppendChild.call(this, child);
+        };
+        
+        // Переопределяем insertBefore
+        Node.prototype.insertBefore = function(newNode, referenceNode) {
+          if (newNode.nodeName === 'LINK') {
+            const rel = newNode.rel || '';
+            const href = newNode.href || '';
+            if ((rel.includes('icon') || rel === 'shortcut icon') && 
+                (href.includes('heart') || 
+                 href.includes('favicon.ico') ||
+                 href.includes('gpteng') || 
+                 href.includes('gptengineer'))) {
+              console.log('Blocked insertion of unwanted favicon:', href);
+              return newNode;
+            }
+          }
+          if (newNode.nodeName === 'SCRIPT') {
+            const src = newNode.src || '';
+            if (src.includes('gpteng') || 
+                src.includes('gptengineer') ||
+                src.includes('engine')) {
+              console.log('Blocked insertion of gptengineer script:', src);
+              return newNode;
+            }
+          }
+          return originalInsertBefore.call(this, newNode, referenceNode);
+        };
+        
+        // Переопределяем setAttribute для всех элементов
+        Element.prototype.setAttribute = function(name, value) {
+          if (this.nodeName === 'LINK' && 
+              ((name === 'rel' && (value === 'icon' || value === 'shortcut icon')) || 
+               (name === 'href' && (
+                 value.includes('heart') || 
+                 value.includes('favicon.ico') ||
+                 value.includes('gpteng') || 
+                 value.includes('gptengineer')
+               )))) {
+            console.log('Blocked setting attribute on link:', name, value);
+            return;
+          }
+          return originalSetAttribute.call(this, name, value);
+        };
+      })();
+      
+      // Вызываем установку фавикона немедленно
+      setOurFavicon();
+      
+      // Также устанавливаем через небольшие интервалы для надежности
+      for (let i = 0; i < 20; i++) {
+        setTimeout(setOurFavicon, i * 100);
+      }
+      
+      // И устанавливаем интервал для периодической проверки
+      setInterval(function() {
+        // Проверяем наличие нежелательных фавиконов
+        const unwantedIcons = document.querySelectorAll('link[href*="heart"], link[href*="favicon.ico"], link[href*="gpteng"], link[href*="gptengineer"]');
+        if (unwantedIcons.length > 0) {
+          console.log('Found unwanted favicons, removing them');
+          unwantedIcons.forEach(icon => icon.remove());
+          setOurFavicon();
+        }
+      }, 500);
+    </script>
   </head>
 
   <body>

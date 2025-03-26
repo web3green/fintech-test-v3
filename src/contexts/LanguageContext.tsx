@@ -83,13 +83,13 @@ const translations = {
     'process.step3.desc': 'We will perform all necessary actions and provide you with a ready-made turnkey solution.',
     
     // Contact Form
-    'contact.title': 'Ready to Get Started?',
-    'contact.subtitle': 'Leave a request and our specialist will contact you for a consultation on your issue.',
+    'contact.title': 'We\'re Ready to Help You',
+    'contact.subtitle': 'We\'re ready to provide a consultation - you can contact us directly or submit a request and we\'ll get in touch with you.',
     'contact.email': 'Email',
     'contact.phone': 'Phone',
     'contact.telegram': 'Telegram',
-    'contact.instant.title': 'Need Assistance Right Now?',
-    'contact.instant.subtitle': 'Connect with our company manager directly through Telegram messenger for immediate consultation and support.',
+    'contact.instant.title': 'Need Immediate Consultation?',
+    'contact.instant.subtitle': 'Connect with our company manager directly through Telegram for immediate assistance with your questions.',
     'contact.instant.button': 'Message on Telegram',
     'contact.form.title': 'Submit Request',
     'contact.form.name': 'Your Name',
@@ -176,7 +176,7 @@ const translations = {
     
     'services.nominee.title': 'Номинальный сервис',
     'services.nominee.short': 'Профессиональные директора и акционеры для вашей компании',
-    'services.nominee.details': 'Предоставление профессиональных директоров и акционеров для вашей компании, обеспечивающих юридическое представительство и управление бизнесом при сохранении конфиденциальности р��ального владельца. Все услуги оказываются в строгом соответствии с международными правовыми нормами.',
+    'services.nominee.details': 'Предоставление профессиональных директоров и акционеров для вашей компании, обеспечивающих юридическое представительство и управление бизнесом при сохранении конфиденциальности реального владельца. Все услуги оказываются в строгом соответствии с международными правовыми нормами.',
     
     // Process
     'process.badge': 'Как это работает',
@@ -190,13 +190,13 @@ const translations = {
     'process.step3.desc': 'Мы выполним все необходимые действия и предоставим вам готовое решение под ключ.',
     
     // Contact Form
-    'contact.title': 'Готовы начать?',
-    'contact.subtitle': 'Оставьте заявку, и наш специалист свяжется с вами для консультации по вашему вопросу.',
+    'contact.title': 'Мы готовы помочь вам',
+    'contact.subtitle': 'Мы готовы вас проконсультировать - вы можете связаться с нами напрямую или оставить заявку на консультацию.',
     'contact.email': 'Электронная почта',
     'contact.phone': 'Телефон',
     'contact.telegram': 'Телеграм',
-    'contact.instant.title': 'Нужна помощь прямо сейчас?',
-    'contact.instant.subtitle': 'Свяжитесь с менеджером компании напрямую через Телеграм для мгновенной консультации и поддержки.',
+    'contact.instant.title': 'Нужна консультация прямо сейчас?',
+    'contact.instant.subtitle': 'Свяжитесь с менеджером компании напрямую через Телеграм для получения немедленной помощи по вашим вопросам.',
     'contact.instant.button': 'Написать в Телеграм',
     'contact.form.title': 'Оставить заявку',
     'contact.form.name': 'Ваше имя',

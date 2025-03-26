@@ -104,12 +104,12 @@ export function Hero() {
                     
                     <div className="grid grid-cols-2 gap-4">
                       <Card className="p-4 rounded-lg border-0 bg-blue-300">
-                        <div className="text-xs text-white mb-1">Banking</div>
+                        <div className="text-xs text-white dark:text-white mb-1">Banking</div>
                         <div className="font-medium text-black dark:text-white">Accounts Worldwide</div>
                       </Card>
                       
                       <Card className="p-4 rounded-lg border-0 bg-blue-500">
-                        <div className="text-xs text-white mb-2">Licenses</div>
+                        <div className="text-xs text-white dark:text-white mb-2">Licenses</div>
                         <div className="flex flex-wrap gap-2">
                           <span className="inline-block text-xs bg-blue-300 dark:bg-blue-700/70 text-black dark:text-white px-2 py-1 rounded">EMI</span>
                           <span className="inline-block text-xs bg-blue-400 dark:bg-blue-700/70 text-black dark:text-white px-2 py-1 rounded">Crypto</span>

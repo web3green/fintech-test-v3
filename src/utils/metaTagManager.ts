@@ -6,11 +6,12 @@
 // Define the image URL with both absolute and relative paths
 export const getLogoUrl = (withTimestamp = true) => {
   const timestamp = withTimestamp ? `?t=${Date.now()}` : '';
-  const relativeLogoPath = `/lovable-uploads/6bfd57a2-6c6a-4507-bb1d-2cde1517ebd1.png${timestamp}`;
   
-  // Use window.location.origin to get the current domain dynamically
-  const origin = window.location.origin;
-  const absoluteUrl = `${origin}${relativeLogoPath}`;
+  // Use the new URL as requested
+  const relativeLogoPath = `https://test.mcaweb.xyz/`;
+  
+  // For absolute URL, use the same URL
+  const absoluteUrl = relativeLogoPath;
   
   return {
     relative: relativeLogoPath,
@@ -34,8 +35,6 @@ export const updateSocialMetaTags = () => {
   lastUpdateTimestamp = now;
   
   const { absolute: logoUrl } = getLogoUrl();
-  const origin = window.location.origin;
-  const fullUrl = `${origin}/lovable-uploads/6bfd57a2-6c6a-4507-bb1d-2cde1517ebd1.png`;
   
   // Helper function to create or update meta tags
   const updateMetaTag = (selector: string, value: string, isProperty = true) => {
@@ -55,24 +54,24 @@ export const updateSocialMetaTags = () => {
     meta.setAttribute('content', value);
   };
   
-  // Update all social media tags with absolute URL that includes domain
-  updateMetaTag('og:image', fullUrl);
-  updateMetaTag('og:image:url', fullUrl);
-  updateMetaTag('og:image:secure_url', fullUrl);
-  updateMetaTag('twitter:image', fullUrl);
+  // Update all social media tags with the new URL
+  updateMetaTag('og:image', logoUrl);
+  updateMetaTag('og:image:url', logoUrl);
+  updateMetaTag('og:image:secure_url', logoUrl);
+  updateMetaTag('twitter:image', logoUrl);
   
   // Force no caching
   updateMetaTag('Cache-Control', 'no-cache, no-store, must-revalidate', false);
   updateMetaTag('Pragma', 'no-cache', false);
   updateMetaTag('Expires', '0', false);
   
-  console.log('Meta tags updated with absolute URL:', fullUrl);
+  console.log('Meta tags updated with new URL:', logoUrl);
   
   // For debugging and preloading
   const linkElement = document.createElement('link');
   linkElement.rel = 'prefetch';
-  linkElement.href = fullUrl;
+  linkElement.href = logoUrl;
   document.head.appendChild(linkElement);
   
-  return fullUrl;
+  return logoUrl;
 };

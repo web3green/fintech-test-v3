@@ -7,8 +7,8 @@
 export const getLogoUrl = (withTimestamp = true) => {
   const timestamp = withTimestamp ? `?t=${Date.now()}` : '';
   
-  // Use the Lovable preview URL for the logo
-  const logoUrl = `https://preview--fintech-simplicity.lovable.app/lovable-uploads/3655bf6b-6880-47b7-b1f7-9129d0f48bc0.png`;
+  // Use the test.mcaweb.xyz domain for the logo
+  const logoUrl = `https://test.mcaweb.xyz/logo.png${timestamp}`;
   
   return {
     relative: logoUrl,

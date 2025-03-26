@@ -22,7 +22,7 @@ export function FooterCopyright({ scrollToTop }: FooterCopyrightProps) {
         <div className="flex items-center mb-4 md:mb-0">
           <Heart className="h-4 w-4 text-red-500 mr-2" />
           <p className="text-muted-foreground text-sm">
-            © {currentYear} <span className="text-red-500">Fin</span><span className="text-fintech-blue dark:text-fintech-blue-light">Tech</span><span className="text-fintech-orange">Assist</span>. {t('footer.rights')}
+            © {currentYear} <span className="text-red-500">Fin</span><span className="text-black dark:text-white">Tech</span><span className="text-fintech-orange">Assist</span>. {t('footer.rights')}
           </p>
         </div>
         <div className="flex space-x-6">

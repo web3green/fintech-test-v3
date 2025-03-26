@@ -18,13 +18,14 @@
     <meta property="og:url" content="https://test.mcaweb.xyz/" />
     <meta property="og:title" content="FinTechAssist: Финансовые решения для бизнеса" />
     <meta property="og:description" content="Открытие компаний, счетов и лицензий под ключ. FinTechAssist — ваш надежный партнер в мире финансовых решений." />
-    <!-- Updated OG image URLs with timestamp to prevent caching -->
-    <meta property="og:image" content="https://test.mcaweb.xyz/lovable-uploads/6bfd57a2-6c6a-4507-bb1d-2cde1517ebd1.png?t=1717344468591" />
-    <meta property="og:image:url" content="https://test.mcaweb.xyz/lovable-uploads/6bfd57a2-6c6a-4507-bb1d-2cde1517ebd1.png?t=1717344468591" />
-    <meta property="og:image:secure_url" content="https://test.mcaweb.xyz/lovable-uploads/6bfd57a2-6c6a-4507-bb1d-2cde1517ebd1.png?t=1717344468591" />
+    <!-- Explicitly set multiple OG image URLs with timestamps -->
+    <meta property="og:image" content="https://test.mcaweb.xyz/lovable-uploads/6bfd57a2-6c6a-4507-bb1d-2cde1517ebd1.png" />
+    <meta property="og:image:url" content="https://test.mcaweb.xyz/lovable-uploads/6bfd57a2-6c6a-4507-bb1d-2cde1517ebd1.png" />
+    <meta property="og:image:secure_url" content="https://test.mcaweb.xyz/lovable-uploads/6bfd57a2-6c6a-4507-bb1d-2cde1517ebd1.png" />
     <meta property="og:image:alt" content="FinTechAssist Logo" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/png" />
     <meta property="og:site_name" content="FinTechAssist" />
     
     <!-- Twitter -->
@@ -32,25 +33,33 @@
     <meta property="twitter:url" content="https://test.mcaweb.xyz/" />
     <meta property="twitter:title" content="FinTechAssist: Финансовые решения для бизнеса" />
     <meta property="twitter:description" content="Открытие компаний, счетов и лицензий под ключ. FinTechAssist — ваш надежный партнер в мире финансовых решений." />
-    <meta property="twitter:image" content="https://test.mcaweb.xyz/lovable-uploads/6bfd57a2-6c6a-4507-bb1d-2cde1517ebd1.png?t=1717344468591" />
+    <meta property="twitter:image" content="https://test.mcaweb.xyz/lovable-uploads/6bfd57a2-6c6a-4507-bb1d-2cde1517ebd1.png" />
     
     <!-- Additional meta tags -->
     <meta name="robots" content="max-image-preview:large" />
     <meta name="keywords" content="открытие компаний, финансовые лицензии, номинальный сервис, открытие счетов, финтех" />
     
-    <!-- Explicitly set multiple favicon tags with timestamp to prevent caching -->
-    <link rel="icon" href="/lovable-uploads/6bfd57a2-6c6a-4507-bb1d-2cde1517ebd1.png?t=1717344468591" />
-    <link rel="shortcut icon" href="/lovable-uploads/6bfd57a2-6c6a-4507-bb1d-2cde1517ebd1.png?t=1717344468591" />
-    <link rel="apple-touch-icon" href="/lovable-uploads/6bfd57a2-6c6a-4507-bb1d-2cde1517ebd1.png?t=1717344468591" />
+    <!-- Explicitly set multiple favicon tags -->
+    <link rel="icon" href="/lovable-uploads/6bfd57a2-6c6a-4507-bb1d-2cde1517ebd1.png" />
+    <link rel="shortcut icon" href="/lovable-uploads/6bfd57a2-6c6a-4507-bb1d-2cde1517ebd1.png" />
+    <link rel="apple-touch-icon" href="/lovable-uploads/6bfd57a2-6c6a-4507-bb1d-2cde1517ebd1.png" />
     
-    <!-- Explicitly block other potential icon sources -->
-    <link rel="preload" as="image" href="/lovable-uploads/6bfd57a2-6c6a-4507-bb1d-2cde1517ebd1.png?t=1717344468591" />
+    <!-- Preload logo image -->
+    <link rel="preload" as="image" href="/lovable-uploads/6bfd57a2-6c6a-4507-bb1d-2cde1517ebd1.png" />
+    <link rel="prefetch" href="/lovable-uploads/6bfd57a2-6c6a-4507-bb1d-2cde1517ebd1.png" />
     
-    <!-- Explicitly disable any other favicons -->
+    <!-- Explicitly disable any other favicons and prevent heart icon -->
     <style>
       /* Override any link with rel that might contain 'icon' but isn't our logo */
       link[rel*="icon"]:not([href*="6bfd57a2-6c6a-4507-bb1d-2cde1517ebd1"]) {
         display: none !important;
+      }
+      
+      /* Block any heart icons */
+      img[src*="heart"], img[src*="Heart"], [src*="heart-icon"], [src*="heart_icon"] {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
       }
     </style>
   </head>

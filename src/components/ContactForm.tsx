@@ -1,6 +1,7 @@
 
 import { useLanguage } from '@/contexts/LanguageContext';
 import { ContactBanner } from './contact/ContactBanner';
+import { ContactFormFields } from './contact/ContactFormFields';
 
 export function ContactForm() {
   const { t } = useLanguage();
@@ -69,6 +70,57 @@ export function ContactForm() {
         <div className="mt-12 text-center animate-fade-up" style={{ animationDelay: '300ms' }}>
           <div className="inline-flex items-center justify-center bg-white/10 backdrop-blur-sm rounded-full px-6 py-2 border border-white/20">
             <p className="text-white text-sm">Готовы начать сотрудничество? Выберите удобный способ связи</p>
+          </div>
+        </div>
+
+        {/* Consultation Request Form */}
+        <div className="mt-16 animate-fade-up" style={{ animationDelay: '400ms' }}>
+          <div className="max-w-4xl mx-auto bg-white/5 backdrop-blur-md rounded-2xl overflow-hidden border border-white/10 shadow-xl">
+            <div className="flex flex-col md:flex-row">
+              {/* Contact form */}
+              <ContactFormFields />
+              
+              {/* Contact Info */}
+              <div className="md:w-1/3 bg-blue-600 bg-opacity-40 backdrop-blur-sm p-8 flex flex-col justify-center">
+                <div className="mb-8">
+                  <h3 className="text-2xl font-bold text-white mb-3">Получите персональную консультацию</h3>
+                  <p className="text-white/80">
+                    Заполните форму, и наши специалисты свяжутся с вами в ближайшее время для обсуждения вашего запроса.
+                  </p>
+                </div>
+                
+                <div className="space-y-6">
+                  <div className="flex items-center gap-3">
+                    <div className="bg-white/20 p-2 rounded-full">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-white">
+                        <path d="M12 10c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2Z"></path>
+                        <path d="M12 2a8 8 0 0 0-8 8c0 1.892.402 3.13 1.5 4.5L12 22l6.5-7.5c1.098-1.37 1.5-2.608 1.5-4.5a8 8 0 0 0-8-8Z"></path>
+                      </svg>
+                    </div>
+                    <p className="text-white/90 text-sm">Лондон, Великобритания</p>
+                  </div>
+                  
+                  <div className="flex items-center gap-3">
+                    <div className="bg-white/20 p-2 rounded-full">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-white">
+                        <rect width="20" height="16" x="2" y="4" rx="2"></rect>
+                        <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
+                      </svg>
+                    </div>
+                    <a href="mailto:info@fintech-assist.com" className="text-white/90 text-sm hover:text-white">info@fintech-assist.com</a>
+                  </div>
+                  
+                  <div className="flex items-center gap-3">
+                    <div className="bg-white/20 p-2 rounded-full">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-white">
+                        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                      </svg>
+                    </div>
+                    <a href="tel:+447450574905" className="text-white/90 text-sm hover:text-white">+44 7450 574905</a>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>

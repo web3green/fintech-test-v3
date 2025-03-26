@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { toast } from 'sonner';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { processContactForm } from '@/utils/contactApi';
 
 interface FormData {
   name: string;
@@ -26,9 +27,6 @@ export function ContactFormFields() {
     service: '',
     message: '',
   });
-  
-  // Replace with your actual Make webhook URL
-  const MAKE_WEBHOOK_URL = "https://hook.eu1.make.com/yourwebhookendpoint";
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -44,21 +42,13 @@ export function ContactFormFields() {
     setIsSubmitting(true);
     
     try {
-      // Send data to Make webhook
-      const response = await fetch(MAKE_WEBHOOK_URL, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          ...formData,
-          timestamp: new Date().toISOString(),
-          source: window.location.href
-        }),
-        mode: 'no-cors' // Use no-cors mode since webhook may not support CORS
+      // Process the form submission using the utility function
+      await processContactForm({
+        name: formData.name,
+        email: formData.email,
+        message: `Phone: ${formData.phone}\nService: ${formData.service}\nMessage: ${formData.message}`,
       });
       
-      console.log('Form submitted to Make webhook:', formData);
       toast.success(t('contact.success'));
       
       // Reset form
@@ -71,78 +61,86 @@ export function ContactFormFields() {
       });
     } catch (error) {
       console.error('Error submitting form:', error);
-      toast.error('An error occurred while submitting the form. Please try again.');
+      toast.error(t('contact.error'));
     } finally {
       setIsSubmitting(false);
     }
   };
 
   return (
-    <div className="p-8 md:p-12">
-      <h3 className="text-2xl font-display font-bold mb-6">{t('contact.form.title')}</h3>
+    <div className="p-8 md:p-12 md:w-2/3">
+      <h3 className="text-2xl font-bold text-white mb-6">{t('contact.form.title')}</h3>
       <form onSubmit={handleSubmit} className="space-y-6">
-        <div className="space-y-2">
-          <Label htmlFor="name">{t('contact.form.name')}</Label>
-          <Input 
-            id="name" 
-            name="name" 
-            placeholder="John Doe" 
-            required
-            value={formData.name}
-            onChange={handleChange}
-          />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="space-y-2">
+            <Label htmlFor="name" className="text-white">{t('contact.form.name')}</Label>
+            <Input 
+              id="name" 
+              name="name" 
+              placeholder={t('contact.form.namePlaceholder')}
+              required
+              value={formData.name}
+              onChange={handleChange}
+              className="bg-white/10 border-white/20 text-white placeholder:text-white/50 focus-visible:ring-blue-400"
+            />
+          </div>
+          
+          <div className="space-y-2">
+            <Label htmlFor="email" className="text-white">{t('contact.form.email')}</Label>
+            <Input 
+              id="email" 
+              name="email" 
+              type="email" 
+              placeholder={t('contact.form.emailPlaceholder')}
+              required
+              value={formData.email}
+              onChange={handleChange}
+              className="bg-white/10 border-white/20 text-white placeholder:text-white/50 focus-visible:ring-blue-400"
+            />
+          </div>
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="space-y-2">
+            <Label htmlFor="phone" className="text-white">{t('contact.form.phone')}</Label>
+            <Input 
+              id="phone" 
+              name="phone" 
+              placeholder="+44 7123 456789" 
+              required
+              value={formData.phone}
+              onChange={handleChange}
+              className="bg-white/10 border-white/20 text-white placeholder:text-white/50 focus-visible:ring-blue-400"
+            />
+          </div>
+          
+          <div className="space-y-2">
+            <Label htmlFor="service" className="text-white">{t('contact.form.service')}</Label>
+            <Select value={formData.service} onValueChange={handleServiceChange}>
+              <SelectTrigger className="bg-white/10 border-white/20 text-white focus:ring-blue-400">
+                <SelectValue placeholder={t('contact.form.select')} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="company_registration">{t('contact.service.registration')}</SelectItem>
+                <SelectItem value="bank_account">{t('contact.service.accounts')}</SelectItem>
+                <SelectItem value="nominee_service">{t('contact.service.nominee')}</SelectItem>
+                <SelectItem value="license">{t('contact.service.licenses')}</SelectItem>
+                <SelectItem value="other">{t('contact.service.other')}</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
         </div>
         
         <div className="space-y-2">
-          <Label htmlFor="email">{t('contact.form.email')}</Label>
-          <Input 
-            id="email" 
-            name="email" 
-            type="email" 
-            placeholder="name@example.com" 
-            required
-            value={formData.email}
-            onChange={handleChange}
-          />
-        </div>
-        
-        <div className="space-y-2">
-          <Label htmlFor="phone">{t('contact.form.phone')}</Label>
-          <Input 
-            id="phone" 
-            name="phone" 
-            placeholder="+44 7123 456789" 
-            required
-            value={formData.phone}
-            onChange={handleChange}
-          />
-        </div>
-        
-        <div className="space-y-2">
-          <Label htmlFor="service">{t('contact.form.service')}</Label>
-          <Select value={formData.service} onValueChange={handleServiceChange}>
-            <SelectTrigger>
-              <SelectValue placeholder={t('contact.form.select')} />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="company_registration">{t('contact.service.registration')}</SelectItem>
-              <SelectItem value="bank_account">{t('contact.service.accounts')}</SelectItem>
-              <SelectItem value="nominee_service">{t('contact.service.nominee')}</SelectItem>
-              <SelectItem value="license">{t('contact.service.licenses')}</SelectItem>
-              <SelectItem value="other">{t('contact.service.other')}</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-        
-        <div className="space-y-2">
-          <Label htmlFor="message">{t('contact.form.message')}</Label>
+          <Label htmlFor="message" className="text-white">{t('contact.form.message')}</Label>
           <Textarea 
             id="message" 
             name="message" 
             rows={4} 
-            placeholder="Tell us more about your request..."
+            placeholder={t('contact.form.messagePlaceholder')}
             value={formData.message}
             onChange={handleChange}
+            className="bg-white/10 border-white/20 text-white placeholder:text-white/50 focus-visible:ring-blue-400"
           />
         </div>
         

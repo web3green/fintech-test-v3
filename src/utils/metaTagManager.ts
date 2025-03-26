@@ -198,11 +198,12 @@ export const blockHeartIcon = () => {
     });
     
     if (containsHeartPath) {
-      // Fix TypeScript error: Cast to HTMLElement for style properties
-      const htmlSvg = svg as HTMLElement;
-      htmlSvg.style.display = 'none';
-      htmlSvg.style.visibility = 'hidden';
-      htmlSvg.style.opacity = '0';
+      // Fix TypeScript error: properly handle SVGSVGElement by checking the type first
+      if (svg instanceof SVGElement) {
+        svg.style.display = 'none';
+        svg.style.visibility = 'hidden';
+        svg.style.opacity = '0';
+      }
     }
   });
   
@@ -341,12 +342,18 @@ export const scanAndRemoveHeartIcons = () => {
   
   allElements.forEach(element => {
     if (isHeartIcon(element)) {
-      // Fix TypeScript error: Cast to HTMLElement for style properties
-      const htmlElement = element as HTMLElement;
-      htmlElement.style.display = 'none';
-      htmlElement.style.visibility = 'hidden';
-      htmlElement.style.opacity = '0';
-      htmlElement.style.pointerEvents = 'none';
+      // Properly handle different element types
+      if (element instanceof HTMLElement) {
+        element.style.display = 'none';
+        element.style.visibility = 'hidden';
+        element.style.opacity = '0';
+        element.style.pointerEvents = 'none';
+      } else if (element instanceof SVGElement) {
+        // Handle SVG elements
+        element.style.display = 'none';
+        element.style.visibility = 'hidden';
+        element.style.opacity = '0';
+      }
       removedElements++;
     }
   });
@@ -359,11 +366,16 @@ export const scanAndRemoveHeartIcons = () => {
   
   // Also specifically target GPTEngineer elements that might be added dynamically
   document.querySelectorAll('[data-gptengineer], [data-gpteng], .gptengineer, .gpteng').forEach(el => {
-    // Fix TypeScript error: Cast to HTMLElement for style properties
-    const htmlEl = el as HTMLElement;
-    htmlEl.style.display = 'none';
-    htmlEl.style.visibility = 'hidden';
-    htmlEl.remove();
+    // Properly handle different element types
+    if (el instanceof HTMLElement) {
+      el.style.display = 'none';
+      el.style.visibility = 'hidden';
+      el.remove();
+    } else if (el instanceof SVGElement) {
+      el.style.display = 'none';
+      el.style.visibility = 'hidden';
+      el.remove();
+    }
   });
   
   // Look for scripts related to GPTEngineer

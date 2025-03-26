@@ -17,6 +17,8 @@ export default function Services() {
       description: t('services.registration.desc'),
       icon: Building2,
       color: 'bg-gradient-to-br from-fintech-blue to-fintech-blue-light',
+      textColor: 'text-white dark:text-black',
+      bgColor: 'bg-black dark:bg-white',
       features: [
         'Fast company registration in 10+ jurisdictions',
         'Full legal compliance and documentation',
@@ -31,6 +33,8 @@ export default function Services() {
       description: t('services.accounts.desc'),
       icon: BarChart4,
       color: 'bg-gradient-to-br from-fintech-orange to-fintech-orange-light',
+      textColor: 'text-white dark:text-black',
+      bgColor: 'bg-black dark:bg-white',
       features: [
         'Personal and business account opening',
         'Multi-currency accounts',
@@ -45,6 +49,8 @@ export default function Services() {
       description: t('services.nominee.desc'),
       icon: UserCog,
       color: 'bg-gradient-to-br from-purple-500 to-purple-400',
+      textColor: 'text-white dark:text-black',
+      bgColor: 'bg-black dark:bg-white',
       features: [
         'Professional nominee directors',
         'Nominee shareholders',
@@ -59,6 +65,8 @@ export default function Services() {
       description: t('services.licenses.desc'),
       icon: BadgeCheck,
       color: 'bg-gradient-to-br from-emerald-500 to-emerald-400',
+      textColor: 'text-white dark:text-black',
+      bgColor: 'bg-black dark:bg-white',
       features: [
         'Financial services licensing',
         'Payment processing licenses',
@@ -119,8 +127,8 @@ export default function Services() {
                 >
                   <div className={`${index % 2 !== 0 ? 'md:order-2' : ''}`}>
                     <div className="inline-flex items-center space-x-2 mb-4">
-                      <div className={`p-3 rounded-lg ${service.color} shadow-lg relative`}>
-                        <service.icon className="h-6 w-6 text-white" />
+                      <div className={`p-3 rounded-lg ${service.color} ${service.bgColor} shadow-lg relative`}>
+                        <service.icon className={`h-6 w-6 ${service.textColor}`} />
                         <div className="absolute inset-0 rounded-lg">
                           <GlowingEffect 
                             blur={1} 

@@ -4,7 +4,7 @@ import { ContactBanner } from './contact/ContactBanner';
 import { ContactFormFields } from './contact/ContactFormFields';
 
 export function ContactForm() {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   
   return (
     <section id="contact" className="section-padding bg-blue-500 contact-form-section relative overflow-hidden">
@@ -32,8 +32,10 @@ export function ContactForm() {
                 <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
               </svg>
             </div>
-            <h3 className="text-xl font-semibold mb-2 text-white">Электронная почта</h3>
-            <p className="text-white/80 mb-4">Напишите нам на почту для получения консультации</p>
+            <h3 className="text-xl font-semibold mb-2 text-white">{language === 'en' ? 'Email' : 'Электронная почта'}</h3>
+            <p className="text-white/80 mb-4">
+              {language === 'en' ? 'Write to us for a consultation' : 'Напишите нам на почту для получения консультации'}
+            </p>
             <a href="mailto:info@fintech-assist.com" className="text-white font-medium hover:text-blue-100 transition-colors">
               info@fintech-assist.com
             </a>
@@ -45,8 +47,10 @@ export function ContactForm() {
                 <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
               </svg>
             </div>
-            <h3 className="text-xl font-semibold mb-2 text-white">Телефон</h3>
-            <p className="text-white/80 mb-4">Позвоните нам для быстрой консультации по вашему вопросу</p>
+            <h3 className="text-xl font-semibold mb-2 text-white">{language === 'en' ? 'Phone' : 'Телефон'}</h3>
+            <p className="text-white/80 mb-4">
+              {language === 'en' ? 'Call us for a quick consultation on your question' : 'Позвоните нам для быстрой консультации по вашему вопросу'}
+            </p>
             <a href="tel:+447450574905" className="text-white font-medium hover:text-blue-100 transition-colors">
               +44 7450 574905
             </a>
@@ -59,8 +63,10 @@ export function ContactForm() {
                 <path d="m8.95 12.37 1.1 3.19a.5.5 0 0 0 .85.13l1.67-1.96a.5.5 0 0 1 .67-.06l3.13 2.3a.5.5 0 0 0 .79-.4L18.5 7.96a.5.5 0 0 0-.67-.59L7.76 11.29a.5.5 0 0 0 .05.94l1.14.14Z"></path>
               </svg>
             </div>
-            <h3 className="text-xl font-semibold mb-2 text-white">Телеграм</h3>
-            <p className="text-white/80 mb-4">Напишите нам в Телеграм для оперативного решения вопросов</p>
+            <h3 className="text-xl font-semibold mb-2 text-white">{language === 'en' ? 'Telegram' : 'Телеграм'}</h3>
+            <p className="text-white/80 mb-4">
+              {language === 'en' ? 'Message us on Telegram for prompt resolution of issues' : 'Напишите нам в Телеграм для оперативного решения вопросов'}
+            </p>
             <a href="https://t.me/fintech_assist" target="_blank" rel="noreferrer" className="text-white font-medium hover:text-blue-100 transition-colors">
               @fintech_assist
             </a>
@@ -69,7 +75,9 @@ export function ContactForm() {
         
         <div className="mt-12 text-center animate-fade-up" style={{ animationDelay: '300ms' }}>
           <div className="inline-flex items-center justify-center bg-white/10 backdrop-blur-sm rounded-full px-6 py-2 border border-white/20">
-            <p className="text-white text-sm">Готовы начать сотрудничество? Выберите удобный способ связи</p>
+            <p className="text-white text-sm">
+              {language === 'en' ? 'Ready to start working together? Choose a convenient way to contact us' : 'Готовы начать сотрудничество? Выберите удобный способ связи'}
+            </p>
           </div>
         </div>
 
@@ -83,9 +91,13 @@ export function ContactForm() {
               {/* Contact Info */}
               <div className="md:w-1/3 bg-blue-600 bg-opacity-40 backdrop-blur-sm p-8 flex flex-col justify-center">
                 <div className="mb-8">
-                  <h3 className="text-2xl font-bold text-white mb-3">Получите персональную консультацию</h3>
+                  <h3 className="text-2xl font-bold text-white mb-3">
+                    {language === 'en' ? 'Get a personal consultation' : 'Получите персональную консультацию'}
+                  </h3>
                   <p className="text-white/80">
-                    Заполните форму, и наши специалисты свяжутся с вами в ближайшее время для обсуждения вашего запроса.
+                    {language === 'en' 
+                      ? 'Fill out the form and our specialists will contact you shortly to discuss your request.'
+                      : 'Заполните форму, и наши специалисты свяжутся с вами в ближайшее время для обсуждения вашего запроса.'}
                   </p>
                 </div>
                 
@@ -97,7 +109,9 @@ export function ContactForm() {
                         <path d="M12 2a8 8 0 0 0-8 8c0 1.892.402 3.13 1.5 4.5L12 22l6.5-7.5c1.098-1.37 1.5-2.608 1.5-4.5a8 8 0 0 0-8-8Z"></path>
                       </svg>
                     </div>
-                    <p className="text-white/90 text-sm">Лондон, Великобритания</p>
+                    <p className="text-white/90 text-sm">
+                      {language === 'en' ? 'London, United Kingdom' : 'Лондон, Великобритания'}
+                    </p>
                   </div>
                   
                   <div className="flex items-center gap-3">

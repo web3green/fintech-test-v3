@@ -1,4 +1,3 @@
-
 import { createRoot } from 'react-dom/client'
 import App from './App.tsx'
 import './index.css'
@@ -263,13 +262,15 @@ if (import.meta.hot) {
   try {
     console.log('Setting up HMR handlers - environment ready');
     
-    // Log environment variables to help with debugging
-    console.log('HMR Config:', {
-      name: 'vite',
-      protocol: 'ws',
-      host: 'localhost',
-      port: 8080
-    });
+    // Define HMR configuration for debug visibility
+    const hmrConfig = {
+      name: "vite",
+      protocol: "ws",
+      host: "localhost",
+      port: "8080"
+    };
+    
+    console.log('HMR Config:', hmrConfig);
     
     // Correctly configured HMR acceptance for App component
     import.meta.hot.accept('./App.tsx', () => {

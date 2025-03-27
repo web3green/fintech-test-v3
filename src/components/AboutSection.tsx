@@ -31,7 +31,7 @@ export function AboutSection() {
                           <div className="text-sm md:text-base font-medium text-gray-900 dark:text-white">
                             <span className="text-foreground dark:text-foreground">FinTechAssist</span>
                           </div>
-                          <div className="text-xs text-gray-600 dark:text-white/70">{language === 'en' ? 'Your global fintech partner' : 'Ваш глобальный финтех-партнер'}</div>
+                          <div className="text-xs text-gray-600 dark:text-white/70">{t('about.card.slogan')}</div>
                         </div>
                       </div>
                       

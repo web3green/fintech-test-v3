@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -198,7 +199,7 @@ const App = () => {
         <MetaTagUpdater />
         <VersionChecker />
         <Toaster />
-        <Sonner position="top-right" />
+        <Sonner />
         {isLoaded && (
           <BrowserRouter>
             <Routes>

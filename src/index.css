@@ -104,6 +104,7 @@
   
   [data-language-change], [data-language] {
     animation: flash-update 1ms;
+    transition: opacity 0.01s;
   }
   
   @keyframes flash-update {
@@ -113,10 +114,12 @@
   
   html[lang="ru"] .text-balance {
     text-wrap: balance;
+    overflow-wrap: break-word;
   }
   
   html[lang="en"] .text-balance {
     text-wrap: pretty;
+    overflow-wrap: break-word;
   }
   
   html[lang="ru"] .lang-sensitive {
@@ -133,6 +136,16 @@
   
   @keyframes lang-update-en {
     to { opacity: 1; }
+  }
+  
+  html[lang="ru"] [data-language="ru"],
+  html[lang="en"] [data-language="en"] {
+    animation: force-repaint 1ms;
+  }
+  
+  @keyframes force-repaint {
+    from { transform: translateZ(0); }
+    to { transform: translateZ(0); }
   }
 }
 
@@ -248,11 +261,14 @@ html[data-language="ru"] .font-display {
 html[lang="ru"] .force-update-on-language-change,
 html[lang="en"] .force-update-on-language-change {
   animation: force-repaint 1ms;
+  contain: none !important;
 }
 
-@keyframes force-repaint {
-  from { transform: translateZ(0); }
-  to { transform: translateZ(0); }
+html[lang="ru"] [data-i18n],
+html[lang="en"] [data-i18n] {
+  content-visibility: visible !important;
+  contain: none !important;
+  animation: force-repaint 1ms;
 }
 
 .content-overflow {

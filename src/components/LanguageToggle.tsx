@@ -39,6 +39,28 @@ export function LanguageToggle() {
       detail: { language: newLanguage, timestamp: Date.now() } 
     }));
     
+    // Агрессивное обновление кэша стилей
+    document.querySelectorAll('link[rel="stylesheet"]').forEach(linkEl => {
+      if (linkEl instanceof HTMLLinkElement && linkEl.href) {
+        const url = new URL(linkEl.href);
+        url.searchParams.set('_lang', `${newLanguage}_${Date.now()}`);
+        
+        // Создаем новый элемент стиля для принудительной перезагрузки
+        const newLink = document.createElement('link');
+        newLink.rel = 'stylesheet';
+        newLink.href = url.toString();
+        newLink.onload = () => {
+          try {
+            // После загрузки нового стиля удаляем старый
+            linkEl.remove();
+          } catch (e) {
+            console.warn('Не удалось удалить старый стиль:', e);
+          }
+        };
+        document.head.appendChild(newLink);
+      }
+    });
+    
     // Показываем небольшое уведомление о смене языка
     toast({
       title: newLanguage === 'ru' ? "Язык изменен на Русский" : "Language changed to English",
@@ -50,16 +72,7 @@ export function LanguageToggle() {
     setTimeout(() => {
       document.documentElement.style.opacity = '1';
       
-      // Добавим обновление всех существующих стилей
-      document.querySelectorAll('link[rel="stylesheet"]').forEach(linkEl => {
-        if (linkEl instanceof HTMLLinkElement && linkEl.href) {
-          const url = new URL(linkEl.href);
-          url.searchParams.set('_lang', `${newLanguage}_${Date.now()}`);
-          linkEl.href = url.toString();
-        }
-      });
-      
-      // Создадим временный стиль для принудительного обновления
+      // Создаем временный стиль для принудительного обновления
       const forceStyle = document.createElement('style');
       forceStyle.textContent = `
         [data-language="${newLanguage}"] * {
@@ -72,10 +85,50 @@ export function LanguageToggle() {
       `;
       document.head.appendChild(forceStyle);
       
+      // Принудительно обновляем все компоненты с атрибутом data-language
+      document.querySelectorAll('[data-language]').forEach(el => {
+        el.setAttribute('data-language-change', Date.now().toString());
+      });
+      
+      // Распространяем событие смены языка глубже в DOM
+      document.querySelectorAll('.force-update-on-language-change').forEach(el => {
+        // Создадим временный DOM-элемент для триггера перерисовки
+        const trigger = document.createElement('span');
+        trigger.className = 'language-update-trigger';
+        trigger.style.display = 'none';
+        trigger.dataset.timestamp = Date.now().toString();
+        
+        // Добавим и затем удалим для гарантированного перерендера
+        el.appendChild(trigger);
+        setTimeout(() => trigger.remove(), 100);
+        
+        // Также обновим любые ключи компонентов если есть
+        if (el.hasAttribute('key')) {
+          el.setAttribute('key', `${el.getAttribute('key')}-${Date.now()}`);
+        }
+      });
+      
       // Удаляем временный стиль через секунду
       setTimeout(() => {
         forceStyle.remove();
         setAnimating(false);
+        
+        // Дополнительная проверка после окончания анимации для гарантии обновления
+        if (document.documentElement.getAttribute('lang') !== newLanguage) {
+          console.warn('Обнаружено несоответствие языков после анимации, исправляем...');
+          document.documentElement.setAttribute('lang', newLanguage);
+          document.documentElement.setAttribute('data-language', newLanguage);
+        }
+        
+        // Запускаем дополнительный обход DOM для поиска неактуализированных элементов
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+          el.setAttribute('data-i18n-updated', Date.now().toString());
+        });
+        
+        // Запускаем глобальное событие для обновления любых компонентов,
+        // которые могут слушать его для обновления своего содержимого
+        window.dispatchEvent(new Event('forceRender'));
+        
       }, 1000);
     }, 100);
   };
@@ -88,6 +141,12 @@ export function LanguageToggle() {
         if (storedLang && storedLang !== language && (storedLang === 'en' || storedLang === 'ru')) {
           console.log(`🌍 LanguageToggle: обнаружено несоответствие языка. Storage: ${storedLang}, Context: ${language}`);
           setLanguage(storedLang as 'en' | 'ru');
+          
+          // Убедимся, что HTML также имеет правильные атрибуты
+          if (document.documentElement.getAttribute('lang') !== storedLang) {
+            document.documentElement.setAttribute('lang', storedLang);
+            document.documentElement.setAttribute('data-language', storedLang);
+          }
         }
       } catch (e) {
         console.warn('Ошибка при чтении языка из localStorage:', e);
@@ -107,10 +166,15 @@ export function LanguageToggle() {
     
     document.addEventListener('visibilitychange', handleVisibilityChange);
     
+    // Также добавим проверку через несколько секунд после монтирования
+    // для устранения проблем асинхронной загрузки
+    const timeoutId = setTimeout(syncLanguage, 2000);
+    
     return () => {
       document.removeEventListener('visibilitychange', handleVisibilityChange);
+      clearTimeout(timeoutId);
     };
-  }, []);
+  }, [language, setLanguage]);
   
   return (
     <Button 

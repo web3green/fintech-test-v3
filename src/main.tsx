@@ -1,3 +1,4 @@
+
 import { createRoot } from 'react-dom/client'
 import App from './App.tsx'
 import './index.css'
@@ -260,7 +261,15 @@ root.render(<App />);
 // Add explicit HMR handling for development mode
 if (import.meta.hot) {
   try {
-    console.log('Setting up HMR handlers');
+    console.log('Setting up HMR handlers - environment ready');
+    
+    // Log environment variables to help with debugging
+    console.log('HMR Config:', {
+      name: 'vite',
+      protocol: 'ws',
+      host: 'localhost',
+      port: 8080
+    });
     
     // Correctly configured HMR acceptance for App component
     import.meta.hot.accept('./App.tsx', () => {
@@ -282,7 +291,7 @@ if (import.meta.hot) {
       // On critical errors, refresh the page
       if (error && error.message && error.message.includes('syntax')) {
         console.log('Critical HMR error detected, refreshing page...');
-        setTimeout(() => window.location.reload(), 1000);
+        window.location.reload();
       }
     });
   } catch (err) {

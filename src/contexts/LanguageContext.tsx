@@ -121,6 +121,42 @@ const translations = {
     'footer.rights': 'All rights reserved.',
     'footer.privacy': 'Privacy Policy',
     'footer.terms': 'Terms of Use',
+    
+    // Industries Section
+    'industries.title': 'Global Financial Solutions',
+    'industries.fintech': 'Fintech',
+    'industries.ecommerce': 'E-commerce',
+    'industries.blockchain': 'Blockchain',
+    'industries.startups': 'Startups',
+    'industries.neobanks': 'Neobanks',
+    'industries.wallets': 'Digital Wallets',
+    'industries.gaming': 'Gaming',
+    'industries.saas': 'SaaS',
+    'industries.edtech': 'EdTech',
+    
+    // Banking & Licenses
+    'banking.title': 'Banking',
+    'banking.subtitle': 'Accounts Worldwide',
+    'licenses.title': 'Licenses',
+    'licenses.emi': 'EMI',
+    'licenses.crypto': 'Crypto',
+    'licenses.igaming': 'iGaming',
+    'licenses.psp': 'PSP',
+    'licenses.gambling': 'Gambling',
+    'licenses.emoney': 'E-Money',
+    
+    // Jurisdictions
+    'jurisdictions.title': 'Global Jurisdictions',
+    'jurisdictions.mga': 'MGA',
+    'jurisdictions.curacao': 'Curaçao',
+    'jurisdictions.fca': 'FCA',
+    'jurisdictions.aml5': 'AML5',
+    'jurisdictions.casino': 'Casino Compliance',
+    
+    // Stats
+    'stats.countries': '15+ Countries',
+    'stats.clients': '500+ Clients',
+    'stats.years': '9+ Years',
   },
   ru: {
     // Header
@@ -233,6 +269,42 @@ const translations = {
     'footer.rights': 'Все права защищены.',
     'footer.privacy': 'Политика конфиденциальности',
     'footer.terms': 'Условия использования',
+    
+    // Industries Section
+    'industries.title': 'Глобальные финансовые решения',
+    'industries.fintech': 'Финтех',
+    'industries.ecommerce': 'Электронная коммерция',
+    'industries.blockchain': 'Блокчейн',
+    'industries.startups': 'Стартапы',
+    'industries.neobanks': 'Необанки',
+    'industries.wallets': 'Цифровые кошельки',
+    'industries.gaming': 'Гейминг',
+    'industries.saas': 'SaaS',
+    'industries.edtech': 'EdTech',
+    
+    // Banking & Licenses
+    'banking.title': 'Банкинг',
+    'banking.subtitle': 'Счета по всему миру',
+    'licenses.title': 'Лицензии',
+    'licenses.emi': 'EMI',
+    'licenses.crypto': 'Крипто',
+    'licenses.igaming': 'iGaming',
+    'licenses.psp': 'PSP',
+    'licenses.gambling': 'Гемблинг',
+    'licenses.emoney': 'Электронные деньги',
+    
+    // Jurisdictions
+    'jurisdictions.title': 'Глобальные юрисдикции',
+    'jurisdictions.mga': 'MGA',
+    'jurisdictions.curacao': 'Кюрасао',
+    'jurisdictions.fca': 'FCA',
+    'jurisdictions.aml5': 'AML5',
+    'jurisdictions.casino': 'Казино-комплаенс',
+    
+    // Stats
+    'stats.countries': '15+ Стран',
+    'stats.clients': '500+ Клиентов',
+    'stats.years': '9+ Лет опыта',
   }
 };
 

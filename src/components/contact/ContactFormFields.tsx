@@ -61,7 +61,7 @@ export function ContactFormFields() {
       });
     } catch (error) {
       console.error('Error submitting form:', error);
-      toast.error(language === 'en' ? 'Error sending message. Please try again.' : 'Ошибка отправки сообщения. Пожалуйста, попробуйте еще раз.');
+      toast.error(t('contact.error'));
     } finally {
       setIsSubmitting(false);
     }
@@ -77,7 +77,7 @@ export function ContactFormFields() {
             <Input 
               id="name" 
               name="name" 
-              placeholder={language === 'en' ? 'Your name' : 'Ваше имя'}
+              placeholder={t('contact.form.namePlaceholder')}
               required
               value={formData.name}
               onChange={handleChange}
@@ -91,7 +91,7 @@ export function ContactFormFields() {
               id="email" 
               name="email" 
               type="email" 
-              placeholder={language === 'en' ? 'Your email' : 'Ваша электронная почта'}
+              placeholder={t('contact.form.emailPlaceholder')}
               required
               value={formData.email}
               onChange={handleChange}
@@ -137,7 +137,7 @@ export function ContactFormFields() {
             id="message" 
             name="message" 
             rows={4} 
-            placeholder={language === 'en' ? 'Your message' : 'Ваше сообщение'}
+            placeholder={t('contact.form.messagePlaceholder')}
             value={formData.message}
             onChange={handleChange}
             className="bg-white/10 border-white/20 text-white placeholder:text-white/50 focus-visible:ring-blue-400"

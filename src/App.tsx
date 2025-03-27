@@ -8,61 +8,34 @@ import { useEffect, useRef } from 'react';
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Admin from "./pages/Admin";
-import { updateSocialMetaTags, blockHeartIcon, enforceOurFavicon, scanAndRemoveHeartIcons } from "./utils/metaTagManager";
+import { updateSocialMetaTags, enforceOurFavicon } from "./utils/metaTagManager";
 
 const queryClient = new QueryClient();
 
-// Enhanced component for managing meta tags - let's add more logging for debugging
+// Enhanced component for managing meta tags
 const MetaTagUpdater = () => {
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   
   useEffect(() => {
     console.log('MetaTagUpdater mounted - setting up watchers');
     
-    // Initial update and block heart icon
+    // Initial update
     updateSocialMetaTags();
-    blockHeartIcon();
     enforceOurFavicon();
-    scanAndRemoveHeartIcons();
     
-    // Set up interval for continuous updates (every 500ms)
+    // Set up interval for continuous updates (every 2 seconds)
     intervalRef.current = setInterval(() => {
       console.log('MetaTagUpdater interval check');
       updateSocialMetaTags();
-      blockHeartIcon();
       enforceOurFavicon();
-      scanAndRemoveHeartIcons();
-    }, 500);
-    
-    // Additional immediate updates with increased frequency
-    for (let i = 1; i <= 10; i++) {
-      setTimeout(() => {
-        updateSocialMetaTags();
-        blockHeartIcon();
-        enforceOurFavicon();
-        scanAndRemoveHeartIcons();
-      }, i * 50); // Every 50ms for 500ms
-    }
+    }, 2000);
     
     // Also update on visibility change (tab focus)
     const handleVisibilityChange = () => {
       if (document.visibilityState === 'visible') {
         console.log('Tab became visible - updating branding');
-        // Update multiple times when tab becomes visible
         updateSocialMetaTags();
-        blockHeartIcon();
         enforceOurFavicon();
-        scanAndRemoveHeartIcons();
-        
-        // Schedule additional updates
-        for (let i = 1; i <= 10; i++) {
-          setTimeout(() => {
-            updateSocialMetaTags();
-            blockHeartIcon();
-            enforceOurFavicon();
-            scanAndRemoveHeartIcons();
-          }, i * 100);
-        }
       }
     };
     
@@ -72,9 +45,7 @@ const MetaTagUpdater = () => {
     window.addEventListener('online', () => {
       console.log('Network came online - updating branding');
       updateSocialMetaTags();
-      blockHeartIcon();
       enforceOurFavicon();
-      scanAndRemoveHeartIcons();
     });
     
     // Clean up interval on unmount
@@ -101,21 +72,9 @@ const App = () => {
       document.documentElement.classList.add('dark');
     }
     
-    // Ensure meta tags are set at component mount and block heart icon
+    // Ensure meta tags are set at component mount
     updateSocialMetaTags();
-    blockHeartIcon();
     enforceOurFavicon();
-    scanAndRemoveHeartIcons();
-    
-    // Additional updates after short delays with increased frequency
-    for (let i = 1; i <= 20; i++) {
-      setTimeout(() => {
-        updateSocialMetaTags();
-        blockHeartIcon();
-        enforceOurFavicon();
-        scanAndRemoveHeartIcons();
-      }, i * 100);
-    }
     
     // Create a MutationObserver to detect when new elements are added to the DOM
     const observer = new MutationObserver((mutations) => {
@@ -123,7 +82,7 @@ const App = () => {
       
       mutations.forEach(mutation => {
         if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
-          // Check if any added nodes contain heart icons or are from gptengineer
+          // Check if any added nodes are favicon links
           mutation.addedNodes.forEach(node => {
             if (node.nodeType === Node.ELEMENT_NODE) {
               const element = node as Element;
@@ -137,12 +96,6 @@ const App = () => {
                 console.log('Detected non-FinTechAssist favicon:', element.getAttribute('href'));
                 needsUpdate = true;
               }
-              
-              // Look for any SVG elements that might contain heart paths
-              if (element.tagName === 'SVG') {
-                console.log('New SVG element detected - checking for heart paths');
-                needsUpdate = true;
-              }
             }
           });
         }
@@ -151,9 +104,7 @@ const App = () => {
       if (needsUpdate) {
         console.log('DOM mutations detected - updating branding');
         updateSocialMetaTags();
-        blockHeartIcon();
         enforceOurFavicon();
-        scanAndRemoveHeartIcons();
       }
     });
     
@@ -162,7 +113,7 @@ const App = () => {
       childList: true,
       subtree: true,
       attributes: true,
-      attributeFilter: ['rel', 'href', 'src', 'class', 'id']
+      attributeFilter: ['rel', 'href']
     });
     
     // Clean up observer on unmount

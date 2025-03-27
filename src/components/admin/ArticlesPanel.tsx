@@ -20,6 +20,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { supabase } from "@/integrations/supabase/client";
 
 const articleSchema = z.object({
   title: z.string().min(3, { message: "Title must be at least 3 characters" }),
@@ -34,19 +35,8 @@ const articleSchema = z.object({
 export const ArticlesPanel = () => {
   const { language } = useLanguage();
   const [selectedArticle, setSelectedArticle] = useState(null);
-  
-  const [articles, setArticles] = useState(() => {
-    const savedArticles = localStorage.getItem("articles");
-    return savedArticles ? JSON.parse(savedArticles) : [
-      { id: 1, title: "The Future of Fintech", content: "Exploring trends in financial technology", category: "Technology", published: true, date: "2023-05-15", resourceName: "Finance Blog", resourceUrl: "https://financeblog.com", articleFormat: "Guest Post" },
-      { id: 2, title: "Investment Strategies for 2023", content: "How to build a resilient portfolio", category: "Investment", published: true, date: "2023-05-10", resourceName: "Investing Daily", resourceUrl: "https://investingdaily.com", articleFormat: "Interview" },
-      { id: 3, title: "Cryptocurrency Market Analysis", content: "Understanding the volatile crypto landscape", category: "Crypto", published: false, date: "2023-05-05", resourceName: "Crypto News", resourceUrl: "https://cryptonews.com", articleFormat: "Analysis" },
-    ];
-  });
-  
-  useEffect(() => {
-    localStorage.setItem("articles", JSON.stringify(articles));
-  }, [articles]);
+  const [articles, setArticles] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   
   const articleForm = useForm({
     resolver: zodResolver(articleSchema),
@@ -61,27 +51,106 @@ export const ArticlesPanel = () => {
     },
   });
   
-  const handleArticleSubmit = (data) => {
-    if (selectedArticle) {
-      const updatedArticles = articles.map(article => 
-        article.id === selectedArticle.id 
-          ? { ...article, ...data, date: new Date().toISOString().split('T')[0] }
-          : article
-      );
-      setArticles(updatedArticles);
-      toast.success(language === 'en' ? "Article updated successfully" : "Статья успешно обновлена");
-    } else {
-      const newArticle = {
-        id: articles.length ? Math.max(...articles.map(a => a.id)) + 1 : 1,
-        ...data,
-        date: new Date().toISOString().split('T')[0]
-      };
-      setArticles([...articles, newArticle]);
-      toast.success(language === 'en' ? "Article created successfully" : "Статья успешно создана");
+  // Fetch articles from Supabase
+  const fetchArticles = async () => {
+    setIsLoading(true);
+    try {
+      const { data, error } = await supabase
+        .from('articles')
+        .select('*')
+        .order('created_at', { ascending: false });
+      
+      if (error) {
+        throw error;
+      }
+      
+      setArticles(data || []);
+    } catch (error) {
+      toast.error(language === 'en' 
+        ? `Error fetching articles: ${error.message}` 
+        : `Ошибка при загрузке статей: ${error.message}`);
+    } finally {
+      setIsLoading(false);
     }
+  };
+  
+  useEffect(() => {
+    fetchArticles();
     
-    articleForm.reset();
-    setSelectedArticle(null);
+    // Subscribe to real-time changes
+    const channel = supabase
+      .channel('schema-db-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'articles'
+        },
+        (payload) => {
+          fetchArticles();
+        }
+      )
+      .subscribe();
+      
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, []);
+  
+  const handleArticleSubmit = async (data) => {
+    try {
+      if (selectedArticle) {
+        // Update existing article
+        const { error } = await supabase
+          .from('articles')
+          .update({
+            title: data.title,
+            content: data.content,
+            category: data.category,
+            published: data.published,
+            resource_name: data.resourceName,
+            resource_url: data.resourceUrl,
+            article_format: data.articleFormat,
+            updated_at: new Date()
+          })
+          .eq('id', selectedArticle.id);
+          
+        if (error) throw error;
+        
+        toast.success(language === 'en' 
+          ? "Article updated successfully" 
+          : "Статья успешно обновлена");
+      } else {
+        // Create new article
+        const { error } = await supabase
+          .from('articles')
+          .insert({
+            title: data.title,
+            content: data.content,
+            category: data.category,
+            published: data.published,
+            resource_name: data.resourceName,
+            resource_url: data.resourceUrl,
+            article_format: data.articleFormat,
+            date: new Date()
+          });
+          
+        if (error) throw error;
+        
+        toast.success(language === 'en' 
+          ? "Article created successfully" 
+          : "Статья успешно создана");
+      }
+      
+      articleForm.reset();
+      setSelectedArticle(null);
+      fetchArticles();
+    } catch (error) {
+      toast.error(language === 'en' 
+        ? `Error saving article: ${error.message}` 
+        : `Ошибка при сохранении статьи: ${error.message}`);
+    }
   };
 
   const handleEditArticle = (article) => {
@@ -91,15 +160,31 @@ export const ArticlesPanel = () => {
       content: article.content,
       category: article.category,
       published: article.published,
-      resourceName: article.resourceName || "",
-      resourceUrl: article.resourceUrl || "",
-      articleFormat: article.articleFormat || "",
+      resourceName: article.resource_name || "",
+      resourceUrl: article.resource_url || "",
+      articleFormat: article.article_format || "",
     });
   };
 
-  const handleDeleteArticle = (id) => {
-    setArticles(articles.filter(article => article.id !== id));
-    toast.success(language === 'en' ? "Article deleted successfully" : "Статья успешно удалена");
+  const handleDeleteArticle = async (id) => {
+    try {
+      const { error } = await supabase
+        .from('articles')
+        .delete()
+        .eq('id', id);
+        
+      if (error) throw error;
+      
+      toast.success(language === 'en' 
+        ? "Article deleted successfully" 
+        : "Статья успешно удалена");
+      
+      fetchArticles();
+    } catch (error) {
+      toast.error(language === 'en' 
+        ? `Error deleting article: ${error.message}` 
+        : `Ошибка при удалении статьи: ${error.message}`);
+    }
   };
 
   return (
@@ -234,7 +319,7 @@ export const ArticlesPanel = () => {
                 >
                   {language === 'en' ? "Cancel" : "Отмена"}
                 </Button>
-                <Button type="submit">
+                <Button type="submit" disabled={isLoading}>
                   {selectedArticle ? (language === 'en' ? "Update" : "Обновить") : (language === 'en' ? "Create" : "Создать")}
                 </Button>
               </div>
@@ -248,65 +333,79 @@ export const ArticlesPanel = () => {
           <CardTitle>{language === 'en' ? "Published Articles" : "Опубликованные статьи"}</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="overflow-x-auto">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>{language === 'en' ? "Title" : "Заголовок"}</TableHead>
-                  <TableHead>{language === 'en' ? "Resource" : "Ресурс"}</TableHead>
-                  <TableHead>{language === 'en' ? "Format" : "Формат"}</TableHead>
-                  <TableHead>{language === 'en' ? "Date" : "Дата"}</TableHead>
-                  <TableHead>{language === 'en' ? "Actions" : "Действия"}</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {articles.map((article) => (
-                  <TableRow key={article.id}>
-                    <TableCell className="font-medium">{article.title}</TableCell>
-                    <TableCell>
-                      {article.resourceName && (
-                        <a 
-                          href={article.resourceUrl} 
-                          target="_blank" 
-                          rel="noopener noreferrer"
-                          className="text-blue-500 hover:underline"
-                        >
-                          {article.resourceName}
-                        </a>
-                      )}
-                    </TableCell>
-                    <TableCell>
-                      {article.articleFormat && (
-                        <Badge variant="outline">
-                          {article.articleFormat}
-                        </Badge>
-                      )}
-                    </TableCell>
-                    <TableCell>{article.date}</TableCell>
-                    <TableCell>
-                      <div className="flex items-center gap-2">
-                        <Button 
-                          variant="ghost" 
-                          size="sm"
-                          onClick={() => handleEditArticle(article)}
-                        >
-                          {language === 'en' ? "Edit" : "Редактировать"}
-                        </Button>
-                        <Button 
-                          variant="ghost" 
-                          size="sm"
-                          className="text-destructive"
-                          onClick={() => handleDeleteArticle(article.id)}
-                        >
-                          {language === 'en' ? "Delete" : "Удалить"}
-                        </Button>
-                      </div>
-                    </TableCell>
+          {isLoading ? (
+            <div className="flex justify-center py-8">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>{language === 'en' ? "Title" : "Заголовок"}</TableHead>
+                    <TableHead>{language === 'en' ? "Resource" : "Ресурс"}</TableHead>
+                    <TableHead>{language === 'en' ? "Format" : "Формат"}</TableHead>
+                    <TableHead>{language === 'en' ? "Date" : "Дата"}</TableHead>
+                    <TableHead>{language === 'en' ? "Actions" : "Действия"}</TableHead>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </div>
+                </TableHeader>
+                <TableBody>
+                  {articles.length === 0 ? (
+                    <TableRow>
+                      <TableCell colSpan={5} className="text-center py-4">
+                        {language === 'en' ? "No articles found" : "Статьи не найдены"}
+                      </TableCell>
+                    </TableRow>
+                  ) : (
+                    articles.map((article) => (
+                      <TableRow key={article.id}>
+                        <TableCell className="font-medium">{article.title}</TableCell>
+                        <TableCell>
+                          {article.resource_name && (
+                            <a 
+                              href={article.resource_url} 
+                              target="_blank" 
+                              rel="noopener noreferrer"
+                              className="text-blue-500 hover:underline"
+                            >
+                              {article.resource_name}
+                            </a>
+                          )}
+                        </TableCell>
+                        <TableCell>
+                          {article.article_format && (
+                            <Badge variant="outline">
+                              {article.article_format}
+                            </Badge>
+                          )}
+                        </TableCell>
+                        <TableCell>{new Date(article.date).toLocaleDateString()}</TableCell>
+                        <TableCell>
+                          <div className="flex items-center gap-2">
+                            <Button 
+                              variant="ghost" 
+                              size="sm"
+                              onClick={() => handleEditArticle(article)}
+                            >
+                              {language === 'en' ? "Edit" : "Редактировать"}
+                            </Button>
+                            <Button 
+                              variant="ghost" 
+                              size="sm"
+                              className="text-destructive"
+                              onClick={() => handleDeleteArticle(article.id)}
+                            >
+                              {language === 'en' ? "Delete" : "Удалить"}
+                            </Button>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  )}
+                </TableBody>
+              </Table>
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>

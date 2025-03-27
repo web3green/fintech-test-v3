@@ -1,4 +1,3 @@
-
 import React, { createContext, useState, useContext, useEffect, ReactNode } from 'react';
 
 type Language = 'en' | 'ru';
@@ -29,6 +28,40 @@ const translations = {
     'hero.stats.countries': '15+ Countries',
     'hero.stats.clients': '500+ Clients',
     'hero.stats.years': '9+ Years',
+    'hero.companyName': 'FinTechAssist',
+    'hero.companyTagline': 'Global Financial Solutions',
+    
+    // Hero Categories
+    'hero.category.fintech': 'Fintech',
+    'hero.category.ecommerce': 'E-commerce',
+    'hero.category.blockchain': 'Blockchain',
+    'hero.category.startups': 'Startups',
+    'hero.category.neobanks': 'Neobanks',
+    'hero.category.wallets': 'Digital Wallets',
+    'hero.category.gaming': 'Gaming',
+    'hero.category.saas': 'SaaS',
+    'hero.category.edtech': 'EdTech',
+    
+    // Hero Cards
+    'hero.card.banking.title': 'Banking',
+    'hero.card.banking.subtitle': 'Accounts Worldwide',
+    'hero.card.licenses.title': 'Licenses',
+    'hero.card.jurisdictions.title': 'Global Jurisdictions',
+    
+    // Hero Licenses
+    'hero.license.emi': 'EMI',
+    'hero.license.crypto': 'Crypto',
+    'hero.license.igaming': 'iGaming',
+    'hero.license.psp': 'PSP',
+    'hero.license.gambling': 'Gambling',
+    'hero.license.emoney': 'E-Money',
+    
+    // Hero Jurisdictions
+    'hero.jurisdiction.mga': 'MGA',
+    'hero.jurisdiction.curacao': 'Curaçao',
+    'hero.jurisdiction.fca': 'FCA',
+    'hero.jurisdiction.aml': 'AML5',
+    'hero.jurisdiction.compliance': 'Casino Compliance',
     
     // About
     'about.title': 'Your Trusted Partner in Global Finance',
@@ -144,6 +177,40 @@ const translations = {
     'hero.stats.countries': '15+ Стран',
     'hero.stats.clients': '500+ Клиентов',
     'hero.stats.years': '9+ Лет',
+    'hero.companyName': 'ФинТехАссист',
+    'hero.companyTagline': 'Глобальные финансовые решения',
+    
+    // Hero Categories
+    'hero.category.fintech': 'Финтех',
+    'hero.category.ecommerce': 'Э-коммерция',
+    'hero.category.blockchain': 'Блокчейн',
+    'hero.category.startups': 'Стартапы',
+    'hero.category.neobanks': 'Необанки',
+    'hero.category.wallets': 'Цифровые кошельки',
+    'hero.category.gaming': 'Гейминг',
+    'hero.category.saas': 'SaaS',
+    'hero.category.edtech': 'ЭдТех',
+    
+    // Hero Cards
+    'hero.card.banking.title': 'Банкинг',
+    'hero.card.banking.subtitle': 'Счета по всему миру',
+    'hero.card.licenses.title': 'Лицензии',
+    'hero.card.jurisdictions.title': 'Глобальные юрисдикции',
+    
+    // Hero Licenses
+    'hero.license.emi': 'EMI',
+    'hero.license.crypto': 'Крипто',
+    'hero.license.igaming': 'iGaming',
+    'hero.license.psp': 'PSP',
+    'hero.license.gambling': 'Гемблинг',
+    'hero.license.emoney': 'Э-Мани',
+    
+    // Hero Jurisdictions
+    'hero.jurisdiction.mga': 'MGA',
+    'hero.jurisdiction.curacao': 'Кюрасао',
+    'hero.jurisdiction.fca': 'FCA',
+    'hero.jurisdiction.aml': 'AML5',
+    'hero.jurisdiction.compliance': 'Казино Комплаенс',
     
     // About
     'about.title': 'Ваш надежный партнер в мире финансов',

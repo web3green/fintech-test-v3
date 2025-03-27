@@ -63,9 +63,9 @@ export function Hero() {
                     </div>
                     <div className="ml-4">
                       <div className="font-bold text-xl">
-                        <span className="text-foreground dark:text-foreground">FinTechAssist</span>
+                        <span className="text-foreground dark:text-foreground">{t('hero.companyName')}</span>
                       </div>
-                      <div className="text-sm text-muted-foreground">Global Financial Solutions</div>
+                      <div className="text-sm text-muted-foreground">{t('hero.companyTagline')}</div>
                     </div>
                   </div>
                   
@@ -73,62 +73,62 @@ export function Hero() {
                     <div className="space-y-3">
                       <div className="grid grid-cols-3 sm:grid-cols-3 gap-3">
                         <Button variant="outline" className="p-3 h-auto text-sm font-medium bg-blue-500 hover:bg-blue-600 border-transparent text-white transition-all duration-200 hover:scale-105">
-                          Fintech
+                          {t('hero.category.fintech')}
                         </Button>
                         <Button variant="outline" className="p-3 h-auto text-sm font-medium bg-blue-600 hover:bg-blue-700 border-transparent text-white transition-all duration-200 hover:scale-105">
-                          E-commerce
+                          {t('hero.category.ecommerce')}
                         </Button>
                         <Button variant="outline" className="p-3 h-auto text-sm font-medium bg-blue-500 hover:bg-blue-600 border-transparent text-white transition-all duration-200 hover:scale-105">
-                          Blockchain
+                          {t('hero.category.blockchain')}
                         </Button>
                         <Button variant="outline" className="p-3 h-auto text-sm font-medium bg-blue-600 hover:bg-blue-700 border-transparent text-white transition-all duration-200 hover:scale-105">
-                          Startups
+                          {t('hero.category.startups')}
                         </Button>
                         <Button variant="outline" className="p-3 h-auto text-sm font-medium bg-blue-500 hover:bg-blue-600 border-transparent text-white transition-all duration-200 hover:scale-105">
-                          Neobanks
+                          {t('hero.category.neobanks')}
                         </Button>
                         <Button variant="outline" className="p-3 h-auto text-sm font-medium bg-blue-600 hover:bg-blue-700 border-transparent text-white transition-all duration-200 hover:scale-105">
-                          Digital Wallets
+                          {t('hero.category.wallets')}
                         </Button>
                         <Button variant="outline" className="p-3 h-auto text-sm font-medium bg-blue-500 hover:bg-blue-600 border-transparent text-white transition-all duration-200 hover:scale-105">
-                          Gaming
+                          {t('hero.category.gaming')}
                         </Button>
                         <Button variant="outline" className="p-3 h-auto text-sm font-medium bg-blue-600 hover:bg-blue-700 border-transparent text-white transition-all duration-200 hover:scale-105">
-                          SaaS
+                          {t('hero.category.saas')}
                         </Button>
                         <Button variant="outline" className="p-3 h-auto text-sm font-medium bg-blue-500 hover:bg-blue-600 border-transparent text-white transition-all duration-200 hover:scale-105">
-                          EdTech
+                          {t('hero.category.edtech')}
                         </Button>
                       </div>
                     </div>
                     
                     <div className="grid grid-cols-2 gap-4">
                       <Card className="p-4 rounded-lg border-0 bg-blue-400">
-                        <div className="text-xs text-white dark:text-white mb-1">Banking</div>
-                        <div className="font-medium text-white dark:text-white">Accounts Worldwide</div>
+                        <div className="text-xs text-white dark:text-white mb-1">{t('hero.card.banking.title')}</div>
+                        <div className="font-medium text-white dark:text-white">{t('hero.card.banking.subtitle')}</div>
                       </Card>
                       
                       <Card className="p-4 rounded-lg border-0 bg-blue-500">
-                        <div className="text-xs text-white dark:text-white mb-2">Licenses</div>
+                        <div className="text-xs text-white dark:text-white mb-2">{t('hero.card.licenses.title')}</div>
                         <div className="flex flex-wrap gap-2">
-                          <span className="inline-block text-xs bg-blue-300 dark:bg-blue-700/70 text-white dark:text-white px-2 py-1 rounded">EMI</span>
-                          <span className="inline-block text-xs bg-blue-400 dark:bg-blue-700/70 text-white dark:text-white px-2 py-1 rounded">Crypto</span>
-                          <span className="inline-block text-xs bg-blue-300 dark:bg-blue-700/70 text-white dark:text-white px-2 py-1 rounded">iGaming</span>
-                          <span className="inline-block text-xs bg-blue-400 dark:bg-blue-700/70 text-white dark:text-white px-2 py-1 rounded">PSP</span>
-                          <span className="inline-block text-xs bg-blue-300 dark:bg-blue-700/70 text-white dark:text-white px-2 py-1 rounded">Gambling</span>
-                          <span className="inline-block text-xs bg-blue-400 dark:bg-blue-700/70 text-white dark:text-white px-2 py-1 rounded">E-Money</span>
+                          <span className="inline-block text-xs bg-blue-300 dark:bg-blue-700/70 text-white dark:text-white px-2 py-1 rounded">{t('hero.license.emi')}</span>
+                          <span className="inline-block text-xs bg-blue-400 dark:bg-blue-700/70 text-white dark:text-white px-2 py-1 rounded">{t('hero.license.crypto')}</span>
+                          <span className="inline-block text-xs bg-blue-300 dark:bg-blue-700/70 text-white dark:text-white px-2 py-1 rounded">{t('hero.license.igaming')}</span>
+                          <span className="inline-block text-xs bg-blue-400 dark:bg-blue-700/70 text-white dark:text-white px-2 py-1 rounded">{t('hero.license.psp')}</span>
+                          <span className="inline-block text-xs bg-blue-300 dark:bg-blue-700/70 text-white dark:text-white px-2 py-1 rounded">{t('hero.license.gambling')}</span>
+                          <span className="inline-block text-xs bg-blue-400 dark:bg-blue-700/70 text-white dark:text-white px-2 py-1 rounded">{t('hero.license.emoney')}</span>
                         </div>
                       </Card>
                     </div>
                     
                     <Card className="p-4 rounded-lg border-0 bg-blue-500">
-                      <div className="text-xs text-white mb-2">Global Jurisdictions</div>
+                      <div className="text-xs text-white mb-2">{t('hero.card.jurisdictions.title')}</div>
                       <div className="flex flex-wrap gap-2">
-                        <span className="inline-block text-xs bg-blue-400 dark:bg-blue-700/70 text-white dark:text-white px-2 py-1 rounded">MGA</span>
-                        <span className="inline-block text-xs bg-blue-300 dark:bg-blue-700/70 text-white dark:text-white px-2 py-1 rounded">Curaçao</span>
-                        <span className="inline-block text-xs bg-blue-400 dark:bg-blue-700/70 text-white dark:text-white px-2 py-1 rounded">FCA</span>
-                        <span className="inline-block text-xs bg-blue-300 dark:bg-blue-700/70 text-white dark:text-white px-2 py-1 rounded">AML5</span>
-                        <span className="inline-block text-xs bg-blue-400 dark:bg-blue-700/70 text-white dark:text-white px-2 py-1 rounded">Casino Compliance</span>
+                        <span className="inline-block text-xs bg-blue-400 dark:bg-blue-700/70 text-white dark:text-white px-2 py-1 rounded">{t('hero.jurisdiction.mga')}</span>
+                        <span className="inline-block text-xs bg-blue-300 dark:bg-blue-700/70 text-white dark:text-white px-2 py-1 rounded">{t('hero.jurisdiction.curacao')}</span>
+                        <span className="inline-block text-xs bg-blue-400 dark:bg-blue-700/70 text-white dark:text-white px-2 py-1 rounded">{t('hero.jurisdiction.fca')}</span>
+                        <span className="inline-block text-xs bg-blue-300 dark:bg-blue-700/70 text-white dark:text-white px-2 py-1 rounded">{t('hero.jurisdiction.aml')}</span>
+                        <span className="inline-block text-xs bg-blue-400 dark:bg-blue-700/70 text-white dark:text-white px-2 py-1 rounded">{t('hero.jurisdiction.compliance')}</span>
                       </div>
                     </Card>
                     

@@ -118,6 +118,22 @@
   html[lang="en"] .text-balance {
     text-wrap: pretty;
   }
+  
+  html[lang="ru"] .lang-sensitive {
+    animation: lang-update-ru 1ms forwards;
+  }
+  
+  html[lang="en"] .lang-sensitive {
+    animation: lang-update-en 1ms forwards;
+  }
+  
+  @keyframes lang-update-ru {
+    to { opacity: 1; }
+  }
+  
+  @keyframes lang-update-en {
+    to { opacity: 1; }
+  }
 }
 
 @layer components {
@@ -224,4 +240,27 @@ html[data-language="ru"] .font-display {
   position: absolute;
   opacity: 0;
   pointer-events: none;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}
+
+html[lang="ru"] .force-update-on-language-change,
+html[lang="en"] .force-update-on-language-change {
+  animation: force-repaint 1ms;
+}
+
+@keyframes force-repaint {
+  from { transform: translateZ(0); }
+  to { transform: translateZ(0); }
+}
+
+.content-overflow {
+  overflow-wrap: break-word;
+  word-break: break-word;
+  hyphens: auto;
+}
+
+html[lang="ru"] .content-overflow {
+  hyphens: manual;
 }

@@ -133,7 +133,7 @@ export function Hero() {
                     
                     <div className="pt-4 border-t border-blue-100 dark:border-blue-800">
                       <div className="flex items-center justify-between text-sm">
-                        <div className="text-white dark:text-white">15+ Countries</div>
+                        <div className="text-white dark:text-white bg-blue-300">15+ Countries</div>
                         <div className="text-white dark:text-white">500+ Clients</div>
                         <div className="text-white dark:text-white">9+ Years</div>
                       </div>

@@ -30,12 +30,7 @@ export default defineConfig(({ mode }) => ({
     },
   },
   define: {
-    // Fix the HMR environment variables - ensure they're properly stringified
-    '__HMR_CONFIG_NAME__': JSON.stringify('vite'),
-    '__HMR_PROTOCOL__': JSON.stringify('ws'),
-    '__HMR_HOST__': JSON.stringify('localhost'),
-    '__HMR_PORT__': JSON.stringify(8080),
-    // Also explicitly define Vite's own env variables to avoid conflicts
+    // Simplify environment definition to avoid JSON parsing issues
     'import.meta.env.MODE': JSON.stringify(mode),
     'import.meta.env.DEV': mode === 'development',
     'import.meta.env.PROD': mode === 'production',

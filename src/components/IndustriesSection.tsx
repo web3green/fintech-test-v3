@@ -98,15 +98,15 @@ export function IndustriesSection() {
             </div>
           </div>
 
-          {/* Stats Counter Section */}
+          {/* Stats Counter Section - Updated with proper text colors */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-12 text-center">
-            <div className="text-white dark:text-white bg-blue-600 dark:bg-blue-600 p-4 rounded-lg">
+            <div className="text-black dark:text-white bg-blue-600 dark:bg-blue-600 p-4 rounded-lg">
               <p className="text-2xl font-bold">{t('stats.countries')}</p>
             </div>
-            <div className="text-white dark:text-white bg-blue-600 dark:bg-blue-600 p-4 rounded-lg">
+            <div className="text-black dark:text-white bg-blue-600 dark:bg-blue-600 p-4 rounded-lg">
               <p className="text-2xl font-bold">{t('stats.clients')}</p>
             </div>
-            <div className="text-white dark:text-white bg-blue-600 dark:bg-blue-600 p-4 rounded-lg">
+            <div className="text-black dark:text-white bg-blue-600 dark:bg-blue-600 p-4 rounded-lg">
               <p className="text-2xl font-bold">{t('stats.years')}</p>
             </div>
           </div>

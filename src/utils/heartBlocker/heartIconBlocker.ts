@@ -116,19 +116,19 @@ export const blockHeartIcon = () => {
     console.error('Error overriding favicon APIs:', e);
   }
   
-  // NEW: Override the entire title element
-  // First save the original title text without any heart symbols
-  let cleanTitle = document.title.replace(/[♥♡❤]/g, '').trim();
-  
-  // Ensure the title doesn't have any heart unicode characters
+  // ИЗМЕНЕНО: Безопасное обновление заголовка без попытки переопределения свойства
+  // Закомментирован код, вызывающий ошибку в консоли
   const heartSymbols = ['♥', '♡', '❤', '❥', '❣', '❦', '❧', '♥️', '❤️'];
-  heartSymbols.forEach(symbol => {
-    if (document.title.includes(symbol)) {
-      document.title = cleanTitle;
+  if (heartSymbols.some(symbol => document.title.includes(symbol))) {
+    // Очищаем заголовок от символов сердца напрямую, без переопределения свойства
+    document.title = document.title.replace(/[♥♡❤❥❣❦❧♥️❤️]/g, '').trim();
+    if (!document.title.trim()) {
+      document.title = 'FinTechAssist: Финансовые решения для бизнеса';
     }
-  });
+  }
   
-  // Block using Object.defineProperty to prevent title changes
+  // Комментируем код, который вызывает ошибку
+  /*
   try {
     // Save the current clean title
     let savedTitle = document.title;
@@ -149,6 +149,7 @@ export const blockHeartIcon = () => {
   } catch (e) {
     console.error('Error overriding document title:', e);
   }
+  */
 };
 
 // Add a new function to scan the entire DOM for heart icons or GPTEngineer scripts

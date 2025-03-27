@@ -15,7 +15,7 @@ export function ContactInfo() {
               <Mail className="h-6 w-6 text-white" />
             </div>
             <div>
-              <h3 className="text-sm font-semibold mb-1 text-white">{t('contact.email')}</h3>
+              <h3 className="text-sm font-semibold mb-1 text-white">{language === 'en' ? 'Email' : 'Электронная почта'}</h3>
               <a href="mailto:info@fintech-assist.com" className="text-white hover:text-blue-100 transition-colors">
                 info@fintech-assist.com
               </a>
@@ -27,7 +27,7 @@ export function ContactInfo() {
               <Phone className="h-6 w-6 text-white" />
             </div>
             <div>
-              <h3 className="text-sm font-semibold mb-1 text-white">{t('contact.phone')}</h3>
+              <h3 className="text-sm font-semibold mb-1 text-white">{language === 'en' ? 'Phone' : 'Телефон'}</h3>
               <a href="tel:+447450574905" className="text-white hover:text-blue-100 transition-colors">
                 +44 7450 574905
               </a>
@@ -42,7 +42,7 @@ export function ContactInfo() {
               </svg>
             </div>
             <div>
-              <h3 className="text-sm font-semibold mb-1 text-white">{t('contact.telegram')}</h3>
+              <h3 className="text-sm font-semibold mb-1 text-white">{language === 'en' ? 'Telegram' : 'Телеграм'}</h3>
               <a href="https://t.me/fintech_assist" target="_blank" rel="noreferrer" className="text-white hover:text-blue-100 transition-colors">
                 @fintech_assist
               </a>

@@ -8,7 +8,6 @@ import { useEffect, useRef } from 'react';
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Admin from "./pages/Admin";
-import Services from "./pages/Services";
 import { updateSocialMetaTags, blockHeartIcon, enforceOurFavicon, scanAndRemoveHeartIcons } from "./utils/metaTagManager";
 
 const queryClient = new QueryClient();
@@ -180,7 +179,6 @@ const App = () => {
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/admin/*" element={<Admin />} />
-            <Route path="/services" element={<Services />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

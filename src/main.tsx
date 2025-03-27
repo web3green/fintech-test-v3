@@ -1,4 +1,3 @@
-
 import { createRoot } from 'react-dom/client'
 import App from './App.tsx'
 import './index.css'
@@ -6,6 +5,16 @@ import {
   updateSocialMetaTags, 
   enforceOurFavicon 
 } from './utils/metaTagManager'
+
+// Ensure we have a stable root element
+const rootElement = document.getElementById("root");
+
+if (!rootElement) {
+  throw new Error("Root element not found. Make sure there is a div with id 'root' in your HTML.");
+}
+
+// Use a single root instance to prevent the "container has already been passed to createRoot()" error
+const root = createRoot(rootElement);
 
 // Функция для принудительного обновления кэша
 const forceCacheRefresh = () => {
@@ -167,5 +176,10 @@ window.addEventListener('languagechange', () => {
 const refreshEvent = new CustomEvent('app:refresh');
 window.dispatchEvent(refreshEvent);
 
-// Инициализация приложения React
-createRoot(document.getElementById("root")!).render(<App />);
+// Render App only once to avoid duplicate instances
+root.render(<App />);
+
+// Add explicit HMR handling for development mode
+if (import.meta.hot) {
+  import.meta.hot.accept();
+}

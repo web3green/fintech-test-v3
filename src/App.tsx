@@ -8,6 +8,7 @@ import { useEffect, useRef } from 'react';
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Admin from "./pages/Admin";
+import Services from "./pages/Services";
 import { updateSocialMetaTags, blockHeartIcon, enforceOurFavicon, scanAndRemoveHeartIcons } from "./utils/metaTagManager";
 
 const queryClient = new QueryClient();

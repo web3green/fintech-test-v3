@@ -40,7 +40,7 @@ const VersionChecker = () => {
       
       toast.info('Обновляем приложение до последней версии...', {
         duration: 3000,
-        onAutoClose: () => window.location.reload(true)
+        onAutoClose: () => window.location.reload()
       });
     } else {
       localStorage.setItem('app_version', APP_VERSION);

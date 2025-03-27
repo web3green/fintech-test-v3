@@ -1,17 +1,16 @@
-
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, UserRound, Handshake, ShieldCheck, Award, Clock, Globe } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { GlowingEffect } from '@/components/ui/glowing-effect';
 import { useIsMobile } from '@/hooks/use-mobile';
-
 export function AboutSection() {
-  const { t, language } = useLanguage();
+  const {
+    t,
+    language
+  } = useLanguage();
   const isMobile = useIsMobile();
-  
-  return (
-    <section id="about" className="section-padding py-8 md:py-24">
+  return <section id="about" className="section-padding py-8 md:py-24">
       <div className="container mx-auto px-4 md:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-12 items-center">
           <div className="order-2 lg:order-1">
@@ -97,7 +96,7 @@ export function AboutSection() {
                   <div className="h-8 w-8 rounded-full bg-blue-100 dark:bg-blue-800/30 flex items-center justify-center">
                     <Globe className="h-4 w-4 text-blue-600 dark:text-blue-300" />
                   </div>
-                  <div className="text-xl md:text-2xl font-bold text-blue-600 dark:text-blue-300">50+</div>
+                  <div className="text-xl md:text-2xl font-bold text-blue-600 dark:text-blue-300">15+</div>
                 </div>
                 <div className="text-sm text-black dark:text-white">{language === 'en' ? 'Countries' : 'Стран'}</div>
               </div>
@@ -124,7 +123,7 @@ export function AboutSection() {
                   <div className="h-8 w-8 rounded-full bg-blue-200 dark:bg-blue-700/30 flex items-center justify-center">
                     <Clock className="h-4 w-4 text-blue-600 dark:text-blue-300" />
                   </div>
-                  <div className="text-xl md:text-2xl font-bold text-blue-600 dark:text-blue-300">7+</div>
+                  <div className="text-xl md:text-2xl font-bold text-blue-600 dark:text-blue-300">9+</div>
                 </div>
                 <div className="text-sm text-black dark:text-white">{language === 'en' ? 'Years Experience' : 'Лет опыта'}</div>
               </div>
@@ -144,6 +143,5 @@ export function AboutSection() {
           </div>
         </div>
       </div>
-    </section>
-  );
+    </section>;
 }

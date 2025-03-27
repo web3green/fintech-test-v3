@@ -28,12 +28,18 @@ export default defineConfig(({ mode }) => ({
   },
   build: {
     sourcemap: true,
-    // Ensure HMR placeholder is properly injected
+    // Disable module preload which can cause caching issues
+    modulePreload: false,
+    // Force aggressive cache busting
     rollupOptions: {
       output: {
         manualChunks: {
           vendor: ['react', 'react-dom']
-        }
+        },
+        // Add timestamps to chunk files to prevent caching
+        entryFileNames: `assets/[name].[hash]-${Date.now()}.js`,
+        chunkFileNames: `assets/[name].[hash]-${Date.now()}.js`,
+        assetFileNames: `assets/[name].[hash]-${Date.now()}.[ext]`
       }
     }
   },
@@ -41,4 +47,6 @@ export default defineConfig(({ mode }) => ({
   optimizeDeps: {
     include: ['react', 'react-dom', 'react-router-dom']
   },
+  // Force disable caching for development
+  cacheDir: mode === 'development' ? `./.vite-cache-${Date.now()}` : undefined,
 }));

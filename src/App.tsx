@@ -20,6 +20,72 @@ const queryClient = new QueryClient({
   },
 });
 
+// Регистрация Service Worker для управления кешированием
+const registerServiceWorker = () => {
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', async () => {
+      try {
+        const registration = await navigator.serviceWorker.register('/service-worker.js', { 
+          scope: '/',
+          updateViaCache: 'none' // Отключаем кеширование для самого Service Worker
+        });
+        
+        // Обновляем Service Worker, если доступна новая версия
+        if (registration.waiting) {
+          registration.waiting.postMessage({ type: 'SKIP_WAITING' });
+        }
+        
+        // Обработка обновления Service Worker
+        registration.addEventListener('updatefound', () => {
+          const newWorker = registration.installing;
+          if (newWorker) {
+            newWorker.addEventListener('statechange', () => {
+              if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                console.log('Новая версия Service Worker доступна');
+                // Отправляем сообщение для пропуска ожидания
+                newWorker.postMessage({ type: 'SKIP_WAITING' });
+              }
+            });
+          }
+        });
+        
+        console.log('Service Worker успешно зарегистрирован:', registration.scope);
+        
+        // Обработка обновления страницы при обновлении Service Worker
+        let refreshing = false;
+        navigator.serviceWorker.addEventListener('controllerchange', () => {
+          if (!refreshing) {
+            refreshing = true;
+            console.log('Service Worker обновлен, перезагружаем страницу');
+            window.location.reload();
+          }
+        });
+        
+      } catch (error) {
+        console.error('Ошибка регистрации Service Worker:', error);
+      }
+    });
+  }
+};
+
+// Очистка кеша
+const clearCache = async () => {
+  if ('caches' in window) {
+    try {
+      const keys = await caches.keys();
+      await Promise.all(keys.map(key => caches.delete(key)));
+      console.log('Кеш успешно очищен');
+      
+      // Отправить сообщение Service Worker для очистки кеша
+      if (navigator.serviceWorker.controller) {
+        navigator.serviceWorker.controller.postMessage({ type: 'CLEAR_CACHE' });
+      }
+    } catch (error) {
+      console.error('Ошибка при очистке кеша:', error);
+    }
+  }
+};
+
 // Улучшенный компонент для управления мета-тегами
 const MetaTagUpdater = () => {
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
@@ -91,6 +157,12 @@ const App = () => {
   // Проверить и применить сохраненную тему при начальной загрузке
   useEffect(() => {
     console.log('App component mounted - initial branding setup');
+    
+    // Регистрация Service Worker
+    registerServiceWorker();
+    
+    // Очистка кеша при загрузке приложения
+    clearCache();
     
     const savedTheme = localStorage.getItem('theme');
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;

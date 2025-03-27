@@ -1,3 +1,4 @@
+
 import { createRoot } from 'react-dom/client'
 import App from './App.tsx'
 import './index.css'
@@ -16,9 +17,38 @@ if (!rootElement) {
 // Use a single root instance to prevent the "container has already been passed to createRoot()" error
 const root = createRoot(rootElement);
 
+// Добавляем метатеги для предотвращения кеширования
+const addNoCacheMetaTags = () => {
+  const metaTags = [
+    { httpEquiv: 'Cache-Control', content: 'no-cache, no-store, must-revalidate, max-age=0' },
+    { httpEquiv: 'Pragma', content: 'no-cache' },
+    { httpEquiv: 'Expires', content: '0' },
+    // Добавляем уникальный идентификатор версии для принудительного сброса кеша
+    { name: 'app-version', content: `${Date.now()}` }
+  ];
+
+  metaTags.forEach(meta => {
+    // Удаляем существующие теги, если они есть
+    const existingTag = document.querySelector(`meta[${meta.httpEquiv ? 'http-equiv' : 'name'}="${meta.httpEquiv || meta.name}"]`);
+    if (existingTag) existingTag.remove();
+    
+    // Создаем и добавляем новый тег
+    const metaTag = document.createElement('meta');
+    if (meta.httpEquiv) metaTag.httpEquiv = meta.httpEquiv;
+    if (meta.name) metaTag.name = meta.name;
+    metaTag.content = meta.content;
+    document.head.appendChild(metaTag);
+  });
+  
+  console.log('🚫 Добавлены метатеги для предотвращения кеширования');
+};
+
 // Функция для принудительного обновления кэша
 const forceCacheRefresh = () => {
   console.log('🔄 Принудительное обновление кэша:', new Date().toISOString());
+  
+  // Добавляем метатеги против кеширования
+  addNoCacheMetaTags();
   
   // Добавить случайный параметр к URL всех CSS файлов для сброса кэша
   document.querySelectorAll('link[rel="stylesheet"]').forEach(linkEl => {
@@ -90,6 +120,26 @@ const forceCacheRefresh = () => {
   
   // Удалить стиль через короткую задержку
   setTimeout(() => forceRepaintStyle.remove(), 300);
+  
+  // Принудительно заставить браузер перезагрузить некоторые ресурсы
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.getRegistrations().then(registrations => {
+      registrations.forEach(registration => {
+        registration.unregister();
+        console.log('🧹 Отменена регистрация Service Worker');
+      });
+    });
+  }
+  
+  // Попытка очистить кеш с помощью Cache API, если доступно
+  if ('caches' in window) {
+    caches.keys().then(cacheNames => {
+      cacheNames.forEach(cacheName => {
+        caches.delete(cacheName);
+        console.log('🧹 Удален кеш:', cacheName);
+      });
+    });
+  }
 };
 
 // Функция для обеспечения нашего брендинга
@@ -149,6 +199,35 @@ window.addEventListener('load', () => {
 
 // Создать интервал для проверки и обновления нашего брендинга
 setInterval(ensureOurBranding, 5000); // Проверять каждые 5 секунд
+
+// Добавим проверку изменений в DOM и принудительное обновление при них
+const observeDOM = () => {
+  const observer = new MutationObserver(mutations => {
+    let shouldRefresh = false;
+    mutations.forEach(mutation => {
+      if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
+        shouldRefresh = true;
+      }
+    });
+    
+    if (shouldRefresh) {
+      console.log('🔄 Обнаружены изменения в DOM, обновляем кеш');
+      ensureOurBranding();
+    }
+  });
+  
+  observer.observe(document.body, {
+    childList: true,
+    subtree: true,
+    attributes: true,
+    attributeFilter: ['src', 'href', 'style', 'class']
+  });
+  
+  return observer;
+};
+
+// Запускаем наблюдатель за DOM
+const domObserver = observeDOM();
 
 // Обработка события видимости страницы
 document.addEventListener('visibilitychange', () => {

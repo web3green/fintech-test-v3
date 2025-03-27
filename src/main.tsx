@@ -175,7 +175,7 @@ window.addEventListener('load', () => {
   // Обновить кэш после полной загрузки
   forceCacheRefresh();
   
-  // Также обновить ��тили после полной загрузки
+  // Т��кже обновить ��тили после полной загрузки
   document.querySelectorAll('link[rel="stylesheet"]').forEach(linkEl => {
     if (linkEl instanceof HTMLLinkElement) {
       // Клонировать стиль для обновления
@@ -262,15 +262,13 @@ if (import.meta.hot) {
   try {
     console.log('Setting up HMR handlers - environment ready');
     
-    // Define HMR configuration for debug visibility
-    const hmrConfig = {
-      name: "vite",
-      protocol: "ws",
-      host: "localhost",
-      port: "8080"
-    };
-    
-    console.log('HMR Config:', hmrConfig);
+    // Debug HMR configuration
+    console.log('HMR Config:', {
+      name: JSON.parse('__HMR_CONFIG_NAME__'),
+      protocol: JSON.parse('__HMR_PROTOCOL__'),
+      host: JSON.parse('__HMR_HOST__'),
+      port: JSON.parse('__HMR_PORT__')
+    });
     
     // Correctly configured HMR acceptance for App component
     import.meta.hot.accept('./App.tsx', () => {

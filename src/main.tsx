@@ -260,5 +260,22 @@ root.render(<App />);
 
 // Add explicit HMR handling for development mode
 if (import.meta.hot) {
+  // Correctly configured HMR acceptance
+  import.meta.hot.accept('./App.tsx', (newApp) => {
+    console.log('🔄 Hot Module Replacement: Updating App component');
+    try {
+      // Render the updated App component
+      root.render(<App />);
+    } catch (error) {
+      console.error('❌ Error during HMR update:', error);
+    }
+  });
+  
+  // Accept global HMR
   import.meta.hot.accept();
+  
+  // Add listener for HMR errors
+  import.meta.hot.on('error', (error) => {
+    console.error('❌ HMR Error:', error);
+  });
 }

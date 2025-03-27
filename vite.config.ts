@@ -10,14 +10,20 @@ export default defineConfig(({ mode }) => ({
     host: "::",
     port: 8080,
     hmr: {
-      // Use explicit host and port for HMR
-      host: 'localhost',
+      // Use more reliable WebSocket protocol with explicit configuration
       protocol: 'ws',
-      clientPort: 8080
+      host: 'localhost',
+      port: 8080,
+      clientPort: 8080,
+      timeout: 120000,
+      overlay: true
     }
   },
   plugins: [
-    react(),
+    react({
+      // Explicitly configure HMR for React
+      fastRefresh: true,
+    }),
     mode === 'development' &&
     componentTagger(),
   ].filter(Boolean),
@@ -25,6 +31,13 @@ export default defineConfig(({ mode }) => ({
     alias: {
       "@": path.resolve(__dirname, "./src"),
     },
+  },
+  define: {
+    // Define the HMR configuration name explicitly
+    __HMR_CONFIG_NAME__: JSON.stringify("vite"),
+    __HMR_PROTOCOL__: JSON.stringify("ws"),
+    __HMR_HOST__: JSON.stringify("localhost"),
+    __HMR_PORT__: JSON.stringify("8080"),
   },
   build: {
     sourcemap: true,

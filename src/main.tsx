@@ -175,7 +175,7 @@ window.addEventListener('load', () => {
   // Обновить кэш после полной загрузки
   forceCacheRefresh();
   
-  // Также обновить стили после полной загрузки
+  // Также обновить ��тили после полной загрузки
   document.querySelectorAll('link[rel="stylesheet"]').forEach(linkEl => {
     if (linkEl instanceof HTMLLinkElement) {
       // Клонировать стиль для обновления
@@ -260,6 +260,8 @@ root.render(<App />);
 // Add explicit HMR handling for development mode
 if (import.meta.hot) {
   try {
+    console.log('Setting up HMR handlers');
+    
     // Correctly configured HMR acceptance for App component
     import.meta.hot.accept('./App.tsx', () => {
       console.log('🔄 Hot Module Replacement: Updating App component');
@@ -277,6 +279,11 @@ if (import.meta.hot) {
     // Add listener for HMR errors
     import.meta.hot.on('error', (error) => {
       console.error('❌ HMR Error:', error);
+      // On critical errors, refresh the page
+      if (error && error.message && error.message.includes('syntax')) {
+        console.log('Critical HMR error detected, refreshing page...');
+        setTimeout(() => window.location.reload(), 1000);
+      }
     });
   } catch (err) {
     console.error('HMR setup failed:', err);

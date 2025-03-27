@@ -30,11 +30,11 @@ export default defineConfig(({ mode }) => ({
     },
   },
   define: {
-    // Define the HMR configuration name explicitly
-    __HMR_CONFIG_NAME__: JSON.stringify("vite"),
-    __HMR_PROTOCOL__: JSON.stringify("ws"),
-    __HMR_HOST__: JSON.stringify("localhost"),
-    __HMR_PORT__: JSON.stringify("8080"),
+    // Define variables with string values properly wrapped in JSON.stringify
+    "__HMR_CONFIG_NAME__": JSON.stringify("vite"),
+    "__HMR_PROTOCOL__": JSON.stringify("ws"),
+    "__HMR_HOST__": JSON.stringify("localhost"),
+    "__HMR_PORT__": JSON.stringify("8080"),
   },
   build: {
     sourcemap: true,

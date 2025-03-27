@@ -2,8 +2,8 @@
 /**
  * Meta Tag Manager - Main export file
  * 
- * This file exports all functions from the refactored utility modules
- * for backwards compatibility with existing code.
+ * This file exports functions from the utility modules
+ * for managing favicons and meta tags.
  */
 
 // Export favicon management functions

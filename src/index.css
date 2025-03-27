@@ -1,4 +1,3 @@
-
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap');
 
@@ -90,24 +89,34 @@
   body {
     @apply bg-background text-foreground font-sans;
     
-    /* Добавить свойство для правильного отображения во всех браузерах */
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
+  }
+
+  html[lang="ru"] * {
+    letter-spacing: -0.01em;
   }
 
   h1, h2, h3, h4, h5, h6 {
     @apply font-display tracking-tight;
   }
   
-  /* Правило для принудительного обновления стилей */
-  [data-language-change] {
-    animation: flash-update 0.1ms;
+  [data-language-change], [data-language] {
+    animation: flash-update 1ms;
   }
   
   @keyframes flash-update {
     from { opacity: 0.999; }
     to { opacity: 1; }
+  }
+  
+  html[lang="ru"] .text-balance {
+    text-wrap: balance;
+  }
+  
+  html[lang="en"] .text-balance {
+    text-wrap: pretty;
   }
 }
 
@@ -137,7 +146,6 @@
     line-height: 0.9rem;
   }
   
-  /* Новые стили для улучшения контрастности и читаемости */
   .text-on-dark {
     @apply text-white dark:text-white text-shadow-sm;
   }
@@ -150,13 +158,11 @@
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
   }
   
-  /* Стили для улучшения отображения карточек на темном фоне */
   .card-overlay {
     @apply relative z-10 before:absolute before:inset-0 before:bg-gradient-to-t before:from-black/60 before:to-transparent before:-z-10 before:rounded-lg;
   }
 }
 
-/* Animation utilities */
 .animate-delay-100 {
   animation-delay: 100ms;
 }
@@ -183,12 +189,10 @@
   animation-duration: 1s;
 }
 
-/* Shimmer effect */
 .shimmer {
   @apply relative overflow-hidden before:absolute before:inset-0 before:-translate-x-full before:animate-shimmer before:bg-gradient-to-r before:from-transparent before:via-white/20 before:to-transparent;
 }
 
-/* Add scrollbar hiding utility */
 .scrollbar-hide {
   -ms-overflow-style: none;  /* IE and Edge */
   scrollbar-width: none;  /* Firefox */
@@ -198,11 +202,26 @@
   display: none;  /* Chrome, Safari and Opera */
 }
 
-/* Fix для правильного отображения карточек на темном фоне */
 .bg-blue, .bg-fintech-blue, .bg-fintech-blue-light, .bg-fintech-blue-dark {
   @apply text-white;
 }
 
 .bg-orange, .bg-fintech-orange, .bg-fintech-orange-light {
   @apply text-white;
+}
+
+html[data-language="ru"] .font-display {
+  font-feature-settings: "salt" on, "ss01" on;
+}
+
+@media (max-width: 640px) {
+  html[data-language="ru"] h1 {
+    font-size: 95%;
+  }
+}
+
+.language-update-trigger {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
 }

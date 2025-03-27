@@ -134,9 +134,9 @@ export function Hero() {
                     
                     <div className="pt-4 border-t border-blue-100 dark:border-blue-800">
                       <div className="flex items-center justify-between text-sm">
-                        <div className="text-black dark:text-white bg-blue-300 dark:bg-blue-300/30 px-2 py-1 rounded">15+ Countries</div>
-                        <div className="text-black dark:text-white bg-blue-300 dark:bg-blue-300/30 px-2 py-1 rounded">500+ Clients</div>
-                        <div className="text-black dark:text-white bg-blue-300 dark:bg-blue-300/30 px-2 py-1 rounded">9+ Years</div>
+                        <div className="text-white dark:text-white bg-blue-300 dark:bg-blue-300/30 px-2 py-1 rounded">15+ Countries</div>
+                        <div className="text-white dark:text-white bg-blue-300 dark:bg-blue-300/30 px-2 py-1 rounded">500+ Clients</div>
+                        <div className="text-white dark:text-white bg-blue-300 dark:bg-blue-300/30 px-2 py-1 rounded">9+ Years</div>
                       </div>
                     </div>
                   </div>

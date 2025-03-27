@@ -56,7 +56,7 @@ const domObserver = observeDOM();
 setupEventListeners();
 
 // Render App only once to avoid duplicate instances
-root.render(<App />);
+root.render(App());
 
 // Setup HMR for development
 setupHMR(root);

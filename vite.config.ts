@@ -10,7 +10,6 @@ export default defineConfig(({ mode }) => ({
     host: "::",
     port: 8080,
     hmr: {
-      // Use more reliable WebSocket protocol with explicit configuration
       protocol: 'ws',
       host: 'localhost',
       port: 8080,
@@ -30,32 +29,28 @@ export default defineConfig(({ mode }) => ({
     },
   },
   define: {
-    // Simplify environment definition to avoid JSON parsing issues
+    // Standard environment variables
     'import.meta.env.MODE': JSON.stringify(mode),
     'import.meta.env.DEV': mode === 'development',
     'import.meta.env.PROD': mode === 'production',
   },
   build: {
     sourcemap: true,
-    // Disable module preload which can cause caching issues
     modulePreload: false,
-    // Force aggressive cache busting
     rollupOptions: {
       output: {
         manualChunks: {
           vendor: ['react', 'react-dom']
         },
-        // Add timestamps to chunk files to prevent caching
         entryFileNames: `assets/[name].[hash].js`,
         chunkFileNames: `assets/[name].[hash].js`,
         assetFileNames: `assets/[name].[hash].[ext]`
       }
     }
   },
-  // Explicitly define HMR configuration
   optimizeDeps: {
     include: ['react', 'react-dom', 'react-router-dom']
   },
-  // Force disable caching for development
-  cacheDir: mode === 'development' ? `./.vite-cache-${Date.now()}` : undefined,
+  // Use a fixed cache directory name to prevent issues
+  cacheDir: '.vite-cache',
 }));

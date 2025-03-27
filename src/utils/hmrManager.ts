@@ -4,7 +4,6 @@
  */
 
 import { createRoot } from 'react-dom/client';
-import App from '../App';
 
 // Setup HMR for Vite
 export const setupHMR = (root: ReturnType<typeof createRoot>) => {
@@ -16,8 +15,10 @@ export const setupHMR = (root: ReturnType<typeof createRoot>) => {
       import.meta.hot.accept('../App.tsx', () => {
         console.log('🔄 Hot Module Replacement: Updating App component');
         try {
-          // Render the updated App component
-          root.render(App());
+          // Dynamically import the updated App to avoid JSX in .ts file
+          import('../App').then(({ default: UpdatedApp }) => {
+            root.render(UpdatedApp());
+          });
         } catch (error) {
           console.error('❌ Error during HMR update:', error);
         }

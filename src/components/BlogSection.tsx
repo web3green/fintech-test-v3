@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { BlogPostCard } from './blog/BlogPostCard';
 import { BlogPostDialog } from './BlogPostDialog';
@@ -22,12 +22,19 @@ export const BlogSection: React.FC = () => {
   const [selectedPost, setSelectedPost] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const postsPerPage = 8;
+  const [refreshKey, setRefreshKey] = useState(Date.now());
+
+  // При изменении языка, обновить компонент
+  useEffect(() => {
+    console.log('BlogSection language changed:', language);
+    setRefreshKey(Date.now());
+  }, [language]);
 
   const categories = ['all', ...Array.from(new Set(blogPosts.map(post => 
     getLocalizedContent(post.category, language).toLowerCase()
   )))];
 
-  // Filter posts based on search query and category
+  // Фильтровать посты на основе поискового запроса и категории
   const filteredPosts = blogPosts.filter(post => {
     const title = getLocalizedContent(post.title, language).toLowerCase();
     const excerpt = getLocalizedContent(post.excerpt, language).toLowerCase();
@@ -40,18 +47,18 @@ export const BlogSection: React.FC = () => {
     return matchesSearch && matchesCategory;
   });
 
-  // Calculate pagination
+  // Вычислить пагинацию
   const indexOfLastPost = currentPage * postsPerPage;
   const indexOfFirstPost = indexOfLastPost - postsPerPage;
   const currentPosts = filteredPosts.slice(indexOfFirstPost, indexOfLastPost);
   const totalPages = Math.ceil(filteredPosts.length / postsPerPage);
 
-  const handlePageChange = (pageNumber) => {
+  const handlePageChange = (pageNumber: number) => {
     setCurrentPage(pageNumber);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const handleOpenPost = (post) => {
+  const handleOpenPost = (post: any) => {
     setSelectedPost(post);
   };
 
@@ -59,18 +66,18 @@ export const BlogSection: React.FC = () => {
     setSelectedPost(null);
   };
 
-  // Function to get localized content specifically for this component
-  const getLocalizedPostContent = (content) => {
+  // Функция для получения локализованного контента специально для этого компонента
+  const getLocalizedPostContent = (content: any) => {
     return getLocalizedContent(content, language);
   };
 
-  // Prepare the description text with brand highlighting
+  // Подготовить текст описания с выделением бренда
   const blogDescription = language === 'en' 
     ? 'Stay up-to-date with the latest industry insights and company news from <span class="text-foreground dark:text-foreground">FinTechAssist</span>.' 
     : 'Будьте в курсе последних отраслевых идей и новостей компании <span class="text-foreground dark:text-foreground">FinTechAssist</span>.';
 
   return (
-    <section id="blog" className="py-16 bg-background">
+    <section id="blog" className="py-16 bg-background" key={`blog-section-${refreshKey}`}>
       <div className="container mx-auto px-4">
         <div className="max-w-4xl mx-auto mb-10 text-center">
           <h2 className="text-3xl font-bold mb-4">{language === 'en' ? 'Our Blog' : 'Наш Блог'}</h2>
@@ -81,6 +88,7 @@ export const BlogSection: React.FC = () => {
         </div>
 
         <BlogSearchBar
+          key={`blog-search-${language}`}
           searchQuery={searchQuery}
           setSearchQuery={setSearchQuery}
           categoryFilter={categoryFilter}
@@ -93,7 +101,7 @@ export const BlogSection: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {currentPosts.map((post) => (
               <BlogPostCard
-                key={post.id}
+                key={`post-${post.id}-${language}`}
                 post={post}
                 getLocalizedContent={getLocalizedPostContent}
                 handlePostClick={handleOpenPost}
@@ -113,7 +121,7 @@ export const BlogSection: React.FC = () => {
           </div>
         )}
 
-        {totalPages > 1 && (
+        {filteredPosts.length > 0 && totalPages > 1 && (
           <div className="flex justify-center mt-10">
             <Pagination>
               <PaginationContent>
@@ -148,6 +156,7 @@ export const BlogSection: React.FC = () => {
 
         {selectedPost && (
           <BlogPostDialog
+            key={`blog-dialog-${language}`}
             post={selectedPost}
             isOpen={true}
             onClose={handleClosePost}

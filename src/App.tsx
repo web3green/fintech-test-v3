@@ -4,33 +4,43 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Admin from "./pages/Admin";
 import { updateSocialMetaTags, enforceOurFavicon } from "./utils/metaTagManager";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: true,
+      staleTime: 1000 * 60 * 5, // 5 минут
+      retry: 2
+    },
+  },
+});
 
-// Enhanced component for managing meta tags
+// Улучшенный компонент для управления мета-тегами
 const MetaTagUpdater = () => {
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const [mounted, setMounted] = useState(false);
   
   useEffect(() => {
     console.log('MetaTagUpdater mounted - setting up watchers');
+    setMounted(true);
     
-    // Initial update
+    // Начальное обновление
     updateSocialMetaTags();
     enforceOurFavicon();
     
-    // Set up interval for continuous updates (every 2 seconds)
+    // Настроить интервал для непрерывных обновлений (каждые 2 секунды)
     intervalRef.current = setInterval(() => {
       console.log('MetaTagUpdater interval check');
       updateSocialMetaTags();
       enforceOurFavicon();
     }, 2000);
     
-    // Also update on visibility change (tab focus)
+    // Также обновлять при изменении видимости (фокус вкладки)
     const handleVisibilityChange = () => {
       if (document.visibilityState === 'visible') {
         console.log('Tab became visible - updating branding');
@@ -41,27 +51,44 @@ const MetaTagUpdater = () => {
     
     document.addEventListener('visibilitychange', handleVisibilityChange);
     
-    // Also update on network status change
+    // Также обновлять при изменении статуса сети
     window.addEventListener('online', () => {
       console.log('Network came online - updating branding');
       updateSocialMetaTags();
       enforceOurFavicon();
     });
     
-    // Clean up interval on unmount
+    // Также обновлять при изменении языка
+    window.addEventListener('language:changed', () => {
+      console.log('Language changed - updating branding');
+      updateSocialMetaTags();
+      enforceOurFavicon();
+      
+      // Также обновить стили
+      document.querySelectorAll('link[rel="stylesheet"]').forEach(link => {
+        if (link instanceof HTMLLinkElement && link.href) {
+          const url = new URL(link.href);
+          url.searchParams.set('_refresh', Date.now().toString());
+          link.href = url.toString();
+        }
+      });
+    });
+    
+    // Очистить интервал при размонтировании
     return () => {
       console.log('MetaTagUpdater unmounting - cleaning up');
       if (intervalRef.current) clearInterval(intervalRef.current);
       document.removeEventListener('visibilitychange', handleVisibilityChange);
       window.removeEventListener('online', updateSocialMetaTags);
+      window.removeEventListener('language:changed', updateSocialMetaTags);
     };
   }, []);
 
-  return null;
+  return mounted ? <div id="meta-tag-updater" style={{ display: 'none' }} /> : null;
 };
 
 const App = () => {
-  // Check and apply saved theme on initial load
+  // Проверить и применить сохраненную тему при начальной загрузке
   useEffect(() => {
     console.log('App component mounted - initial branding setup');
     
@@ -72,22 +99,22 @@ const App = () => {
       document.documentElement.classList.add('dark');
     }
     
-    // Ensure meta tags are set at component mount
+    // Обеспечить установку мета-тегов при монтировании компонента
     updateSocialMetaTags();
     enforceOurFavicon();
     
-    // Create a MutationObserver to detect when new elements are added to the DOM
+    // Создать MutationObserver для обнаружения добавления новых элементов в DOM
     const observer = new MutationObserver((mutations) => {
       let needsUpdate = false;
       
       mutations.forEach(mutation => {
         if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
-          // Check if any added nodes are favicon links
+          // Проверить, есть ли среди добавленных узлов ссылки на favicon
           mutation.addedNodes.forEach(node => {
             if (node.nodeType === Node.ELEMENT_NODE) {
               const element = node as Element;
               
-              // Look for any newly added favicon links
+              // Искать любые вновь добавленные ссылки на favicon
               if (
                 element.tagName === 'LINK' && 
                 element.getAttribute('rel')?.includes('icon') &&
@@ -108,7 +135,7 @@ const App = () => {
       }
     });
     
-    // Start observing the document with all possible options for maximum detection
+    // Начать наблюдение за документом со всеми возможными параметрами для максимального обнаружения
     observer.observe(document, {
       childList: true,
       subtree: true,
@@ -116,7 +143,7 @@ const App = () => {
       attributeFilter: ['rel', 'href']
     });
     
-    // Clean up observer on unmount
+    // Очистить observer при размонтировании
     return () => observer.disconnect();
   }, []);
 
@@ -128,10 +155,10 @@ const App = () => {
         <Sonner position="top-right" />
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/admin/*" element={<Admin />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
+            <Route path="/" element={<Index key="index-page" />} />
+            <Route path="/admin/*" element={<Admin key="admin-page" />} />
+            {/* ДОБАВЛЯТЬ ВСЕ ПОЛЬЗОВАТЕЛЬСКИЕ МАРШРУТЫ ВЫШЕ МАРШРУТА CATCH-ALL "*" */}
+            <Route path="*" element={<NotFound key="not-found-page" />} />
           </Routes>
         </BrowserRouter>
       </TooltipProvider>

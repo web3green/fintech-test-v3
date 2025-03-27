@@ -1,3 +1,4 @@
+
 import React, { createContext, useState, useContext, useEffect, ReactNode } from 'react';
 
 type Language = 'en' | 'ru';
@@ -323,6 +324,29 @@ export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }
 
   useEffect(() => {
     localStorage.setItem('language', language);
+    
+    // Создать пользовательское событие для обновления страницы при смене языка
+    const event = new CustomEvent('language:changed', { detail: { language } });
+    window.dispatchEvent(event);
+    
+    // Также принудительно обновить стили и скрипты при смене языка
+    document.querySelectorAll('link[rel="stylesheet"]').forEach(link => {
+      if (link instanceof HTMLLinkElement && link.href) {
+        const url = new URL(link.href);
+        url.searchParams.set('_lang', language);
+        url.searchParams.set('_t', Date.now().toString());
+        link.href = url.toString();
+      }
+    });
+    
+    // Обеспечить правильное отображение контента
+    document.documentElement.setAttribute('lang', language);
+    document.documentElement.style.opacity = '0.99';
+    setTimeout(() => {
+      document.documentElement.style.opacity = '1';
+    }, 10);
+    
+    console.log('🌍 Язык изменен на:', language);
   }, [language]);
 
   const t = (key: string): string => {

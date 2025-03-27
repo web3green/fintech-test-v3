@@ -7,25 +7,28 @@ import {
   enforceOurFavicon 
 } from './utils/metaTagManager'
 
-// Function to force cache refresh
+// Функция для принудительного обновления кэша
 const forceCacheRefresh = () => {
-  // Add a random parameter to URL of all CSS files to bust cache
+  console.log('🔄 Принудительное обновление кэша:', new Date().toISOString());
+  
+  // Добавить случайный параметр к URL всех CSS файлов для сброса кэша
   document.querySelectorAll('link[rel="stylesheet"]').forEach(linkEl => {
     if (linkEl instanceof HTMLLinkElement && linkEl.href) {
       const url = new URL(linkEl.href);
       url.searchParams.set('_cache', Date.now().toString());
       linkEl.href = url.toString();
+      console.log('📑 Обновление CSS:', url.toString());
     }
   });
   
-  // Same for scripts
+  // То же самое для скриптов
   document.querySelectorAll('script[src]').forEach(scriptEl => {
     if (scriptEl instanceof HTMLScriptElement && scriptEl.src && !scriptEl.src.includes('gptengineer')) {
       const originalSrc = scriptEl.src;
       const url = new URL(originalSrc);
       url.searchParams.set('_cache', Date.now().toString());
       
-      // For some scripts we may need to recreate them for guaranteed reload
+      // Для некоторых скриптов может потребоваться их пересоздание для гарантированной перезагрузки
       if (!originalSrc.includes('inline') && !originalSrc.includes('dynamic')) {
         const parent = scriptEl.parentNode;
         if (parent) {
@@ -35,12 +38,13 @@ const forceCacheRefresh = () => {
           newScript.async = scriptEl.async;
           newScript.defer = scriptEl.defer;
           parent.replaceChild(newScript, scriptEl);
+          console.log('📜 Обновление Script:', url.toString());
         }
       }
     }
   });
   
-  // Hint the browser to refresh all resources
+  // Намекнуть браузеру обновить все ресурсы
   if (window.performance && window.performance.getEntriesByType) {
     try {
       const resources = window.performance.getEntriesByType('resource');
@@ -53,81 +57,115 @@ const forceCacheRefresh = () => {
           if (isCss || isJs) {
             const cacheBusterUrl = `${url.origin}${url.pathname}?_cache=${Date.now()}${url.search}`;
             
-            // Prefetch the resource
+            // Предзагрузить ресурс
             const link = document.createElement('link');
             link.rel = 'prefetch';
             link.href = cacheBusterUrl;
             document.head.appendChild(link);
+            console.log('🔍 Предзагрузка ресурса:', cacheBusterUrl);
             
-            // Remove after a short delay
+            // Удалить через короткую задержку
             setTimeout(() => link.remove(), 1000);
           }
         }
       });
     } catch (e) {
-      console.warn('Failed to analyze resource timing:', e);
+      console.warn('❌ Не удалось проанализировать resource timing:', e);
     }
   }
   
-  console.log('🔄 Cache refresh forced at:', new Date().toISOString());
+  // Создать и применить временный стиль для принудительного обновления отображения
+  const forceRepaintStyle = document.createElement('style');
+  forceRepaintStyle.textContent = 'body { animation: force-repaint 0.1s; } @keyframes force-repaint { from { opacity: 0.99; } to { opacity: 1; } }';
+  document.head.appendChild(forceRepaintStyle);
+  
+  // Удалить стиль через короткую задержку
+  setTimeout(() => forceRepaintStyle.remove(), 300);
 };
 
-// Function to ensure our meta tags and favicon are set
+// Функция для обеспечения нашего брендинга
 const ensureOurBranding = () => {
-  // Initial update
+  // Начальное обновление
   updateSocialMetaTags();
   
-  // Enforce our favicon
+  // Применить наш favicon
   enforceOurFavicon();
 };
 
-// Initialize meta tags before React loads
+// Инициализировать мета-теги до загрузки React
 document.addEventListener('DOMContentLoaded', () => {
-  // Initial setup
+  // Начальная настройка
   ensureOurBranding();
   
-  // Force cache refresh
+  // Принудительное обновление кэша
   forceCacheRefresh();
   
-  // Schedule multiple updates with shorter delays and more iterations
+  // Запланировать несколько обновлений с меньшими задержками и большим количеством повторений
   for (let i = 1; i <= 10; i++) {
-    setTimeout(ensureOurBranding, i * 100); // Update every 100ms for 1 second
+    setTimeout(ensureOurBranding, i * 100); // Обновлять каждые 100мс в течение 1 секунды
   }
   
-  // Additional updates after longer delays to catch late-loading states
+  // Дополнительные обновления после более длительных задержек для обработки состояний поздней загрузки
   setTimeout(ensureOurBranding, 2000);
   setTimeout(ensureOurBranding, 5000);
 });
 
-// Also add event listeners to update meta tags when needed
+// Также добавить обработчики событий для обновления мета-тегов при необходимости
 window.addEventListener('load', () => {
+  console.log('📄 Страница полностью загружена');
   ensureOurBranding();
-  // Update cache after full load
+  // Обновить кэш после полной загрузки
   forceCacheRefresh();
+  
+  // Также обновить стили после полной загрузки
+  document.querySelectorAll('link[rel="stylesheet"]').forEach(linkEl => {
+    if (linkEl instanceof HTMLLinkElement) {
+      // Клонировать стиль для обновления
+      const newLink = document.createElement('link');
+      newLink.rel = 'stylesheet';
+      newLink.href = `${linkEl.href}?_t=${Date.now()}`;
+      newLink.onload = () => {
+        // После загрузки нового стиля удалить старый
+        linkEl.remove();
+        console.log('🎨 Стиль переподключен:', newLink.href);
+      };
+      document.head.appendChild(newLink);
+    }
+  });
   
   for (let i = 1; i <= 5; i++) {
     setTimeout(ensureOurBranding, i * 200);
   }
 });
 
-// Create an interval to check and update our branding
-setInterval(ensureOurBranding, 5000); // Check every 5 seconds
+// Создать интервал для проверки и обновления нашего брендинга
+setInterval(ensureOurBranding, 5000); // Проверять каждые 5 секунд
 
-// Handle page visibility event
+// Обработка события видимости страницы
 document.addEventListener('visibilitychange', () => {
   if (document.visibilityState === 'visible') {
-    console.log('⚡ Page became visible - refreshing cache and branding');
+    console.log('⚡ Страница стала видимой - обновляем кэш и брендинг');
     forceCacheRefresh();
     ensureOurBranding();
   }
 });
 
-// Handle network status change
+// Обработка изменения статуса сети
 window.addEventListener('online', () => {
-  console.log('🌐 Network connection restored - refreshing cache');
+  console.log('🌐 Сетевое соединение восстановлено - обновляем кэш');
   forceCacheRefresh();
   ensureOurBranding();
 });
 
-// React app initialization
+// Добавить обработчик для принудительного обновления страницы при смене языка
+window.addEventListener('languagechange', () => {
+  console.log('🌍 Обнаружено изменение языка - обновляем кэш');
+  forceCacheRefresh();
+});
+
+// Создать пользовательское событие для принудительного обновления содержимого
+const refreshEvent = new CustomEvent('app:refresh');
+window.dispatchEvent(refreshEvent);
+
+// Инициализация приложения React
 createRoot(document.getElementById("root")!).render(<App />);

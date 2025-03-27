@@ -63,7 +63,7 @@ export function Hero() {
                     </div>
                     <div className="ml-4">
                       <div className="font-bold text-xl">
-                        <span className="text-foreground dark:text-foreground">{t('hero.companyName')}</span>
+                        <span className="text-foreground dark:text-foreground">FinTechAssist</span>
                       </div>
                       <div className="text-sm text-muted-foreground">{t('hero.companyTagline')}</div>
                     </div>

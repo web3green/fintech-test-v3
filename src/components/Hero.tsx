@@ -4,32 +4,10 @@ import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { GlowingEffect } from './ui/glowing-effect';
 import { Card } from './ui/card';
-import { useEffect, useState } from 'react';
-
 export function Hero() {
-  const { t, language } = useLanguage();
-  const [forceUpdate, setForceUpdate] = useState(0);
-
-  // Эффект для принудительного обновления при изменении языка
-  useEffect(() => {
-    console.log('Hero component rerendering with language:', language);
-    setForceUpdate(prev => prev + 1);
-    
-    // Также слушаем событие обновления языка
-    const handleLanguageUpdate = () => {
-      console.log('Hero received language update event');
-      setForceUpdate(prev => prev + 1);
-    };
-    
-    window.addEventListener('content:language-update', handleLanguageUpdate);
-    window.addEventListener('language:changed', handleLanguageUpdate);
-    
-    return () => {
-      window.removeEventListener('content:language-update', handleLanguageUpdate);
-      window.removeEventListener('language:changed', handleLanguageUpdate);
-    };
-  }, [language]);
-  
+  const {
+    t
+  } = useLanguage();
   const scrollToContact = () => {
     const contactSection = document.getElementById('contact');
     if (contactSection) {
@@ -38,14 +16,7 @@ export function Hero() {
       });
     }
   };
-  
-  // Убедимся, что компонент обновляется при изменении языка
-  return (
-    <section 
-      className="relative overflow-hidden bg-blue-50 dark:bg-blue-950/90 pt-20 md:pt-24 lg:pt-28 pb-20 md:pb-24"
-      key={`hero-section-${language}-${forceUpdate}`}
-      data-language={language}
-    >
+  return <section className="relative overflow-hidden bg-blue-50 dark:bg-blue-950/90 pt-20 md:pt-24 lg:pt-28 pb-20 md:pb-24">
       <div className="container mx-auto px-8 md:px-12 lg:px-16">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div className="order-2 lg:order-1 z-10">
@@ -53,32 +24,25 @@ export function Hero() {
               {t('hero.title')}
             </h1>
             <p className="text-xl text-muted-foreground mb-8 max-w-lg animate-fade-up" style={{
-              animationDelay: '100ms'
-            }}>
+            animationDelay: '100ms'
+          }}>
               {t('hero.subtitle')}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 animate-fade-up" style={{
-              animationDelay: '200ms'
-            }}>
-              <Button 
-                className="bg-fintech-blue hover:bg-fintech-blue-light text-white transition-all duration-300" 
-                onClick={scrollToContact}
-              >
+            animationDelay: '200ms'
+          }}>
+              <Button className="bg-fintech-blue hover:bg-fintech-blue-light text-white transition-all duration-300" onClick={scrollToContact}>
                 {t('cta.consultation')}
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
-              <Button 
-                variant="outline" 
-                className="border-fintech-blue/20 text-fintech-blue hover:text-fintech-blue-dark dark:text-fintech-blue-light hover:bg-fintech-blue/5" 
-                onClick={() => {
-                  const servicesElement = document.getElementById('services');
-                  if (servicesElement) {
-                    servicesElement.scrollIntoView({
-                      behavior: 'smooth'
-                    });
-                  }
-                }}
-              >
+              <Button variant="outline" className="border-fintech-blue/20 text-fintech-blue hover:text-fintech-blue-dark dark:text-fintech-blue-light hover:bg-fintech-blue/5" onClick={() => {
+              const servicesElement = document.getElementById('services');
+              if (servicesElement) {
+                servicesElement.scrollIntoView({
+                  behavior: 'smooth'
+                });
+              }
+            }}>
                 {t('nav.services')}
               </Button>
             </div>
@@ -99,7 +63,7 @@ export function Hero() {
                     </div>
                     <div className="ml-4">
                       <div className="font-bold text-xl">
-                        <span className="text-foreground dark:text-foreground">{t('hero.companyName')}</span>
+                        <span className="text-foreground dark:text-foreground">FinTechAssist</span>
                       </div>
                       <div className="text-sm text-muted-foreground">{t('hero.companyTagline')}</div>
                     </div>
@@ -192,6 +156,5 @@ export function Hero() {
       
       <div className="absolute top-0 inset-x-0 h-40 bg-gradient-to-b from-blue-200/30 dark:from-blue-700/10 to-transparent"></div>
       <div className="absolute bottom-0 inset-x-0 h-40 bg-gradient-to-t from-blue-200/30 dark:from-blue-700/10 to-transparent"></div>
-    </section>
-  );
+    </section>;
 }

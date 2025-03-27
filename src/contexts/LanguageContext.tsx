@@ -309,13 +309,6 @@ const translations = {
   }
 };
 
-// Создаем глобальную переменную для хранения текущего языка
-declare global {
-  interface Window {
-    CURRENT_LANGUAGE: Language;
-  }
-}
-
 export const LanguageContext = createContext<LanguageContextType>({
   language: 'ru',
   setLanguage: () => {},
@@ -323,99 +316,17 @@ export const LanguageContext = createContext<LanguageContextType>({
 });
 
 export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  // Функция для надежного определения языка при загрузке
-  const determineInitialLanguage = (): Language => {
-    // Проверяем сохраненный язык
-    try {
-      const storedLang = localStorage.getItem('language') as Language;
-      if (storedLang && (storedLang === 'en' || storedLang === 'ru')) {
-        console.log('🌍 Язык из localStorage:', storedLang);
-        return storedLang;
-      }
-    } catch (e) {
-      console.warn('Ошибка при чтении языка из localStorage:', e);
-    }
-
-    // Если язык не сохранен или произошла ошибка, используем русский по умолчанию
-    console.log('🌍 Используем язык по умолчанию: ru');
-    return 'ru';
-  };
-
-  const [language, setLanguageState] = useState<Language>(determineInitialLanguage);
-
-  const setLanguage = (newLanguage: Language) => {
-    console.log('🌍 Смена языка:', newLanguage);
-    
-    // Устанавливаем в state
-    setLanguageState(newLanguage);
-    
-    // Сохраняем в localStorage
-    try {
-      localStorage.setItem('language', newLanguage);
-    } catch (e) {
-      console.warn('Ошибка при сохранении языка в localStorage:', e);
-    }
-    
-    // Устанавливаем в глобальную переменную
-    window.CURRENT_LANGUAGE = newLanguage;
-    
-    // Добавляем атрибут к HTML для CSS селекторов
-    document.documentElement.setAttribute('lang', newLanguage);
-    document.documentElement.setAttribute('data-language', newLanguage);
-    
-    // Генерируем события для обновления компонентов
-    window.dispatchEvent(new CustomEvent('language:changed', { detail: { language: newLanguage } }));
-    window.dispatchEvent(new Event('languagechange'));
-  };
+  const [language, setLanguage] = useState<Language>(() => {
+    const savedLanguage = localStorage.getItem('language') as Language;
+    return savedLanguage || 'ru';
+  });
 
   useEffect(() => {
-    // Инициализация глобальной переменной
-    window.CURRENT_LANGUAGE = language;
-    
-    // Установка атрибутов документа
-    document.documentElement.setAttribute('lang', language);
-    document.documentElement.setAttribute('data-language', language);
-    
-    console.log('🌍 Инициализация языка:', language);
-    
-    // Принудительное обновление при монтировании контекста
-    const event = new CustomEvent('language:changed', { detail: { language } });
-    window.dispatchEvent(event);
-    
-    // Периодическая проверка и синхронизация языка
-    const intervalId = setInterval(() => {
-      const storedLang = localStorage.getItem('language') as Language;
-      if (storedLang && storedLang !== language && (storedLang === 'en' || storedLang === 'ru')) {
-        console.log('🌍 Обнаружена рассинхронизация языка:', storedLang, language);
-        setLanguageState(storedLang);
-      }
-    }, 2000);
-    
-    return () => clearInterval(intervalId);
+    localStorage.setItem('language', language);
   }, [language]);
 
-  // Обернем функцию t, чтобы она была более устойчивой к ошибкам
   const t = (key: string): string => {
-    if (!key) return '';
-    
-    try {
-      const translation = translations[language][key as keyof typeof translations[typeof language]];
-      if (translation) return translation;
-      
-      // Попробовать найти в другом языке, если перевод отсутствует
-      const fallbackLang = language === 'en' ? 'ru' : 'en';
-      const fallbackTranslation = translations[fallbackLang][key as keyof typeof translations[typeof fallbackLang]];
-      
-      if (fallbackTranslation) {
-        console.warn(`Перевод для "${key}" отсутствует в языке "${language}", используется запасной вариант`);
-        return fallbackTranslation;
-      }
-      
-      return key;
-    } catch (e) {
-      console.error(`Ошибка при получении перевода для "${key}":`, e);
-      return key;
-    }
+    return translations[language][key as keyof typeof translations[typeof language]] || key;
   };
 
   return (

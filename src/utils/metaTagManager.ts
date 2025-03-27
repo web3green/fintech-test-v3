@@ -17,13 +17,8 @@ export {
   updateSocialMetaTags
 } from './metaTags/socialMetaTags';
 
-// Define placeholder functions for the removed heartIconBlocker.ts
-export const blockHeartIcon = () => {
-  // Placeholder function - does nothing now
-  console.log('blockHeartIcon function has been removed');
-};
-
-export const scanAndRemoveHeartIcons = () => {
-  // Placeholder function - does nothing now
-  console.log('scanAndRemoveHeartIcons function has been removed');
-};
+// Export heart icon blocking functions
+export {
+  blockHeartIcon,
+  scanAndRemoveHeartIcons
+} from './heartBlocker/heartIconBlocker';

@@ -1,15 +1,32 @@
 
+import { Header } from '@/components/Header';
+import { Hero } from '@/components/Hero';
+import { AboutSection } from '@/components/AboutSection';
+import { ServicesSection } from '@/components/ServicesSection';
+import { ProcessSection } from '@/components/ProcessSection';
+import { BlogSection } from '@/components/BlogSection';
+import { ContactForm } from '@/components/ContactForm';
+import { Footer } from '@/components/Footer';
+import { AiChatbot } from '@/components/AiChatbot';
 import { LanguageProvider } from '@/contexts/LanguageContext';
-import { LanguageInitializer } from '@/components/language/LanguageInitializer';
-import { IndexContentWithUpdaters } from '@/components/content/IndexContentWithUpdaters';
 
 const Index = () => {
   return (
-    <LanguageInitializer>
-      <LanguageProvider>
-        <IndexContentWithUpdaters />
-      </LanguageProvider>
-    </LanguageInitializer>
+    <LanguageProvider>
+      <div className="min-h-screen flex flex-col">
+        <Header />
+        <main className="flex-grow">
+          <Hero />
+          <AboutSection />
+          <ServicesSection />
+          <ProcessSection />
+          <BlogSection />
+          <ContactForm />
+        </main>
+        <Footer />
+        <AiChatbot />
+      </div>
+    </LanguageProvider>
   );
 };
 

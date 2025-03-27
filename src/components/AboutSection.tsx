@@ -31,7 +31,7 @@ export function AboutSection() {
                           <div className="text-sm md:text-base font-medium text-gray-900 dark:text-white">
                             <span className="text-foreground dark:text-foreground">FinTechAssist</span>
                           </div>
-                          <div className="text-xs text-gray-600 dark:text-white/70">{t('about.card.slogan')}</div>
+                          <div className="text-xs text-gray-600 dark:text-white/70">{language === 'en' ? 'Your global fintech partner' : 'Ваш глобальный финтех-партнер'}</div>
                         </div>
                       </div>
                       
@@ -40,33 +40,33 @@ export function AboutSection() {
                           <div className="h-7 w-7 md:h-8 md:w-8 rounded-full bg-blue-100 dark:bg-blue-800/30 flex items-center justify-center">
                             <UserRound className="h-3.5 w-3.5 md:h-4 md:w-4 text-blue-600 dark:text-blue-300" />
                           </div>
-                          <div className="text-xs md:text-sm font-medium">{t('about.card.manager')}</div>
+                          <div className="text-xs md:text-sm font-medium">{language === 'en' ? 'Personal manager for every client' : 'Персональный менеджер для каждого клиента'}</div>
                         </div>
                         <div className="flex items-center space-x-2 text-gray-800 dark:text-white">
                           <div className="h-7 w-7 md:h-8 md:w-8 rounded-full bg-blue-200 dark:bg-blue-700/30 flex items-center justify-center">
                             <Handshake className="h-3.5 w-3.5 md:h-4 md:w-4 text-blue-600 dark:text-blue-300" />
                           </div>
-                          <div className="text-xs md:text-sm font-medium">{t('about.card.support')}</div>
+                          <div className="text-xs md:text-sm font-medium">{language === 'en' ? 'Full support at all stages' : 'Полное сопровождение на всех этапах'}</div>
                         </div>
                         <div className="flex items-center space-x-2 text-gray-800 dark:text-white">
                           <div className="h-7 w-7 md:h-8 md:w-8 rounded-full bg-blue-100 dark:bg-blue-800/30 flex items-center justify-center">
                             <ShieldCheck className="h-3.5 w-3.5 md:h-4 md:w-4 text-blue-600 dark:text-blue-300" />
                           </div>
-                          <div className="text-xs md:text-sm font-medium">{t('about.card.escrow')}</div>
+                          <div className="text-xs md:text-sm font-medium">{language === 'en' ? 'Working through escrow services' : 'Работа через сервисы гаранта'}</div>
                         </div>
                       </div>
                       
                       <div className="grid grid-cols-3 gap-1 md:gap-2 pt-1">
                         <div className="bg-white/80 dark:bg-gray-900/30 rounded-lg p-2 md:p-3 border border-gray-200 dark:border-white/10 text-center">
-                          <div className="text-2xs md:text-xs text-gray-500 dark:text-white/70">{t('about.stats.founded')}</div>
+                          <div className="text-2xs md:text-xs text-gray-500 dark:text-white/70">{language === 'en' ? 'Founded' : 'Основано'}</div>
                           <div className="mt-0.5 md:mt-1 font-semibold text-xs md:text-sm text-gray-900 dark:text-white">2015</div>
                         </div>
                         <div className="bg-white/80 dark:bg-gray-900/30 rounded-lg p-2 md:p-3 border border-gray-200 dark:border-white/10 text-center">
-                          <div className="text-2xs md:text-xs text-gray-500 dark:text-white/70">{t('about.stats.team')}</div>
-                          <div className="mt-0.5 md:mt-1 font-semibold text-xs md:text-sm text-gray-900 dark:text-white">10+ {t('about.stats.experts')}</div>
+                          <div className="text-2xs md:text-xs text-gray-500 dark:text-white/70">{language === 'en' ? 'Team' : 'Команда'}</div>
+                          <div className="mt-0.5 md:mt-1 font-semibold text-xs md:text-sm text-gray-900 dark:text-white">10+ {language === 'en' ? 'experts' : 'экспертов'}</div>
                         </div>
                         <div className="bg-white/80 dark:bg-gray-900/30 rounded-lg p-2 md:p-3 border border-gray-200 dark:border-white/10 text-center">
-                          <div className="text-2xs md:text-xs text-gray-500 dark:text-white/70">{t('about.stats.clients')}</div>
+                          <div className="text-2xs md:text-xs text-gray-500 dark:text-white/70">{language === 'en' ? 'Clients' : 'Клиенты'}</div>
                           <div className="mt-0.5 md:mt-1 font-semibold text-xs md:text-sm text-gray-900 dark:text-white">500+</div>
                         </div>
                       </div>
@@ -97,9 +97,9 @@ export function AboutSection() {
                   <div className="h-8 w-8 rounded-full bg-blue-100 dark:bg-blue-800/30 flex items-center justify-center">
                     <Globe className="h-4 w-4 text-blue-600 dark:text-blue-300" />
                   </div>
-                  <div className="text-xl md:text-2xl font-bold text-blue-600 dark:text-blue-300">15+</div>
+                  <div className="text-xl md:text-2xl font-bold text-blue-600 dark:text-blue-300">50+</div>
                 </div>
-                <div className="text-sm text-black dark:text-white">{t('about.metrics.countries')}</div>
+                <div className="text-sm text-black dark:text-white">{language === 'en' ? 'Countries' : 'Стран'}</div>
               </div>
               <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg shadow-sm hover:shadow-md transition-all duration-300">
                 <div className="flex items-center gap-3 mb-2">
@@ -108,7 +108,7 @@ export function AboutSection() {
                   </div>
                   <div className="text-xl md:text-2xl font-bold text-blue-600 dark:text-blue-300">500+</div>
                 </div>
-                <div className="text-sm text-black dark:text-white">{t('about.metrics.clients')}</div>
+                <div className="text-sm text-black dark:text-white">{language === 'en' ? 'Clients' : 'Клиентов'}</div>
               </div>
               <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg shadow-sm hover:shadow-md transition-all duration-300">
                 <div className="flex items-center gap-3 mb-2">
@@ -117,28 +117,28 @@ export function AboutSection() {
                   </div>
                   <div className="text-xl md:text-2xl font-bold text-blue-600 dark:text-blue-300">98%</div>
                 </div>
-                <div className="text-sm text-black dark:text-white">{t('about.metrics.success')}</div>
+                <div className="text-sm text-black dark:text-white">{language === 'en' ? 'Success Rate' : 'Успешных проектов'}</div>
               </div>
               <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg shadow-sm hover:shadow-md transition-all duration-300">
                 <div className="flex items-center gap-3 mb-2">
                   <div className="h-8 w-8 rounded-full bg-blue-200 dark:bg-blue-700/30 flex items-center justify-center">
                     <Clock className="h-4 w-4 text-blue-600 dark:text-blue-300" />
                   </div>
-                  <div className="text-xl md:text-2xl font-bold text-blue-600 dark:text-blue-300">9+</div>
+                  <div className="text-xl md:text-2xl font-bold text-blue-600 dark:text-blue-300">7+</div>
                 </div>
-                <div className="text-sm text-black dark:text-white">{t('about.metrics.years')}</div>
+                <div className="text-sm text-black dark:text-white">{language === 'en' ? 'Years Experience' : 'Лет опыта'}</div>
               </div>
             </div>
             
             <Button variant="outline" className="group text-sm" onClick={() => {
-              const servicesElement = document.getElementById('services');
-              if (servicesElement) {
-                servicesElement.scrollIntoView({
-                  behavior: 'smooth'
-                });
-              }
-            }}>
-              {t('about.exploreServices')}
+            const servicesElement = document.getElementById('services');
+            if (servicesElement) {
+              servicesElement.scrollIntoView({
+                behavior: 'smooth'
+              });
+            }
+          }}>
+              {language === 'en' ? 'Explore Our Services' : 'Изучить наши услуги'}
               <ArrowRight className="ml-2 h-4 w-4 transition-transform duration-300 transform group-hover:translate-x-1" />
             </Button>
           </div>

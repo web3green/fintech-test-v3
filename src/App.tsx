@@ -4,165 +4,95 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Admin from "./pages/Admin";
-import { updateSocialMetaTags, enforceOurFavicon } from "./utils/metaTagManager";
+import { updateSocialMetaTags, blockHeartIcon, enforceOurFavicon, scanAndRemoveHeartIcons } from "./utils/metaTagManager";
 
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      refetchOnWindowFocus: true,
-      staleTime: 1000 * 60 * 5, // 5 минут
-      retry: 2
-    },
-  },
-});
+const queryClient = new QueryClient();
 
-// Регистрация Service Worker для управления кешированием
-const registerServiceWorker = () => {
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', async () => {
-      try {
-        const registration = await navigator.serviceWorker.register('/service-worker.js', { 
-          scope: '/',
-          updateViaCache: 'none' // Отключаем кеширование для самого Service Worker
-        });
-        
-        // Обновляем Service Worker, если доступна новая версия
-        if (registration.waiting) {
-          registration.waiting.postMessage({ type: 'SKIP_WAITING' });
-        }
-        
-        // Обработка обновления Service Worker
-        registration.addEventListener('updatefound', () => {
-          const newWorker = registration.installing;
-          if (newWorker) {
-            newWorker.addEventListener('statechange', () => {
-              if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                console.log('Новая версия Service Worker доступна');
-                // Отправляем сообщение для пропуска ожидания
-                newWorker.postMessage({ type: 'SKIP_WAITING' });
-              }
-            });
-          }
-        });
-        
-        console.log('Service Worker успешно зарегистрирован:', registration.scope);
-        
-        // Обработка обновления страницы при обновлении Service Worker
-        let refreshing = false;
-        navigator.serviceWorker.addEventListener('controllerchange', () => {
-          if (!refreshing) {
-            refreshing = true;
-            console.log('Service Worker обновлен, перезагружаем страницу');
-            window.location.reload();
-          }
-        });
-        
-      } catch (error) {
-        console.error('Ошибка регистрации Service Worker:', error);
-      }
-    });
-  }
-};
-
-// Очистка кеша
-const clearCache = async () => {
-  if ('caches' in window) {
-    try {
-      const keys = await caches.keys();
-      await Promise.all(keys.map(key => caches.delete(key)));
-      console.log('Кеш успешно очищен');
-      
-      // Отправить сообщение Service Worker для очистки кеша
-      if (navigator.serviceWorker.controller) {
-        navigator.serviceWorker.controller.postMessage({ type: 'CLEAR_CACHE' });
-      }
-    } catch (error) {
-      console.error('Ошибка при очистке кеша:', error);
-    }
-  }
-};
-
-// Улучшенный компонент для управления мета-тегами
+// Enhanced component for managing meta tags - let's add more logging for debugging
 const MetaTagUpdater = () => {
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
-  const [mounted, setMounted] = useState(false);
   
   useEffect(() => {
     console.log('MetaTagUpdater mounted - setting up watchers');
-    setMounted(true);
     
-    // Начальное обновление
+    // Initial update and block heart icon
     updateSocialMetaTags();
+    blockHeartIcon();
     enforceOurFavicon();
+    scanAndRemoveHeartIcons();
     
-    // Настроить интервал для непрерывных обновлений (каждые 2 секунды)
+    // Set up interval for continuous updates (every 500ms)
     intervalRef.current = setInterval(() => {
       console.log('MetaTagUpdater interval check');
       updateSocialMetaTags();
+      blockHeartIcon();
       enforceOurFavicon();
-    }, 2000);
+      scanAndRemoveHeartIcons();
+    }, 500);
     
-    // Также обновлять при изменении видимости (фокус вкладки)
+    // Additional immediate updates with increased frequency
+    for (let i = 1; i <= 10; i++) {
+      setTimeout(() => {
+        updateSocialMetaTags();
+        blockHeartIcon();
+        enforceOurFavicon();
+        scanAndRemoveHeartIcons();
+      }, i * 50); // Every 50ms for 500ms
+    }
+    
+    // Also update on visibility change (tab focus)
     const handleVisibilityChange = () => {
       if (document.visibilityState === 'visible') {
         console.log('Tab became visible - updating branding');
+        // Update multiple times when tab becomes visible
         updateSocialMetaTags();
+        blockHeartIcon();
         enforceOurFavicon();
+        scanAndRemoveHeartIcons();
+        
+        // Schedule additional updates
+        for (let i = 1; i <= 10; i++) {
+          setTimeout(() => {
+            updateSocialMetaTags();
+            blockHeartIcon();
+            enforceOurFavicon();
+            scanAndRemoveHeartIcons();
+          }, i * 100);
+        }
       }
     };
     
     document.addEventListener('visibilitychange', handleVisibilityChange);
     
-    // Также обновлять при изменении статуса сети
+    // Also update on network status change
     window.addEventListener('online', () => {
       console.log('Network came online - updating branding');
       updateSocialMetaTags();
+      blockHeartIcon();
       enforceOurFavicon();
+      scanAndRemoveHeartIcons();
     });
     
-    // Также обновлять при изменении языка
-    window.addEventListener('language:changed', () => {
-      console.log('Language changed - updating branding');
-      updateSocialMetaTags();
-      enforceOurFavicon();
-      
-      // Также обновить стили
-      document.querySelectorAll('link[rel="stylesheet"]').forEach(link => {
-        if (link instanceof HTMLLinkElement && link.href) {
-          const url = new URL(link.href);
-          url.searchParams.set('_refresh', Date.now().toString());
-          link.href = url.toString();
-        }
-      });
-    });
-    
-    // Очистить интервал при размонтировании
+    // Clean up interval on unmount
     return () => {
       console.log('MetaTagUpdater unmounting - cleaning up');
       if (intervalRef.current) clearInterval(intervalRef.current);
       document.removeEventListener('visibilitychange', handleVisibilityChange);
       window.removeEventListener('online', updateSocialMetaTags);
-      window.removeEventListener('language:changed', updateSocialMetaTags);
     };
   }, []);
 
-  return mounted ? <div id="meta-tag-updater" style={{ display: 'none' }} /> : null;
+  return null;
 };
 
 const App = () => {
-  // Проверить и применить сохраненную тему при начальной загрузке
+  // Check and apply saved theme on initial load
   useEffect(() => {
     console.log('App component mounted - initial branding setup');
-    
-    // Регистрация Service Worker
-    registerServiceWorker();
-    
-    // Очистка кеша при загрузке приложения
-    clearCache();
     
     const savedTheme = localStorage.getItem('theme');
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -171,28 +101,46 @@ const App = () => {
       document.documentElement.classList.add('dark');
     }
     
-    // Обеспечить установку мета-тегов при монтировании компонента
+    // Ensure meta tags are set at component mount and block heart icon
     updateSocialMetaTags();
+    blockHeartIcon();
     enforceOurFavicon();
+    scanAndRemoveHeartIcons();
     
-    // Создать MutationObserver для обнаружения добавления новых элементов в DOM
+    // Additional updates after short delays with increased frequency
+    for (let i = 1; i <= 20; i++) {
+      setTimeout(() => {
+        updateSocialMetaTags();
+        blockHeartIcon();
+        enforceOurFavicon();
+        scanAndRemoveHeartIcons();
+      }, i * 100);
+    }
+    
+    // Create a MutationObserver to detect when new elements are added to the DOM
     const observer = new MutationObserver((mutations) => {
       let needsUpdate = false;
       
       mutations.forEach(mutation => {
         if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
-          // Проверить, есть ли среди добавленных узлов ссылки на favicon
+          // Check if any added nodes contain heart icons or are from gptengineer
           mutation.addedNodes.forEach(node => {
             if (node.nodeType === Node.ELEMENT_NODE) {
               const element = node as Element;
               
-              // Искать любые вновь добавленные ссылки на favicon
+              // Look for any newly added favicon links
               if (
                 element.tagName === 'LINK' && 
                 element.getAttribute('rel')?.includes('icon') &&
                 !element.getAttribute('href')?.includes('6bfd57a2-6c6a-4507-bb1d-2cde1517ebd1')
               ) {
                 console.log('Detected non-FinTechAssist favicon:', element.getAttribute('href'));
+                needsUpdate = true;
+              }
+              
+              // Look for any SVG elements that might contain heart paths
+              if (element.tagName === 'SVG') {
+                console.log('New SVG element detected - checking for heart paths');
                 needsUpdate = true;
               }
             }
@@ -203,19 +151,21 @@ const App = () => {
       if (needsUpdate) {
         console.log('DOM mutations detected - updating branding');
         updateSocialMetaTags();
+        blockHeartIcon();
         enforceOurFavicon();
+        scanAndRemoveHeartIcons();
       }
     });
     
-    // Начать наблюдение за документом со всеми возможными параметрами для максимального обнаружения
+    // Start observing the document with all possible options for maximum detection
     observer.observe(document, {
       childList: true,
       subtree: true,
       attributes: true,
-      attributeFilter: ['rel', 'href']
+      attributeFilter: ['rel', 'href', 'src', 'class', 'id']
     });
     
-    // Очистить observer при размонтировании
+    // Clean up observer on unmount
     return () => observer.disconnect();
   }, []);
 
@@ -227,10 +177,10 @@ const App = () => {
         <Sonner position="top-right" />
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<Index key="index-page" />} />
-            <Route path="/admin/*" element={<Admin key="admin-page" />} />
-            {/* ДОБАВЛЯТЬ ВСЕ ПОЛЬЗОВАТЕЛЬСКИЕ МАРШРУТЫ ВЫШЕ МАРШРУТА CATCH-ALL "*" */}
-            <Route path="*" element={<NotFound key="not-found-page" />} />
+            <Route path="/" element={<Index />} />
+            <Route path="/admin/*" element={<Admin />} />
+            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
       </TooltipProvider>

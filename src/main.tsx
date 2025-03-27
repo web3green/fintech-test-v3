@@ -2,61 +2,101 @@
 import { createRoot } from 'react-dom/client'
 import App from './App.tsx'
 import './index.css'
-import { forceCacheRefresh, refreshStylesheets } from './utils/cacheManager'
-import { ensureOurBranding, scheduleMultipleBrandingUpdates } from './utils/brandingManager'
-import { observeDOM } from './utils/domObserver'
-import { setupHMR } from './utils/hmrManager'
-import { setupEventListeners } from './utils/eventListenersManager'
+import { 
+  updateSocialMetaTags, 
+  blockHeartIcon, 
+  enforceOurFavicon, 
+  scanAndRemoveHeartIcons 
+} from './utils/metaTagManager'
 
-// Ensure we have a stable root element
-const rootElement = document.getElementById("root");
+// Function to clean heart symbols from document title
+const cleanHeartSymbolsFromTitle = () => {
+  const heartSymbols = ['♥', '♡', '❤', '❥', '❣', '❦', '❧', '♥️', '❤️'];
+  let currentTitle = document.title;
+  let hasChanges = false;
+  
+  // Remove any heart symbols from title
+  heartSymbols.forEach(symbol => {
+    if (currentTitle.includes(symbol)) {
+      currentTitle = currentTitle.replace(new RegExp(symbol, 'g'), '');
+      hasChanges = true;
+    }
+  });
+  
+  // If we made changes, update the title
+  if (hasChanges) {
+    document.title = currentTitle.trim();
+    // If title is now empty, set a default
+    if (!document.title.trim()) {
+      document.title = 'FinTechAssist: Финансовые решения для бизнеса';
+    }
+  }
+};
 
-if (!rootElement) {
-  throw new Error("Root element not found. Make sure there is a div with id 'root' in your HTML.");
-}
+// Function to ensure our meta tags and favicon are set
+const ensureOurBranding = () => {
+  // Block any heart icons
+  blockHeartIcon();
+  
+  // Initial update
+  updateSocialMetaTags();
+  
+  // Enforce our favicon
+  enforceOurFavicon();
+  
+  // Scan DOM for heart icons
+  scanAndRemoveHeartIcons();
+  
+  // Clean heart symbols from title
+  cleanHeartSymbolsFromTitle();
+};
 
-// Use a single root instance to prevent the "container has already been passed to createRoot()" error
-const root = createRoot(rootElement);
-
-// Инициализировать мета-теги до загрузки React
+// Initialize meta tags before React loads
 document.addEventListener('DOMContentLoaded', () => {
-  // Начальная настройка
+  // Initial setup
   ensureOurBranding();
   
-  // Принудительное обновление кэша
-  forceCacheRefresh();
+  // Schedule multiple updates with shorter delays and more iterations
+  for (let i = 1; i <= 50; i++) {
+    setTimeout(ensureOurBranding, i * 20); // Update every 20ms for 1 second
+  }
   
-  // Запланировать несколько обновлений брендинга
-  scheduleMultipleBrandingUpdates();
+  // Additional updates after longer delays to catch late-loading states
+  setTimeout(ensureOurBranding, 1000);
+  setTimeout(ensureOurBranding, 2000);
+  setTimeout(ensureOurBranding, 3000);
+  setTimeout(ensureOurBranding, 5000);
+  setTimeout(ensureOurBranding, 10000);
 });
 
-// Также добавить обработчики событий для обновления мета-тегов при необходимости
+// Also add event listeners to update meta tags when needed
 window.addEventListener('load', () => {
-  console.log('📄 Страница полностью загружена');
   ensureOurBranding();
-  
-  // Обновить кэш после полной загрузки
-  forceCacheRefresh();
-  
-  // Также обновить стили после полной загрузки
-  refreshStylesheets();
-  
-  for (let i = 1; i <= 5; i++) {
-    setTimeout(ensureOurBranding, i * 200);
+  for (let i = 1; i <= 20; i++) {
+    setTimeout(ensureOurBranding, i * 50);
   }
 });
 
-// Создать интервал для проверки и обновления нашего брендинга
-setInterval(ensureOurBranding, 5000); // Проверять каждые 5 секунд
+// Create an interval to continuously check and update our branding
+setInterval(ensureOurBranding, 1000); // Check every second
 
-// Запускаем наблюдатель за DOM
-const domObserver = observeDOM();
+// Create a MutationObserver to watch for document title changes
+const titleObserver = new MutationObserver(mutations => {
+  mutations.forEach(mutation => {
+    if (mutation.type === 'childList' || mutation.type === 'characterData') {
+      cleanHeartSymbolsFromTitle();
+    }
+  });
+});
 
-// Настраиваем обработчики событий
-setupEventListeners();
+// Start observing the title element
+if (document.querySelector('title')) {
+  titleObserver.observe(document.querySelector('title')!, {
+    childList: true,
+    characterData: true,
+    subtree: true
+  });
+}
 
-// Render App only once to avoid duplicate instances
-root.render(App());
-
-// Setup HMR for development
-setupHMR(root);
+// React app initialization
+createRoot(document.getElementById("root")!).render(<App />);

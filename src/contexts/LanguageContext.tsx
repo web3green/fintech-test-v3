@@ -403,7 +403,9 @@ export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }
       if (translation) return translation;
       
       // Попробовать найти в другом языке, если перевод отсутствует
-      const fallbackTranslation = translations[language === 'en' ? 'ru' : 'en'][key as keyof (typeof translations)[language === 'en' ? 'ru' : 'en']];
+      const fallbackLang = language === 'en' ? 'ru' : 'en';
+      const fallbackTranslation = translations[fallbackLang][key as keyof typeof translations[typeof fallbackLang]];
+      
       if (fallbackTranslation) {
         console.warn(`Перевод для "${key}" отсутствует в языке "${language}", используется запасной вариант`);
         return fallbackTranslation;

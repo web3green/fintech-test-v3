@@ -2,17 +2,26 @@
 import { Button } from '@/components/ui/button';
 import { Globe } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { toast } from '@/components/ui/use-toast';
 
 export function LanguageToggle() {
   const { language, setLanguage } = useLanguage();
   const [animating, setAnimating] = useState(false);
+  const lastUpdateRef = useRef<number>(0);
   
   // Усовершенствованный механизм переключения языка
   const toggleLanguage = () => {
     if (animating) return; // Предотвращаем двойные клики
     
+    // Предотвращаем слишком частое переключение (минимум 1 секунда между переключениями)
+    const now = Date.now();
+    if (now - lastUpdateRef.current < 1000) {
+      console.log('🌍 Переключение языка слишком часто, игнорируем');
+      return;
+    }
+    
+    lastUpdateRef.current = now;
     setAnimating(true);
     
     const newLanguage = language === 'en' ? 'ru' : 'en';
@@ -39,25 +48,37 @@ export function LanguageToggle() {
       detail: { language: newLanguage, timestamp: Date.now() } 
     }));
     
-    // Агрессивное обновление кэша стилей
+    // Безопасное обновление стилей (с проверкой)
     document.querySelectorAll('link[rel="stylesheet"]').forEach(linkEl => {
       if (linkEl instanceof HTMLLinkElement && linkEl.href) {
-        const url = new URL(linkEl.href);
-        url.searchParams.set('_lang', `${newLanguage}_${Date.now()}`);
-        
-        // Создаем новый элемент стиля для принудительной перезагрузки
-        const newLink = document.createElement('link');
-        newLink.rel = 'stylesheet';
-        newLink.href = url.toString();
-        newLink.onload = () => {
-          try {
-            // После загрузки нового стиля удаляем старый
-            linkEl.remove();
-          } catch (e) {
-            console.warn('Не удалось удалить старый стиль:', e);
+        try {
+          const url = new URL(linkEl.href);
+          url.searchParams.set('_lang', `${newLanguage}_${Date.now()}`);
+          
+          // Создаем новый элемент стиля для принудительной перезагрузки
+          const newLink = document.createElement('link');
+          newLink.rel = 'stylesheet';
+          newLink.href = url.toString();
+          
+          // Устанавливаем обработчик события загрузки перед добавлением элемента
+          newLink.onload = () => {
+            try {
+              // Проверяем, что элемент еще в DOM перед удалением
+              if (linkEl.parentNode) {
+                linkEl.parentNode.removeChild(linkEl);
+              }
+            } catch (e) {
+              console.warn('Не удалось удалить старый стиль:', e);
+            }
+          };
+          
+          // Добавляем новый элемент
+          if (document.head) {
+            document.head.appendChild(newLink);
           }
-        };
-        document.head.appendChild(newLink);
+        } catch (e) {
+          console.warn('Ошибка при обновлении стиля:', e);
+        }
       }
     });
     
@@ -67,69 +88,104 @@ export function LanguageToggle() {
       duration: 2000,
     });
     
-    // Принудительное обновление стилей и всех компонентов
-    document.documentElement.style.opacity = '0.99';
+    // Безопасное обновление стилей и компонентов
     setTimeout(() => {
-      document.documentElement.style.opacity = '1';
-      
-      // Создаем временный стиль для принудительного обновления
-      const forceStyle = document.createElement('style');
-      forceStyle.textContent = `
-        [data-language="${newLanguage}"] * {
-          animation: lang-update 1ms;
-        }
-        @keyframes lang-update {
-          from { opacity: 0.99; }
-          to { opacity: 1; }
-        }
-      `;
-      document.head.appendChild(forceStyle);
-      
-      // Принудительно обновляем все компоненты с атрибутом data-language
-      document.querySelectorAll('[data-language]').forEach(el => {
-        el.setAttribute('data-language-change', Date.now().toString());
-      });
-      
-      // Распространяем событие смены языка глубже в DOM
-      document.querySelectorAll('.force-update-on-language-change').forEach(el => {
-        // Создадим временный DOM-элемент для триггера перерисовки
-        const trigger = document.createElement('span');
-        trigger.className = 'language-update-trigger';
-        trigger.style.display = 'none';
-        trigger.dataset.timestamp = Date.now().toString();
-        
-        // Добавим и затем удалим для гарантированного перерендера
-        el.appendChild(trigger);
-        setTimeout(() => trigger.remove(), 100);
-        
-        // Также обновим любые ключи компонентов если есть
-        if (el.hasAttribute('key')) {
-          el.setAttribute('key', `${el.getAttribute('key')}-${Date.now()}`);
-        }
-      });
-      
-      // Удаляем временный стиль через секунду
-      setTimeout(() => {
-        forceStyle.remove();
+      try {
+        document.documentElement.style.opacity = '0.99';
+        setTimeout(() => {
+          document.documentElement.style.opacity = '1';
+          
+          // Безопасное создание и добавление временного стиля
+          try {
+            const forceStyle = document.createElement('style');
+            forceStyle.textContent = `
+              [data-language="${newLanguage}"] * {
+                animation: lang-update 1ms;
+              }
+              @keyframes lang-update {
+                from { opacity: 0.99; }
+                to { opacity: 1; }
+              }
+            `;
+            
+            if (document.head) {
+              document.head.appendChild(forceStyle);
+              
+              // Безопасное обновление атрибутов компонентов
+              document.querySelectorAll('[data-language]').forEach(el => {
+                try {
+                  el.setAttribute('data-language-change', Date.now().toString());
+                } catch (e) {
+                  console.warn('Не удалось обновить атрибут:', e);
+                }
+              });
+              
+              // Распространяем событие смены языка глубже в DOM
+              document.querySelectorAll('.force-update-on-language-change').forEach(el => {
+                try {
+                  // Создадим временный DOM-элемент для триггера перерисовки
+                  const trigger = document.createElement('span');
+                  trigger.className = 'language-update-trigger';
+                  trigger.style.display = 'none';
+                  trigger.dataset.timestamp = Date.now().toString();
+                  
+                  // Добавляем элемент только если родитель существует
+                  if (el.isConnected) {
+                    el.appendChild(trigger);
+                    
+                    // Удаляем через таймаут, но с проверкой
+                    setTimeout(() => {
+                      if (trigger.parentNode) {
+                        trigger.parentNode.removeChild(trigger);
+                      }
+                    }, 100);
+                  }
+                  
+                  // Также обновим любые ключи компонентов если есть
+                  if (el.hasAttribute('key')) {
+                    el.setAttribute('key', `${el.getAttribute('key')}-${Date.now()}`);
+                  }
+                } catch (e) {
+                  console.warn('Ошибка при обновлении компонента:', e);
+                }
+              });
+              
+              // Удаляем временный стиль через секунду
+              setTimeout(() => {
+                if (forceStyle.parentNode) {
+                  forceStyle.parentNode.removeChild(forceStyle);
+                }
+                setAnimating(false);
+                
+                // Дополнительная проверка после окончания анимации для гарантии обновления
+                if (document.documentElement.getAttribute('lang') !== newLanguage) {
+                  console.warn('Обнаружено несоответствие языков после анимации, исправляем...');
+                  document.documentElement.setAttribute('lang', newLanguage);
+                  document.documentElement.setAttribute('data-language', newLanguage);
+                }
+                
+                // Безопасный обход DOM для поиска неактуализированных элементов
+                try {
+                  document.querySelectorAll('[data-i18n]').forEach(el => {
+                    el.setAttribute('data-i18n-updated', Date.now().toString());
+                  });
+                } catch (e) {
+                  console.warn('Ошибка при обновлении data-i18n элементов:', e);
+                }
+                
+                // Запускаем глобальное событие для обновления компонентов
+                window.dispatchEvent(new Event('forceRender'));
+              }, 1000);
+            }
+          } catch (e) {
+            console.warn('Ошибка при создании временного стиля:', e);
+            setAnimating(false);
+          }
+        }, 100);
+      } catch (e) {
+        console.warn('Ошибка при обновлении стилей:', e);
         setAnimating(false);
-        
-        // Дополнительная проверка после окончания анимации для гарантии обновления
-        if (document.documentElement.getAttribute('lang') !== newLanguage) {
-          console.warn('Обнаружено несоответствие языков после анимации, исправляем...');
-          document.documentElement.setAttribute('lang', newLanguage);
-          document.documentElement.setAttribute('data-language', newLanguage);
-        }
-        
-        // Запускаем дополнительный обход DOM для поиска неактуализированных элементов
-        document.querySelectorAll('[data-i18n]').forEach(el => {
-          el.setAttribute('data-i18n-updated', Date.now().toString());
-        });
-        
-        // Запускаем глобальное событие для обновления любых компонентов,
-        // которые могут слушать его для обновления своего содержимого
-        window.dispatchEvent(new Event('forceRender'));
-        
-      }, 1000);
+      }
     }, 100);
   };
   
@@ -189,11 +245,6 @@ export function LanguageToggle() {
       <Globe className="w-4 h-4" />
       <span className="text-sm font-medium">
         {language === 'en' ? 'EN' : 'RU'}
-      </span>
-      
-      {/* Используем ключ на основе timestamp для принудительного обновления */}
-      <span className="language-update-trigger sr-only" key={`lang-trigger-${Date.now()}`}>
-        {language}
       </span>
     </Button>
   );

@@ -112,7 +112,7 @@ export const ArticlesPanel = () => {
             resource_name: data.resourceName,
             resource_url: data.resourceUrl,
             article_format: data.articleFormat,
-            updated_at: new Date()
+            updated_at: new Date().toISOString() // Convert Date to ISO string
           })
           .eq('id', selectedArticle.id);
           
@@ -133,7 +133,7 @@ export const ArticlesPanel = () => {
             resource_name: data.resourceName,
             resource_url: data.resourceUrl,
             article_format: data.articleFormat,
-            date: new Date()
+            date: new Date().toISOString() // Convert Date to ISO string
           });
           
         if (error) throw error;

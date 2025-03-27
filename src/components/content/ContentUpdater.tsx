@@ -5,7 +5,7 @@ import { StorageChangeHandler } from '../handlers/StorageChangeHandler';
 
 interface ContentUpdaterProps {
   language: string;
-  setForceUpdate: (prevState: number) => number;
+  setForceUpdate: React.Dispatch<React.SetStateAction<number>>;
 }
 
 export const ContentUpdater: React.FC<ContentUpdaterProps> = ({ language, setForceUpdate }) => {

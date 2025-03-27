@@ -16,8 +16,6 @@ export const IndexContentWithUpdaters: React.FC = () => {
   const { language } = useLanguage();
   const [forceUpdate, setForceUpdate] = useState(0);
   
-  const updateForceState = useCallback((prevState: number) => prevState + 1, []);
-  
   useEffect(() => {
     // Принудительное обновление при изменении языка
     console.log('IndexContent language changed:', language);

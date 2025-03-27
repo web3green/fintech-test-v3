@@ -30,11 +30,11 @@ export default defineConfig(({ mode }) => ({
     },
   },
   define: {
-    // Fix the HMR environment variables
+    // Fix the HMR environment variables - ensure they're properly stringified
     '__HMR_CONFIG_NAME__': JSON.stringify('vite'),
     '__HMR_PROTOCOL__': JSON.stringify('ws'),
     '__HMR_HOST__': JSON.stringify('localhost'),
-    '__HMR_PORT__': JSON.stringify('8080'),
+    '__HMR_PORT__': JSON.stringify(8080),
     // Also explicitly define Vite's own env variables to avoid conflicts
     'import.meta.env.MODE': JSON.stringify(mode),
     'import.meta.env.DEV': mode === 'development',
@@ -51,9 +51,9 @@ export default defineConfig(({ mode }) => ({
           vendor: ['react', 'react-dom']
         },
         // Add timestamps to chunk files to prevent caching
-        entryFileNames: `assets/[name].[hash]-${Date.now()}.js`,
-        chunkFileNames: `assets/[name].[hash]-${Date.now()}.js`,
-        assetFileNames: `assets/[name].[hash]-${Date.now()}.[ext]`
+        entryFileNames: `assets/[name].[hash].js`,
+        chunkFileNames: `assets/[name].[hash].js`,
+        assetFileNames: `assets/[name].[hash].[ext]`
       }
     }
   },

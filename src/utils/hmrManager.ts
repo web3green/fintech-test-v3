@@ -12,20 +12,11 @@ export const setupHMR = (root: ReturnType<typeof createRoot>) => {
     try {
       console.log('Setting up HMR handlers - environment ready');
       
-      // Debug HMR configuration
-      console.log('HMR Config:', {
-        name: JSON.parse('__HMR_CONFIG_NAME__'),
-        protocol: JSON.parse('__HMR_PROTOCOL__'),
-        host: JSON.parse('__HMR_HOST__'),
-        port: JSON.parse('__HMR_PORT__')
-      });
-      
       // Correctly configured HMR acceptance for App component
       import.meta.hot.accept('../App.tsx', () => {
         console.log('🔄 Hot Module Replacement: Updating App component');
         try {
           // Render the updated App component
-          // Instead of JSX, we'll use createElement
           root.render(App());
         } catch (error) {
           console.error('❌ Error during HMR update:', error);

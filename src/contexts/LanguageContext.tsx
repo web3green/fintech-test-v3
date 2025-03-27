@@ -26,6 +26,9 @@ const translations = {
     'hero.title': 'Global Financial Solutions for Your Business Without Borders',
     'hero.subtitle': 'Business Registration, Bank Accounts and Licenses Turnkey Solutions',
     'hero.cta': 'Get Started',
+    'hero.stats.countries': '15+ Countries',
+    'hero.stats.clients': '500+ Clients',
+    'hero.stats.years': '9+ Years',
     
     // About
     'about.title': 'Your Trusted Partner in Global Finance',
@@ -138,6 +141,9 @@ const translations = {
     'hero.title': 'Глобальные финансовые решения для вашего бизнеса без границ',
     'hero.subtitle': 'Открытие компаний, счетов и лицензий под ключ',
     'hero.cta': 'Начать',
+    'hero.stats.countries': '15+ Стран',
+    'hero.stats.clients': '500+ Клиентов',
+    'hero.stats.years': '9+ Лет',
     
     // About
     'about.title': 'Ваш надежный партнер в мире финансов',

@@ -1,31 +1,65 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Admin from "./pages/Admin";
 import { updateSocialMetaTags, blockHeartIcon, enforceOurFavicon, scanAndRemoveHeartIcons } from "./utils/metaTagManager";
+import { toast } from "sonner";
 
-const queryClient = new QueryClient();
+const APP_VERSION = Date.now().toString();
 
-// Enhanced component for managing meta tags - let's add more logging for debugging
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: true,
+      staleTime: 5 * 60 * 1000, // 5 минут
+    },
+  },
+});
+
+const VersionChecker = () => {
+  useEffect(() => {
+    const savedVersion = localStorage.getItem('app_version');
+    
+    if (savedVersion && savedVersion !== APP_VERSION) {
+      console.log('Обнаружена новая версия приложения. Обновление...');
+      localStorage.setItem('app_version', APP_VERSION);
+      
+      if ('caches' in window) {
+        caches.keys().then(cacheNames => {
+          cacheNames.forEach(cacheName => {
+            caches.delete(cacheName);
+          });
+        });
+      }
+      
+      toast.info('Обновляем приложение до последней версии...', {
+        duration: 3000,
+        onAutoClose: () => window.location.reload(true)
+      });
+    } else {
+      localStorage.setItem('app_version', APP_VERSION);
+    }
+  }, []);
+
+  return null;
+};
+
 const MetaTagUpdater = () => {
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   
   useEffect(() => {
     console.log('MetaTagUpdater mounted - setting up watchers');
     
-    // Initial update and block heart icon
     updateSocialMetaTags();
     blockHeartIcon();
     enforceOurFavicon();
     scanAndRemoveHeartIcons();
     
-    // Set up interval for continuous updates (every 500ms)
     intervalRef.current = setInterval(() => {
       console.log('MetaTagUpdater interval check');
       updateSocialMetaTags();
@@ -34,27 +68,23 @@ const MetaTagUpdater = () => {
       scanAndRemoveHeartIcons();
     }, 500);
     
-    // Additional immediate updates with increased frequency
     for (let i = 1; i <= 10; i++) {
       setTimeout(() => {
         updateSocialMetaTags();
         blockHeartIcon();
         enforceOurFavicon();
         scanAndRemoveHeartIcons();
-      }, i * 50); // Every 50ms for 500ms
+      }, i * 50);
     }
     
-    // Also update on visibility change (tab focus)
     const handleVisibilityChange = () => {
       if (document.visibilityState === 'visible') {
         console.log('Tab became visible - updating branding');
-        // Update multiple times when tab becomes visible
         updateSocialMetaTags();
         blockHeartIcon();
         enforceOurFavicon();
         scanAndRemoveHeartIcons();
         
-        // Schedule additional updates
         for (let i = 1; i <= 10; i++) {
           setTimeout(() => {
             updateSocialMetaTags();
@@ -68,7 +98,6 @@ const MetaTagUpdater = () => {
     
     document.addEventListener('visibilitychange', handleVisibilityChange);
     
-    // Also update on network status change
     window.addEventListener('online', () => {
       console.log('Network came online - updating branding');
       updateSocialMetaTags();
@@ -77,7 +106,6 @@ const MetaTagUpdater = () => {
       scanAndRemoveHeartIcons();
     });
     
-    // Clean up interval on unmount
     return () => {
       console.log('MetaTagUpdater unmounting - cleaning up');
       if (intervalRef.current) clearInterval(intervalRef.current);
@@ -90,7 +118,8 @@ const MetaTagUpdater = () => {
 };
 
 const App = () => {
-  // Check and apply saved theme on initial load
+  const [isLoaded, setIsLoaded] = useState(false);
+
   useEffect(() => {
     console.log('App component mounted - initial branding setup');
     
@@ -101,13 +130,11 @@ const App = () => {
       document.documentElement.classList.add('dark');
     }
     
-    // Ensure meta tags are set at component mount and block heart icon
     updateSocialMetaTags();
     blockHeartIcon();
     enforceOurFavicon();
     scanAndRemoveHeartIcons();
     
-    // Additional updates after short delays with increased frequency
     for (let i = 1; i <= 20; i++) {
       setTimeout(() => {
         updateSocialMetaTags();
@@ -117,18 +144,15 @@ const App = () => {
       }, i * 100);
     }
     
-    // Create a MutationObserver to detect when new elements are added to the DOM
     const observer = new MutationObserver((mutations) => {
       let needsUpdate = false;
       
       mutations.forEach(mutation => {
         if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
-          // Check if any added nodes contain heart icons or are from gptengineer
           mutation.addedNodes.forEach(node => {
             if (node.nodeType === Node.ELEMENT_NODE) {
               const element = node as Element;
               
-              // Look for any newly added favicon links
               if (
                 element.tagName === 'LINK' && 
                 element.getAttribute('rel')?.includes('icon') &&
@@ -138,7 +162,6 @@ const App = () => {
                 needsUpdate = true;
               }
               
-              // Look for any SVG elements that might contain heart paths
               if (element.tagName === 'SVG') {
                 console.log('New SVG element detected - checking for heart paths');
                 needsUpdate = true;
@@ -157,7 +180,6 @@ const App = () => {
       }
     });
     
-    // Start observing the document with all possible options for maximum detection
     observer.observe(document, {
       childList: true,
       subtree: true,
@@ -165,7 +187,8 @@ const App = () => {
       attributeFilter: ['rel', 'href', 'src', 'class', 'id']
     });
     
-    // Clean up observer on unmount
+    setIsLoaded(true);
+    
     return () => observer.disconnect();
   }, []);
 
@@ -173,16 +196,18 @@ const App = () => {
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <MetaTagUpdater />
+        <VersionChecker />
         <Toaster />
         <Sonner position="top-right" />
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/admin/*" element={<Admin />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
+        {isLoaded && (
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/admin/*" element={<Admin />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </BrowserRouter>
+        )}
       </TooltipProvider>
     </QueryClientProvider>
   );

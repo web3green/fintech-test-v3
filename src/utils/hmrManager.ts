@@ -25,7 +25,8 @@ export const setupHMR = (root: ReturnType<typeof createRoot>) => {
         console.log('🔄 Hot Module Replacement: Updating App component');
         try {
           // Render the updated App component
-          root.render(<App />);
+          // Instead of JSX, we'll use createElement
+          root.render(App());
         } catch (error) {
           console.error('❌ Error during HMR update:', error);
         }

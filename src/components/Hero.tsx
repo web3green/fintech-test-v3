@@ -15,26 +15,26 @@ export function Hero() {
       });
     }
   };
-  return <section className="relative overflow-hidden bg-blue-50 dark:bg-blue-950/90 pt-20 md:pt-24 lg:pt-28 pb-20 md:pb-24">
+  return <section className="relative overflow-hidden bg-blue-50 dark:bg-blue-950/90 pt-14 md:pt-16 lg:pt-20 pb-20 md:pb-28">
       <div className="container mx-auto px-8 md:px-12 lg:px-16">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          <div className="order-2 lg:order-1 z-10">
-            <h1 className="text-4xl sm:text-5xl md:text-6xl font-display font-bold leading-tight mb-6 animate-fade-up">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+          <div className="order-2 lg:order-1 z-10 pt-16 md:pt-20">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-display font-bold leading-[1.9] tracking-tight mb-16 animate-fade-up max-w-3xl bg-gradient-to-r from-gray-900 to-gray-700 dark:from-white dark:to-gray-200 bg-clip-text text-transparent">
               {t('hero.title')}
             </h1>
-            <p className="text-xl text-muted-foreground mb-8 max-w-lg animate-fade-up" style={{
+            <p className="text-xl md:text-2xl text-muted-foreground leading-relaxed mb-12 max-w-2xl animate-fade-up" style={{
             animationDelay: '100ms'
           }}>
               {t('hero.subtitle')}
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 animate-fade-up" style={{
+            <div className="flex flex-col sm:flex-row gap-5 sm:gap-6 animate-fade-up" style={{
             animationDelay: '200ms'
           }}>
-              <Button className="bg-fintech-blue hover:bg-fintech-blue-light text-white transition-all duration-300" onClick={scrollToContact}>
+              <Button className="bg-fintech-blue hover:bg-fintech-blue-light text-white transition-all duration-300 text-base py-5 px-7" onClick={scrollToContact}>
                 {t('cta.consultation')}
-                <ArrowRight className="ml-2 h-4 w-4" />
+                <ArrowRight className="ml-2.5 h-4 w-4" />
               </Button>
-              <Button variant="outline" className="border-fintech-blue/20 text-fintech-blue hover:text-fintech-blue-dark dark:text-fintech-blue-light hover:bg-fintech-blue/5" onClick={() => {
+              <Button variant="outline" className="border-fintech-blue/20 text-fintech-blue hover:text-fintech-blue-dark dark:text-fintech-blue-light hover:bg-fintech-blue/5 text-base py-5 px-7" onClick={() => {
               const servicesElement = document.getElementById('services');
               if (servicesElement) {
                 servicesElement.scrollIntoView({
@@ -107,15 +107,15 @@ export function Hero() {
                         <div className="font-medium text-white dark:text-white">{t('hero.card.banking.subtitle')}</div>
                       </Card>
                       
-                      <Card className="p-4 rounded-lg border-0 bg-gradient-to-br from-fintech-orange/25 to-fintech-orange/45 dark:from-fintech-orange/65 dark:to-fintech-orange/75 dark:shadow-[0_0_20px_rgba(255,165,0,0.4)]">
+                      <Card className="p-4 rounded-lg border-0 bg-gradient-to-br from-fintech-orange/45 to-fintech-orange/65 dark:from-fintech-orange/85 dark:to-fintech-orange/95 dark:shadow-[0_0_20px_rgba(255,165,0,0.4)]">
                         <div className="text-xs text-white dark:text-white mb-2">{t('hero.card.licenses.title')}</div>
                         <div className="flex flex-wrap gap-2">
-                          <span className="inline-block text-xs bg-fintech-blue text-white dark:text-white px-2 py-1 rounded">{t('hero.license.emi')}</span>
-                          <span className="inline-block text-xs bg-fintech-orange text-white dark:bg-fintech-orange/100 px-2 py-1 rounded dark:shadow-[0_0_8px_rgba(255,165,0,0.5)]">{t('hero.license.crypto')}</span>
-                          <span className="inline-block text-xs bg-fintech-blue text-white dark:text-white px-2 py-1 rounded">{t('hero.license.igaming')}</span>
-                          <span className="inline-block text-xs bg-fintech-orange text-white dark:bg-fintech-orange/100 px-2 py-1 rounded dark:shadow-[0_0_8px_rgba(255,165,0,0.5)]">{t('hero.license.psp')}</span>
-                          <span className="inline-block text-xs bg-fintech-blue text-white dark:text-white px-2 py-1 rounded">{t('hero.license.gambling')}</span>
-                          <span className="inline-block text-xs bg-fintech-orange text-white dark:bg-fintech-orange/100 px-2 py-1 rounded dark:shadow-[0_0_8px_rgba(255,165,0,0.5)]">{t('hero.license.emoney')}</span>
+                          <span className="inline-block text-xs bg-fintech-blue/65 text-white dark:text-white px-2 py-1 rounded">{t('hero.license.emi')}</span>
+                          <span className="inline-block text-xs bg-fintech-orange/65 text-white dark:bg-fintech-orange/65 px-2 py-1 rounded dark:shadow-[0_0_8px_rgba(255,165,0,0.25)]">{t('hero.license.crypto')}</span>
+                          <span className="inline-block text-xs bg-fintech-blue/65 text-white dark:text-white px-2 py-1 rounded">{t('hero.license.igaming')}</span>
+                          <span className="inline-block text-xs bg-fintech-orange/65 text-white dark:bg-fintech-orange/65 px-2 py-1 rounded dark:shadow-[0_0_8px_rgba(255,165,0,0.25)]">{t('hero.license.psp')}</span>
+                          <span className="inline-block text-xs bg-fintech-blue/65 text-white dark:text-white px-2 py-1 rounded">{t('hero.license.gambling')}</span>
+                          <span className="inline-block text-xs bg-fintech-orange/65 text-white dark:bg-fintech-orange/65 px-2 py-1 rounded dark:shadow-[0_0_8px_rgba(255,165,0,0.25)]">{t('hero.license.emoney')}</span>
                         </div>
                       </Card>
                     </div>

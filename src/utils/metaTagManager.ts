@@ -1,4 +1,3 @@
-
 /**
  * Meta Tag Manager - Main export file
  * 
@@ -6,19 +5,13 @@
  * for backwards compatibility with existing code.
  */
 
-// Export favicon management functions
+// Export logo management functions
 export { 
   getLogoUrl,
-  enforceOurFavicon
-} from './favicon/faviconManager';
+  setFavicon
+} from './logoManager';
 
 // Export social meta tag management functions
 export {
   updateSocialMetaTags
 } from './metaTags/socialMetaTags';
-
-// Export heart icon blocking functions
-export {
-  blockHeartIcon,
-  scanAndRemoveHeartIcons
-} from './heartBlocker/heartIconBlocker';

@@ -1,4 +1,3 @@
-
 import { ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -50,9 +49,9 @@ export function Hero() {
           
           <div className="order-1 lg:order-2 relative z-10">
             <div className="relative p-4">
-              <div className="relative bg-white dark:bg-blue-900 rounded-2xl shadow-2xl overflow-hidden">
+              <div className="relative bg-white dark:bg-gray-900 rounded-2xl shadow-2xl overflow-hidden">
                 <div className="absolute inset-0">
-                  <div className="absolute inset-0 bg-gradient-to-br from-fintech-blue/5 to-fintech-orange/5"></div>
+                  <div className="absolute inset-0 bg-gradient-to-br from-fintech-blue/5 to-fintech-orange/5 dark:from-transparent dark:to-transparent"></div>
                   <GlowingEffect blur={6} spread={60} glow={true} disabled={false} inactiveZone={0.3} proximity={100} />
                 </div>
                 
@@ -72,71 +71,71 @@ export function Hero() {
                   <div className="space-y-6">
                     <div className="space-y-3">
                       <div className="grid grid-cols-3 sm:grid-cols-3 gap-3">
-                        <Button variant="outline" className="p-3 h-auto text-sm font-medium bg-blue-500 hover:bg-blue-600 border-transparent text-white transition-all duration-200 hover:scale-105">
+                        <Button variant="outline" className="p-3 h-auto text-sm font-medium bg-gradient-to-br from-fintech-blue/50 to-fintech-blue/70 hover:from-fintech-blue/60 hover:to-fintech-blue/80 border-transparent text-white transition-all duration-200 hover:scale-105">
                           {t('hero.category.fintech')}
                         </Button>
-                        <Button variant="outline" className="p-3 h-auto text-sm font-medium bg-blue-600 hover:bg-blue-700 border-transparent text-white transition-all duration-200 hover:scale-105">
+                        <Button variant="outline" className="p-3 h-auto text-sm font-medium bg-gradient-to-br from-fintech-orange/50 to-fintech-orange/70 dark:from-fintech-orange/70 dark:to-fintech-orange/90 hover:from-fintech-orange/60 hover:to-fintech-orange/80 dark:hover:from-fintech-orange/80 dark:hover:to-fintech-orange/95 border-transparent text-white transition-all duration-200 hover:scale-105 dark:shadow-[0_0_15px_rgba(255,165,0,0.3)]">
                           {t('hero.category.ecommerce')}
                         </Button>
-                        <Button variant="outline" className="p-3 h-auto text-sm font-medium bg-blue-500 hover:bg-blue-600 border-transparent text-white transition-all duration-200 hover:scale-105">
+                        <Button variant="outline" className="p-3 h-auto text-sm font-medium bg-gradient-to-br from-fintech-blue/50 to-fintech-blue/70 hover:from-fintech-blue/60 hover:to-fintech-blue/80 border-transparent text-white transition-all duration-200 hover:scale-105">
                           {t('hero.category.blockchain')}
                         </Button>
-                        <Button variant="outline" className="p-3 h-auto text-sm font-medium bg-blue-600 hover:bg-blue-700 border-transparent text-white transition-all duration-200 hover:scale-105">
+                        <Button variant="outline" className="p-3 h-auto text-sm font-medium bg-gradient-to-br from-fintech-orange/50 to-fintech-orange/70 dark:from-fintech-orange/70 dark:to-fintech-orange/90 hover:from-fintech-orange/60 hover:to-fintech-orange/80 dark:hover:from-fintech-orange/80 dark:hover:to-fintech-orange/95 border-transparent text-white transition-all duration-200 hover:scale-105 dark:shadow-[0_0_15px_rgba(255,165,0,0.3)]">
                           {t('hero.category.startups')}
                         </Button>
-                        <Button variant="outline" className="p-3 h-auto text-sm font-medium bg-blue-500 hover:bg-blue-600 border-transparent text-white transition-all duration-200 hover:scale-105">
+                        <Button variant="outline" className="p-3 h-auto text-sm font-medium bg-gradient-to-br from-fintech-blue/50 to-fintech-blue/70 hover:from-fintech-blue/60 hover:to-fintech-blue/80 border-transparent text-white transition-all duration-200 hover:scale-105">
                           {t('hero.category.neobanks')}
                         </Button>
-                        <Button variant="outline" className="p-3 h-auto text-sm font-medium bg-blue-600 hover:bg-blue-700 border-transparent text-white transition-all duration-200 hover:scale-105">
+                        <Button variant="outline" className="p-3 h-auto text-sm font-medium bg-gradient-to-br from-fintech-orange/50 to-fintech-orange/70 dark:from-fintech-orange/70 dark:to-fintech-orange/90 hover:from-fintech-orange/60 hover:to-fintech-orange/80 dark:hover:from-fintech-orange/80 dark:hover:to-fintech-orange/95 border-transparent text-white transition-all duration-200 hover:scale-105 dark:shadow-[0_0_15px_rgba(255,165,0,0.3)]">
                           {t('hero.category.wallets')}
                         </Button>
-                        <Button variant="outline" className="p-3 h-auto text-sm font-medium bg-blue-500 hover:bg-blue-600 border-transparent text-white transition-all duration-200 hover:scale-105">
+                        <Button variant="outline" className="p-3 h-auto text-sm font-medium bg-gradient-to-br from-fintech-blue/50 to-fintech-blue/70 hover:from-fintech-blue/60 hover:to-fintech-blue/80 border-transparent text-white transition-all duration-200 hover:scale-105">
                           {t('hero.category.gaming')}
                         </Button>
-                        <Button variant="outline" className="p-3 h-auto text-sm font-medium bg-blue-600 hover:bg-blue-700 border-transparent text-white transition-all duration-200 hover:scale-105">
+                        <Button variant="outline" className="p-3 h-auto text-sm font-medium bg-gradient-to-br from-fintech-orange/50 to-fintech-orange/70 dark:from-fintech-orange/70 dark:to-fintech-orange/90 hover:from-fintech-orange/60 hover:to-fintech-orange/80 dark:hover:from-fintech-orange/80 dark:hover:to-fintech-orange/95 border-transparent text-white transition-all duration-200 hover:scale-105 dark:shadow-[0_0_15px_rgba(255,165,0,0.3)]">
                           {t('hero.category.saas')}
                         </Button>
-                        <Button variant="outline" className="p-3 h-auto text-sm font-medium bg-blue-500 hover:bg-blue-600 border-transparent text-white transition-all duration-200 hover:scale-105">
+                        <Button variant="outline" className="p-3 h-auto text-sm font-medium bg-gradient-to-br from-fintech-blue/50 to-fintech-blue/70 hover:from-fintech-blue/60 hover:to-fintech-blue/80 border-transparent text-white transition-all duration-200 hover:scale-105">
                           {t('hero.category.edtech')}
                         </Button>
                       </div>
                     </div>
                     
                     <div className="grid grid-cols-2 gap-4">
-                      <Card className="p-4 rounded-lg border-0 bg-blue-400">
+                      <Card className="p-4 rounded-lg border-0 bg-gradient-to-br from-fintech-blue/45 to-fintech-blue/65">
                         <div className="text-xs text-white dark:text-white mb-1">{t('hero.card.banking.title')}</div>
                         <div className="font-medium text-white dark:text-white">{t('hero.card.banking.subtitle')}</div>
                       </Card>
                       
-                      <Card className="p-4 rounded-lg border-0 bg-blue-500">
+                      <Card className="p-4 rounded-lg border-0 bg-gradient-to-br from-fintech-orange/25 to-fintech-orange/45 dark:from-fintech-orange/65 dark:to-fintech-orange/75 dark:shadow-[0_0_20px_rgba(255,165,0,0.4)]">
                         <div className="text-xs text-white dark:text-white mb-2">{t('hero.card.licenses.title')}</div>
                         <div className="flex flex-wrap gap-2">
-                          <span className="inline-block text-xs bg-blue-300 dark:bg-blue-700/70 text-white dark:text-white px-2 py-1 rounded">{t('hero.license.emi')}</span>
-                          <span className="inline-block text-xs bg-blue-400 dark:bg-blue-700/70 text-white dark:text-white px-2 py-1 rounded">{t('hero.license.crypto')}</span>
-                          <span className="inline-block text-xs bg-blue-300 dark:bg-blue-700/70 text-white dark:text-white px-2 py-1 rounded">{t('hero.license.igaming')}</span>
-                          <span className="inline-block text-xs bg-blue-400 dark:bg-blue-700/70 text-white dark:text-white px-2 py-1 rounded">{t('hero.license.psp')}</span>
-                          <span className="inline-block text-xs bg-blue-300 dark:bg-blue-700/70 text-white dark:text-white px-2 py-1 rounded">{t('hero.license.gambling')}</span>
-                          <span className="inline-block text-xs bg-blue-400 dark:bg-blue-700/70 text-white dark:text-white px-2 py-1 rounded">{t('hero.license.emoney')}</span>
+                          <span className="inline-block text-xs bg-fintech-blue text-white dark:text-white px-2 py-1 rounded">{t('hero.license.emi')}</span>
+                          <span className="inline-block text-xs bg-fintech-orange text-white dark:bg-fintech-orange/100 px-2 py-1 rounded dark:shadow-[0_0_8px_rgba(255,165,0,0.5)]">{t('hero.license.crypto')}</span>
+                          <span className="inline-block text-xs bg-fintech-blue text-white dark:text-white px-2 py-1 rounded">{t('hero.license.igaming')}</span>
+                          <span className="inline-block text-xs bg-fintech-orange text-white dark:bg-fintech-orange/100 px-2 py-1 rounded dark:shadow-[0_0_8px_rgba(255,165,0,0.5)]">{t('hero.license.psp')}</span>
+                          <span className="inline-block text-xs bg-fintech-blue text-white dark:text-white px-2 py-1 rounded">{t('hero.license.gambling')}</span>
+                          <span className="inline-block text-xs bg-fintech-orange text-white dark:bg-fintech-orange/100 px-2 py-1 rounded dark:shadow-[0_0_8px_rgba(255,165,0,0.5)]">{t('hero.license.emoney')}</span>
                         </div>
                       </Card>
                     </div>
                     
-                    <Card className="p-4 rounded-lg border-0 bg-blue-500">
-                      <div className="text-xs text-white mb-2">{t('hero.card.jurisdictions.title')}</div>
+                    <Card className="p-4 rounded-lg border-0 bg-gradient-to-br from-fintech-blue/45 to-fintech-blue/65">
+                      <div className="text-xs text-white dark:text-white mb-2">{t('hero.card.jurisdictions.title')}</div>
                       <div className="flex flex-wrap gap-2">
-                        <span className="inline-block text-xs bg-blue-400 dark:bg-blue-700/70 text-white dark:text-white px-2 py-1 rounded">{t('hero.jurisdiction.mga')}</span>
-                        <span className="inline-block text-xs bg-blue-300 dark:bg-blue-700/70 text-white dark:text-white px-2 py-1 rounded">{t('hero.jurisdiction.curacao')}</span>
-                        <span className="inline-block text-xs bg-blue-400 dark:bg-blue-700/70 text-white dark:text-white px-2 py-1 rounded">{t('hero.jurisdiction.fca')}</span>
-                        <span className="inline-block text-xs bg-blue-300 dark:bg-blue-700/70 text-white dark:text-white px-2 py-1 rounded">{t('hero.jurisdiction.aml')}</span>
-                        <span className="inline-block text-xs bg-blue-400 dark:bg-blue-700/70 text-white dark:text-white px-2 py-1 rounded">{t('hero.jurisdiction.compliance')}</span>
+                        <span className="inline-block text-xs bg-fintech-blue-light/45 dark:bg-fintech-blue-dark/45 text-white dark:text-white px-2 py-1 rounded">{t('hero.jurisdiction.mga')}</span>
+                        <span className="inline-block text-xs bg-fintech-blue-light/55 dark:bg-fintech-blue-dark/55 text-white dark:text-white px-2 py-1 rounded">{t('hero.jurisdiction.curacao')}</span>
+                        <span className="inline-block text-xs bg-fintech-blue-light/45 dark:bg-fintech-blue-dark/45 text-white dark:text-white px-2 py-1 rounded">{t('hero.jurisdiction.fca')}</span>
+                        <span className="inline-block text-xs bg-fintech-blue-light/55 dark:bg-fintech-blue-dark/55 text-white dark:text-white px-2 py-1 rounded">{t('hero.jurisdiction.aml')}</span>
+                        <span className="inline-block text-xs bg-fintech-blue-light/45 dark:bg-fintech-blue-dark/45 text-white dark:text-white px-2 py-1 rounded">{t('hero.jurisdiction.compliance')}</span>
                       </div>
                     </Card>
                     
                     <div className="pt-4 border-t border-blue-100 dark:border-blue-800">
                       <div className="flex items-center justify-between text-sm">
-                        <div className="text-white dark:text-white bg-blue-300 dark:bg-blue-300/30 px-2 py-1 rounded">{t('hero.stats.countries')}</div>
-                        <div className="text-white dark:text-white bg-blue-300 dark:bg-blue-300/30 px-2 py-1 rounded">{t('hero.stats.clients')}</div>
-                        <div className="text-white dark:text-white bg-blue-300 dark:bg-blue-300/30 px-2 py-1 rounded">{t('hero.stats.years')}</div>
+                        <div className="text-white dark:text-white bg-fintech-orange/35 dark:bg-fintech-orange/75 px-2 py-1 rounded dark:shadow-[0_0_8px_rgba(255,165,0,0.3)]">{t('hero.stats.countries')}</div>
+                        <div className="text-white dark:text-white bg-fintech-blue/45 dark:bg-fintech-blue/70 px-2 py-1 rounded">{t('hero.stats.clients')}</div>
+                        <div className="text-white dark:text-white bg-fintech-orange/35 dark:bg-fintech-orange/75 px-2 py-1 rounded dark:shadow-[0_0_8px_rgba(255,165,0,0.3)]">{t('hero.stats.years')}</div>
                       </div>
                     </div>
                   </div>

@@ -1,15 +1,24 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, ErrorInfo, Component } from 'react';
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Admin from "./pages/Admin";
-import { updateSocialMetaTags, blockHeartIcon, enforceOurFavicon, scanAndRemoveHeartIcons } from "./utils/metaTagManager";
+import { updateSocialMetaTags } from "./utils/metaTags/socialMetaTags";
+import { setFavicon } from './utils/logoManager';
 import { toast } from "sonner";
+import { LanguageProvider, useLanguage } from "@/contexts/LanguageContext";
+import { Loader2, AlertTriangle, RefreshCw } from "lucide-react";
+import "@/utils/diagnostics";
+import "@/utils/debug";
+import { testSupabaseConnection, supabase } from "@/integrations/supabase/client";
+import { checkStorageAccess, ensureLogoExists } from "@/utils/storageUtils";
+import { DebugPanel } from "@/components/Debug";
+import { ErrorBoundary } from "react-error-boundary";
+import { clearBrowserCache } from "./utils/cacheCleanup";
 
 const APP_VERSION = Date.now().toString();
 
@@ -51,166 +60,153 @@ const VersionChecker = () => {
 };
 
 const MetaTagUpdater = () => {
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
-  
   useEffect(() => {
-    console.log('MetaTagUpdater mounted - setting up watchers');
+    console.log('MetaTagUpdater mounted - setting up branding');
     
-    updateSocialMetaTags();
-    blockHeartIcon();
-    enforceOurFavicon();
-    scanAndRemoveHeartIcons();
-    
-    intervalRef.current = setInterval(() => {
-      console.log('MetaTagUpdater interval check');
-      updateSocialMetaTags();
-      blockHeartIcon();
-      enforceOurFavicon();
-      scanAndRemoveHeartIcons();
-    }, 500);
-    
-    for (let i = 1; i <= 10; i++) {
-      setTimeout(() => {
+    // Установка метатегов и фавикона с таймаутом для предотвращения блокировки
+    setTimeout(() => {
+      try {
+        // Устанавливаем метатеги и фавикон
         updateSocialMetaTags();
-        blockHeartIcon();
-        enforceOurFavicon();
-        scanAndRemoveHeartIcons();
-      }, i * 50);
-    }
-    
-    const handleVisibilityChange = () => {
-      if (document.visibilityState === 'visible') {
-        console.log('Tab became visible - updating branding');
-        updateSocialMetaTags();
-        blockHeartIcon();
-        enforceOurFavicon();
-        scanAndRemoveHeartIcons();
-        
-        for (let i = 1; i <= 10; i++) {
-          setTimeout(() => {
-            updateSocialMetaTags();
-            blockHeartIcon();
-            enforceOurFavicon();
-            scanAndRemoveHeartIcons();
-          }, i * 100);
-        }
+        setFavicon();
+      } catch (error) {
+        console.error('Failed to setup logos:', error);
       }
-    };
+    }, 100);
     
-    document.addEventListener('visibilitychange', handleVisibilityChange);
-    
-    window.addEventListener('online', () => {
-      console.log('Network came online - updating branding');
-      updateSocialMetaTags();
-      blockHeartIcon();
-      enforceOurFavicon();
-      scanAndRemoveHeartIcons();
-    });
+    // Проверяем состояние метатегов каждые 30 секунд, но не раньше чем через 5 секунд после загрузки
+    const timeoutId = setTimeout(() => {
+      const intervalId = setInterval(() => {
+        try {
+          // Проверяем, есть ли наш фавикон на странице
+          if (!document.querySelector('link#primary-favicon')) {
+            console.log('Favicon missing, restoring...');
+            setFavicon();
+          }
+        } catch (error) {
+          console.warn('Error checking favicon:', error);
+        }
+      }, 30000);
+      
+      return () => clearInterval(intervalId);
+    }, 5000);
     
     return () => {
-      console.log('MetaTagUpdater unmounting - cleaning up');
-      if (intervalRef.current) clearInterval(intervalRef.current);
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
-      window.removeEventListener('online', updateSocialMetaTags);
+      clearTimeout(timeoutId);
     };
   }, []);
 
   return null;
 };
 
-const App = () => {
+const AppContent = () => {
+  const { isLoading } = useLanguage();
   const [isLoaded, setIsLoaded] = useState(false);
+  const [loadErrors, setLoadErrors] = useState<string[]>([]);
 
   useEffect(() => {
-    console.log('App component mounted - initial branding setup');
+    console.log('App component mounted - basic setup only');
     
-    const savedTheme = localStorage.getItem('theme');
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    // Очистка кеша при загрузке для устранения проблем с логотипом
+    clearBrowserCache().catch(err => 
+      console.warn('Ошибка при очистке кеша:', err)
+    );
     
-    if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
-      document.documentElement.classList.add('dark');
-    }
-    
-    updateSocialMetaTags();
-    blockHeartIcon();
-    enforceOurFavicon();
-    scanAndRemoveHeartIcons();
-    
-    for (let i = 1; i <= 20; i++) {
-      setTimeout(() => {
-        updateSocialMetaTags();
-        blockHeartIcon();
-        enforceOurFavicon();
-        scanAndRemoveHeartIcons();
-      }, i * 100);
-    }
-    
-    const observer = new MutationObserver((mutations) => {
-      let needsUpdate = false;
+    try {
+      // Только базовая настройка темы без обращения к внешним ресурсам
+      const savedTheme = localStorage.getItem('theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
       
-      mutations.forEach(mutation => {
-        if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
-          mutation.addedNodes.forEach(node => {
-            if (node.nodeType === Node.ELEMENT_NODE) {
-              const element = node as Element;
-              
-              if (
-                element.tagName === 'LINK' && 
-                element.getAttribute('rel')?.includes('icon') &&
-                !element.getAttribute('href')?.includes('6bfd57a2-6c6a-4507-bb1d-2cde1517ebd1')
-              ) {
-                console.log('Detected non-FinTechAssist favicon:', element.getAttribute('href'));
-                needsUpdate = true;
-              }
-              
-              if (element.tagName === 'SVG') {
-                console.log('New SVG element detected - checking for heart paths');
-                needsUpdate = true;
-              }
-            }
-          });
-        }
-      });
-      
-      if (needsUpdate) {
-        console.log('DOM mutations detected - updating branding');
-        updateSocialMetaTags();
-        blockHeartIcon();
-        enforceOurFavicon();
-        scanAndRemoveHeartIcons();
+      if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+        document.documentElement.classList.add('dark');
       }
-    });
-    
-    observer.observe(document, {
-      childList: true,
-      subtree: true,
-      attributes: true,
-      attributeFilter: ['rel', 'href', 'src', 'class', 'id']
-    });
-    
-    setIsLoaded(true);
-    
-    return () => observer.disconnect();
+      
+      // Немедленно разрешаем загрузку без дополнительных проверок
+      setIsLoaded(true);
+    } catch (error) {
+      console.error('Critical error during app initialization:', error);
+      setLoadErrors(prev => [...prev, `Критическая ошибка при инициализации: ${error.message}`]);
+      setIsLoaded(true); // Все равно разрешаем загрузку, чтобы показать ошибки
+    }
   }, []);
 
+  if (!isLoaded || isLoading) {
+    return (
+      <div className="fixed inset-0 flex items-center justify-center bg-background">
+        <div className="text-center">
+          <Loader2 className="h-12 w-12 animate-spin text-fintech-blue mx-auto mb-4" />
+          <p className="text-lg font-medium text-muted-foreground">Загрузка...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <MetaTagUpdater />
-        <VersionChecker />
-        <Toaster />
-        <Sonner />
-        {isLoaded && (
-          <BrowserRouter>
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/admin/*" element={<Admin />} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </BrowserRouter>
-        )}
-      </TooltipProvider>
-    </QueryClientProvider>
+    <BrowserRouter>
+      {loadErrors.length > 0 && (
+        <div className="fixed top-0 left-0 right-0 z-50 bg-destructive/10 p-2">
+          <div className="max-w-4xl mx-auto bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 border border-destructive">
+            <div className="flex items-center mb-2">
+              <AlertTriangle className="h-5 w-5 text-destructive mr-2" />
+              <h3 className="font-semibold text-destructive">Внимание: обнаружены некритические ошибки</h3>
+            </div>
+            <ul className="text-sm list-disc list-inside space-y-1 text-muted-foreground">
+              {loadErrors.map((err, i) => (
+                <li key={i}>{err}</li>
+              ))}
+            </ul>
+            <p className="text-xs mt-2 text-muted-foreground">Приложение продолжает работу, но некоторые функции могут быть недоступны</p>
+          </div>
+        </div>
+      )}
+      <Routes>
+        <Route path="/" element={<Index />} />
+        <Route path="/admin/*" element={<Admin />} />
+        <Route path="/debug" element={<DebugPanel />} />
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </BrowserRouter>
+  );
+}
+
+// Компонент для отображения ошибок в UI
+const ErrorDisplay = ({ error, resetErrorBoundary }: { error: Error, resetErrorBoundary: () => void }) => {
+  return (
+    <div className="fixed inset-0 flex flex-col items-center justify-center bg-background p-4">
+      <div className="max-w-md w-full bg-card shadow-lg rounded-lg p-6 border border-muted">
+        <div className="flex items-center mb-4">
+          <AlertTriangle className="h-6 w-6 text-destructive mr-2" />
+          <h2 className="text-lg font-semibold">Произошла ошибка</h2>
+        </div>
+        <div className="bg-muted p-3 rounded-md mb-4 overflow-auto max-h-[200px]">
+          <p className="text-sm font-mono">{error.message}</p>
+        </div>
+        <button
+          onClick={resetErrorBoundary}
+          className="w-full bg-primary text-primary-foreground py-2 px-4 rounded-md hover:bg-primary/90 transition-colors"
+        >
+          Перезагрузить приложение
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// Главный компонент App с обработкой ошибок
+const App = () => {
+  return (
+    <ErrorBoundary fallback={ErrorDisplay}>
+      <QueryClientProvider client={queryClient}>
+        <TooltipProvider>
+          <LanguageProvider>
+            {/* Упрощенная версия - убираем все блокирующие компоненты */}
+            <Toaster />
+            <Sonner />
+            <AppContent />
+          </LanguageProvider>
+        </TooltipProvider>
+      </QueryClientProvider>
+    </ErrorBoundary>
   );
 }
 

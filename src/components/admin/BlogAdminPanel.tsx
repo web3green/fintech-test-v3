@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -14,6 +13,7 @@ import { blogPosts, getLocalizedContent } from '@/services/blogService';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { RichTextEditor } from '@/components/ui/rich-text-editor';
 
 export const BlogAdminPanel = () => {
   const { language } = useLanguage();
@@ -27,6 +27,7 @@ export const BlogAdminPanel = () => {
   const [formData, setFormData] = useState({
     title: { en: '', ru: '' },
     excerpt: { en: '', ru: '' },
+    content: { en: '', ru: '' },
     category: { en: '', ru: '' },
     image: '',
     author: '',
@@ -50,6 +51,7 @@ export const BlogAdminPanel = () => {
     setFormData({
       title: { en: '', ru: '' },
       excerpt: { en: '', ru: '' },
+      content: { en: '', ru: '' },
       category: { en: '', ru: '' },
       image: '',
       author: '',
@@ -244,6 +246,14 @@ export const BlogAdminPanel = () => {
                   />
                 </div>
                 <div>
+                  <Label htmlFor="content-en">Full Content (English)</Label>
+                  <RichTextEditor
+                    value={formData.content.en || ''}
+                    onChange={(value) => handleInputChange('content', value, 'en')}
+                    placeholder="Write your article content here..."
+                  />
+                </div>
+                <div>
                   <Label htmlFor="category-en">Category (English)</Label>
                   <Input 
                     id="category-en" 
@@ -271,6 +281,14 @@ export const BlogAdminPanel = () => {
                     value={formData.excerpt.ru || ''} 
                     onChange={(e) => handleInputChange('excerpt', e.target.value, 'ru')}
                     required
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="content-ru">Full Content (Russian)</Label>
+                  <RichTextEditor
+                    value={formData.content.ru || ''}
+                    onChange={(value) => handleInputChange('content', value, 'ru')}
+                    placeholder="Напишите содержание статьи здесь..."
                   />
                 </div>
                 <div>

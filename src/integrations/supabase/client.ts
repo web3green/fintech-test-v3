@@ -2,10 +2,206 @@
 import { createClient } from '@supabase/supabase-js';
 import type { Database } from './types';
 
-const SUPABASE_URL = "https://bpytoeulcofbwpyxllku.supabase.co";
-const SUPABASE_PUBLISHABLE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJweXRvZXVsY29mYndweXhsbGt1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDMxMDU0NDcsImV4cCI6MjA1ODY4MTQ0N30.DyoafhSBtthQJ4sTdBQ-nuomNauMW5cTOH05D48WdFA";
+// Используем переменные окружения из .env файла
+const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || "https://bpytoeulcofbwpyxllku.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJweXRvZXVsY29mYndweXhsbGt1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDMxMDU0NDcsImV4cCI6MjA1ODY4MTQ0N30.DyoafhSBtthQJ4sTdBQ-nuomNauMW5cTOH05D48WdFA";
+
+// S3 хранилище параметры
+const STORAGE_URL = import.meta.env.VITE_SUPABASE_STORAGE_URL;
+const STORAGE_REGION = import.meta.env.VITE_SUPABASE_STORAGE_REGION;
+const STORAGE_ACCESS_KEY = import.meta.env.VITE_SUPABASE_STORAGE_ACCESS_KEY;
 
 // Import the supabase client like this:
 // import { supabase } from "@/integrations/supabase/client";
 
-export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+// Создаем клиент с дополнительными опциями для S3 хранилища
+export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
+  auth: {
+    autoRefreshToken: true,
+    persistSession: true,
+    detectSessionInUrl: true
+  },
+  global: {
+    headers: {
+      'x-application-name': 'fintech-simplicity'
+    }
+  }
+});
+
+/**
+ * Проверяет статус соединения с Supabase, права доступа и политики RLS
+ * Выводит сообщение в консоль и возвращает результат проверки
+ * @returns Объект с результатами теста соединения
+ */
+export async function testSupabaseConnection() {
+  try {
+    // Проверка валидности URL и ключа
+    if (!SUPABASE_URL || SUPABASE_URL === "https://your-supabase-url.supabase.co") {
+      console.error('Invalid Supabase URL. Please check your environment variables.');
+      return { 
+        success: false, 
+        error: new Error('Invalid Supabase URL - using default value'), 
+        component: 'config' 
+      };
+    }
+    
+    if (!SUPABASE_PUBLISHABLE_KEY || SUPABASE_PUBLISHABLE_KEY.includes('your-anon-key')) {
+      console.error('Invalid Supabase key. Please check your environment variables.');
+      return { 
+        success: false, 
+        error: new Error('Invalid Supabase key - using placeholder value'), 
+        component: 'config' 
+      };
+    }
+    
+    console.log('Testing Supabase connection to URL:', SUPABASE_URL);
+    console.log('With anon key:', SUPABASE_PUBLISHABLE_KEY.substring(0, 16) + '...');
+    
+    // Проверяем аутентификацию
+    console.log('Testing Supabase auth...');
+    const { data: authData, error: authError } = await supabase.auth.getSession();
+    console.log('Auth session result:', authData);
+    
+    if (authError) {
+      console.error('Supabase auth error:', authError);
+      return { success: false, error: authError, component: 'auth' };
+    }
+    
+    // Проверка базового соединения через простой запрос
+    try {
+      const startTime = Date.now();
+      const { error: pingError } = await supabase.from('_pgrst_reserved_ping').select('*').limit(1);
+      const endTime = Date.now();
+      
+      if (pingError) {
+        if (pingError.code === '42P01') {
+          // Это ожидаемая ошибка, так как таблицы _pgrst_reserved_ping может не существовать
+          console.log('Ping check passed (expected error):', pingError.message);
+          console.log('Connection latency:', endTime - startTime, 'ms');
+        } else {
+          console.error('Ping check failed with unexpected error:', pingError);
+          return { success: false, error: pingError, component: 'ping' };
+        }
+      }
+    } catch (pingException) {
+      console.error('Exception during ping test:', pingException);
+    }
+    
+    // Проверяем Storage API
+    console.log('Testing Supabase Storage API...');
+    try {
+      const { data: bucketsData, error: bucketsError } = await supabase.storage.listBuckets();
+      
+      if (bucketsError) {
+        console.error('Supabase Storage API error:', bucketsError);
+        return { success: false, error: bucketsError, component: 'storage' };
+      }
+      
+      console.log('Supabase buckets:', bucketsData || []);
+      
+      // Пробуем создать тестовый бакет
+      console.log('Testing bucket creation...');
+      const bucketName = 'test-bucket-' + Date.now();
+      
+      const { data: bucketData, error: bucketError } = await supabase.storage.createBucket(bucketName, {
+        public: true
+      });
+      
+      if (bucketError) {
+        console.error('Bucket creation error:', bucketError);
+        return { 
+          success: false, 
+          error: bucketError, 
+          component: 'bucket_creation',
+          details: 'Unable to create bucket. Check if you have the necessary permissions.'
+        };
+      }
+      
+      console.log('Bucket created successfully:', bucketData);
+      
+      // Удаляем тестовый бакет
+      const { error: deleteError } = await supabase.storage.deleteBucket(bucketName);
+      if (deleteError) {
+        console.warn('Could not delete test bucket:', deleteError);
+      } else {
+        console.log('Test bucket deleted successfully');
+      }
+      
+      return { 
+        success: true, 
+        bucketsExist: bucketsData && bucketsData.length > 0,
+        buckets: bucketsData || []
+      };
+    } catch (storageError) {
+      console.error('Unexpected Storage API error:', storageError);
+      return { 
+        success: false, 
+        error: storageError, 
+        component: 'storage_api',
+        details: 'Unexpected error when accessing Storage API'
+      };
+    }
+  } catch (error) {
+    console.error('Unexpected Supabase error:', error);
+    return { success: false, error, component: 'general' };
+  }
+}
+
+/**
+ * Проверяет подключение к Supabase и существование бакета
+ * @param bucketName - имя бакета для проверки
+ * @returns объект с результатом проверки
+ */
+export async function checkSupabaseConnection(bucketName = 'assets'): Promise<{ 
+  connected: boolean, 
+  bucketExists: boolean, 
+  error?: string 
+}> {
+  console.log('Checking Supabase connection...');
+  
+  try {
+    // Проверяем подключение путем получения сессии
+    const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
+    
+    if (sessionError) {
+      console.error('Supabase session error:', sessionError);
+      return { 
+        connected: false, 
+        bucketExists: false, 
+        error: `Session error: ${sessionError.message}` 
+      };
+    }
+    
+    console.log('Supabase session OK:', sessionData);
+    
+    // Проверяем существование бакета
+    const { data: buckets, error: bucketsError } = await supabase.storage.listBuckets();
+    
+    if (bucketsError) {
+      console.error('Error listing buckets:', bucketsError);
+      return { 
+        connected: true, 
+        bucketExists: false, 
+        error: `Bucket list error: ${bucketsError.message}` 
+      };
+    }
+    
+    const bucket = buckets.find(b => b.name === bucketName);
+    const bucketExists = !!bucket;
+    
+    console.log(`Supabase bucket '${bucketName}' ${bucketExists ? 'exists' : 'does not exist'}`);
+    
+    return {
+      connected: true,
+      bucketExists,
+      error: bucketExists ? undefined : `Bucket '${bucketName}' not found`
+    };
+  } catch (error) {
+    console.error('Unexpected error checking Supabase:', error);
+    return { 
+      connected: false, 
+      bucketExists: false, 
+      error: error instanceof Error ? error.message : 'Unknown error' 
+    };
+  }
+}

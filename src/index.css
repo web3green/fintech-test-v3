@@ -42,6 +42,7 @@
     --fintech-blue-dark: 214 100% 40%;
     --fintech-orange: 25 100% 50%;
     --fintech-orange-light: 25 100% 60%;
+    --fintech-orange-dark: 25 100% 40%;
   }
 
   .dark {
@@ -76,8 +77,9 @@
     --fintech-blue: 214 70% 60%;
     --fintech-blue-light: 214 70% 70%;
     --fintech-blue-dark: 214 70% 50%;
-    --fintech-orange: 25 90% 60%;
-    --fintech-orange-light: 25 90% 70%;
+    --fintech-orange: 25 100% 65%;
+    --fintech-orange-light: 30 100% 75%;
+    --fintech-orange-dark: 25 100% 55%;
   }
 }
 

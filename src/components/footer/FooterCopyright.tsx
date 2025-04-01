@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Check } from 'lucide-react'; 
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -46,7 +45,7 @@ export function FooterCopyright({ scrollToTop }: FooterCopyrightProps) {
             }} 
             className="text-sm text-muted-foreground hover:text-fintech-blue dark:hover:text-fintech-blue-light transition-colors"
           >
-            {language === 'en' ? 'Back to Top' : 'Наверх'}
+            {t('footer.backToTop')}
           </a>
         </div>
       </div>

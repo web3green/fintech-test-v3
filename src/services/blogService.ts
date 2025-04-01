@@ -1,4 +1,3 @@
-
 export const blogPosts = [
   {
     id: 1,
@@ -62,7 +61,7 @@ export const blogPosts = [
     },
     readingTime: '10 min',
     tags: ['nominee directors', 'nominee shareholders', 'business confidentiality', 'legal representation'],
-    colorScheme: 'dark' // black/white theme
+    colorScheme: 'graphite' // graphite theme
   },
   {
     id: 4,
@@ -125,7 +124,7 @@ export const blogPosts = [
     },
     readingTime: '7 min',
     tags: ['fintech', 'digital payments', 'blockchain', 'cryptocurrency'],
-    colorScheme: 'dark' // black/white theme
+    colorScheme: 'graphite' // graphite theme
   },
   {
     id: 7,
@@ -184,8 +183,8 @@ export const renderPostColor = (colorScheme: string) => {
       return 'bg-fintech-blue text-white';
     case 'orange':
       return 'bg-fintech-orange text-white';
-    case 'dark':
-      return 'bg-gray-900 text-white dark:bg-black';
+    case 'graphite':
+      return 'bg-gray-700 text-white dark:bg-gray-800';
     default:
       return 'bg-white text-gray-900 dark:bg-gray-800 dark:text-white';
   }
@@ -197,8 +196,8 @@ export const getButtonStyle = (colorScheme: string) => {
       return 'bg-white text-fintech-blue hover:bg-gray-100';
     case 'orange':
       return 'bg-white text-fintech-orange hover:bg-gray-100';
-    case 'dark':
-      return 'bg-fintech-orange text-white hover:bg-fintech-orange-light';
+    case 'graphite':
+      return 'bg-white text-gray-700 hover:bg-gray-100 dark:bg-gray-600 dark:text-white dark:hover:bg-gray-700';
     default:
       return 'bg-fintech-blue text-white hover:bg-fintech-blue-dark';
   }

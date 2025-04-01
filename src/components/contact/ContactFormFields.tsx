@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -81,7 +80,7 @@ export function ContactFormFields() {
               required
               value={formData.name}
               onChange={handleChange}
-              className="bg-white/10 border-white/20 text-white placeholder:text-white/50 focus-visible:ring-blue-400"
+              className="bg-white/10 border-white/20 text-white placeholder:text-white/50 focus-visible:ring-fintech-orange"
             />
           </div>
           
@@ -95,7 +94,7 @@ export function ContactFormFields() {
               required
               value={formData.email}
               onChange={handleChange}
-              className="bg-white/10 border-white/20 text-white placeholder:text-white/50 focus-visible:ring-blue-400"
+              className="bg-white/10 border-white/20 text-white placeholder:text-white/50 focus-visible:ring-fintech-orange"
             />
           </div>
         </div>
@@ -110,14 +109,14 @@ export function ContactFormFields() {
               required
               value={formData.phone}
               onChange={handleChange}
-              className="bg-white/10 border-white/20 text-white placeholder:text-white/50 focus-visible:ring-blue-400"
+              className="bg-white/10 border-white/20 text-white placeholder:text-white/50 focus-visible:ring-fintech-orange"
             />
           </div>
           
           <div className="space-y-2">
             <Label htmlFor="service" className="text-white">{t('contact.form.service')}</Label>
             <Select value={formData.service} onValueChange={handleServiceChange}>
-              <SelectTrigger className="bg-white/10 border-white/20 text-white focus:ring-blue-400">
+              <SelectTrigger className="bg-white/10 border-white/20 text-white focus:ring-fintech-orange">
                 <SelectValue placeholder={t('contact.form.select')} />
               </SelectTrigger>
               <SelectContent>
@@ -140,13 +139,13 @@ export function ContactFormFields() {
             placeholder={language === 'en' ? 'Your message' : 'Ваше сообщение'}
             value={formData.message}
             onChange={handleChange}
-            className="bg-white/10 border-white/20 text-white placeholder:text-white/50 focus-visible:ring-blue-400"
+            className="bg-white/10 border-white/20 text-white placeholder:text-white/50 focus-visible:ring-fintech-orange"
           />
         </div>
         
         <Button 
           type="submit" 
-          className="w-full bg-fintech-blue hover:bg-fintech-blue-dark text-white button-glow"
+          className="w-full bg-fintech-orange hover:bg-fintech-orange-dark text-white button-glow"
           disabled={isSubmitting}
         >
           {isSubmitting ? (

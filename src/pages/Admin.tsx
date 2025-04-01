@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useNavigate } from "react-router-dom";
 import { 
   FileText, BarChart3, Settings, 
   Bell, Search, Menu, X, LogOut, MessageSquare,
-  Newspaper, Send, Link as LinkIcon, Globe, Webhook
+  Newspaper, Send, Link as LinkIcon, Globe, Webhook, Type, LayoutDashboard, Loader2
 } from "lucide-react";
 import { Logo } from "@/components/Logo";
 import { Button } from "@/components/ui/button";
@@ -29,7 +29,11 @@ import { DashboardPanel } from "@/components/admin/DashboardPanel";
 import { WebhookPanel } from "@/components/admin/WebhookPanel";
 import { RequestsPanel } from "@/components/admin/RequestsPanel";
 import { SocialLinksPanel } from "@/components/admin/SocialLinksPanel";
+import { SiteTextsPanel } from "@/components/admin/SiteTextsPanel";
 import { toast } from "sonner";
+import { Sidebar } from "@/components/ui/sidebar";
+import { cn } from "@/lib/utils";
+import ErrorBoundary from "@/components/ErrorBoundary";
 
 const loginSchema = z.object({
   username: z.string().min(1, { message: "Username is required" }),
@@ -38,14 +42,15 @@ const loginSchema = z.object({
 
 const Admin = () => {
   const navigate = useNavigate();
-  const { language } = useLanguage();
+  const { language, isLoading } = useLanguage();
   const isMobile = useIsMobile();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(!isMobile);
   const [currentTab, setCurrentTab] = useState("dashboard");
 
   useEffect(() => {
-    const isAdmin = localStorage.getItem("isAdmin");
+    const token = localStorage.getItem('admin_token');
+    const isAdmin = localStorage.getItem('isAdmin');
     if (isAdmin === "true") {
       setIsAuthenticated(true);
     }
@@ -66,6 +71,7 @@ const Admin = () => {
   const handleLogin = (data) => {
     if (data.username === "admin" && data.password === "password") {
       localStorage.setItem("isAdmin", "true");
+      localStorage.setItem("admin_token", "admin-token-123");
       setIsAuthenticated(true);
       toast.success(language === 'en' ? "Logged in successfully" : "Успешный вход");
     } else {
@@ -75,6 +81,7 @@ const Admin = () => {
 
   const handleLogout = () => {
     localStorage.removeItem("isAdmin");
+    localStorage.removeItem("admin_token");
     setIsAuthenticated(false);
     toast.success(language === 'en' ? "Logged out successfully" : "Успешный выход");
     navigate("/");
@@ -104,12 +111,33 @@ const Admin = () => {
     }
   };
 
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="text-center">
+          <Loader2 className="h-12 w-12 animate-spin text-fintech-blue mx-auto mb-4" />
+          <p className="text-lg font-medium text-muted-foreground">Загрузка...</p>
+        </div>
+      </div>
+    );
+  }
+
   if (!isAuthenticated) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-background">
-        <Card className="w-[350px]">
+      <div className="min-h-screen flex items-center justify-center bg-background p-4">
+        <Card className="w-full max-w-md">
           <CardHeader>
-            <CardTitle className="text-center">{language === 'en' ? "Admin Login" : "В��од для администратора"}</CardTitle>
+            <div className="flex justify-center mb-6">
+              <div className="h-12 w-12 rounded-full bg-fintech-blue flex items-center justify-center text-white font-bold text-lg">
+                FA
+              </div>
+            </div>
+            <CardTitle className="text-center text-2xl">
+              {language === 'en' ? "Admin Login" : "Вход в панель администратора"}
+            </CardTitle>
+            <CardDescription className="text-center">
+              {language === 'en' ? "Enter your credentials to access the admin panel" : "Введите учетные данные для доступа к панели администратора"}
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <Form {...loginForm}>
@@ -140,12 +168,17 @@ const Admin = () => {
                     </FormItem>
                   )}
                 />
-                <Button type="submit" className="w-full">
-                  {language === 'en' ? "Login" : "Войти"}
+                <Button type="submit" className="w-full mt-6 bg-fintech-blue hover:bg-fintech-blue-light">
+                  {language === 'en' ? "Sign In" : "Войти"}
                 </Button>
               </form>
             </Form>
           </CardContent>
+          <CardFooter className="flex justify-center">
+            <Button variant="ghost" onClick={() => navigate('/')}>
+              {language === 'en' ? "Back to Website" : "Вернуться на сайт"}
+            </Button>
+          </CardFooter>
         </Card>
       </div>
     );
@@ -214,7 +247,7 @@ const Admin = () => {
             </Button>
             
             <Button 
-              variant={currentTab === "social" ? "default" : "ghost"} 
+              variant={currentTab === "social" ? "default" : "ghost"}
               onClick={() => setCurrentTab("social")}
               className="w-full justify-start"
             >
@@ -229,6 +262,15 @@ const Admin = () => {
             >
               <Webhook className="mr-2 h-4 w-4" />
               {language === 'en' ? "Webhooks" : "Вебхуки"}
+            </Button>
+            
+            <Button 
+              variant={currentTab === "texts" ? "default" : "ghost"} 
+              onClick={() => setCurrentTab("texts")}
+              className="w-full justify-start"
+            >
+              <Type className="mr-2 h-4 w-4" />
+              {language === 'en' ? "Site Texts" : "Тексты сайта"}
             </Button>
           </nav>
           
@@ -265,7 +307,8 @@ const Admin = () => {
                  currentTab === "requests" ? "Заявки" :
                  currentTab === "settings" ? "Настройки" :
                  currentTab === "social" ? "Социальные ссылки" :
-                 currentTab === "webhooks" ? "Вебхуки" : ""}
+                 currentTab === "webhooks" ? "Вебхуки" :
+                 currentTab === "texts" ? "Тексты сайта" : ""}
               </h1>
             </div>
             
@@ -287,26 +330,55 @@ const Admin = () => {
           </div>
         </header>
 
-        <main className="p-4">
-          {currentTab === "blog" && <BlogAdminPanel />}
-          {currentTab === "dashboard" && <DashboardPanel />}
-          {currentTab === "articles" && <ArticlesPanel />}
-          {currentTab === "webhooks" && <WebhookPanel />}
-          {currentTab === "requests" && <RequestsPanel />}
-          {currentTab === "social" && <SocialLinksPanel />}
-          
-          {currentTab === "settings" && (
-            <div className="space-y-4">
-              <Card>
-                <CardHeader>
-                  <CardTitle>{language === 'en' ? "Settings" : "Настройки"}</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p>{language === 'en' ? "Here you can manage your settings." : "Здесь вы можете управлять своими настройками."}</p>
-                </CardContent>
-              </Card>
-            </div>
-          )}
+        <main className="flex-1 space-y-4 p-8 pt-6">
+          <ErrorBoundary>
+            {currentTab === 'dashboard' && (
+              <Suspense fallback={<div className="p-4 text-center">Загрузка панели...</div>}>
+                {typeof DashboardPanel === 'function' ? (
+                  <DashboardPanel />
+                ) : (
+                  <div className="p-6 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg">
+                    <h3 className="text-lg font-semibold mb-2 text-yellow-800 dark:text-yellow-200">
+                      Компонент панели недоступен
+                    </h3>
+                    <p className="text-yellow-700 dark:text-yellow-300">
+                      Панель управления не может быть загружена. Возможно, отсутствуют необходимые модули.
+                    </p>
+                    <div className="mt-4">
+                      <Button 
+                        onClick={() => setCurrentTab('blog')}
+                        variant="outline"
+                        className="mr-2"
+                      >
+                        Перейти к управлению блогом
+                      </Button>
+                    </div>
+                  </div>
+                )}
+              </Suspense>
+            )}
+            {currentTab === 'blog' && <BlogAdminPanel />}
+            {currentTab === 'articles' && <ArticlesPanel />}
+            {currentTab === 'requests' && <RequestsPanel />}
+            {currentTab === 'social' && <SocialLinksPanel />}
+            {currentTab === 'webhooks' && <WebhookPanel />}
+            {currentTab === 'texts' && <SiteTextsPanel />}
+            {currentTab === 'settings' && (
+              <div className="grid gap-4">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>{language === 'en' ? "General Settings" : "Общие настройки"}</CardTitle>
+                    <CardDescription>
+                      {language === 'en' ? "Manage your site settings" : "Управление настройками сайта"}
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <p>{language === 'en' ? "Manage your general site settings here." : "Управляйте общими настройками сайта здесь."}</p>
+                  </CardContent>
+                </Card>
+              </div>
+            )}
+          </ErrorBoundary>
         </main>
       </div>
     </div>

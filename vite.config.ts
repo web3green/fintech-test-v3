@@ -1,8 +1,6 @@
-
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
-import { componentTagger } from "lovable-tagger";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
@@ -10,32 +8,53 @@ export default defineConfig(({ mode }) => ({
     host: "::",
     port: 8080,
   },
-  plugins: [
-    react(),
-    mode === 'development' &&
-    componentTagger(),
-  ].filter(Boolean),
+  plugins: [react()],
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
     },
   },
-  // Добавляем настройки для оптимизации сборки и хеширования файлов
   build: {
-    // Генерируем хеши файлов для предотвращения кэширования
     rollupOptions: {
       output: {
         manualChunks: {
-          'vendor': ['react', 'react-dom', 'react-router-dom'],
+          'vendor': [
+            'react', 
+            'react-dom', 
+            'react-router-dom',
+            '@radix-ui/react-dialog',
+            '@radix-ui/react-dropdown-menu',
+            '@radix-ui/react-popover',
+            'framer-motion'
+          ],
+          'forms': [
+            'react-hook-form',
+            '@hookform/resolvers',
+            'zod'
+          ],
+          'utils': [
+            'date-fns',
+            'clsx',
+            'tailwind-merge'
+          ]
         },
         entryFileNames: 'assets/[name].[hash].js',
         chunkFileNames: 'assets/[name].[hash].js',
         assetFileNames: 'assets/[name].[hash].[ext]'
       }
     },
-    // Отключаем минификацию в режиме разработки для более быстрой сборки
     minify: mode === 'production' ? 'esbuild' : false,
-    // Добавляем манифест для отслеживания файлов
-    manifest: true
+    manifest: true,
+    // Оптимизация размера чанков
+    chunkSizeWarningLimit: 1000,
+    // Улучшение производительности
+    target: 'esnext',
+    sourcemap: mode === 'development',
+    // Оптимизация CSS
+    cssCodeSplit: true,
+    // Улучшение кэширования
+    modulePreload: {
+      polyfill: false
+    }
   }
 }));

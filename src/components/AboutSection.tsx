@@ -15,7 +15,7 @@ export function AboutSection() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-12 items-center">
           <div className="order-2 lg:order-1">
             <div className="relative rounded-xl overflow-hidden shadow-xl my-2">
-              <div className="aspect-[4/3] bg-gradient-to-br from-blue-500 to-blue-700 dark:from-blue-600 dark:to-blue-800 rounded-xl">
+              <div className="aspect-[4/3] bg-gradient-to-br from-fintech-blue to-fintech-blue-dark dark:from-fintech-blue dark:to-fintech-blue-dark rounded-xl">
                 <div className="absolute inset-0 flex items-center justify-center p-2 md:p-8">
                   <Card className="glass-card rounded-xl w-full shadow-lg">
                     <div className="absolute inset-0 rounded-xl overflow-hidden">
@@ -23,7 +23,7 @@ export function AboutSection() {
                     </div>
                     <CardContent className="p-3 md:p-4 space-y-2 md:space-y-3 relative z-10">
                       <div className="flex items-center space-x-2 md:space-x-3">
-                        <div className="h-8 w-8 md:h-10 md:w-10 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold text-base shadow-md">
+                        <div className="h-8 w-8 md:h-10 md:w-10 rounded-full bg-fintech-orange dark:bg-fintech-orange flex items-center justify-center text-white font-bold text-base shadow-md">
                           FA
                         </div>
                         <div>
@@ -36,37 +36,37 @@ export function AboutSection() {
                       
                       <div className="space-y-1.5 md:space-y-2 bg-white/80 dark:bg-gray-900/30 p-2 md:p-3 rounded-lg backdrop-blur-sm border border-gray-200 dark:border-white/10 shadow-sm">
                         <div className="flex items-center space-x-2 text-gray-800 dark:text-white">
-                          <div className="h-7 w-7 md:h-8 md:w-8 rounded-full bg-blue-100 dark:bg-blue-800/30 flex items-center justify-center">
-                            <UserRound className="h-3.5 w-3.5 md:h-4 md:w-4 text-blue-600 dark:text-blue-300" />
+                          <div className="h-7 w-7 md:h-8 md:w-8 rounded-full bg-fintech-blue/20 dark:bg-fintech-blue/30 flex items-center justify-center">
+                            <UserRound className="h-3.5 w-3.5 md:h-4 md:w-4 text-fintech-blue dark:text-fintech-blue-light" />
                           </div>
                           <div className="text-xs md:text-sm font-medium">{language === 'en' ? 'Personal manager for every client' : 'Персональный менеджер для каждого клиента'}</div>
                         </div>
                         <div className="flex items-center space-x-2 text-gray-800 dark:text-white">
-                          <div className="h-7 w-7 md:h-8 md:w-8 rounded-full bg-blue-200 dark:bg-blue-700/30 flex items-center justify-center">
-                            <Handshake className="h-3.5 w-3.5 md:h-4 md:w-4 text-blue-600 dark:text-blue-300" />
+                          <div className="h-7 w-7 md:h-8 md:w-8 rounded-full bg-fintech-orange/20 dark:bg-fintech-orange/70 flex items-center justify-center">
+                            <Handshake className="h-3.5 w-3.5 md:h-4 md:w-4 text-fintech-orange dark:text-white" />
                           </div>
                           <div className="text-xs md:text-sm font-medium">{language === 'en' ? 'Full support at all stages' : 'Полное сопровождение на всех этапах'}</div>
                         </div>
                         <div className="flex items-center space-x-2 text-gray-800 dark:text-white">
-                          <div className="h-7 w-7 md:h-8 md:w-8 rounded-full bg-blue-100 dark:bg-blue-800/30 flex items-center justify-center">
-                            <ShieldCheck className="h-3.5 w-3.5 md:h-4 md:w-4 text-blue-600 dark:text-blue-300" />
+                          <div className="h-7 w-7 md:h-8 md:w-8 rounded-full bg-fintech-blue/20 dark:bg-fintech-blue/30 flex items-center justify-center">
+                            <ShieldCheck className="h-3.5 w-3.5 md:h-4 md:w-4 text-fintech-blue dark:text-fintech-blue-light" />
                           </div>
                           <div className="text-xs md:text-sm font-medium">{language === 'en' ? 'Working through escrow services' : 'Работа через сервисы гаранта'}</div>
                         </div>
                       </div>
                       
                       <div className="grid grid-cols-3 gap-1 md:gap-2 pt-1">
-                        <div className="bg-white/80 dark:bg-gray-900/30 rounded-lg p-2 md:p-3 border border-gray-200 dark:border-white/10 text-center">
+                        <div className="bg-gradient-to-br from-fintech-blue/10 to-fintech-blue/30 dark:from-fintech-blue/20 dark:to-fintech-blue/40 rounded-lg p-2 md:p-3 border border-gray-200 dark:border-white/10 text-center">
                           <div className="text-2xs md:text-xs text-gray-500 dark:text-white/70">{language === 'en' ? 'Founded' : 'Основано'}</div>
-                          <div className="mt-0.5 md:mt-1 font-semibold text-xs md:text-sm text-gray-900 dark:text-white">2015</div>
+                          <div className="mt-0.5 md:mt-1 font-semibold text-xs md:text-sm text-fintech-blue dark:text-fintech-blue-light">2015</div>
                         </div>
-                        <div className="bg-white/80 dark:bg-gray-900/30 rounded-lg p-2 md:p-3 border border-gray-200 dark:border-white/10 text-center">
-                          <div className="text-2xs md:text-xs text-gray-500 dark:text-white/70">{language === 'en' ? 'Team' : 'Команда'}</div>
-                          <div className="mt-0.5 md:mt-1 font-semibold text-xs md:text-sm text-gray-900 dark:text-white">10+ {language === 'en' ? 'experts' : 'экспертов'}</div>
+                        <div className="bg-gradient-to-br from-fintech-orange/20 to-fintech-orange/40 dark:from-fintech-orange/80 dark:to-fintech-orange/90 rounded-lg p-2 md:p-3 border border-gray-200 dark:border-fintech-orange/30 text-center">
+                          <div className="text-2xs md:text-xs text-gray-500 dark:text-white">{language === 'en' ? 'Team' : 'Команда'}</div>
+                          <div className="mt-0.5 md:mt-1 font-semibold text-xs md:text-sm text-fintech-orange dark:text-white">10+ {language === 'en' ? 'experts' : 'экспертов'}</div>
                         </div>
-                        <div className="bg-white/80 dark:bg-gray-900/30 rounded-lg p-2 md:p-3 border border-gray-200 dark:border-white/10 text-center">
+                        <div className="bg-gradient-to-br from-fintech-blue/10 to-fintech-blue/30 dark:from-fintech-blue/20 dark:to-fintech-blue/40 rounded-lg p-2 md:p-3 border border-gray-200 dark:border-white/10 text-center">
                           <div className="text-2xs md:text-xs text-gray-500 dark:text-white/70">{language === 'en' ? 'Clients' : 'Клиенты'}</div>
-                          <div className="mt-0.5 md:mt-1 font-semibold text-xs md:text-sm text-gray-900 dark:text-white">500+</div>
+                          <div className="mt-0.5 md:mt-1 font-semibold text-xs md:text-sm text-fintech-blue dark:text-fintech-blue-light">500+</div>
                         </div>
                       </div>
                     </CardContent>
@@ -91,39 +91,39 @@ export function AboutSection() {
             </p>
             
             <div className="grid grid-cols-2 gap-3 md:gap-4 mb-6 md:mb-8">
-              <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg shadow-sm hover:shadow-md transition-all duration-300">
+              <div className="bg-gradient-to-br from-fintech-blue/10 to-fintech-blue/30 dark:from-fintech-blue/20 dark:to-fintech-blue/40 p-4 rounded-lg shadow-sm hover:shadow-md transition-all duration-300">
                 <div className="flex items-center gap-3 mb-2">
-                  <div className="h-8 w-8 rounded-full bg-blue-100 dark:bg-blue-800/30 flex items-center justify-center">
-                    <Globe className="h-4 w-4 text-blue-600 dark:text-blue-300" />
+                  <div className="h-8 w-8 rounded-full bg-fintech-blue/20 dark:bg-fintech-blue/30 flex items-center justify-center">
+                    <Globe className="h-4 w-4 text-fintech-blue dark:text-fintech-blue-light" />
                   </div>
-                  <div className="text-xl md:text-2xl font-bold text-blue-600 dark:text-blue-300">15+</div>
+                  <div className="text-xl md:text-2xl font-bold text-fintech-blue dark:text-fintech-blue-light">15+</div>
                 </div>
                 <div className="text-sm text-black dark:text-white">{language === 'en' ? 'Countries' : 'Стран'}</div>
               </div>
-              <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg shadow-sm hover:shadow-md transition-all duration-300">
+              <div className="bg-gradient-to-br from-fintech-orange/20 to-fintech-orange/40 dark:from-fintech-orange/80 dark:to-fintech-orange/90 p-4 rounded-lg shadow-sm hover:shadow-md transition-all duration-300">
                 <div className="flex items-center gap-3 mb-2">
-                  <div className="h-8 w-8 rounded-full bg-blue-200 dark:bg-blue-700/30 flex items-center justify-center">
-                    <UserRound className="h-4 w-4 text-blue-600 dark:text-blue-300" />
+                  <div className="h-8 w-8 rounded-full bg-fintech-orange/30 dark:bg-fintech-orange/70 flex items-center justify-center">
+                    <UserRound className="h-4 w-4 text-fintech-orange dark:text-white" />
                   </div>
-                  <div className="text-xl md:text-2xl font-bold text-blue-600 dark:text-blue-300">500+</div>
+                  <div className="text-xl md:text-2xl font-bold text-fintech-orange dark:text-white">500+</div>
                 </div>
                 <div className="text-sm text-black dark:text-white">{language === 'en' ? 'Clients' : 'Клиентов'}</div>
               </div>
-              <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg shadow-sm hover:shadow-md transition-all duration-300">
+              <div className="bg-gradient-to-br from-fintech-orange/20 to-fintech-orange/40 dark:from-fintech-orange/80 dark:to-fintech-orange/90 p-4 rounded-lg shadow-sm hover:shadow-md transition-all duration-300">
                 <div className="flex items-center gap-3 mb-2">
-                  <div className="h-8 w-8 rounded-full bg-blue-100 dark:bg-blue-800/30 flex items-center justify-center">
-                    <Award className="h-4 w-4 text-blue-600 dark:text-blue-300" />
+                  <div className="h-8 w-8 rounded-full bg-fintech-orange/30 dark:bg-fintech-orange/70 flex items-center justify-center">
+                    <Award className="h-4 w-4 text-fintech-orange dark:text-white" />
                   </div>
-                  <div className="text-xl md:text-2xl font-bold text-blue-600 dark:text-blue-300">98%</div>
+                  <div className="text-xl md:text-2xl font-bold text-fintech-orange dark:text-white">98%</div>
                 </div>
                 <div className="text-sm text-black dark:text-white">{language === 'en' ? 'Success Rate' : 'Успешных проектов'}</div>
               </div>
-              <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg shadow-sm hover:shadow-md transition-all duration-300">
+              <div className="bg-gradient-to-br from-fintech-blue/10 to-fintech-blue/30 dark:from-fintech-blue/20 dark:to-fintech-blue/40 p-4 rounded-lg shadow-sm hover:shadow-md transition-all duration-300">
                 <div className="flex items-center gap-3 mb-2">
-                  <div className="h-8 w-8 rounded-full bg-blue-200 dark:bg-blue-700/30 flex items-center justify-center">
-                    <Clock className="h-4 w-4 text-blue-600 dark:text-blue-300" />
+                  <div className="h-8 w-8 rounded-full bg-fintech-blue/20 dark:bg-fintech-blue/30 flex items-center justify-center">
+                    <Clock className="h-4 w-4 text-fintech-blue dark:text-fintech-blue-light" />
                   </div>
-                  <div className="text-xl md:text-2xl font-bold text-blue-600 dark:text-blue-300">9+</div>
+                  <div className="text-xl md:text-2xl font-bold text-fintech-blue dark:text-fintech-blue-light">9+</div>
                 </div>
                 <div className="text-sm text-black dark:text-white">{language === 'en' ? 'Years Experience' : 'Лет опыта'}</div>
               </div>

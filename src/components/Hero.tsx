@@ -71,31 +71,31 @@ export function Hero() {
                   <div className="space-y-6">
                     <div className="space-y-3">
                       <div className="grid grid-cols-3 sm:grid-cols-3 gap-3">
-                        <Button variant="outline" className="p-3 h-auto text-sm font-medium bg-gradient-to-br from-fintech-blue/50 to-fintech-blue/70 hover:from-fintech-blue/60 hover:to-fintech-blue/80 border-transparent text-white transition-all duration-200 hover:scale-105">
+                        <Button variant="outline" className="p-3 h-auto text-sm font-medium bg-gradient-to-br from-fintech-blue/70 to-fintech-blue/90 hover:from-fintech-blue/80 hover:to-fintech-blue/95 border-transparent text-white transition-all duration-200 hover:scale-105">
                           {t('hero.category.fintech')}
                         </Button>
-                        <Button variant="outline" className="p-3 h-auto text-sm font-medium bg-gradient-to-br from-fintech-orange/50 to-fintech-orange/70 dark:from-fintech-orange/70 dark:to-fintech-orange/90 hover:from-fintech-orange/60 hover:to-fintech-orange/80 dark:hover:from-fintech-orange/80 dark:hover:to-fintech-orange/95 border-transparent text-white transition-all duration-200 hover:scale-105 dark:shadow-[0_0_15px_rgba(255,165,0,0.3)]">
+                        <Button variant="outline" className="p-3 h-auto text-sm font-medium bg-gradient-to-br from-fintech-orange/70 to-fintech-orange/90 hover:from-fintech-orange/80 hover:to-fintech-orange/95 dark:from-fintech-orange/70 dark:to-fintech-orange/90 border-transparent text-white transition-all duration-200 hover:scale-105 dark:shadow-[0_0_15px_rgba(255,165,0,0.3)]">
                           {t('hero.category.ecommerce')}
                         </Button>
-                        <Button variant="outline" className="p-3 h-auto text-sm font-medium bg-gradient-to-br from-fintech-blue/50 to-fintech-blue/70 hover:from-fintech-blue/60 hover:to-fintech-blue/80 border-transparent text-white transition-all duration-200 hover:scale-105">
+                        <Button variant="outline" className="p-3 h-auto text-sm font-medium bg-gradient-to-br from-fintech-blue/70 to-fintech-blue/90 hover:from-fintech-blue/80 hover:to-fintech-blue/95 border-transparent text-white transition-all duration-200 hover:scale-105">
                           {t('hero.category.blockchain')}
                         </Button>
-                        <Button variant="outline" className="p-3 h-auto text-sm font-medium bg-gradient-to-br from-fintech-orange/50 to-fintech-orange/70 dark:from-fintech-orange/70 dark:to-fintech-orange/90 hover:from-fintech-orange/60 hover:to-fintech-orange/80 dark:hover:from-fintech-orange/80 dark:hover:to-fintech-orange/95 border-transparent text-white transition-all duration-200 hover:scale-105 dark:shadow-[0_0_15px_rgba(255,165,0,0.3)]">
+                        <Button variant="outline" className="p-3 h-auto text-sm font-medium bg-gradient-to-br from-fintech-orange/70 to-fintech-orange/90 hover:from-fintech-orange/80 hover:to-fintech-orange/95 dark:from-fintech-orange/70 dark:to-fintech-orange/90 border-transparent text-white transition-all duration-200 hover:scale-105 dark:shadow-[0_0_15px_rgba(255,165,0,0.3)]">
                           {t('hero.category.startups')}
                         </Button>
-                        <Button variant="outline" className="p-3 h-auto text-sm font-medium bg-gradient-to-br from-fintech-blue/50 to-fintech-blue/70 hover:from-fintech-blue/60 hover:to-fintech-blue/80 border-transparent text-white transition-all duration-200 hover:scale-105">
+                        <Button variant="outline" className="p-3 h-auto text-sm font-medium bg-gradient-to-br from-fintech-blue/70 to-fintech-blue/90 hover:from-fintech-blue/80 hover:to-fintech-blue/95 border-transparent text-white transition-all duration-200 hover:scale-105">
                           {t('hero.category.neobanks')}
                         </Button>
-                        <Button variant="outline" className="p-3 h-auto text-sm font-medium bg-gradient-to-br from-fintech-orange/50 to-fintech-orange/70 dark:from-fintech-orange/70 dark:to-fintech-orange/90 hover:from-fintech-orange/60 hover:to-fintech-orange/80 dark:hover:from-fintech-orange/80 dark:hover:to-fintech-orange/95 border-transparent text-white transition-all duration-200 hover:scale-105 dark:shadow-[0_0_15px_rgba(255,165,0,0.3)]">
+                        <Button variant="outline" className="p-3 h-auto text-sm font-medium bg-gradient-to-br from-fintech-orange/70 to-fintech-orange/90 hover:from-fintech-orange/80 hover:to-fintech-orange/95 dark:from-fintech-orange/70 dark:to-fintech-orange/90 border-transparent text-white transition-all duration-200 hover:scale-105 dark:shadow-[0_0_15px_rgba(255,165,0,0.3)]">
                           {t('hero.category.wallets')}
                         </Button>
-                        <Button variant="outline" className="p-3 h-auto text-sm font-medium bg-gradient-to-br from-fintech-blue/50 to-fintech-blue/70 hover:from-fintech-blue/60 hover:to-fintech-blue/80 border-transparent text-white transition-all duration-200 hover:scale-105">
+                        <Button variant="outline" className="p-3 h-auto text-sm font-medium bg-gradient-to-br from-fintech-blue/70 to-fintech-blue/90 hover:from-fintech-blue/80 hover:to-fintech-blue/95 border-transparent text-white transition-all duration-200 hover:scale-105">
                           {t('hero.category.gaming')}
                         </Button>
-                        <Button variant="outline" className="p-3 h-auto text-sm font-medium bg-gradient-to-br from-fintech-orange/50 to-fintech-orange/70 dark:from-fintech-orange/70 dark:to-fintech-orange/90 hover:from-fintech-orange/60 hover:to-fintech-orange/80 dark:hover:from-fintech-orange/80 dark:hover:to-fintech-orange/95 border-transparent text-white transition-all duration-200 hover:scale-105 dark:shadow-[0_0_15px_rgba(255,165,0,0.3)]">
+                        <Button variant="outline" className="p-3 h-auto text-sm font-medium bg-gradient-to-br from-fintech-orange/70 to-fintech-orange/90 hover:from-fintech-orange/80 hover:to-fintech-orange/95 dark:from-fintech-orange/70 dark:to-fintech-orange/90 border-transparent text-white transition-all duration-200 hover:scale-105 dark:shadow-[0_0_15px_rgba(255,165,0,0.3)]">
                           {t('hero.category.saas')}
                         </Button>
-                        <Button variant="outline" className="p-3 h-auto text-sm font-medium bg-gradient-to-br from-fintech-blue/50 to-fintech-blue/70 hover:from-fintech-blue/60 hover:to-fintech-blue/80 border-transparent text-white transition-all duration-200 hover:scale-105">
+                        <Button variant="outline" className="p-3 h-auto text-sm font-medium bg-gradient-to-br from-fintech-blue/70 to-fintech-blue/90 hover:from-fintech-blue/80 hover:to-fintech-blue/95 border-transparent text-white transition-all duration-200 hover:scale-105">
                           {t('hero.category.edtech')}
                         </Button>
                       </div>

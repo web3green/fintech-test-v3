@@ -152,8 +152,19 @@ export function Header() {
         {/* Mobile menu, show/hide based on menu state */}
         <div 
           ref={menuRef}
-          className={`md:hidden mt-3 py-3 px-4 bg-white/95 dark:bg-gray-900/95 rounded-md shadow-lg backdrop-blur-md transition-all duration-300 ease-in-out border border-gray-200 dark:border-gray-800 ${mobileMenuOpen ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2 pointer-events-none'}`}
+          className={`md:hidden absolute top-16 left-0 right-0 z-50 m-2 py-3 px-4 bg-white/95 dark:bg-gray-900/95 rounded-md shadow-lg backdrop-blur-md transition-all duration-300 ease-in-out border border-gray-200 dark:border-gray-800 ${mobileMenuOpen ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2 pointer-events-none'}`}
         >
+          {/* Close button (X) in top right corner */}
+          <div className="flex justify-end mb-2">
+            <button 
+              onClick={() => setMobileMenuOpen(false)}
+              className="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+              aria-label="Закрыть меню"
+            >
+              <X className="h-5 w-5 text-gray-600 dark:text-gray-400" />
+            </button>
+          </div>
+          
           <nav className="flex flex-col space-y-3">
             <button 
               onClick={() => scrollToSection('about')}

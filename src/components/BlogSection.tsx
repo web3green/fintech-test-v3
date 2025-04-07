@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { BlogPostCard } from './blog/BlogPostCard';
@@ -70,12 +69,16 @@ export const BlogSection: React.FC = () => {
     : 'Будьте в курсе последних отраслевых идей и новостей компании <span class="text-foreground dark:text-foreground">FinTechAssist</span>.';
 
   return (
-    <section id="blog" className="py-16 bg-background">
+    <section id="blog" className="py-16 bg-gradient-to-b from-blue-950/40 to-background">
       <div className="container mx-auto px-4">
         <div className="max-w-4xl mx-auto mb-10 text-center">
+          <div className="inline-flex items-center rounded-full px-3 py-1 text-sm font-medium bg-gradient-to-r from-blue-900/40 to-blue-800/30 backdrop-blur-sm border border-white/5">
+            <span className="flex h-2 w-2 rounded-full bg-fintech-orange/80 mr-2"></span>
+            <span className="text-fintech-orange/90">{language === 'en' ? 'Latest Updates' : 'Последние обновления'}</span>
+          </div>
           <h2 className="text-3xl font-bold mb-4">{language === 'en' ? 'Our Blog' : 'Наш Блог'}</h2>
           <p 
-            className="text-muted-foreground"
+            className="text-muted-foreground dark:text-muted-foreground/90"
             dangerouslySetInnerHTML={{ __html: blogDescription }}
           />
         </div>
@@ -105,7 +108,7 @@ export const BlogSection: React.FC = () => {
           </div>
         ) : (
           <div className="text-center py-12">
-            <p className="text-lg text-muted-foreground">
+            <p className="text-lg text-muted-foreground dark:text-muted-foreground/80">
               {language === 'en' 
                 ? 'No blog posts found matching your criteria.' 
                 : 'Не найдено записей блога, соответствующих вашим критериям.'}
@@ -120,7 +123,7 @@ export const BlogSection: React.FC = () => {
                 <PaginationItem>
                   <PaginationPrevious 
                     onClick={() => currentPage > 1 && handlePageChange(currentPage - 1)}
-                    className={currentPage === 1 ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                    className={`${currentPage === 1 ? "pointer-events-none opacity-50" : "cursor-pointer"} hover:bg-fintech-orange/20 hover:bg-gradient-to-r from-blue-900/40 to-blue-800/30`}
                   />
                 </PaginationItem>
                 
@@ -129,6 +132,7 @@ export const BlogSection: React.FC = () => {
                     <PaginationLink
                       onClick={() => handlePageChange(index + 1)}
                       isActive={currentPage === index + 1}
+                      className={`${currentPage === index + 1 ? 'bg-gradient-to-r from-blue-900/40 to-blue-800/30 text-fintech-orange/90 border border-white/5' : 'hover:bg-gradient-to-r hover:from-blue-900/40 hover:to-blue-800/30'}`}
                     >
                       {index + 1}
                     </PaginationLink>
@@ -138,7 +142,7 @@ export const BlogSection: React.FC = () => {
                 <PaginationItem>
                   <PaginationNext
                     onClick={() => currentPage < totalPages && handlePageChange(currentPage + 1)}
-                    className={currentPage === totalPages ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                    className={`${currentPage === totalPages ? "pointer-events-none opacity-50" : "cursor-pointer"} hover:bg-fintech-orange/20 hover:bg-gradient-to-r from-blue-900/40 to-blue-800/30`}
                   />
                 </PaginationItem>
               </PaginationContent>

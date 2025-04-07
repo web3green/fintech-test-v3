@@ -27,7 +27,13 @@ export const FeaturedArticle: React.FC<FeaturedArticleProps> = ({
             {language === 'en' ? 'Featured Article' : 'Рекомендуемая Статья'}
           </h2>
           <div 
-            className={`rounded-2xl overflow-hidden bg-${post.colorScheme === 'blue' ? 'fintech-blue' : post.colorScheme === 'orange' ? 'fintech-orange/80 dark:bg-fintech-orange/70' : 'gray-900'} text-white cursor-pointer hover:shadow-xl transition-shadow duration-300`}
+            className={`rounded-2xl overflow-hidden ${
+              post.colorScheme === 'blue' 
+                ? 'bg-fintech-blue' 
+                : post.colorScheme === 'orange' 
+                  ? 'bg-fintech-orange/80 dark:bg-gradient-to-br dark:from-blue-900/40 dark:via-fintech-orange/30 dark:to-blue-950/60 dark:backdrop-blur-sm dark:border dark:border-white/5' 
+                  : 'bg-gray-900'
+            } text-white cursor-pointer hover:shadow-xl transition-shadow duration-300`}
             onClick={() => handlePostClick(post)}
           >
             <div className="grid grid-cols-1 md:grid-cols-2 gap-0">
@@ -45,7 +51,7 @@ export const FeaturedArticle: React.FC<FeaturedArticleProps> = ({
                   <div className="inline-flex items-center rounded-full px-3 py-1 text-sm font-medium bg-white/20 backdrop-blur-sm mb-4">
                     {getLocalizedContent(post.category)}
                   </div>
-                  <h3 className="text-2xl md:text-3xl font-display font-bold mb-4">
+                  <h3 className="text-2xl md:text-3xl font-display font-bold mb-4 text-white/90">
                     {getLocalizedContent(post.title)}
                   </h3>
                   <p className="text-white/80 mb-6">
@@ -61,7 +67,7 @@ export const FeaturedArticle: React.FC<FeaturedArticleProps> = ({
                     <Clock className="h-4 w-4 mr-1" />
                     <span>{post.readingTime}</span>
                   </div>
-                  <Button className={`${getButtonStyle(post.colorScheme)} shadow-lg`}>
+                  <Button className={`${getButtonStyle(post.colorScheme)} shadow-lg hover:shadow-xl transition-shadow duration-300`}>
                     {language === 'en' ? 'Read Article' : 'Читать Статью'} <ArrowRight className="h-4 w-4 ml-2" />
                   </Button>
                 </div>

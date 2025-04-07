@@ -29,9 +29,9 @@ export function ServicesSection() {
       description: t('services.company-formation.short'),
       details: t('services.company-formation.details'),
       icon: Building,
-      color: 'bg-blue-50 dark:bg-blue-950',
-      iconColor: 'text-fintech-blue dark:text-fintech-blue-light',
-      borderColor: 'border-fintech-blue/20',
+      color: 'bg-blue-50 dark:bg-fintech-blue/20',
+      iconColor: 'text-fintech-blue dark:text-fintech-blue/90',
+      borderColor: 'border-fintech-blue/20 dark:border-fintech-blue/30',
     },
     {
       id: 'financial-licensing',
@@ -39,9 +39,9 @@ export function ServicesSection() {
       description: t('services.financial-licensing.short'),
       details: t('services.financial-licensing.details'),
       icon: Landmark,
-      color: 'bg-orange-50 dark:bg-orange-950',
-      iconColor: 'text-fintech-orange dark:text-fintech-orange-light',
-      borderColor: 'border-fintech-orange/20',
+      color: 'bg-orange-50 dark:bg-fintech-orange/20',
+      iconColor: 'text-fintech-orange dark:text-fintech-orange/90',
+      borderColor: 'border-fintech-orange/20 dark:border-fintech-orange/30',
     },
     {
       id: 'crypto-regulation',
@@ -49,9 +49,9 @@ export function ServicesSection() {
       description: t('services.crypto-regulation.short'),
       details: t('services.crypto-regulation.details'),
       icon: Wallet,
-      color: 'bg-purple-50 dark:bg-purple-950',
-      iconColor: 'text-purple-500',
-      borderColor: 'border-purple-500/20',
+      color: 'bg-purple-50 dark:bg-fintech-orange/20',
+      iconColor: 'text-purple-500 dark:text-fintech-orange/90',
+      borderColor: 'border-purple-500/20 dark:border-fintech-orange/30',
     },
     {
       id: 'gambling-licensing',
@@ -59,9 +59,9 @@ export function ServicesSection() {
       description: t('services.gambling-licensing.short'),
       details: t('services.gambling-licensing.details'),
       icon: Gamepad,
-      color: 'bg-emerald-50 dark:bg-emerald-950',
-      iconColor: 'text-emerald-500',
-      borderColor: 'border-emerald-500/20',
+      color: 'bg-emerald-50 dark:bg-fintech-blue/20',
+      iconColor: 'text-emerald-500 dark:text-fintech-blue/90',
+      borderColor: 'border-emerald-500/20 dark:border-fintech-blue/30',
     },
     {
       id: 'payment-solutions',
@@ -69,9 +69,9 @@ export function ServicesSection() {
       description: t('services.payment-solutions.short'),
       details: t('services.payment-solutions.details'),
       icon: CreditCard,
-      color: 'bg-blue-50 dark:bg-blue-950',
-      iconColor: 'text-fintech-blue dark:text-fintech-blue-light',
-      borderColor: 'border-fintech-blue/20',
+      color: 'bg-blue-50 dark:bg-fintech-orange/20',
+      iconColor: 'text-fintech-blue dark:text-fintech-orange/90',
+      borderColor: 'border-fintech-blue/20 dark:border-fintech-orange/30',
     },
     {
       id: 'fiat-crypto',
@@ -79,9 +79,9 @@ export function ServicesSection() {
       description: t('services.fiat-crypto.short'),
       details: t('services.fiat-crypto.details'),
       icon: Banknote,
-      color: 'bg-purple-50 dark:bg-purple-950',
-      iconColor: 'text-purple-500',
-      borderColor: 'border-purple-500/20',
+      color: 'bg-purple-50 dark:bg-fintech-blue/20',
+      iconColor: 'text-purple-500 dark:text-fintech-blue/90',
+      borderColor: 'border-purple-500/20 dark:border-fintech-blue/30',
     },
     {
       id: 'tax-planning',
@@ -89,9 +89,9 @@ export function ServicesSection() {
       description: t('services.tax-planning.short'),
       details: t('services.tax-planning.details'),
       icon: BarChart3,
-      color: 'bg-orange-50 dark:bg-orange-950',
-      iconColor: 'text-fintech-orange dark:text-fintech-orange-light',
-      borderColor: 'border-fintech-orange/20',
+      color: 'bg-orange-50 dark:bg-fintech-orange/20',
+      iconColor: 'text-fintech-orange dark:text-fintech-orange/90',
+      borderColor: 'border-fintech-orange/20 dark:border-fintech-orange/30',
     },
     {
       id: 'investment',
@@ -99,9 +99,9 @@ export function ServicesSection() {
       description: t('services.investment.short'),
       details: t('services.investment.details'),
       icon: Briefcase,
-      color: 'bg-purple-50 dark:bg-purple-950',
-      iconColor: 'text-purple-500',
-      borderColor: 'border-purple-500/20',
+      color: 'bg-purple-50 dark:bg-fintech-blue/20',
+      iconColor: 'text-purple-500 dark:text-fintech-blue/90',
+      borderColor: 'border-purple-500/20 dark:border-fintech-blue/30',
     },
     {
       id: 'nominee',
@@ -109,9 +109,9 @@ export function ServicesSection() {
       description: t('services.nominee.short'),
       details: t('services.nominee.details'),
       icon: Shield,
-      color: 'bg-emerald-50 dark:bg-emerald-950',
-      iconColor: 'text-emerald-500',
-      borderColor: 'border-emerald-500/20',
+      color: 'bg-emerald-50 dark:bg-fintech-orange/20',
+      iconColor: 'text-emerald-500 dark:text-fintech-orange/90',
+      borderColor: 'border-emerald-500/20 dark:border-fintech-orange/30',
     },
   ];
 
@@ -156,7 +156,7 @@ export function ServicesSection() {
                   <CollapsibleTrigger className="w-full text-left">
                     <CardContent className="p-5">
                       <div className="flex items-start justify-between">
-                        <div className={`${service.color} rounded-full p-3 inline-flex items-center justify-center mb-3 w-10 h-10`}>
+                        <div className={`${service.color} rounded-full p-3 inline-flex items-center justify-center mb-3 w-10 h-10 backdrop-blur-sm`}>
                           <service.icon className={`h-5 w-5 ${service.iconColor}`} />
                         </div>
                         <div className="ml-auto">

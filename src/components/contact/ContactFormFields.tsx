@@ -72,7 +72,7 @@ export function ContactFormFields() {
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="space-y-2">
-            <Label htmlFor="name" className="text-white">{t('contact.form.name')}</Label>
+            <Label htmlFor="name" className="text-white/90 dark:text-white/80">{t('contact.form.name')}</Label>
             <Input 
               id="name" 
               name="name" 
@@ -80,12 +80,12 @@ export function ContactFormFields() {
               required
               value={formData.name}
               onChange={handleChange}
-              className="bg-white/10 border-white/20 text-white placeholder:text-white/50 focus-visible:ring-fintech-orange/80 dark:focus-visible:ring-fintech-orange/60"
+              className="bg-white/10 border-white/20 text-white placeholder:text-white/50 focus-visible:ring-fintech-orange/80 dark:focus-visible:ring-fintech-orange/60 dark:bg-white/5 dark:border-white/10"
             />
           </div>
           
           <div className="space-y-2">
-            <Label htmlFor="email" className="text-white">{t('contact.form.email')}</Label>
+            <Label htmlFor="email" className="text-white/90 dark:text-white/80">{t('contact.form.email')}</Label>
             <Input 
               id="email" 
               name="email" 
@@ -94,14 +94,14 @@ export function ContactFormFields() {
               required
               value={formData.email}
               onChange={handleChange}
-              className="bg-white/10 border-white/20 text-white placeholder:text-white/50 focus-visible:ring-fintech-orange/80 dark:focus-visible:ring-fintech-orange/60"
+              className="bg-white/10 border-white/20 text-white placeholder:text-white/50 focus-visible:ring-fintech-orange/80 dark:focus-visible:ring-fintech-orange/60 dark:bg-white/5 dark:border-white/10"
             />
           </div>
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="space-y-2">
-            <Label htmlFor="phone" className="text-white">{t('contact.form.phone')}</Label>
+            <Label htmlFor="phone" className="text-white/90 dark:text-white/80">{t('contact.form.phone')}</Label>
             <Input 
               id="phone" 
               name="phone" 
@@ -109,29 +109,29 @@ export function ContactFormFields() {
               required
               value={formData.phone}
               onChange={handleChange}
-              className="bg-white/10 border-white/20 text-white placeholder:text-white/50 focus-visible:ring-fintech-orange/80 dark:focus-visible:ring-fintech-orange/60"
+              className="bg-white/10 border-white/20 text-white placeholder:text-white/50 focus-visible:ring-fintech-orange/80 dark:focus-visible:ring-fintech-orange/60 dark:bg-white/5 dark:border-white/10"
             />
           </div>
           
           <div className="space-y-2">
-            <Label htmlFor="service" className="text-white">{t('contact.form.service')}</Label>
+            <Label htmlFor="service" className="text-white/90 dark:text-white/80">{t('contact.form.service')}</Label>
             <Select value={formData.service} onValueChange={handleServiceChange}>
-              <SelectTrigger className="bg-white/10 border-white/20 text-white focus:ring-fintech-orange/80 dark:focus:ring-fintech-orange/60">
+              <SelectTrigger className="bg-white/10 border-white/20 text-white focus:ring-fintech-orange/80 dark:focus:ring-fintech-orange/60 dark:bg-white/5 dark:border-white/10">
                 <SelectValue placeholder={t('contact.form.select')} />
               </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="company_registration">{t('contact.service.registration')}</SelectItem>
-                <SelectItem value="bank_account">{t('contact.service.accounts')}</SelectItem>
-                <SelectItem value="nominee_service">{t('contact.service.nominee')}</SelectItem>
-                <SelectItem value="license">{t('contact.service.licenses')}</SelectItem>
-                <SelectItem value="other">{t('contact.service.other')}</SelectItem>
+              <SelectContent className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm border-white/20 dark:border-white/10">
+                <SelectItem value="company_registration" className="text-gray-900 dark:text-white/90 hover:bg-fintech-orange/10 dark:hover:bg-fintech-orange/20">{t('contact.service.registration')}</SelectItem>
+                <SelectItem value="bank_account" className="text-gray-900 dark:text-white/90 hover:bg-fintech-orange/10 dark:hover:bg-fintech-orange/20">{t('contact.service.accounts')}</SelectItem>
+                <SelectItem value="nominee_service" className="text-gray-900 dark:text-white/90 hover:bg-fintech-orange/10 dark:hover:bg-fintech-orange/20">{t('contact.service.nominee')}</SelectItem>
+                <SelectItem value="license" className="text-gray-900 dark:text-white/90 hover:bg-fintech-orange/10 dark:hover:bg-fintech-orange/20">{t('contact.service.licenses')}</SelectItem>
+                <SelectItem value="other" className="text-gray-900 dark:text-white/90 hover:bg-fintech-orange/10 dark:hover:bg-fintech-orange/20">{t('contact.service.other')}</SelectItem>
               </SelectContent>
             </Select>
           </div>
         </div>
         
         <div className="space-y-2">
-          <Label htmlFor="message" className="text-white">{t('contact.form.message')}</Label>
+          <Label htmlFor="message" className="text-white/90 dark:text-white/80">{t('contact.form.message')}</Label>
           <Textarea 
             id="message" 
             name="message" 
@@ -139,13 +139,13 @@ export function ContactFormFields() {
             placeholder={language === 'en' ? 'Your message' : 'Ваше сообщение'}
             value={formData.message}
             onChange={handleChange}
-            className="bg-white/10 border-white/20 text-white placeholder:text-white/50 focus-visible:ring-fintech-orange/80 dark:focus-visible:ring-fintech-orange/60"
+            className="bg-white/10 border-white/20 text-white placeholder:text-white/50 focus-visible:ring-fintech-orange/80 dark:focus-visible:ring-fintech-orange/60 dark:bg-white/5 dark:border-white/10"
           />
         </div>
         
         <Button 
           type="submit" 
-          className="w-full bg-fintech-orange hover:bg-fintech-orange-dark dark:bg-fintech-orange/80 dark:hover:bg-fintech-orange/90 text-white button-glow"
+          className="w-full bg-fintech-orange hover:bg-fintech-orange-dark dark:bg-fintech-orange/80 dark:hover:bg-fintech-orange/90 text-white button-glow dark:shadow-fintech-orange/20"
           disabled={isSubmitting}
         >
           {isSubmitting ? (

@@ -182,7 +182,7 @@ export const renderPostColor = (colorScheme: string) => {
     case 'blue':
       return 'bg-fintech-blue text-white';
     case 'orange':
-      return 'bg-fintech-orange/80 dark:bg-fintech-orange/70 text-white';
+      return 'bg-fintech-orange/80 text-white dark:bg-gradient-to-br dark:from-blue-900/40 dark:via-fintech-orange/30 dark:to-blue-950/60 dark:backdrop-blur-sm dark:border dark:border-white/5';
     case 'graphite':
       return 'bg-gray-700 text-white dark:bg-gray-800';
     default:

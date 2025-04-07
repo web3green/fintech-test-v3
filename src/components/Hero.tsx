@@ -77,26 +77,26 @@ export function Hero() {
                         <Button variant="outline" className="p-3 h-auto text-sm font-medium bg-gradient-to-br from-fintech-orange/70 to-fintech-orange/90 hover:from-fintech-orange/80 hover:to-fintech-orange/95 dark:from-fintech-orange/30 dark:to-fintech-orange/50 border-transparent text-white transition-all duration-200 hover:scale-105 dark:shadow-[0_0_15px_rgba(255,165,0,0.15)]">
                           {t('hero.category.ecommerce')}
                         </Button>
-                        <Button variant="outline" className="p-3 h-auto text-sm font-medium bg-gradient-to-br from-fintech-blue/70 to-fintech-blue/90 hover:from-fintech-blue/80 hover:to-fintech-blue/95 border-transparent text-white transition-all duration-200 hover:scale-105">
-                          {t('hero.category.blockchain')}
+                        <Button variant="outline" className="p-3 h-auto text-sm font-medium bg-gradient-to-br from-fintech-blue/70 to-fintech-blue/90 hover:from-fintech-blue/80 hover:to-fintech-blue/95 dark:from-fintech-blue/30 dark:to-fintech-blue/50 border-transparent text-white transition-all duration-200 hover:scale-105">
+                          {t('hero.category.crypto')}
                         </Button>
                         <Button variant="outline" className="p-3 h-auto text-sm font-medium bg-gradient-to-br from-fintech-orange/70 to-fintech-orange/90 hover:from-fintech-orange/80 hover:to-fintech-orange/95 dark:from-fintech-orange/30 dark:to-fintech-orange/50 border-transparent text-white transition-all duration-200 hover:scale-105 dark:shadow-[0_0_15px_rgba(255,165,0,0.15)]">
                           {t('hero.category.startups')}
                         </Button>
-                        <Button variant="outline" className="p-3 h-auto text-sm font-medium bg-gradient-to-br from-fintech-blue/70 to-fintech-blue/90 hover:from-fintech-blue/80 hover:to-fintech-blue/95 border-transparent text-white transition-all duration-200 hover:scale-105">
+                        <Button variant="outline" className="p-3 h-auto text-sm font-medium bg-gradient-to-br from-fintech-blue/70 to-fintech-blue/90 hover:from-fintech-blue/80 hover:to-fintech-blue/95 dark:from-fintech-blue/30 dark:to-fintech-blue/50 border-transparent text-white transition-all duration-200 hover:scale-105">
                           {t('hero.category.neobanks')}
                         </Button>
                         <Button variant="outline" className="p-3 h-auto text-sm font-medium bg-gradient-to-br from-fintech-orange/70 to-fintech-orange/90 hover:from-fintech-orange/80 hover:to-fintech-orange/95 dark:from-fintech-orange/30 dark:to-fintech-orange/50 border-transparent text-white transition-all duration-200 hover:scale-105 dark:shadow-[0_0_15px_rgba(255,165,0,0.15)]">
                           {t('hero.category.wallets')}
                         </Button>
-                        <Button variant="outline" className="p-3 h-auto text-sm font-medium bg-gradient-to-br from-fintech-blue/70 to-fintech-blue/90 hover:from-fintech-blue/80 hover:to-fintech-blue/95 border-transparent text-white transition-all duration-200 hover:scale-105">
+                        <Button variant="outline" className="p-3 h-auto text-sm font-medium bg-gradient-to-br from-fintech-blue/70 to-fintech-blue/90 hover:from-fintech-blue/80 hover:to-fintech-blue/95 dark:from-fintech-blue/30 dark:to-fintech-blue/50 border-transparent text-white transition-all duration-200 hover:scale-105">
                           {t('hero.category.gaming')}
                         </Button>
                         <Button variant="outline" className="p-3 h-auto text-sm font-medium bg-gradient-to-br from-fintech-orange/70 to-fintech-orange/90 hover:from-fintech-orange/80 hover:to-fintech-orange/95 dark:from-fintech-orange/30 dark:to-fintech-orange/50 border-transparent text-white transition-all duration-200 hover:scale-105 dark:shadow-[0_0_15px_rgba(255,165,0,0.15)]">
                           {t('hero.category.saas')}
                         </Button>
-                        <Button variant="outline" className="p-3 h-auto text-sm font-medium bg-gradient-to-br from-fintech-blue/70 to-fintech-blue/90 hover:from-fintech-blue/80 hover:to-fintech-blue/95 border-transparent text-white transition-all duration-200 hover:scale-105">
-                          {t('hero.category.edtech')}
+                        <Button variant="outline" className="p-3 h-auto text-sm font-medium bg-gradient-to-br from-fintech-blue/70 to-fintech-blue/90 hover:from-fintech-blue/80 hover:to-fintech-blue/95 dark:from-fintech-blue/30 dark:to-fintech-blue/50 border-transparent text-white transition-all duration-200 hover:scale-105">
+                          {t('hero.category.web3')}
                         </Button>
                       </div>
                     </div>
@@ -110,12 +110,12 @@ export function Hero() {
                       <Card className="p-4 rounded-lg border-0 bg-gradient-to-br from-fintech-orange/45 to-fintech-orange/65 dark:from-fintech-orange/30 dark:to-fintech-orange/50 dark:shadow-[0_0_20px_rgba(255,165,0,0.15)]">
                         <div className="text-xs text-white dark:text-white/90 mb-2">{t('hero.card.licenses.title')}</div>
                         <div className="flex flex-wrap gap-2">
-                          <span className="inline-block text-xs bg-fintech-blue/65 dark:bg-fintech-blue/40 text-white dark:text-white/90 px-2 py-1 rounded">{t('hero.license.emi')}</span>
-                          <span className="inline-block text-xs bg-fintech-orange/65 dark:bg-fintech-orange/40 text-white dark:text-white/90 px-2 py-1 rounded dark:shadow-[0_0_8px_rgba(255,165,0,0.15)]">{t('hero.license.crypto')}</span>
-                          <span className="inline-block text-xs bg-fintech-blue/65 dark:bg-fintech-blue/40 text-white dark:text-white/90 px-2 py-1 rounded">{t('hero.license.igaming')}</span>
-                          <span className="inline-block text-xs bg-fintech-orange/65 dark:bg-fintech-orange/40 text-white dark:text-white/90 px-2 py-1 rounded dark:shadow-[0_0_8px_rgba(255,165,0,0.15)]">{t('hero.license.psp')}</span>
-                          <span className="inline-block text-xs bg-fintech-blue/65 dark:bg-fintech-blue/40 text-white dark:text-white/90 px-2 py-1 rounded">{t('hero.license.gambling')}</span>
-                          <span className="inline-block text-xs bg-fintech-orange/65 dark:bg-fintech-orange/40 text-white dark:text-white/90 px-2 py-1 rounded dark:shadow-[0_0_8px_rgba(255,165,0,0.15)]">{t('hero.license.emoney')}</span>
+                          <span className="inline-block text-xs bg-fintech-blue/65 dark:bg-fintech-blue/40 text-white dark:text-white/90 px-2 py-1 rounded shadow-[0_0_8px_rgba(59,130,246,0.15)] dark:shadow-[0_0_8px_rgba(59,130,246,0.25)]">{t('hero.license.emi')}</span>
+                          <span className="inline-block text-xs bg-fintech-orange/65 dark:bg-fintech-orange/40 text-white dark:text-white/90 px-2 py-1 rounded shadow-[0_0_8px_rgba(255,165,0,0.15)] dark:shadow-[0_0_8px_rgba(255,165,0,0.25)]">{t('hero.license.crypto')}</span>
+                          <span className="inline-block text-xs bg-fintech-blue/65 dark:bg-fintech-blue/40 text-white dark:text-white/90 px-2 py-1 rounded shadow-[0_0_8px_rgba(59,130,246,0.15)] dark:shadow-[0_0_8px_rgba(59,130,246,0.25)]">{t('hero.license.igaming')}</span>
+                          <span className="inline-block text-xs bg-fintech-orange/65 dark:bg-fintech-orange/40 text-white dark:text-white/90 px-2 py-1 rounded shadow-[0_0_8px_rgba(255,165,0,0.15)] dark:shadow-[0_0_8px_rgba(255,165,0,0.25)]">{t('hero.license.psp')}</span>
+                          <span className="inline-block text-xs bg-fintech-blue/65 dark:bg-fintech-blue/40 text-white dark:text-white/90 px-2 py-1 rounded shadow-[0_0_8px_rgba(59,130,246,0.15)] dark:shadow-[0_0_8px_rgba(59,130,246,0.25)]">{t('hero.license.gambling')}</span>
+                          <span className="inline-block text-xs bg-fintech-orange/65 dark:bg-fintech-orange/40 text-white dark:text-white/90 px-2 py-1 rounded shadow-[0_0_8px_rgba(255,165,0,0.15)] dark:shadow-[0_0_8px_rgba(255,165,0,0.25)]">{t('hero.license.emoney')}</span>
                         </div>
                       </Card>
                     </div>

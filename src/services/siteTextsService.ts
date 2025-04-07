@@ -149,6 +149,24 @@ const initialTexts: TextBlock[] = [
     }
   },
   {
+    id: 'hero-category-web3',
+    key: 'hero.category.web3',
+    section: 'Home Page',
+    content: {
+      en: 'Web3',
+      ru: 'Web3'
+    }
+  },
+  {
+    id: 'hero-category-crypto',
+    key: 'hero.category.crypto',
+    section: 'Home Page',
+    content: {
+      en: 'Crypto',
+      ru: 'Крипто'
+    }
+  },
+  {
     id: 'hero-card-banking-title',
     key: 'hero.card.banking.title',
     section: 'Home Page',

@@ -110,11 +110,11 @@ export function Hero() {
                       <Card className="p-4 rounded-lg border-0 bg-gradient-to-br from-fintech-orange/45 to-fintech-orange/65 dark:from-fintech-orange/30 dark:to-fintech-orange/50 dark:shadow-[0_0_20px_rgba(255,165,0,0.15)]">
                         <div className="text-xs text-white dark:text-white/90 mb-2">{t('hero.card.licenses.title')}</div>
                         <div className="flex flex-wrap gap-2">
-                          <span className="inline-block text-xs bg-fintech-blue/65 dark:bg-fintech-blue/40 text-white dark:text-white/90 px-2 py-1 rounded shadow-[0_0_8px_rgba(59,130,246,0.15)] dark:shadow-[0_0_8px_rgba(59,130,246,0.25)]">{t('hero.license.emi')}</span>
+                          <span className="inline-block text-xs bg-fintech-blue/90 dark:bg-fintech-blue/70 text-white dark:text-white/90 px-2 py-1 rounded shadow-[0_0_8px_rgba(59,130,246,0.25)] dark:shadow-[0_0_8px_rgba(59,130,246,0.35)]">{t('hero.license.emi')}</span>
                           <span className="inline-block text-xs bg-fintech-orange/65 dark:bg-fintech-orange/40 text-white dark:text-white/90 px-2 py-1 rounded shadow-[0_0_8px_rgba(255,165,0,0.15)] dark:shadow-[0_0_8px_rgba(255,165,0,0.25)]">{t('hero.license.crypto')}</span>
-                          <span className="inline-block text-xs bg-fintech-blue/65 dark:bg-fintech-blue/40 text-white dark:text-white/90 px-2 py-1 rounded shadow-[0_0_8px_rgba(59,130,246,0.15)] dark:shadow-[0_0_8px_rgba(59,130,246,0.25)]">{t('hero.license.igaming')}</span>
+                          <span className="inline-block text-xs bg-fintech-blue/90 dark:bg-fintech-blue/70 text-white dark:text-white/90 px-2 py-1 rounded shadow-[0_0_8px_rgba(59,130,246,0.25)] dark:shadow-[0_0_8px_rgba(59,130,246,0.35)]">{t('hero.license.igaming')}</span>
                           <span className="inline-block text-xs bg-fintech-orange/65 dark:bg-fintech-orange/40 text-white dark:text-white/90 px-2 py-1 rounded shadow-[0_0_8px_rgba(255,165,0,0.15)] dark:shadow-[0_0_8px_rgba(255,165,0,0.25)]">{t('hero.license.psp')}</span>
-                          <span className="inline-block text-xs bg-fintech-blue/65 dark:bg-fintech-blue/40 text-white dark:text-white/90 px-2 py-1 rounded shadow-[0_0_8px_rgba(59,130,246,0.15)] dark:shadow-[0_0_8px_rgba(59,130,246,0.25)]">{t('hero.license.gambling')}</span>
+                          <span className="inline-block text-xs bg-fintech-blue/90 dark:bg-fintech-blue/70 text-white dark:text-white/90 px-2 py-1 rounded shadow-[0_0_8px_rgba(59,130,246,0.25)] dark:shadow-[0_0_8px_rgba(59,130,246,0.35)]">{t('hero.license.gambling')}</span>
                           <span className="inline-block text-xs bg-fintech-orange/65 dark:bg-fintech-orange/40 text-white dark:text-white/90 px-2 py-1 rounded shadow-[0_0_8px_rgba(255,165,0,0.15)] dark:shadow-[0_0_8px_rgba(255,165,0,0.25)]">{t('hero.license.emoney')}</span>
                         </div>
                       </Card>

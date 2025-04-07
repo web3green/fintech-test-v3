@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Check } from 'lucide-react'; 
+import { Check, ArrowUp } from 'lucide-react'; 
 import { useLanguage } from '@/contexts/LanguageContext';
 import { PrivacyPolicyDialog } from './PrivacyPolicyDialog';
 import { TermsOfServiceDialog } from './TermsOfServiceDialog';
@@ -16,38 +16,32 @@ export function FooterCopyright({ scrollToTop }: FooterCopyrightProps) {
   const [termsDialogOpen, setTermsDialogOpen] = useState(false);
 
   return (
-    <div className="border-t border-gray-200 dark:border-gray-800 mt-8 pt-8">
-      <div className="flex flex-col md:flex-row justify-between items-center">
-        <div className="flex items-center mb-4 md:mb-0">
-          <Check className="h-4 w-4 text-green-500 mr-2" />
-          <p className="text-muted-foreground text-sm">
+    <div className="pt-8 mt-8 border-t border-gray-200 dark:border-gray-800/60">
+      <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+        <div className="flex items-center space-x-4">
+          <span className="text-sm text-muted-foreground dark:text-muted-foreground/80">
             © {currentYear} <span className="text-foreground dark:text-foreground">FinTechAssist</span>. {t('footer.rights')}
-          </p>
-        </div>
-        <div className="flex space-x-6">
-          <button 
+          </span>
+          <button
             onClick={() => setPrivacyDialogOpen(true)}
-            className="text-sm text-muted-foreground hover:text-fintech-blue dark:hover:text-fintech-blue-light transition-colors"
+            className="text-sm text-muted-foreground hover:text-fintech-blue dark:text-muted-foreground/80 dark:hover:text-fintech-blue/80 transition-colors"
           >
             {t('footer.privacy')}
           </button>
-          <button 
+          <button
             onClick={() => setTermsDialogOpen(true)}
-            className="text-sm text-muted-foreground hover:text-fintech-blue dark:hover:text-fintech-blue-light transition-colors"
+            className="text-sm text-muted-foreground hover:text-fintech-blue dark:text-muted-foreground/80 dark:hover:text-fintech-blue/80 transition-colors"
           >
             {t('footer.terms')}
           </button>
-          <a 
-            href="#" 
-            onClick={(e) => {
-              e.preventDefault();
-              scrollToTop();
-            }} 
-            className="text-sm text-muted-foreground hover:text-fintech-blue dark:hover:text-fintech-blue-light transition-colors"
-          >
-            {t('footer.backToTop')}
-          </a>
         </div>
+        <button
+          onClick={scrollToTop}
+          className="flex items-center space-x-1 text-sm text-fintech-blue hover:text-fintech-blue-dark dark:text-fintech-blue/80 dark:hover:text-fintech-blue transition-colors"
+        >
+          <span>{t('footer.backToTop')}</span>
+          <ArrowUp className="h-4 w-4" />
+        </button>
       </div>
       
       <PrivacyPolicyDialog 

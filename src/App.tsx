@@ -115,9 +115,9 @@ const AppContent = () => {
     try {
       // Только базовая настройка темы без обращения к внешним ресурсам
       const savedTheme = localStorage.getItem('theme');
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
       
-      if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+      // По умолчанию используем темную тему, если не сохранена светлая
+      if (savedTheme !== 'light') {
         document.documentElement.classList.add('dark');
       }
       

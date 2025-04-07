@@ -1,4 +1,3 @@
-
 import { SquareStack, SquareCheck, Boxes } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { GlowingEffect } from './ui/glowing-effect';
@@ -35,7 +34,7 @@ export function ProcessSection() {
       <div className="container mx-auto px-4">
         <div className="max-w-3xl mx-auto text-center mb-16 animate-fade-up">
           <div className="inline-flex items-center rounded-full px-3 py-1 text-sm font-medium bg-fintech-blue/10 text-fintech-blue dark:bg-fintech-blue/20 dark:text-fintech-blue-light mb-4">
-            <span className="flex h-2 w-2 rounded-full bg-fintech-blue mr-2"></span>
+            <span className="flex h-2 w-2 rounded-full bg-fintech-blue mr-2 dark:bg-fintech-blue-light"></span>
             {t('process.badge')}
           </div>
           <h2 className="text-3xl md:text-4xl font-display font-bold mb-6">

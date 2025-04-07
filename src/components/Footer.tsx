@@ -1,4 +1,3 @@
-
 import { useLanguage } from '@/contexts/LanguageContext';
 import { FooterLogo } from './footer/FooterLogo';
 import { FooterSocialLinks } from './footer/FooterSocialLinks';
@@ -26,7 +25,7 @@ export function Footer() {
   };
   
   return (
-    <footer className="bg-gray-50 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800">
+    <footer className="bg-gray-50 dark:bg-gray-900/80 border-t border-gray-200 dark:border-gray-800/60">
       <div className="container mx-auto px-4 md:px-8 py-12 md:py-16">
         {/* Top section with logo and description */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-10 mb-10">

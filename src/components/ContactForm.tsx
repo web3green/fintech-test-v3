@@ -7,8 +7,8 @@ export function ContactForm() {
   
   return (
     <section id="contact" className="section-padding bg-blue-500 contact-form-section relative overflow-hidden">
-      <div className="absolute top-0 right-0 w-64 h-64 bg-fintech-orange/30 rounded-full blur-xl"></div>
-      <div className="absolute bottom-20 left-20 w-80 h-80 bg-fintech-orange/20 rounded-full blur-3xl"></div>
+      <div className="absolute top-0 right-0 w-64 h-64 bg-fintech-orange/20 dark:bg-fintech-orange/15 rounded-full blur-xl"></div>
+      <div className="absolute bottom-20 left-20 w-80 h-80 bg-fintech-orange/15 dark:bg-fintech-orange/10 rounded-full blur-3xl"></div>
       
       <div className="container mx-auto px-4 py-16 relative z-10">
         <div className="max-w-4xl mx-auto text-center mb-12">
@@ -27,14 +27,14 @@ export function ContactForm() {
           <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20 hover:bg-white/15 transition-all duration-300 flex flex-col items-center text-center shadow-lg hover:shadow-xl transform hover:-translate-y-1">
             <div className="bg-gradient-to-r from-fintech-blue to-fintech-blue-light p-4 rounded-full w-16 h-16 flex items-center justify-center mb-4 shadow-md">
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-white">
-                <path d="M21.633 4.654c-.035-.096-.087-.184-.153-.264a.901.901 0 0 0-.303-.214a1.025 1.025 0 0 0-.375-.077c-.172 0-.34.042-.489.123l-17.33 7.468a.752.752 0 0 0-.366.298.79.79 0 0 0-.115.422c.005.152.054.298.14.42a.76.76 0 0 0 .352.266l4.146 1.39c.265.089.548.033.77-.153l7.921-6.587-6.476 7.068a.776.776 0 0 0-.188.81l1.925 6.382c.05.162.142.305.267.41a.76.76 0 0 0 .443.178.767.767 0 0 0 .453-.113.746.746 0 0 0 .3-.37l2.412-5.932 3.19 2.343c.118.086.25.144.392.168a.792.792 0 0 0 .419-.037.762.762 0 0 0 .334-.249.776.776 0 0 0 .153-.397l2.035-12.171a.787.787 0 0 0-.084-.467z"></path>
+                <path d="M21.633 4.654c-.035-.096-.087-.184-.153-.264a.901.901 0 0 0-.303-.214a1.025 1.025 0 0 0-.375-.077c-.172 0-.34.042-.489.123l-17.33 7.468a.752.752 0 0 0-.366.298a.79.79 0 0 0-.115.422c.005.152.054.298.14.42a.76.76 0 0 0 .352.266l4.146 1.39c.265.089.548.033.77-.153l7.921-6.587-6.476 7.068a.776.776 0 0 0-.188.81l1.925 6.382c.05.162.142.305.267.41a.76.76 0 0 0 .443.178.767.767 0 0 0 .453-.113.746.746 0 0 0 .3-.37l2.412-5.932 3.19 2.343c.118.086.25.144.392.168a.792.792 0 0 0 .419-.037.762.762 0 0 0 .334-.249.776.776 0 0 0 .153-.397l2.035-12.171a.787.787 0 0 0-.084-.467z"></path>
               </svg>
             </div>
             <h3 className="text-xl font-semibold mb-2 text-white">{t('contact.telegram')}</h3>
             <p className="text-white/80 mb-4">
               {language === 'en' ? 'Message us on Telegram for prompt resolution of issues' : 'Напишите нам в Телеграм для оперативного решения вопросов'}
             </p>
-            <a href="https://t.me/fintech_assist" target="_blank" rel="noreferrer" className="text-white font-medium hover:text-fintech-orange-light transition-colors">
+            <a href="https://t.me/fintech_assist" target="_blank" rel="noreferrer" className="text-white font-medium hover:text-fintech-orange/90 dark:hover:text-fintech-orange/80 transition-colors">
               @fintech_assist
             </a>
           </div>
@@ -50,13 +50,13 @@ export function ContactForm() {
             <p className="text-white/80 mb-4">
               {language === 'en' ? 'Contact us via WhatsApp for quick assistance' : 'Свяжитесь с нами через WhatsApp для быстрой помощи'}
             </p>
-            <a href="https://wa.me/447450574905" className="text-white font-medium hover:text-fintech-orange-light transition-colors">
+            <a href="https://wa.me/447450574905" className="text-white font-medium hover:text-fintech-orange/90 dark:hover:text-fintech-orange/80 transition-colors">
               +44 7450 574905
             </a>
           </div>
           
           <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20 hover:bg-white/15 transition-all duration-300 flex flex-col items-center text-center shadow-lg hover:shadow-xl transform hover:-translate-y-1">
-            <div className="bg-gradient-to-r from-fintech-orange to-orange-400 p-4 rounded-full w-16 h-16 flex items-center justify-center mb-4 shadow-md">
+            <div className="bg-gradient-to-r from-fintech-orange to-fintech-orange-light dark:from-fintech-orange/70 dark:to-fintech-orange-light/70 p-4 rounded-full w-16 h-16 flex items-center justify-center mb-4 shadow-md">
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-white">
                 <rect width="20" height="16" x="2" y="4" rx="2"></rect>
                 <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
@@ -66,14 +66,14 @@ export function ContactForm() {
             <p className="text-white/80 mb-4">
               {language === 'en' ? 'Write to us for a consultation' : 'Напишите нам на почту для получения консультации'}
             </p>
-            <a href="mailto:info@fintech-assist.com" className="text-white font-medium hover:text-fintech-orange-light transition-colors">
+            <a href="mailto:info@fintech-assist.com" className="text-white font-medium hover:text-fintech-orange/90 dark:hover:text-fintech-orange/70 transition-colors">
               info@fintech-assist.com
             </a>
           </div>
         </div>
         
         <div className="mt-12 text-center animate-fade-up" style={{ animationDelay: '300ms' }}>
-          <div className="inline-flex items-center justify-center bg-gradient-to-r from-white/10 to-fintech-orange/10 backdrop-blur-sm rounded-full px-6 py-2 border border-white/20">
+          <div className="inline-flex items-center justify-center bg-gradient-to-r from-white/10 to-fintech-orange/10 dark:to-fintech-orange/5 backdrop-blur-sm rounded-full px-6 py-2 border border-white/20">
             <p className="text-white text-sm">
               {language === 'en' ? 'Ready to start working together? Choose a convenient way to contact us' : 'Готовы начать сотрудничество? Выберите удобный способ связи'}
             </p>
@@ -88,11 +88,11 @@ export function ContactForm() {
               <ContactFormFields />
               
               {/* Contact Info */}
-              <div className="md:w-1/3 bg-gradient-to-tr from-fintech-orange to-fintech-blue-light backdrop-blur-sm p-8 flex flex-col justify-center shadow-lg relative overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-r from-[#FF6B00] to-fintech-blue-light opacity-100"></div>
+              <div className="md:w-1/3 bg-gradient-to-tr from-fintech-orange/90 to-fintech-blue-light dark:from-fintech-orange/60 dark:to-fintech-blue-light/80 backdrop-blur-sm p-8 flex flex-col justify-center shadow-lg relative overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-r from-[#FF6B00]/90 to-fintech-blue-light dark:from-[#FF6B00]/60 dark:to-fintech-blue-light/80 opacity-100"></div>
                 <div className="absolute -top-10 -right-10 w-32 h-32 bg-white/10 rounded-full blur-xl"></div>
                 <div className="absolute top-0 right-0 w-full h-full bg-[url('/images/noise.png')] opacity-5 mix-blend-overlay"></div>
-                <div className="absolute bottom-0 left-0 w-full h-1/3 bg-gradient-to-t from-fintech-blue-light to-transparent opacity-40"></div>
+                <div className="absolute bottom-0 left-0 w-full h-1/3 bg-gradient-to-t from-fintech-blue-light/40 to-transparent opacity-40"></div>
                 <div className="relative z-10">
                   <div className="mb-8">
                     <h3 className="text-2xl font-bold text-white mb-3">

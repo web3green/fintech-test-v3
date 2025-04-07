@@ -1,4 +1,3 @@
-
 import { Facebook, X, Instagram, Linkedin } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
@@ -54,17 +53,16 @@ export function FooterSocialLinks() {
   };
 
   return (
-    <div className="flex flex-wrap gap-3 pt-1">
+    <div className="flex space-x-4">
       {socialLinks.map((link) => (
-        <a 
+        <a
           key={link.id}
-          href={link.url} 
-          target="_blank" 
-          rel="noopener noreferrer" 
-          className="bg-gray-100 dark:bg-gray-800 p-2.5 rounded-full text-gray-500 hover:text-fintech-blue hover:bg-fintech-blue/10 dark:hover:text-fintech-blue-light dark:hover:bg-fintech-blue-light/10 transition-all duration-200"
-          aria-label={link.platform}
+          href={link.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-800/60 hover:bg-fintech-orange/10 dark:hover:bg-fintech-orange/20 flex items-center justify-center transition-colors"
         >
-          {renderSocialIcon(link.icon)}
+          <link.icon className="h-4 w-4 text-fintech-orange dark:text-fintech-orange/80" />
         </a>
       ))}
     </div>

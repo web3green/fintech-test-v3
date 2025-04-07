@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, User, Calendar, Clock } from 'lucide-react';
@@ -28,7 +27,7 @@ export const FeaturedArticle: React.FC<FeaturedArticleProps> = ({
             {language === 'en' ? 'Featured Article' : 'Рекомендуемая Статья'}
           </h2>
           <div 
-            className={`rounded-2xl overflow-hidden bg-${post.colorScheme === 'blue' ? 'fintech-blue' : post.colorScheme === 'orange' ? 'fintech-orange' : 'gray-900'} text-white cursor-pointer hover:shadow-xl transition-shadow duration-300`}
+            className={`rounded-2xl overflow-hidden bg-${post.colorScheme === 'blue' ? 'fintech-blue' : post.colorScheme === 'orange' ? 'fintech-orange/80 dark:bg-fintech-orange/70' : 'gray-900'} text-white cursor-pointer hover:shadow-xl transition-shadow duration-300`}
             onClick={() => handlePostClick(post)}
           >
             <div className="grid grid-cols-1 md:grid-cols-2 gap-0">

@@ -141,7 +141,7 @@ export function Header() {
             <ThemeToggle />
             <LanguageToggle />
             <Button 
-              className="bg-fintech-orange hover:bg-fintech-orange-light text-white ml-2 px-4 py-2 rounded-md shadow-sm hover:shadow-md transition-all"
+              className="bg-fintech-orange hover:bg-fintech-orange-light text-white ml-2 px-4 py-2 rounded-md shadow-sm hover:shadow-md transition-all dark:bg-fintech-orange/80 dark:hover:bg-fintech-orange/90"
               onClick={() => scrollToSection('contact')}
             >
               {t('cta.getStarted')}
@@ -208,7 +208,7 @@ export function Header() {
                 <LanguageToggle />
               </div>
               <Button 
-                className="bg-fintech-orange hover:bg-fintech-orange-light text-white text-sm px-4 py-1 h-9 rounded-md shadow-sm hover:shadow-md transition-all"
+                className="bg-fintech-orange hover:bg-fintech-orange-light text-white text-sm px-4 py-1 h-9 rounded-md shadow-sm hover:shadow-md transition-all dark:bg-fintech-orange/80 dark:hover:bg-fintech-orange/90"
                 onClick={() => scrollToSection('contact')}
               >
                 {t('cta.getStarted')}

@@ -1,4 +1,3 @@
-
 import { Building, Landmark, Wallet, Gamepad, CreditCard, BarChart3, Briefcase, Shield, Globe, Scale, ChevronDown, ChevronUp, Banknote } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -211,7 +210,7 @@ export function ServicesSection() {
         
         <div className="mt-12 text-center">
           <Button 
-            className="bg-fintech-orange hover:bg-fintech-orange-light text-white button-glow"
+            className="bg-fintech-orange hover:bg-fintech-orange-light text-white button-glow dark:bg-fintech-orange/80 dark:hover:bg-fintech-orange/90"
             onClick={() => {
               // Instead of navigating to services detail, we'll scroll to contact
               const contactElement = document.getElementById('contact');

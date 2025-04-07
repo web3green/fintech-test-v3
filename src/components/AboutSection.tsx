@@ -28,7 +28,7 @@ export function AboutSection() {
                     </div>
                     <CardContent className="p-3 md:p-4 space-y-2 md:space-y-3 relative z-10">
                       <div className="flex items-center space-x-2 md:space-x-3">
-                        <div className="h-8 w-8 md:h-10 md:w-10 rounded-full bg-gradient-to-br from-fintech-orange to-fintech-orange-light dark:from-fintech-orange dark:to-fintech-orange-light flex items-center justify-center text-white font-bold text-base shadow-md border border-white/30 dark:border-gray-800/30">
+                        <div className="h-8 w-8 md:h-10 md:w-10 rounded-full bg-gradient-to-br from-fintech-orange to-fintech-orange-light dark:from-fintech-orange/40 dark:to-fintech-orange/60 flex items-center justify-center text-white font-bold text-base shadow-md border border-white/30 dark:border-gray-800/30">
                           FA
                         </div>
                         <div>
@@ -47,8 +47,8 @@ export function AboutSection() {
                           <div className="text-xs md:text-sm font-medium">{language === 'en' ? 'Personal manager for every client' : 'Персональный менеджер для каждого клиента'}</div>
                         </div>
                         <div className="flex items-center space-x-2 text-gray-800 dark:text-white">
-                          <div className="h-7 w-7 md:h-8 md:w-8 rounded-full bg-orange-100 dark:bg-fintech-orange/20 flex items-center justify-center">
-                            <Handshake className="h-3.5 w-3.5 md:h-4 md:w-4 text-fintech-orange dark:text-fintech-orange-light" />
+                          <div className="h-7 w-7 md:h-8 md:w-8 rounded-full bg-orange-100 dark:bg-fintech-orange/15 flex items-center justify-center">
+                            <Handshake className="h-3.5 w-3.5 md:h-4 md:w-4 text-fintech-orange dark:text-fintech-orange" />
                           </div>
                           <div className="text-xs md:text-sm font-medium">{language === 'en' ? 'Full support at all stages' : 'Полное сопровождение на всех этапах'}</div>
                         </div>
@@ -65,9 +65,9 @@ export function AboutSection() {
                           <div className="text-2xs md:text-xs text-blue-600 dark:text-blue-300">{language === 'en' ? 'Founded' : 'Основано'}</div>
                           <div className="mt-0.5 md:mt-1 font-semibold text-xs md:text-sm text-blue-700 dark:text-blue-200">2015</div>
                         </div>
-                        <div className="bg-gradient-to-br from-orange-50/80 to-orange-100/60 dark:from-fintech-orange/10 dark:to-fintech-orange/20 rounded-lg p-2 md:p-3 border border-orange-100/50 dark:border-fintech-orange/30 text-center">
-                          <div className="text-2xs md:text-xs text-fintech-orange dark:text-fintech-orange-light">{language === 'en' ? 'Team' : 'Команда'}</div>
-                          <div className="mt-0.5 md:mt-1 font-semibold text-xs md:text-sm text-fintech-orange dark:text-fintech-orange-light">10+ {language === 'en' ? 'experts' : 'экспертов'}</div>
+                        <div className="bg-gradient-to-br from-orange-50/80 to-orange-100/60 dark:from-fintech-orange/10 dark:to-fintech-orange/15 rounded-lg p-2 md:p-3 border border-orange-100/50 dark:border-fintech-orange/20 text-center">
+                          <div className="text-2xs md:text-xs text-fintech-orange dark:text-fintech-orange">{language === 'en' ? 'Team' : 'Команда'}</div>
+                          <div className="mt-0.5 md:mt-1 font-semibold text-xs md:text-sm text-fintech-orange dark:text-fintech-orange">10+ {language === 'en' ? 'experts' : 'экспертов'}</div>
                         </div>
                         <div className="bg-gradient-to-br from-blue-50/80 to-blue-100/60 dark:from-blue-900/40 dark:to-blue-800/60 rounded-lg p-2 md:p-3 border border-blue-100/50 dark:border-blue-700/30 text-center">
                           <div className="text-2xs md:text-xs text-blue-600 dark:text-blue-300">{language === 'en' ? 'Clients' : 'Клиенты'}</div>
@@ -81,7 +81,7 @@ export function AboutSection() {
               
               {/* Добавляем декоративные элементы вокруг карточки */}
               <div className="absolute -top-4 -right-4 w-16 h-16 bg-blue-400/20 dark:bg-blue-500/20 rounded-full filter blur-lg"></div>
-              <div className="absolute -bottom-4 -left-4 w-16 h-16 bg-orange-400/20 dark:bg-fintech-orange/20 rounded-full filter blur-lg"></div>
+              <div className="absolute -bottom-4 -left-4 w-16 h-16 bg-orange-400/20 dark:bg-fintech-orange/15 rounded-full filter blur-lg"></div>
             </div>
           </div>
           
@@ -110,24 +110,24 @@ export function AboutSection() {
                 <div className="text-sm text-blue-800 dark:text-blue-200 font-medium">{language === 'en' ? 'Countries' : 'Стран'}</div>
               </div>
               
-              <div className="bg-gradient-to-br from-orange-50 to-orange-100/80 dark:from-fintech-orange/10 dark:to-fintech-orange/20 p-4 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 border border-orange-100/70 dark:border-fintech-orange/30 group hover:translate-y-[-2px]">
+              <div className="bg-gradient-to-br from-orange-50 to-orange-100/80 dark:from-fintech-orange/10 dark:to-fintech-orange/15 p-4 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 border border-orange-100/70 dark:border-fintech-orange/20 group hover:translate-y-[-2px]">
                 <div className="flex items-center gap-3 mb-2">
-                  <div className="h-10 w-10 rounded-full bg-gradient-to-br from-fintech-orange to-fintech-orange-light dark:from-fintech-orange dark:to-fintech-orange-light flex items-center justify-center shadow-md shadow-fintech-orange/20 group-hover:shadow-fintech-orange/30 transition-all duration-300">
+                  <div className="h-10 w-10 rounded-full bg-gradient-to-br from-fintech-orange to-fintech-orange-light dark:from-fintech-orange/40 dark:to-fintech-orange/60 flex items-center justify-center shadow-md shadow-fintech-orange/20 group-hover:shadow-fintech-orange/15 transition-all duration-300">
                     <UserRound className="h-5 w-5 text-white" />
                   </div>
-                  <div className="text-xl md:text-2xl font-bold text-fintech-orange dark:text-fintech-orange-light group-hover:scale-105 transition-transform duration-300">500+</div>
+                  <div className="text-xl md:text-2xl font-bold text-fintech-orange dark:text-fintech-orange group-hover:scale-105 transition-transform duration-300">500+</div>
                 </div>
-                <div className="text-sm text-fintech-orange dark:text-fintech-orange-light font-medium">{language === 'en' ? 'Clients' : 'Клиентов'}</div>
+                <div className="text-sm text-fintech-orange dark:text-fintech-orange font-medium">{language === 'en' ? 'Clients' : 'Клиентов'}</div>
               </div>
               
-              <div className="bg-gradient-to-br from-orange-50 to-orange-100/80 dark:from-fintech-orange/10 dark:to-fintech-orange/20 p-4 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 border border-orange-100/70 dark:border-fintech-orange/30 group hover:translate-y-[-2px]">
+              <div className="bg-gradient-to-br from-orange-50 to-orange-100/80 dark:from-fintech-orange/10 dark:to-fintech-orange/15 p-4 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 border border-orange-100/70 dark:border-fintech-orange/20 group hover:translate-y-[-2px]">
                 <div className="flex items-center gap-3 mb-2">
-                  <div className="h-10 w-10 rounded-full bg-gradient-to-br from-fintech-orange to-fintech-orange-light dark:from-fintech-orange dark:to-fintech-orange-light flex items-center justify-center shadow-md shadow-fintech-orange/20 group-hover:shadow-fintech-orange/30 transition-all duration-300">
+                  <div className="h-10 w-10 rounded-full bg-gradient-to-br from-fintech-orange to-fintech-orange-light dark:from-fintech-orange/40 dark:to-fintech-orange/60 flex items-center justify-center shadow-md shadow-fintech-orange/20 group-hover:shadow-fintech-orange/15 transition-all duration-300">
                     <Award className="h-5 w-5 text-white" />
                   </div>
-                  <div className="text-xl md:text-2xl font-bold text-fintech-orange dark:text-fintech-orange-light group-hover:scale-105 transition-transform duration-300">98%</div>
+                  <div className="text-xl md:text-2xl font-bold text-fintech-orange dark:text-fintech-orange group-hover:scale-105 transition-transform duration-300">98%</div>
                 </div>
-                <div className="text-sm text-fintech-orange dark:text-fintech-orange-light font-medium">{language === 'en' ? 'Success Rate' : 'Успешных проектов'}</div>
+                <div className="text-sm text-fintech-orange dark:text-fintech-orange font-medium">{language === 'en' ? 'Success Rate' : 'Успешных проектов'}</div>
               </div>
               
               <div className="bg-gradient-to-br from-blue-50 to-blue-100/80 dark:from-blue-950/40 dark:to-blue-900/60 p-4 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 border border-blue-100/70 dark:border-blue-600/30 group hover:translate-y-[-2px]">

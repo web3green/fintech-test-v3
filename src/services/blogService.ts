@@ -182,7 +182,7 @@ export const renderPostColor = (colorScheme: string) => {
     case 'blue':
       return 'bg-fintech-blue text-white';
     case 'orange':
-      return 'bg-fintech-orange text-white';
+      return 'bg-fintech-orange/80 dark:bg-fintech-orange/70 text-white';
     case 'graphite':
       return 'bg-gray-700 text-white dark:bg-gray-800';
     default:
@@ -195,7 +195,7 @@ export const getButtonStyle = (colorScheme: string) => {
     case 'blue':
       return 'bg-white text-fintech-blue hover:bg-gray-100';
     case 'orange':
-      return 'bg-white text-fintech-orange hover:bg-gray-100';
+      return 'bg-white text-fintech-orange/80 dark:text-fintech-orange/70 hover:bg-gray-100';
     case 'graphite':
       return 'bg-white text-gray-700 hover:bg-gray-100 dark:bg-gray-600 dark:text-white dark:hover:bg-gray-700';
     default:

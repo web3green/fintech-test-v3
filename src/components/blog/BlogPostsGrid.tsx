@@ -1,21 +1,21 @@
-
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { BlogPostCard } from './BlogPostCard';
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '@/components/ui/pagination';
+import { BlogPost } from '@/services/databaseService';
 
 interface BlogPostsGridProps {
   searchQuery: string;
   categoryFilter: string;
-  currentPosts: any[];
-  filteredPosts: any[];
+  currentPosts: BlogPost[];
+  filteredPosts: BlogPost[];
   currentPage: number;
   setCurrentPage: (page: number) => void;
   totalPages: number;
-  getLocalizedContent: (content: any) => string;
-  handlePostClick: (post: any) => void;
-  renderPostColor: (colorScheme: string) => string;
-  getImageUrl: (imageUrl: string) => string;
+  getLocalizedContent: (post: BlogPost, fieldPrefix: 'title' | 'content' | 'excerpt' | 'category', language: string) => string;
+  handlePostClick: (post: BlogPost) => void;
+  renderPostColor: (colorScheme: string | null | undefined) => string;
+  getImageUrl: (imageUrl: string | null | undefined) => string;
   language: string;
   setSearchQuery: (query: string) => void;
   setCategoryFilter: (category: string) => void;

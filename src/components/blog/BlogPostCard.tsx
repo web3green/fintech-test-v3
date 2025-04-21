@@ -4,13 +4,14 @@ import { Button } from '@/components/ui/button';
 import { ChevronRight, Clock, Tag, ThumbsUp, Star } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { getReactionCounts } from '@/services/reactionsService';
+import { BlogPost } from '@/services/databaseService';
 
 interface BlogPostCardProps {
-  post: any;
-  getLocalizedContent: (content: any) => string;
-  handlePostClick: (post: any) => void;
-  renderPostColor: (colorScheme: string) => string;
-  getImageUrl: (imageUrl: string) => string;
+  post: BlogPost;
+  getLocalizedContent: (post: BlogPost, fieldPrefix: 'title' | 'content' | 'excerpt' | 'category', language: string) => string;
+  handlePostClick: (post: BlogPost) => void;
+  renderPostColor: (colorScheme: string | null | undefined) => string;
+  getImageUrl: (imageUrl: string | null | undefined) => string;
   language: string;
 }
 
@@ -25,7 +26,6 @@ export const BlogPostCard: React.FC<BlogPostCardProps> = ({
   const [reactionCounts, setReactionCounts] = useState({ like: 0, useful: 0, dislike: 0 });
   
   useEffect(() => {
-    // Загружаем количество реакций, если у статьи есть ID
     if (post && post.id) {
       const loadReactionCounts = async () => {
         try {
@@ -35,13 +35,12 @@ export const BlogPostCard: React.FC<BlogPostCardProps> = ({
           console.error('Error loading reaction counts:', error);
         }
       };
-      
       loadReactionCounts();
     }
   }, [post]);
   
-  const imageUrl = getImageUrl(post.image);
-  const colorStyle = renderPostColor(post.colorScheme);
+  const imageUrl = getImageUrl(post.image_url);
+  const colorStyle = renderPostColor(post.color_scheme);
   
   return (
     <Card 
@@ -51,7 +50,7 @@ export const BlogPostCard: React.FC<BlogPostCardProps> = ({
       <div className="relative h-48 overflow-hidden">
         <img 
           src={imageUrl} 
-          alt={getLocalizedContent(post.title)} 
+          alt={getLocalizedContent(post, 'title', language)} 
           className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
         />
         <div className={`absolute bottom-0 left-0 right-0 h-1 ${colorStyle}`}></div>
@@ -60,20 +59,20 @@ export const BlogPostCard: React.FC<BlogPostCardProps> = ({
       <CardContent className="p-5">
         <div className="mb-2 flex items-center">
           <Badge variant="outline" className={`text-xs capitalize mr-2 ${colorStyle.split(' ')[0].replace('bg-', 'text-')}`}>
-            {getLocalizedContent(post.category)}
+            {getLocalizedContent(post, 'category', language)}
           </Badge>
           <span className="text-xs text-muted-foreground flex items-center">
             <Clock className="h-3 w-3 mr-1" />
-            {post.readingTime}
+            {post.reading_time}
           </span>
         </div>
         
         <h3 className="text-lg font-medium mb-2 line-clamp-2 group-hover:text-fintech-blue transition-colors">
-          {getLocalizedContent(post.title)}
+          {getLocalizedContent(post, 'title', language)}
         </h3>
         
         <p className="text-muted-foreground mb-4 text-sm line-clamp-3">
-          {getLocalizedContent(post.excerpt)}
+          {getLocalizedContent(post, 'excerpt', language)}
         </p>
         
         <div className="flex items-center justify-between mt-auto">

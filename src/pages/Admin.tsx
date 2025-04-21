@@ -1,9 +1,9 @@
 import { useEffect, useState, Suspense } from "react";
 import { useNavigate } from "react-router-dom";
 import { 
-  FileText, BarChart3, Settings, 
+  FileText, Settings, 
   Bell, Search, Menu, X, LogOut, MessageSquare,
-  Newspaper, Send, Link as LinkIcon, Globe, Webhook, Type, LayoutDashboard, Loader2
+  Newspaper, Send, Link as LinkIcon, Globe, Webhook, Type, Loader2
 } from "lucide-react";
 import { Logo } from "@/components/Logo";
 import { Button } from "@/components/ui/button";
@@ -23,9 +23,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { BlogAdminPanel } from "@/components/admin/BlogAdminPanel";
-import { ArticlesPanel } from "@/components/admin/ArticlesPanel";
-import { DashboardPanel } from "@/components/admin/DashboardPanel";
+import { BlogManagementPanel } from "@/components/admin/BlogManagementPanel";
 import { WebhookPanel } from "@/components/admin/WebhookPanel";
 import { RequestsPanel } from "@/components/admin/RequestsPanel";
 import { SocialLinksPanel } from "@/components/admin/SocialLinksPanel";
@@ -48,7 +46,7 @@ const Admin = () => {
   const isMobile = useIsMobile();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(!isMobile);
-  const [currentTab, setCurrentTab] = useState("dashboard");
+  const [currentTab, setCurrentTab] = useState("blog");
 
   useEffect(() => {
     const token = localStorage.getItem('admin_token');
@@ -213,30 +211,12 @@ const Admin = () => {
           
           <nav className="flex-1 space-y-1">
             <Button 
-              variant={currentTab === "dashboard" ? "default" : "ghost"} 
-              onClick={() => setCurrentTab("dashboard")}
-              className="w-full justify-start"
-            >
-              <BarChart3 className="mr-2 h-4 w-4" />
-              {language === 'en' ? "Dashboard" : "Дашборд"}
-            </Button>
-            
-            <Button 
               variant={currentTab === "blog" ? "default" : "ghost"} 
               onClick={() => setCurrentTab("blog")}
               className="w-full justify-start"
             >
               <Newspaper className="mr-2 h-4 w-4" />
               {language === 'en' ? "Blog" : "Блог"}
-            </Button>
-            
-            <Button 
-              variant={currentTab === "articles" ? "default" : "ghost"} 
-              onClick={() => setCurrentTab("articles")}
-              className="w-full justify-start"
-            >
-              <FileText className="mr-2 h-4 w-4" />
-              {language === 'en' ? "Articles" : "Статьи"}
             </Button>
             
             <Button 
@@ -249,30 +229,21 @@ const Admin = () => {
             </Button>
             
             <Button 
-              variant={currentTab === "settings" ? "default" : "ghost"} 
-              onClick={() => setCurrentTab("settings")}
-              className="w-full justify-start"
-            >
-              <Settings className="mr-2 h-4 w-4" />
-              {language === 'en' ? "Settings" : "Настройки"}
-            </Button>
-            
-            <Button 
-              variant={currentTab === "social" ? "default" : "ghost"}
-              onClick={() => setCurrentTab("social")}
-              className="w-full justify-start"
-            >
-              <LinkIcon className="mr-2 h-4 w-4" />
-              {language === 'en' ? "Social Links" : "Социальные ссылки"}
-            </Button>
-            
-            <Button 
               variant={currentTab === "webhooks" ? "default" : "ghost"} 
               onClick={() => setCurrentTab("webhooks")}
               className="w-full justify-start"
             >
               <Webhook className="mr-2 h-4 w-4" />
               {language === 'en' ? "Webhooks" : "Вебхуки"}
+            </Button>
+            
+            <Button 
+              variant={currentTab === "social" ? "default" : "ghost"} 
+              onClick={() => setCurrentTab("social")}
+              className="w-full justify-start"
+            >
+              <Globe className="mr-2 h-4 w-4" />
+              {language === 'en' ? "Social Links" : "Соц. сети"}
             </Button>
             
             <Button 
@@ -283,13 +254,22 @@ const Admin = () => {
               <Type className="mr-2 h-4 w-4" />
               {language === 'en' ? "Site Texts" : "Тексты сайта"}
             </Button>
+            
+            <Button 
+              variant={currentTab === "settings" ? "default" : "ghost"} 
+              onClick={() => setCurrentTab("settings")}
+              className="w-full justify-start"
+            >
+              <Settings className="mr-2 h-4 w-4" />
+              {language === 'en' ? "Settings" : "Настройки"}
+            </Button>
           </nav>
           
           <div className="mt-auto">
             <Button 
               variant="ghost" 
-              className="w-full justify-start text-destructive hover:text-destructive"
               onClick={handleLogout}
+              className="w-full justify-start text-red-500 hover:text-red-600 hover:bg-red-50"
             >
               <LogOut className="mr-2 h-4 w-4" />
               {language === 'en' ? "Logout" : "Выйти"}
@@ -298,86 +278,50 @@ const Admin = () => {
         </div>
       </aside>
 
-      <div className={`flex-1 ${isSidebarOpen ? "lg:ml-64" : ""}`}>
-        <header className="bg-card shadow-sm border-b sticky top-0 z-30">
-          <div className="flex items-center justify-between h-16 px-4">
-            <div className="flex items-center">
-              <Button 
-                variant="ghost" 
-                size="icon" 
-                className="lg:hidden" 
-                onClick={toggleSidebar}
-              >
-                {isSidebarOpen ? <X /> : <Menu />}
-              </Button>
-              <h1 className="text-xl font-semibold ml-2">
-                {language === 'en' ? currentTab.charAt(0).toUpperCase() + currentTab.slice(1) : 
-                 currentTab === "dashboard" ? "Дашборд" :
-                 currentTab === "blog" ? "Блог" :
-                 currentTab === "articles" ? "Статьи" :
-                 currentTab === "requests" ? "Заявки" :
-                 currentTab === "settings" ? "Настройки" :
-                 currentTab === "social" ? "Социальные ссылки" :
-                 currentTab === "webhooks" ? "Вебхуки" :
-                 currentTab === "texts" ? "Тексты сайта" : ""}
-              </h1>
-            </div>
-            
-            <div className="flex items-center space-x-4">
+      <main className={`flex-1 transition-all duration-300 ${
+        isSidebarOpen ? "lg:ml-64" : "ml-0"
+      }`}>
+        <div className="sticky top-0 z-30 flex h-16 items-center gap-4 border-b bg-background px-4 sm:px-6">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="lg:hidden"
+            onClick={toggleSidebar}
+          >
+            <Menu className="h-6 w-6" />
+          </Button>
+          
+          <div className="flex flex-1 items-center gap-4 md:ml-auto md:gap-2 lg:gap-4">
+            <form className="ml-auto flex-1 sm:flex-initial">
               <div className="relative">
                 <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
                 <Input
                   type="search"
                   placeholder={language === 'en' ? "Search..." : "Поиск..."}
-                  className="pl-8 w-64 md:w-80 h-9"
+                  className="pl-8 sm:w-[300px] md:w-[200px] lg:w-[300px]"
                 />
               </div>
-              
-              <Button variant="ghost" size="icon" className="relative">
-                <Bell />
-                <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
-              </Button>
-            </div>
+            </form>
           </div>
-        </header>
+        </div>
 
-        <main className="flex-1 space-y-4 p-8 pt-6">
+        <div className="p-4 sm:p-6">
           <ErrorBoundary>
-            {currentTab === 'dashboard' && (
-              <Suspense fallback={<div className="p-4 text-center">Загрузка панели...</div>}>
-                {typeof DashboardPanel === 'function' ? (
-                  <DashboardPanel />
-                ) : (
-                  <div className="p-6 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg">
-                    <h3 className="text-lg font-semibold mb-2 text-yellow-800 dark:text-yellow-200">
-                      Компонент панели недоступен
-                    </h3>
-                    <p className="text-yellow-700 dark:text-yellow-300">
-                      Панель управления не может быть загружена. Возможно, отсутствуют необходимые модули.
-                    </p>
-                    <div className="mt-4">
-                      <Button 
-                        onClick={() => setCurrentTab('blog')}
-                        variant="outline"
-                        className="mr-2"
-                      >
-                        Перейти к управлению блогом
-                      </Button>
-                    </div>
-                  </div>
-                )}
-              </Suspense>
-            )}
-            {currentTab === 'blog' && <BlogAdminPanel />}
-            {currentTab === 'articles' && <ArticlesPanel />}
-            {currentTab === 'requests' && <RequestsPanel />}
-            {currentTab === 'social' && <SocialLinksPanel />}
-            {currentTab === 'webhooks' && <WebhookPanel />}
-            {currentTab === 'texts' && <SiteTextsPanel />}
-            {currentTab === 'settings' && <SettingsPanel />}
+            <Suspense fallback={
+              <div className="flex items-center justify-center h-64">
+                <Loader2 className="h-8 w-8 animate-spin text-fintech-blue" />
+              </div>
+            }>
+              {currentTab === "blog" && <BlogManagementPanel />}
+              {currentTab === "requests" && <RequestsPanel />}
+              {currentTab === "webhooks" && <WebhookPanel />}
+              {currentTab === "social" && <SocialLinksPanel />}
+              {currentTab === "texts" && <SiteTextsPanel />}
+              {currentTab === "settings" && <SettingsPanel />}
+            </Suspense>
           </ErrorBoundary>
-        </main>
-      </div>
+        </div>
+      </main>
     </div>
   );
 };

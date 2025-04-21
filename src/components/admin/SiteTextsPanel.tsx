@@ -1,278 +1,211 @@
-import React, { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Label } from '@/components/ui/label';
-import { toast } from 'sonner';
-import { Search, Pencil, Save, Plus, Trash2 } from 'lucide-react';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { useLanguage } from '@/contexts/LanguageContext';
-import { RichTextEditor } from '@/components/ui/rich-text-editor';
-import { useSiteTexts, TextBlock } from '@/services/siteTextsService';
+import React, { useState, useEffect } from 'react'
+import { TextBlock, useSiteTexts } from '@/services/siteTextsService'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Spinner } from '@/components/ui/spinner'
+import { Alert } from '@/components/ui/alert'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Save, Plus, Trash2 } from 'lucide-react'
 
-// Функция для очистки HTML-разметки
-const stripHtml = (html: string): string => {
-  // Создаем временный div для преобразования HTML в текст
-  const tempDiv = document.createElement('div');
-  tempDiv.innerHTML = html;
-  return tempDiv.textContent || tempDiv.innerText || '';
-};
+export const SiteTextsPanel: React.FC = () => {
+  const { texts, addText, updateText, deleteText, syncWithDatabase } = useSiteTexts()
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+  const [newText, setNewText] = useState<TextBlock>({
+    key: '',
+    section: 'default',
+    content: { en: '', ru: '' }
+  })
+  const [editingTexts, setEditingTexts] = useState<Record<string, TextBlock>>({})
 
-// Функция для проверки, содержит ли строка HTML-теги
-const containsHtmlTags = (str: string): boolean => {
-  return /<\/?[a-z][\s\S]*>/i.test(str);
-};
+  useEffect(() => {
+    const initializeTexts = async () => {
+      try {
+        setLoading(true)
+        await syncWithDatabase()
+      } catch (err) {
+        setError('Failed to load texts from database')
+        console.error(err)
+      } finally {
+        setLoading(false)
+      }
+    }
 
-export const SiteTextsPanel = () => {
-  const { language } = useLanguage();
-  const { texts, addText, updateText, deleteText } = useSiteTexts();
-  const [searchQuery, setSearchQuery] = useState('');
-  const [editingText, setEditingText] = useState<TextBlock | null>(null);
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [isAddMode, setIsAddMode] = useState(false);
+    initializeTexts()
+  }, [])
 
-  // Фильтрация текстов по поисковому запросу
-  const filteredTexts = texts.filter(text => {
-    const searchLower = searchQuery.toLowerCase();
-    return (
-      text.key.toLowerCase().includes(searchLower) ||
-      text.section.toLowerCase().includes(searchLower) ||
-      text.content.en.toLowerCase().includes(searchLower) ||
-      text.content.ru.toLowerCase().includes(searchLower)
-    );
-  });
-
-  // Группировка текстов по секциям
-  const groupedTexts = filteredTexts.reduce((acc, text) => {
+  // Группируем тексты по разделам
+  const groupedTexts = texts.reduce((acc, text) => {
     if (!acc[text.section]) {
-      acc[text.section] = [];
+      acc[text.section] = []
     }
-    acc[text.section].push(text);
-    return acc;
-  }, {} as Record<string, TextBlock[]>);
+    acc[text.section].push(text)
+    return acc
+  }, {} as Record<string, TextBlock[]>)
 
-  const handleAddNew = () => {
-    setIsAddMode(true);
-    setEditingText({
-      id: '',
-      key: '',
-      section: '',
-      content: {
-        en: '',
-        ru: ''
+  const handleAddText = async () => {
+    try {
+      setError(null)
+      await addText(newText)
+      setNewText({
+        key: '',
+        section: 'default',
+        content: { en: '', ru: '' }
+      })
+    } catch (err) {
+      setError('Failed to add text')
+      console.error(err)
+    }
+  }
+
+  const handleUpdateText = async (key: string) => {
+    try {
+      setError(null)
+      const updatedText = editingTexts[key]
+      if (updatedText) {
+        await updateText(key, updatedText)
+        setEditingTexts(prev => {
+          const newState = { ...prev }
+          delete newState[key]
+          return newState
+        })
       }
-    });
-    setIsDialogOpen(true);
-  };
-
-  const handleEdit = (text: TextBlock) => {
-    setIsAddMode(false);
-    setEditingText(text);
-    setIsDialogOpen(true);
-  };
-
-  const handleDelete = (text: TextBlock) => {
-    if (window.confirm(language === 'en' 
-      ? `Are you sure you want to delete the text with key "${text.key}"?`
-      : `Вы уверены, что хотите удалить текст с ключом "${text.key}"?`)) {
-      deleteText(text.id);
-      toast.success(
-        language === 'en' 
-          ? 'Text deleted successfully' 
-          : 'Текст успешно удален'
-      );
+    } catch (err) {
+      setError('Failed to update text')
+      console.error(err)
     }
-  };
+  }
 
-  const handleSave = () => {
-    if (!editingText) return;
+  const handleDeleteText = async (key: string) => {
+    try {
+      setError(null)
+      await deleteText(key)
+    } catch (err) {
+      setError('Failed to delete text')
+      console.error(err)
+    }
+  }
 
-    // Очищаем HTML-разметку перед сохранением
-    const cleanedText = {
-      ...editingText,
-      content: {
-        en: containsHtmlTags(editingText.content.en) ? stripHtml(editingText.content.en) : editingText.content.en,
-        ru: containsHtmlTags(editingText.content.ru) ? stripHtml(editingText.content.ru) : editingText.content.ru
+  const handleTextChange = (key: string, field: 'en' | 'ru', value: string) => {
+    setEditingTexts(prev => ({
+      ...prev,
+      [key]: {
+        ...prev[key],
+        key,
+        content: {
+          ...prev[key]?.content,
+          [field]: value
+        }
       }
-    };
+    }))
+  }
 
-    if (isAddMode) {
-      // Генерируем уникальный ID для нового текста
-      const newText = {
-        ...cleanedText,
-        id: cleanedText.key.toLowerCase().replace(/\s+/g, '-')
-      };
-      addText(newText);
-      toast.success(
-        language === 'en' 
-          ? 'Text added successfully' 
-          : 'Текст успешно добавлен'
-      );
-    } else {
-      updateText(cleanedText.id, cleanedText);
-      toast.success(
-        language === 'en' 
-          ? 'Text updated successfully' 
-          : 'Текст успешно обновлен'
-      );
-    }
-    
-    setIsDialogOpen(false);
-  };
+  if (loading) {
+    return <div className="flex justify-center p-4"><Spinner /></div>
+  }
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold">
-          {language === 'en' ? 'Site Texts Management' : 'Управление текстами сайта'}
-        </h2>
-        <Button onClick={handleAddNew}>
-          <Plus className="mr-2 h-4 w-4" />
-          {language === 'en' ? 'Add New Text' : 'Добавить новый текст'}
-        </Button>
-      </div>
+    <div className="space-y-4 p-4">
+      {error && (
+        <Alert variant="destructive">
+          <p>{error}</p>
+        </Alert>
+      )}
 
-      <div className="relative">
-        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-        <Input
-          type="search"
-          placeholder={language === 'en' ? "Search texts..." : "Поиск текстов..."}
-          className="pl-10 pr-4 py-2 w-full md:w-1/3"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-        />
-      </div>
+      <Card>
+        <CardHeader>
+          <CardTitle>Add New Text</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="grid grid-cols-2 gap-4">
+            <Input
+              placeholder="Key"
+              value={newText.key}
+              onChange={(e) => setNewText({ ...newText, key: e.target.value })}
+            />
+            <Input
+              placeholder="Section"
+              value={newText.section}
+              onChange={(e) => setNewText({ ...newText, section: e.target.value })}
+            />
+          </div>
+          <Input
+            placeholder="English Text"
+            value={newText.content.en}
+            onChange={(e) => setNewText({
+              ...newText,
+              content: { ...newText.content, en: e.target.value }
+            })}
+          />
+          <Input
+            placeholder="Russian Text"
+            value={newText.content.ru}
+            onChange={(e) => setNewText({
+              ...newText,
+              content: { ...newText.content, ru: e.target.value }
+            })}
+          />
+          <Button onClick={handleAddText} className="w-full">
+            <Plus className="mr-2 h-4 w-4" />
+            Add Text
+          </Button>
+        </CardContent>
+      </Card>
 
-      {Object.entries(groupedTexts).map(([section, sectionTexts]) => (
-        <Card key={section}>
-          <CardHeader>
-            <CardTitle>{section}</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>{language === 'en' ? 'Key' : 'Ключ'}</TableHead>
-                  <TableHead>{language === 'en' ? 'Content' : 'Содержание'}</TableHead>
-                  <TableHead className="w-[150px]">{language === 'en' ? 'Actions' : 'Действия'}</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {sectionTexts.map((text) => (
-                  <TableRow key={text.id}>
-                    <TableCell className="font-medium">{text.key}</TableCell>
-                    <TableCell>
-                      <div className="max-w-[400px] truncate">
-                        {language === 'en' ? text.content.en : text.content.ru}
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex space-x-2">
-                        <Button variant="outline" size="sm" onClick={() => handleEdit(text)}>
-                          <Pencil className="h-4 w-4" />
-                        </Button>
-                        <Button variant="outline" size="sm" onClick={() => handleDelete(text)} className="text-destructive">
+      <Tabs defaultValue={Object.keys(groupedTexts)[0]}>
+        <TabsList className="grid w-full grid-cols-4">
+          {Object.keys(groupedTexts).map((section) => (
+            <TabsTrigger key={section} value={section}>
+              {section}
+            </TabsTrigger>
+          ))}
+        </TabsList>
+
+        {Object.entries(groupedTexts).map(([section, sectionTexts]) => (
+          <TabsContent key={section} value={section}>
+            <div className="space-y-4">
+              {sectionTexts.map((text) => (
+                <Card key={text.key}>
+                  <CardContent className="pt-6 space-y-4">
+                    <div className="flex justify-between items-center">
+                      <span className="font-medium">{text.key}</span>
+                      <div className="space-x-2">
+                        {editingTexts[text.key] && (
+                          <Button
+                            size="sm"
+                            onClick={() => handleUpdateText(text.key)}
+                          >
+                            <Save className="mr-2 h-4 w-4" />
+                            Save
+                          </Button>
+                        )}
+                        <Button
+                          variant="destructive"
+                          size="sm"
+                          onClick={() => handleDeleteText(text.key)}
+                        >
                           <Trash2 className="h-4 w-4" />
                         </Button>
                       </div>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </CardContent>
-        </Card>
-      ))}
-
-      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="max-w-3xl">
-          <DialogHeader>
-            <DialogTitle>
-              {isAddMode
-                ? language === 'en' ? 'Add New Text' : 'Добавить новый текст'
-                : language === 'en' ? 'Edit Text' : 'Редактировать текст'}
-            </DialogTitle>
-          </DialogHeader>
-
-          {editingText && (
-            <div className="space-y-4">
-              <div className="flex gap-4">
-                <div className="flex-1">
-                  <Label>{language === 'en' ? 'Section' : 'Раздел'}</Label>
-                  <Input 
-                    value={editingText.section} 
-                    onChange={(e) => setEditingText({
-                      ...editingText,
-                      section: e.target.value
-                    })}
-                    disabled={!isAddMode}
-                  />
-                </div>
-                <div className="flex-1">
-                  <Label>{language === 'en' ? 'Key' : 'Ключ'}</Label>
-                  <Input 
-                    value={editingText.key}
-                    onChange={(e) => setEditingText({
-                      ...editingText,
-                      key: e.target.value
-                    })}
-                    disabled={!isAddMode}
-                  />
-                </div>
-              </div>
-
-              <Tabs defaultValue="english">
-                <TabsList className="mb-4">
-                  <TabsTrigger value="english">English</TabsTrigger>
-                  <TabsTrigger value="russian">Russian</TabsTrigger>
-                </TabsList>
-
-                <TabsContent value="english" className="space-y-4">
-                  <div>
-                    <Label>Content (English)</Label>
-                    <RichTextEditor
-                      value={editingText.content.en}
-                      onChange={(value) => setEditingText({
-                        ...editingText,
-                        content: { ...editingText.content, en: value }
-                      })}
-                      placeholder="Enter English text..."
+                    </div>
+                    <Input
+                      value={editingTexts[text.key]?.content.en || text.content.en}
+                      onChange={(e) => handleTextChange(text.key, 'en', e.target.value)}
+                      placeholder="English Text"
                     />
-                  </div>
-                </TabsContent>
-
-                <TabsContent value="russian" className="space-y-4">
-                  <div>
-                    <Label>Content (Russian)</Label>
-                    <RichTextEditor
-                      value={editingText.content.ru}
-                      onChange={(value) => setEditingText({
-                        ...editingText,
-                        content: { ...editingText.content, ru: value }
-                      })}
-                      placeholder="Введите текст на русском..."
+                    <Input
+                      value={editingTexts[text.key]?.content.ru || text.content.ru}
+                      onChange={(e) => handleTextChange(text.key, 'ru', e.target.value)}
+                      placeholder="Russian Text"
                     />
-                  </div>
-                </TabsContent>
-              </Tabs>
-
-              <div className="flex justify-end space-x-2 pt-4">
-                <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
-                  {language === 'en' ? 'Cancel' : 'Отмена'}
-                </Button>
-                <Button onClick={handleSave}>
-                  <Save className="w-4 h-4 mr-2" />
-                  {isAddMode
-                    ? language === 'en' ? 'Add Text' : 'Добавить текст'
-                    : language === 'en' ? 'Save Changes' : 'Сохранить изменения'}
-                </Button>
-              </div>
+                  </CardContent>
+                </Card>
+              ))}
             </div>
-          )}
-        </DialogContent>
-      </Dialog>
+          </TabsContent>
+        ))}
+      </Tabs>
     </div>
-  );
-}; 
+  )
+} 

@@ -282,6 +282,10 @@ const config = {
 			},
 			backgroundImage: {
 				'gradient-radial': 'radial-gradient(var(--gradient-color-stops))',
+				'noise-pattern': "linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px)",
+			},
+			backgroundSize: {
+				'noise-pattern': '20px 20px',
 			},
 		}
 	},

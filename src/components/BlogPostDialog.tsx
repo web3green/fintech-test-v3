@@ -6,11 +6,12 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Calendar, User, Clock, ThumbsUp, ThumbsDown, Star, X } from 'lucide-react';
 import { toast } from 'sonner';
 import { getLocalizedContent } from '@/services/blogService';
+import { BlogPost } from '@/services/databaseService';
 import { toggleReaction, getReactionCounts, getUserReactions } from '@/services/reactionsService';
 import { Badge } from '@/components/ui/badge';
 
 interface BlogPostDialogProps {
-  post: any;
+  post: BlogPost | null;
   isOpen: boolean;
   onClose: () => void;
 }
@@ -113,33 +114,28 @@ export const BlogPostDialog = ({ post, isOpen, onClose }: BlogPostDialogProps) =
 
   if (!post) return null;
 
-  // Verify that post image exists and set a fallback if not
-  const postImage = post.image && post.image.startsWith('http') 
-    ? post.image 
+  // Use image_url and provide a fallback
+  const postImage = post.image_url && post.image_url.startsWith('http') 
+    ? post.image_url 
     : 'https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80';
-
-  // Helper to get localized content
-  const getPostContent = (content) => {
-    return getLocalizedContent(content, language);
-  };
 
   return (
     <Dialog open={isOpen} onOpenChange={() => onClose()}>
       <DialogContent className="max-w-4xl max-h-[90vh] p-0 overflow-hidden">
-        <DialogTitle className="sr-only">{getPostContent(post.title)}</DialogTitle>
+        <DialogTitle className="sr-only">{getLocalizedContent(post, 'title', language)}</DialogTitle>
         <div className="relative h-16 sm:h-24 md:h-32 overflow-hidden">
           <img 
             src={postImage} 
-            alt={getPostContent(post.title)} 
+            alt={getLocalizedContent(post, 'title', language)} 
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end">
             <div className="p-4 sm:p-6">
               <div className="inline-flex items-center rounded-full px-3 py-1 text-sm font-medium bg-white/20 backdrop-blur-sm mb-2 sm:mb-4">
-                {getPostContent(post.category)}
+                {getLocalizedContent(post, 'category', language)}
               </div>
               <h2 className="text-xl sm:text-2xl md:text-3xl font-display font-bold text-white">
-                {getPostContent(post.title)}
+                {getLocalizedContent(post, 'title', language)}
               </h2>
             </div>
           </div>
@@ -164,11 +160,11 @@ export const BlogPostDialog = ({ post, isOpen, onClose }: BlogPostDialogProps) =
               </div>
               <div className="flex items-center">
                 <Calendar className="h-4 w-4 mr-1" />
-                <span>{post.date}</span>
+                <span>{new Date(post.created_at).toLocaleDateString(language === 'ru' ? 'ru-RU' : 'en-US')}</span>
               </div>
               <div className="flex items-center">
                 <Clock className="h-4 w-4 mr-1" />
-                <span>{post.readingTime}</span>
+                <span>{post.reading_time}</span>
               </div>
             </div>
           </div>
@@ -177,58 +173,11 @@ export const BlogPostDialog = ({ post, isOpen, onClose }: BlogPostDialogProps) =
         <ScrollArea className="p-4 sm:p-6 max-h-[calc(90vh-180px)]">
           <div className="space-y-4">
             <p className="text-lg font-medium">
-              {getPostContent(post.excerpt)}
+              {getLocalizedContent(post, 'excerpt', language)}
             </p>
             
-            {/* Full article content - This would typically come from an API */}
             <div className="prose prose-lg dark:prose-invert max-w-none">
-              <p>
-                {language === 'en' 
-                  ? `In today's rapidly evolving global business landscape, understanding the intricacies of ${getPostContent(post.category).toLowerCase()} is more crucial than ever. This comprehensive guide explores the key aspects that businesses need to consider in 2025.`
-                  : `В сегодняшнем быстро меняющемся глобальном бизнес-ландшафте понимание тонкостей ${getPostContent(post.category).toLowerCase()} важнее, чем когда-либо. Это комплексное руководство исследует ключевые аспекты, которые бизнесу необходимо учитывать в 2025 году.`}
-              </p>
-              
-              <h3>
-                {language === 'en' ? 'Key Considerations for 2025' : 'Ключевые соображения на 2025 год'}
-              </h3>
-              
-              <p>
-                {language === 'en'
-                  ? `The regulatory environment has seen significant changes in recent months, with new frameworks being implemented across various jurisdictions. Companies must stay informed about these changes to ensure compliance and optimize their operations.`
-                  : `Нормативно-правовая среда претерпела значительные изменения в последние месяцы, с новыми рамками, внедряемыми в различных юрисдикциях. Компании должны быть в курсе этих изменений, чтобы обеспечить соответствие требованиям и оптимизировать свою деятельность.`}
-              </p>
-              
-              <p>
-                {language === 'en'
-                  ? `Technology continues to play a pivotal role in shaping how businesses approach ${post.tags[0]} strategies. From blockchain applications to AI-driven analytics, the technological landscape offers both challenges and opportunities.`
-                  : `Технологии продолжают играть ключевую роль в формировании подходов бизнеса к стратегиям ${post.tags[0]}. От применения блокчейна до аналитики на основе ИИ, технологический ландшафт предлагает как вызовы, так и возможности.`}
-              </p>
-              
-              <h3>
-                {language === 'en' ? 'Market Trends and Predictions' : 'Рыночные тенденции и прогнозы'}
-              </h3>
-              
-              <p>
-                {language === 'en'
-                  ? `Experts predict that the ${getPostContent(post.category).toLowerCase()} sector will continue to grow at a rate of approximately 15% annually through 2027. This growth is driven by increasing demand for transparent and efficient business structures that can operate across multiple jurisdictions.`
-                  : `Эксперты прогнозируют, что сектор ${getPostContent(post.category).toLowerCase()} продолжит расти примерно на 15% ежегодно до 2027 года. Этот рост обусловлен растущим спросом на прозрачные и эффективные бизнес-структуры, которые могут работать в нескольких юрисдикциях.`}
-              </p>
-              
-              <p>
-                {language === 'en'
-                  ? `As we move further into 2025, businesses that adapt quickly to these changes and leverage new opportunities will be best positioned for success in the global marketplace.`
-                  : `По мере продвижения в 2025 год, предприятия, которые быстро адаптируются к этим изменениям и используют новые возможности, будут в наилучшем положении для успеха на глобальном рынке.`}
-              </p>
-              
-              <h3>
-                {language === 'en' ? 'Conclusion' : 'Заключение'}
-              </h3>
-              
-              <p>
-                {language === 'en'
-                  ? `The landscape of ${getPostContent(post.category).toLowerCase()} continues to evolve rapidly. Staying informed about regulatory changes, embracing technological innovations, and working with experienced professionals are essential strategies for navigating this complex environment successfully.`
-                  : `Ландшафт ${getPostContent(post.category).toLowerCase()} продолжает быстро развиваться. Быть в курсе нормативных изменений, внедрять технологические инновации и работать с опытными профессионалами - это важные стратегии для успешной навигации в этой сложной среде.`}
-              </p>
+              <div dangerouslySetInnerHTML={{ __html: getLocalizedContent(post, 'content', language) }} />
             </div>
             
             <div className="pt-6 border-t">

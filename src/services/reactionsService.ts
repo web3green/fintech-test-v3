@@ -2,13 +2,13 @@ import { supabase } from '@/integrations/supabase/client';
 
 /**
  * Добавляет или удаляет реакцию пользователя на статью
- * @param articleId - ID статьи
+ * @param postId - ID статьи
  * @param reactionType - Тип реакции ('like', 'dislike', 'useful')
  * @param userId - ID пользователя (опционально)
  * @returns Объект с результатом операции
  */
 export async function toggleReaction(
-  articleId: string,
+  postId: string,
   reactionType: string,
   userId: string | null = null
 ) {
@@ -24,9 +24,9 @@ export async function toggleReaction(
     
     // Проверяем, существует ли уже такая реакция от этого пользователя
     const { data: existingReactions, error: fetchError } = await supabase
-      .from('article_reactions')
+      .from('blog_post_reactions')
       .select('*')
-      .eq('article_id', articleId)
+      .eq('blog_post_id', postId)
       .eq('reaction_type', reactionType)
       .eq('user_id', userId || anonymousId);
     
@@ -37,7 +37,7 @@ export async function toggleReaction(
     // Если реакция уже существует, удаляем её
     if (existingReactions && existingReactions.length > 0) {
       const { error: deleteError } = await supabase
-        .from('article_reactions')
+        .from('blog_post_reactions')
         .delete()
         .eq('id', existingReactions[0].id);
       
@@ -50,9 +50,9 @@ export async function toggleReaction(
     // Иначе добавляем новую реакцию
     else {
       const { error: insertError } = await supabase
-        .from('article_reactions')
+        .from('blog_post_reactions')
         .insert({
-          article_id: articleId,
+          blog_post_id: postId,
           reaction_type: reactionType,
           user_id: userId || anonymousId,
           created_at: new Date().toISOString()
@@ -76,15 +76,15 @@ export async function toggleReaction(
 
 /**
  * Получает количество реакций для статьи
- * @param articleId - ID статьи
+ * @param postId - ID статьи
  * @returns Объект с количеством каждого типа реакций
  */
-export async function getReactionCounts(articleId: string) {
+export async function getReactionCounts(postId: string) {
   try {
     const { data, error } = await supabase
-      .from('article_reactions')
+      .from('blog_post_reactions')
       .select('reaction_type')
-      .eq('article_id', articleId);
+      .eq('blog_post_id', postId);
     
     if (error) {
       throw error;
@@ -118,11 +118,11 @@ export async function getReactionCounts(articleId: string) {
 
 /**
  * Проверяет, поставил ли пользователь реакцию на статью
- * @param articleId - ID статьи
+ * @param postId - ID статьи
  * @param userId - ID пользователя (опционально)
  * @returns Объект с информацией о реакциях пользователя
  */
-export async function getUserReactions(articleId: string, userId: string | null = null) {
+export async function getUserReactions(postId: string, userId: string | null = null) {
   try {
     const anonymousId = userId || localStorage.getItem('anonymous_user_id');
     
@@ -135,9 +135,9 @@ export async function getUserReactions(articleId: string, userId: string | null 
     }
     
     const { data, error } = await supabase
-      .from('article_reactions')
+      .from('blog_post_reactions')
       .select('reaction_type')
-      .eq('article_id', articleId)
+      .eq('blog_post_id', postId)
       .eq('user_id', anonymousId);
     
     if (error) {

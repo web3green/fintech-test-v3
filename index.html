@@ -9,6 +9,11 @@
       'gtm.start': new Date().getTime(),
       event: 'gtm.js'
     });
+    
+    // Отладочный код для Google Analytics
+    window.ga_debug = {
+      trace: true
+    };
   </script>
   <script async src="https://www.googletagmanager.com/gtm.js?id=GTM-P8F79N5V"></script>
   <!-- End Google Tag Manager -->
@@ -19,18 +24,30 @@
     window.ym = window.ym || function(){(window.ym.a = window.ym.a || []).push(arguments)};
     window.ym.l = 1*new Date();
     
+    // Отладочный код для Яндекс.Метрики
+    window.ym_debug = true;
+    
     // Загрузка скрипта Метрики
     (function(d, w, c) {
       (w[c] = w[c] || []).push(function() {
         try {
-          w.yaCounter100696110 = new Ya.Metrika2({
-            id: 100696110,
+          w.yaCounter87654321 = new Ya.Metrika2({
+            id: 87654321,
             clickmap: true,
             trackLinks: true,
             accurateTrackBounce: true,
-            webvisor: true
+            webvisor: true,
+            // Добавляем отладочные параметры
+            debug: true,
+            trackHash: true,
+            ut: 'noindex'
           });
-        } catch(e) { }
+          
+          // Логируем успешную инициализацию
+          console.log('Yandex.Metrika initialized successfully');
+        } catch(e) {
+          console.error('Yandex.Metrika initialization error:', e);
+        }
       });
 
       var n = d.getElementsByTagName("script")[0],
@@ -66,12 +83,19 @@
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
 
   <!-- Google Analytics -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-123456789-1"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
-    gtag('config', 'G-XXXXXXXXXX');
+    gtag('config', 'UA-123456789-1', {
+      'send_page_view': true,
+      'anonymize_ip': true,
+      'debug_mode': true
+    });
+    
+    // Логируем успешную инициализацию
+    console.log('Google Analytics initialized successfully');
   </script>
   <!-- /Google Analytics -->
 </head>
@@ -84,7 +108,7 @@
 
   <!-- Yandex.Metrika counter (noscript) -->
   <noscript>
-    <div><img src="https://mc.yandex.ru/watch/100696110" style="position:absolute; left:-9999px;" alt="" /></div>
+    <div><img src="https://mc.yandex.ru/watch/87654321" style="position:absolute; left:-9999px;" alt="" /></div>
   </noscript>
   <!-- /Yandex.Metrika counter (noscript) -->
 

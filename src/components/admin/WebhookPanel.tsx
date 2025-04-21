@@ -5,9 +5,6 @@ import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Badge } from "@/components/ui/badge";
-import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
@@ -15,15 +12,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { AlertCircle, Send, Globe, Webhook } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { TelegramService } from "@/services/telegramService";
+import { WhatsAppService } from "@/services/whatsappService";
 
 const webhookSchema = z.object({
   url: z.string().url({ message: "Invalid webhook URL" }),
-});
-
-const pixelSchema = z.object({
-  provider: z.string().min(1, { message: "Provider is required" }),
-  trackingId: z.string().min(1, { message: "Tracking ID is required" }),
-  active: z.boolean().default(true),
 });
 
 const telegramSchema = z.object({
@@ -38,18 +31,11 @@ const whatsappSchema = z.object({
 
 export const WebhookPanel = () => {
   const { language } = useLanguage();
+  const telegramService = TelegramService.getInstance();
+  const whatsappService = WhatsAppService.getInstance();
   
   const [webhookUrl, setWebhookUrl] = useState(() => {
     return localStorage.getItem("webhookUrl") || "";
-  });
-  
-  const [pixels, setPixels] = useState(() => {
-    const storedPixels = localStorage.getItem("trackingPixels");
-    return storedPixels ? JSON.parse(storedPixels) : [
-      { id: 1, provider: "Google Analytics", trackingId: "UA-123456789-1", active: true },
-      { id: 2, provider: "Yandex Metrica", trackingId: "87654321", active: false },
-      { id: 3, provider: "Facebook Pixel", trackingId: "123456789101112", active: true },
-    ];
   });
   
   const [telegramConfig, setTelegramConfig] = useState(() => {
@@ -67,10 +53,6 @@ export const WebhookPanel = () => {
   }, [webhookUrl]);
   
   useEffect(() => {
-    localStorage.setItem("trackingPixels", JSON.stringify(pixels));
-  }, [pixels]);
-  
-  useEffect(() => {
     localStorage.setItem("telegramConfig", JSON.stringify(telegramConfig));
   }, [telegramConfig]);
   
@@ -82,15 +64,6 @@ export const WebhookPanel = () => {
     resolver: zodResolver(webhookSchema),
     defaultValues: {
       url: webhookUrl,
-    },
-  });
-  
-  const pixelForm = useForm({
-    resolver: zodResolver(pixelSchema),
-    defaultValues: {
-      provider: "",
-      trackingId: "",
-      active: true,
     },
   });
   
@@ -142,213 +115,81 @@ export const WebhookPanel = () => {
     }
   };
   
-  const handlePixelSubmit = (data) => {
-    const newPixel = {
-      id: pixels.length ? Math.max(...pixels.map(p => p.id)) + 1 : 1,
-      ...data,
-    };
-    setPixels([...pixels, newPixel]);
-    pixelForm.reset({
-      provider: "",
-      trackingId: "",
-      active: true,
-    });
-    toast.success(language === 'en' ? "Tracking pixel added successfully" : "Пиксель отслеживания успешно добавлен");
-  };
-  
-  const handlePixelToggle = (id, active) => {
-    const updatedPixels = pixels.map(pixel => 
-      pixel.id === id ? { ...pixel, active } : pixel
-    );
-    setPixels(updatedPixels);
-    toast.success(
-      active 
-        ? (language === 'en' ? "Tracking pixel activated" : "Пиксель отслеживания активирован") 
-        : (language === 'en' ? "Tracking pixel deactivated" : "Пиксель отслеживания деактивирован")
-    );
-  };
-  
-  const handlePixelDelete = (id) => {
-    setPixels(pixels.filter(pixel => pixel.id !== id));
-    toast.success(language === 'en' ? "Tracking pixel deleted" : "Пиксель отслеживания удален");
-  };
-  
-  const handleTelegramSubmit = (data) => {
-    setTelegramConfig(data);
-    toast.success(language === 'en' ? "Telegram integration saved" : "Интеграция с Telegram сохранена");
+  const handleTelegramSubmit = async (data) => {
+    try {
+      telegramService.setConfig(data.botToken, data.chatId);
+      setTelegramConfig(data);
+      toast.success(language === 'en' ? "Telegram integration saved" : "Интеграция с Telegram сохранена");
+    } catch (error) {
+      toast.error(language === 'en' ? "Failed to save Telegram configuration" : "Не удалось сохранить настройки Telegram");
+    }
   };
   
   const handleTestTelegram = async () => {
-    if (!telegramConfig.botToken || !telegramConfig.chatId) {
-      toast.error(language === 'en' ? "Please enter bot token and chat ID first" : "Сначала введите токен бота и ID чата");
-      return;
+    try {
+      await telegramService.testConnection();
+      await telegramService.sendMessage(
+        language === 'en' 
+          ? "Test message from Fintech-Assist Admin Panel" 
+          : "Тестовое сообщение из панели администратора Fintech-Assist"
+      );
+      toast.success(language === 'en' ? "Telegram integration test successful" : "Тест интеграции с Telegram успешен");
+    } catch (error) {
+      console.error("Telegram test error:", error);
+      toast.error(
+        language === 'en' 
+          ? "Failed to test Telegram integration" 
+          : "Не удалось протестировать интеграцию с Telegram"
+      );
     }
-    
-    toast.success(language === 'en' ? "Telegram integration test sent" : "Тест интеграции с Telegram отправлен");
-    // In a real app, here you would make API call to send a test message
   };
   
-  const handleWhatsappSubmit = (data) => {
-    setWhatsappConfig(data);
-    toast.success(language === 'en' ? "WhatsApp integration saved" : "Интеграция с WhatsApp сохранена");
+  const handleWhatsappSubmit = async (data) => {
+    try {
+      whatsappService.setConfig(data.phoneNumber, data.apiKey);
+      setWhatsappConfig(data);
+      toast.success(language === 'en' ? "WhatsApp integration saved" : "Интеграция с WhatsApp сохранена");
+    } catch (error) {
+      toast.error(language === 'en' ? "Failed to save WhatsApp configuration" : "Не удалось сохранить настройки WhatsApp");
+    }
   };
   
   const handleTestWhatsapp = async () => {
-    if (!whatsappConfig.phoneNumber || !whatsappConfig.apiKey) {
-      toast.error(language === 'en' ? "Please enter phone number and API key first" : "Сначала введите номер телефона и API ключ");
-      return;
+    try {
+      await whatsappService.testConnection();
+      await whatsappService.sendMessage(
+        language === 'en' 
+          ? "Test message from Fintech-Assist Admin Panel" 
+          : "Тестовое сообщение из панели администратора Fintech-Assist"
+      );
+      toast.success(language === 'en' ? "WhatsApp integration test successful" : "Тест интеграции с WhatsApp успешен");
+    } catch (error) {
+      console.error("WhatsApp test error:", error);
+      toast.error(
+        language === 'en' 
+          ? "Failed to test WhatsApp integration" 
+          : "Не удалось протестировать интеграцию с WhatsApp"
+      );
     }
-    
-    toast.success(language === 'en' ? "WhatsApp integration test sent" : "Тест интеграции с WhatsApp отправлен");
-    // In a real app, here you would make API call to send a test message
   };
 
   return (
     <div className="space-y-6">
-      <Tabs defaultValue="pixels">
+      <Tabs defaultValue="webhooks">
         <TabsList>
-          <TabsTrigger value="pixels">{language === 'en' ? "Tracking Pixels" : "Пиксели отслеживания"}</TabsTrigger>
           <TabsTrigger value="webhooks">{language === 'en' ? "Webhooks" : "Вебхуки"}</TabsTrigger>
           <TabsTrigger value="telegram">{language === 'en' ? "Telegram Integration" : "Интеграция с Telegram"}</TabsTrigger>
           <TabsTrigger value="whatsapp">{language === 'en' ? "WhatsApp Integration" : "Интеграция с WhatsApp"}</TabsTrigger>
         </TabsList>
         
-        <TabsContent value="pixels" className="space-y-4 mt-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>{language === 'en' ? "Add Tracking Pixel" : "Добавить пиксель отслеживания"}</CardTitle>
-              <CardDescription>
-                {language === 'en' 
-                  ? "Add analytics and tracking pixels to your website" 
-                  : "Добавьте пиксели аналитики и отслеживания на ваш сайт"}
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Form {...pixelForm}>
-                <form onSubmit={pixelForm.handleSubmit(handlePixelSubmit)} className="space-y-4">
-                  <FormField
-                    control={pixelForm.control}
-                    name="provider"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>{language === 'en' ? "Provider" : "Провайдер"}</FormLabel>
-                        <FormControl>
-                          <Select 
-                            onValueChange={field.onChange} 
-                            defaultValue={field.value}
-                          >
-                            <SelectTrigger>
-                              <SelectValue placeholder={language === 'en' ? "Select provider" : "Выберите провайдера"} />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="Google Analytics">Google Analytics</SelectItem>
-                              <SelectItem value="Yandex Metrica">Yandex Metrica</SelectItem>
-                              <SelectItem value="Facebook Pixel">Facebook Pixel</SelectItem>
-                              <SelectItem value="Google Tag Manager">Google Tag Manager</SelectItem>
-                              <SelectItem value="HotJar">HotJar</SelectItem>
-                              <SelectItem value="Custom">Custom</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={pixelForm.control}
-                    name="trackingId"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>{language === 'en' ? "Tracking ID" : "ID отслеживания"}</FormLabel>
-                        <FormControl>
-                          <Input placeholder={language === 'en' ? "Enter tracking ID" : "Введите ID отслеживания"} {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={pixelForm.control}
-                    name="active"
-                    render={({ field }) => (
-                      <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
-                        <div className="space-y-0.5">
-                          <FormLabel>
-                            {language === 'en' ? "Active" : "Активен"}
-                          </FormLabel>
-                        </div>
-                        <FormControl>
-                          <Switch
-                            checked={field.value}
-                            onCheckedChange={field.onChange}
-                          />
-                        </FormControl>
-                      </FormItem>
-                    )}
-                  />
-                  <Button type="submit">
-                    {language === 'en' ? "Add Pixel" : "Добавить пиксель"}
-                  </Button>
-                </form>
-              </Form>
-            </CardContent>
-          </Card>
-          
-          <Card>
-            <CardHeader>
-              <CardTitle>{language === 'en' ? "Tracking Pixels" : "Пиксели отслеживания"}</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {pixels.length > 0 ? (
-                  pixels.map((pixel) => (
-                    <div 
-                      key={pixel.id} 
-                      className="flex items-center justify-between p-3 border rounded-lg"
-                    >
-                      <div>
-                        <p className="font-medium">{pixel.provider}</p>
-                        <p className="text-sm text-muted-foreground">{pixel.trackingId}</p>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <Badge variant="default" className="bg-green-500">
-                          {pixel.active 
-                            ? (language === 'en' ? "Active" : "Активен") 
-                            : (language === 'en' ? "Inactive" : "Неактивен")}
-                        </Badge>
-                        <Switch 
-                          checked={pixel.active} 
-                          onCheckedChange={(checked) => handlePixelToggle(pixel.id, checked)} 
-                        />
-                        <Button 
-                          variant="ghost" 
-                          size="sm" 
-                          className="text-red-500"
-                          onClick={() => handlePixelDelete(pixel.id)}
-                        >
-                          {language === 'en' ? "Delete" : "Удалить"}
-                        </Button>
-                      </div>
-                    </div>
-                  ))
-                ) : (
-                  <div className="text-center py-4 text-muted-foreground">
-                    {language === 'en' ? "No tracking pixels added yet" : "Пиксели отслеживания еще не добавлены"}
-                  </div>
-                )}
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-        
         <TabsContent value="webhooks" className="space-y-4 mt-4">
           <Card>
             <CardHeader>
-              <CardTitle>{language === 'en' ? "Webhooks Configuration" : "Настройка вебхуков"}</CardTitle>
+              <CardTitle>{language === 'en' ? "Webhook Configuration" : "Настройка вебхуков"}</CardTitle>
               <CardDescription>
                 {language === 'en' 
-                  ? "Set up webhooks to connect with other services" 
-                  : "Настройте вебхуки для соединения с другими сервисами"}
+                  ? "Configure webhooks to receive notifications about important events" 
+                  : "Настройте вебхуки для получения уведомлений о важных событиях"}
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -361,61 +202,40 @@ export const WebhookPanel = () => {
                       <FormItem>
                         <FormLabel>{language === 'en' ? "Webhook URL" : "URL вебхука"}</FormLabel>
                         <FormControl>
-                          <Input placeholder="https://example.com/webhook" {...field} />
+                          <Input placeholder="https://your-webhook-url.com" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
-                  <div className="flex space-x-2">
+                  <div className="flex gap-2">
                     <Button type="submit">
-                      {language === 'en' ? "Save Webhook" : "Сохранить вебхук"}
+                      {language === 'en' ? "Save" : "Сохранить"}
                     </Button>
                     <Button type="button" variant="outline" onClick={handleTestWebhook}>
-                      {language === 'en' ? "Test Webhook" : "Тест вебхука"}
+                      {language === 'en' ? "Test Webhook" : "Тестировать вебхук"}
                     </Button>
                   </div>
                 </form>
               </Form>
-              
-              <div className="mt-6">
-                <h3 className="font-medium mb-2">
-                  {language === 'en' ? "Sample Webhook Payload:" : "Пример полезной нагрузки вебхука:"}
-                </h3>
-                <div className="bg-muted p-3 rounded-md overflow-x-auto text-sm">
-                  <pre>
-{`{
-  "event": "form_submission",
-  "timestamp": "${new Date().toISOString()}",
-  "data": {
-    "name": "Example User",
-    "email": "user@example.com",
-    "message": "This is a sample message"
-  }
-}`}
-                  </pre>
-                </div>
-              </div>
             </CardContent>
           </Card>
         </TabsContent>
-        
+
         <TabsContent value="telegram" className="space-y-4 mt-4">
           <Card>
             <CardHeader>
-              <CardTitle>{language === 'en' ? "Telegram Bot Integration" : "Интеграция с ботом Telegram"}</CardTitle>
+              <CardTitle>{language === 'en' ? "Telegram Integration" : "Интеграция с Telegram"}</CardTitle>
               <CardDescription>
                 {language === 'en' 
-                  ? "Connect a Telegram bot to receive inquiries directly in your Telegram chat" 
-                  : "Подключите бота Telegram для получения запросов прямо в вашем чате Telegram"}
+                  ? "Configure Telegram bot to receive notifications" 
+                  : "Настройте Telegram бота для получения уведомлений"}
               </CardDescription>
             </CardHeader>
             <CardContent>
               <Alert className="mb-4">
                 <AlertCircle className="h-4 w-4" />
-                <AlertTitle>
-                  {language === 'en' ? "Instructions" : "Инструкции"}
-                </AlertTitle>
+                <AlertTitle>{language === 'en' ? "Instructions" : "Инструкции"}</AlertTitle>
                 <AlertDescription>
                   {language === 'en' 
                     ? "To set up Telegram integration: 1) Create a bot using @BotFather, 2) Get your bot token, 3) Start a chat with your bot, 4) Get your chat ID." 
@@ -432,11 +252,7 @@ export const WebhookPanel = () => {
                       <FormItem>
                         <FormLabel>{language === 'en' ? "Bot Token" : "Токен бота"}</FormLabel>
                         <FormControl>
-                          <Input 
-                            type="password" 
-                            placeholder={language === 'en' ? "Enter your bot token" : "Введите токен бота"} 
-                            {...field} 
-                          />
+                          <Input placeholder="123456789:ABCdefGHIjklMNOpqrsTUVwxyz" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -449,22 +265,18 @@ export const WebhookPanel = () => {
                       <FormItem>
                         <FormLabel>{language === 'en' ? "Chat ID" : "ID чата"}</FormLabel>
                         <FormControl>
-                          <Input 
-                            placeholder={language === 'en' ? "Enter your chat ID" : "Введите ID чата"} 
-                            {...field} 
-                          />
+                          <Input placeholder="-1001234567890" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
-                  <div className="flex space-x-2">
+                  <div className="flex gap-2">
                     <Button type="submit">
-                      {language === 'en' ? "Save Settings" : "Сохранить настройки"}
+                      {language === 'en' ? "Save" : "Сохранить"}
                     </Button>
                     <Button type="button" variant="outline" onClick={handleTestTelegram}>
-                      <Send className="mr-2 h-4 w-4" />
-                      {language === 'en' ? "Send Test Message" : "Отправить тестовое сообщение"}
+                      {language === 'en' ? "Test Telegram" : "Тестировать Telegram"}
                     </Button>
                   </div>
                 </form>
@@ -472,23 +284,21 @@ export const WebhookPanel = () => {
             </CardContent>
           </Card>
         </TabsContent>
-        
+
         <TabsContent value="whatsapp" className="space-y-4 mt-4">
           <Card>
             <CardHeader>
               <CardTitle>{language === 'en' ? "WhatsApp Integration" : "Интеграция с WhatsApp"}</CardTitle>
               <CardDescription>
                 {language === 'en' 
-                  ? "Set up WhatsApp integration to receive inquiries via WhatsApp" 
-                  : "Настройте интеграцию с WhatsApp для получения запросов через WhatsApp"}
+                  ? "Configure WhatsApp to receive notifications" 
+                  : "Настройте WhatsApp для получения уведомлений"}
               </CardDescription>
             </CardHeader>
             <CardContent>
               <Alert className="mb-4">
                 <AlertCircle className="h-4 w-4" />
-                <AlertTitle>
-                  {language === 'en' ? "WhatsApp Business API" : "API WhatsApp Business"}
-                </AlertTitle>
+                <AlertTitle>{language === 'en' ? "WhatsApp Business API" : "API WhatsApp Business"}</AlertTitle>
                 <AlertDescription>
                   {language === 'en' 
                     ? "This integration requires a WhatsApp Business API account. You need to sign up for WhatsApp Business API through a solution provider like Twilio or MessageBird." 
@@ -505,10 +315,7 @@ export const WebhookPanel = () => {
                       <FormItem>
                         <FormLabel>{language === 'en' ? "Phone Number" : "Номер телефона"}</FormLabel>
                         <FormControl>
-                          <Input 
-                            placeholder={language === 'en' ? "Enter WhatsApp phone number" : "Введите номер телефона WhatsApp"} 
-                            {...field} 
-                          />
+                          <Input placeholder="+1234567890" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -521,23 +328,18 @@ export const WebhookPanel = () => {
                       <FormItem>
                         <FormLabel>{language === 'en' ? "API Key" : "API ключ"}</FormLabel>
                         <FormControl>
-                          <Input 
-                            type="password" 
-                            placeholder={language === 'en' ? "Enter your API key" : "Введите API ключ"} 
-                            {...field} 
-                          />
+                          <Input type="password" placeholder="your-api-key" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
-                  <div className="flex space-x-2">
+                  <div className="flex gap-2">
                     <Button type="submit">
-                      {language === 'en' ? "Save Settings" : "Сохранить настройки"}
+                      {language === 'en' ? "Save" : "Сохранить"}
                     </Button>
                     <Button type="button" variant="outline" onClick={handleTestWhatsapp}>
-                      <Send className="mr-2 h-4 w-4" />
-                      {language === 'en' ? "Send Test Message" : "Отправить тестовое сообщение"}
+                      {language === 'en' ? "Test WhatsApp" : "Тестировать WhatsApp"}
                     </Button>
                   </div>
                 </form>

@@ -91,7 +91,7 @@ export function ContactForm() {
               <div className="md:w-1/3 bg-gradient-to-tr from-fintech-orange/90 to-fintech-blue-light dark:from-fintech-orange/60 dark:to-fintech-blue-light/80 backdrop-blur-sm p-8 flex flex-col justify-center shadow-lg relative overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-r from-[#FF6B00]/90 to-fintech-blue-light dark:from-[#FF6B00]/60 dark:to-fintech-blue-light/80 opacity-100"></div>
                 <div className="absolute -top-10 -right-10 w-32 h-32 bg-white/10 rounded-full blur-xl"></div>
-                <div className="absolute top-0 right-0 w-full h-full bg-[url('/images/noise.png')] opacity-5 mix-blend-overlay"></div>
+                <div className="absolute top-0 right-0 w-full h-full opacity-5 mix-blend-overlay noise-pattern"></div>
                 <div className="absolute bottom-0 left-0 w-full h-1/3 bg-gradient-to-t from-fintech-blue-light/40 to-transparent opacity-40"></div>
                 <div className="relative z-10">
                   <div className="mb-8">

@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
+import { supabase } from '@/integrations/supabase/client';
 
 export interface TextBlock {
   id: string;
@@ -15,12 +16,13 @@ interface SiteTextsStore {
   texts: TextBlock[];
   isHydrated: boolean;
   setHydrated: (state: boolean) => void;
-  addText: (text: TextBlock) => void;
-  updateText: (id: string, text: TextBlock) => void;
-  deleteText: (id: string) => void;
+  addText: (text: TextBlock) => Promise<void>;
+  updateText: (key: string, newText: TextBlock) => Promise<void>;
+  deleteText: (key: string) => Promise<void>;
   getTextByKey: (key: string) => TextBlock | undefined;
   cleanAllTextsFromHtml: () => void;
   resetToInitial: () => void;
+  syncWithDatabase: () => Promise<void>;
 }
 
 // Функция для очистки HTML-разметки
@@ -1066,27 +1068,71 @@ export const useSiteTexts = create<SiteTextsStore>()(
       isHydrated: false,
       setHydrated: (state) => set({ isHydrated: state }),
       
-      addText: (text) => {
-        set((state) => ({
-          texts: [...state.texts, text]
-        }));
+      addText: async (text: TextBlock) => {
+        try {
+          const { error } = await supabase
+            .from('site_texts')
+            .insert({
+              key: text.key,
+              value_en: text.content.en,
+              value_ru: text.content.ru
+            })
+          
+          if (error) throw error
+          
+          set({ texts: [...get().texts, text] })
+          console.log('Text added successfully')
+        } catch (error) {
+          console.error('Error adding text:', error)
+          throw error
+        }
       },
       
-      updateText: (id, updatedText) => {
-        set((state) => ({
-          texts: state.texts.map((text) => 
-            text.id === id ? updatedText : text
-          )
-        }));
+      updateText: async (key: string, newText: TextBlock) => {
+        try {
+          const { error } = await supabase
+            .from('site_texts')
+            .update({
+              key: newText.key,
+              value_en: newText.content.en,
+              value_ru: newText.content.ru
+            })
+            .eq('key', key)
+          
+          if (error) throw error
+          
+          set({
+            texts: get().texts.map(text => 
+              text.key === key ? newText : text
+            )
+          })
+          console.log('Text updated successfully')
+        } catch (error) {
+          console.error('Error updating text:', error)
+          throw error
+        }
       },
       
-      deleteText: (id) => {
-        set((state) => ({
-          texts: state.texts.filter((text) => text.id !== id)
-        }));
+      deleteText: async (key: string) => {
+        try {
+          const { error } = await supabase
+            .from('site_texts')
+            .delete()
+            .eq('key', key)
+          
+          if (error) throw error
+          
+          set({
+            texts: get().texts.filter(text => text.key !== key)
+          })
+          console.log('Text deleted successfully')
+        } catch (error) {
+          console.error('Error deleting text:', error)
+          throw error
+        }
       },
       
-      getTextByKey: (key) => {
+      getTextByKey: (key: string) => {
         const state = get();
         const text = state.texts.find((text) => text.key === key);
         return text || initialTexts.find((text) => text.key === key);
@@ -1131,24 +1177,111 @@ export const useSiteTexts = create<SiteTextsStore>()(
         } else {
           console.log('No missing text keys found');
         }
+      },
+
+      syncWithDatabase: async () => {
+        try {
+          const { data, error } = await supabase
+            .from('site_texts')
+            .select('*')
+          
+          if (error) throw error
+          
+          if (data) {
+            const transformedTexts: TextBlock[] = data.map(item => ({
+              key: item.key,
+              section: 'default',
+              content: {
+                en: item.value_en,
+                ru: item.value_ru
+              }
+            }))
+            
+            set({ texts: transformedTexts })
+            console.log('Texts synced with database successfully')
+          }
+        } catch (error) {
+          console.error('Error syncing with database:', error)
+          // If sync fails, keep using initial texts
+          set({ texts: initialTexts })
+        }
       }
     }),
     {
       name: 'site-texts-storage',
-      storage: createJSONStorage(() => localStorage),
       onRehydrateStorage: () => (state) => {
         if (state) {
-          state.setHydrated(true);
+          // Clean HTML tags and reset to initial texts if needed
+          state.texts = state.texts.map(text => ({
+            ...text,
+            content: {
+              en: text.content.en.replace(/<[^>]*>/g, ''),
+              ru: text.content.ru.replace(/<[^>]*>/g, '')
+            }
+          }))
           
-          // Очищаем все тексты от HTML-тегов при загрузке
-          setTimeout(() => {
-            state.cleanAllTextsFromHtml();
-            
-            // Добавляем недостающие ключи при загрузке
-            state.resetToInitial();
-          }, 0);
+          // Sync with database after rehydration
+          state.syncWithDatabase()
         }
-      },
+      }
     }
   )
-); 
+);
+
+export class SiteTextsService {
+  static async getSiteTexts() {
+    const { data, error } = await supabase
+      .from('site_texts')
+      .select('*');
+    
+    if (error) throw error;
+    return data;
+  }
+
+  static async getSiteText(key: string) {
+    const { data, error } = await supabase
+      .from('site_texts')
+      .select('*')
+      .eq('key', key)
+      .single();
+    
+    if (error) throw error;
+    return data;
+  }
+
+  static async updateSiteText(key: string, valueEn: string, valueRu: string) {
+    const { data, error } = await supabase
+      .from('site_texts')
+      .upsert({
+        key,
+        value_en: valueEn,
+        value_ru: valueRu
+      });
+    
+    if (error) throw error;
+    return data;
+  }
+
+  static async createSiteText(key: string, valueEn: string, valueRu: string) {
+    const { data, error } = await supabase
+      .from('site_texts')
+      .insert({
+        key,
+        value_en: valueEn,
+        value_ru: valueRu
+      });
+    
+    if (error) throw error;
+    return data;
+  }
+
+  static async deleteSiteText(key: string) {
+    const { data, error } = await supabase
+      .from('site_texts')
+      .delete()
+      .eq('key', key);
+    
+    if (error) throw error;
+    return data;
+  }
+} 

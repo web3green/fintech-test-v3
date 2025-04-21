@@ -100,9 +100,32 @@ const MetaTagUpdater = () => {
 };
 
 const AppContent = () => {
-  const { isLoading } = useLanguage();
+  const { isLoading: isLangLoading } = useLanguage();
   const [isLoaded, setIsLoaded] = useState(false);
   const [loadErrors, setLoadErrors] = useState<string[]>([]);
+  const [supabaseStatus, setSupabaseStatus] = useState<string>('Checking...'); // State for test result
+
+  // --- Run Supabase Connection Test ---
+  useEffect(() => {
+    const runTest = async () => {
+      console.log("--- Running Supabase Connection Test --- ");
+      setSupabaseStatus('Testing...');
+      const result = await testSupabaseConnection();
+      if (result.success) {
+        setSupabaseStatus('Supabase Connection Test: SUCCESS');
+        console.log("--- Supabase Connection Test Result: SUCCESS ---", result);
+      } else {
+        const errorMsg = `Supabase Connection Test: FAILED - Component: ${result.component || 'unknown'}, Error: ${result.error?.message || 'Unknown error'}`;
+        setSupabaseStatus(errorMsg);
+        console.error("--- Supabase Connection Test Result: FAILED ---", result);
+        // Optionally add to loadErrors
+        // setLoadErrors(prev => [...prev, `Supabase Connection Error: ${result.error?.message || 'Unknown'}`]);
+      }
+      console.log("--- End Supabase Connection Test --- ");
+    };
+    runTest();
+  }, []); // Run only once on mount
+  // --- End Supabase Test ---
 
   useEffect(() => {
     console.log('App component mounted - basic setup only');
@@ -130,7 +153,7 @@ const AppContent = () => {
     }
   }, []);
 
-  if (!isLoaded || isLoading) {
+  if (!isLoaded || isLangLoading) {
     return (
       <div className="fixed inset-0 flex items-center justify-center bg-background">
         <div className="text-center">
@@ -140,6 +163,9 @@ const AppContent = () => {
       </div>
     );
   }
+
+  // Display Supabase status for debugging
+  console.log("Current Supabase Status:", supabaseStatus);
 
   return (
     <BrowserRouter>

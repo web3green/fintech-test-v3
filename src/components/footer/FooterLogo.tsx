@@ -29,7 +29,7 @@ export function FooterLogo({ className = '' }: FooterLogoProps) {
         <Link to="/">
           <img
             src={logoSrc}
-            alt={t('Логотип компании')}
+            alt={"Логотип компании"}
             style={{ width: '40px', height: '40px', objectFit: 'contain' }}
             className="mr-2 object-contain"
             onError={(e) => {

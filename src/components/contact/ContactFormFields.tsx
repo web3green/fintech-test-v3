@@ -76,6 +76,7 @@ export function ContactFormFields() {
             <Input 
               id="name" 
               name="name" 
+              autoComplete="name"
               placeholder={language === 'en' ? 'Your name' : 'Ваше имя'}
               required
               value={formData.name}
@@ -90,6 +91,7 @@ export function ContactFormFields() {
               id="email" 
               name="email" 
               type="email" 
+              autoComplete="email"
               placeholder={language === 'en' ? 'Your email' : 'Ваша электронная почта'}
               required
               value={formData.email}
@@ -105,6 +107,8 @@ export function ContactFormFields() {
             <Input 
               id="phone" 
               name="phone" 
+              type="tel"
+              autoComplete="tel"
               placeholder="+44 7123 456789" 
               required
               value={formData.phone}
@@ -114,9 +118,16 @@ export function ContactFormFields() {
           </div>
           
           <div className="space-y-2">
-            <Label htmlFor="service" className="text-white/90 dark:text-white/80">{t('contact.form.service')}</Label>
-            <Select value={formData.service} onValueChange={handleServiceChange}>
-              <SelectTrigger className="bg-white/10 border-white/20 text-white focus:ring-fintech-orange/80 dark:focus:ring-fintech-orange/60 dark:bg-white/5 dark:border-white/10">
+            <Label htmlFor="service-select" className="text-white/90 dark:text-white/80">{t('contact.form.service')}</Label>
+            <Select 
+              name="service"
+              value={formData.service} 
+              onValueChange={handleServiceChange}
+            >
+              <SelectTrigger 
+                id="service-select" 
+                className="bg-white/10 border-white/20 text-white focus:ring-fintech-orange/80 dark:focus:ring-fintech-orange/60 dark:bg-white/5 dark:border-white/10"
+              >
                 <SelectValue placeholder={t('contact.form.select')} />
               </SelectTrigger>
               <SelectContent className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm border-white/20 dark:border-white/10">
@@ -136,6 +147,7 @@ export function ContactFormFields() {
             id="message" 
             name="message" 
             rows={4} 
+            autoComplete="off"
             placeholder={language === 'en' ? 'Your message' : 'Ваше сообщение'}
             value={formData.message}
             onChange={handleChange}

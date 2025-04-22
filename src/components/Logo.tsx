@@ -44,7 +44,7 @@ export function Logo({
         <div className="relative">
           <img
             src={logoSrc}
-            alt={t('Логотип компании')}
+            alt={"Логотип компании"}
             style={{ width: `${width}px`, height: `${height}px`, objectFit: 'contain' }}
             className="object-contain"
             onError={(e) => {

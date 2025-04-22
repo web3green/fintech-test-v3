@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from '@/components/ui/dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Switch } from '@/components/ui/switch';
 import { toast } from "sonner";
@@ -15,7 +15,29 @@ import { Spinner } from '@/components/ui/spinner';
 import { databaseService, BlogPost } from '@/services/databaseService';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { AlertCircle } from 'lucide-react';
-import { blogService, getLocalizedContent, getImageUrl, renderPostColor } from '@/services/blogService';
+import { blogService, getLocalizedContent, getImageUrl, renderPostColor, getDistinctCategories } from '@/services/blogService';
+import Cropper, { Area } from 'react-easy-crop';
+import { Slider } from "@/components/ui/slider";
+import { Label } from "@/components/ui/label";
+import { cn } from "@/lib/utils";
+import getCroppedImg from '@/utils/cropImage';
+import type { BlogPost as BlogPostType } from '@/services/databaseService';
+
+// --- Helper function to convert Blob to Data URL ---
+const blobToDataURL = (blob: Blob): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      if (typeof reader.result === 'string') {
+        resolve(reader.result);
+      } else {
+        reject(new Error('Failed to convert Blob to Data URL'));
+      }
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(blob);
+  });
+};
 
 export function BlogManagementPanel() {
   const { language } = useLanguage();
@@ -43,9 +65,22 @@ export function BlogManagementPanel() {
     published: false,
   });
   const [isCreatingNew, setIsCreatingNew] = useState(false);
+  const [categories, setCategories] = useState<string[]>([]);
+  const [newCategoryInputValue, setNewCategoryInputValue] = useState("");
+
+  // --- New state for Cropper ---
+  const [imageSrcForCropper, setImageSrcForCropper] = useState<string | null>(null);
+  const [crop, setCrop] = useState({ x: 0, y: 0 });
+  const [zoom, setZoom] = useState(1);
+  const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null);
+  const [isCropperOpen, setIsCropperOpen] = useState(false);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [isProcessingImage, setIsProcessingImage] = useState(false);
+  // --- End Cropper state ---
 
   useEffect(() => {
     loadPosts();
+    loadCategories();
   }, []);
 
   const loadPosts = async () => {
@@ -69,78 +104,202 @@ export function BlogManagementPanel() {
     }
   };
 
-  const handleImageUpload = async (file: File) => {
+  const loadCategories = async () => {
+    console.log('[loadCategories] Fetching categories...');
     try {
-      setIsUploading(true);
-      const imageUrl = await databaseService.uploadImage(file);
-      setFormData(prev => ({ ...prev, image_url: imageUrl }));
-      setImagePreview(imageUrl);
-      toast.success('Image uploaded successfully');
-    } catch (error) {
-      console.error('Error uploading image:', error);
-      toast.error('Failed to upload image');
+      const fetchedCategories = await getDistinctCategories();
+      setCategories(fetchedCategories);
+      console.log('[loadCategories] Categories loaded:', fetchedCategories);
+    } catch (err) {
+      console.error('[loadCategories] Error loading categories:', err);
+      // Optionally show a toast error
+      // toast.error('Failed to load categories');
+    }
+  };
+
+  // Modified image selection handler
+  const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files.length > 0) {
+      const file = event.target.files[0];
+      // Basic type check
+      if (!file.type.startsWith('image/')) {
+        toast.error('Please select an image file.');
+        return;
+      }
+      const reader = new FileReader();
+      reader.addEventListener('load', () => {
+        setImageSrcForCropper(reader.result?.toString() || null);
+        setSelectedFile(file); // Store the original file
+        setCroppedAreaPixels(null); // Reset crop area when new image is selected
+        setZoom(1); // Reset zoom
+        setCrop({ x: 0, y: 0 }); // Reset crop position
+        setIsCropperOpen(true); // Open the cropper dialog immediately
+      });
+      reader.readAsDataURL(file);
+      // Clear the input value to allow selecting the same file again
+      event.target.value = '';
+    }
+  };
+  
+  // Callback for react-easy-crop
+  const onCropComplete = useCallback((croppedArea: Area, croppedAreaPixels: Area) => {
+    console.log('[onCropComplete] Saving cropped area pixels:', croppedAreaPixels);
+    setCroppedAreaPixels(croppedAreaPixels);
+  }, []);
+
+  // handleImageUpload now only uploads, doesn't handle file selection or preview
+  const handleImageUpload = async (fileToUpload: File): Promise<string | null> => {
+    setIsUploading(true); // Keep this for the upload itself
+    console.log(`[handleImageUpload] Uploading processed file: ${fileToUpload.name}, size: ${fileToUpload.size}`);
+    try {
+      const imageUrl = await databaseService.uploadImage(fileToUpload);
+      console.log(`[handleImageUpload] Upload successful. URL: ${imageUrl}`);
+      // No toast here, will be shown after successful save
+      return imageUrl;
+    } catch (error: any) {
+      console.error('Detailed Upload Error (Panel):', error);
+      console.error('Upload Error Message (Panel):', error.message);
+      console.error('Upload Error Status (Panel):', error.status);
+      // Throw the error so handleSubmit can catch it
+      throw new Error(`Failed to upload image: ${error.message || 'Unknown error'}`);
     } finally {
       setIsUploading(false);
     }
   };
 
+  // Modified handleSubmit to include cropping logic
   const handleSubmit = async () => {
-    try {
-      // Validate required fields
+    // Existing validations...
       if (!formData.title_en || !formData.title_ru) {
-        toast.error('Title is required in both languages');
+        toast.error('Title is required in both languages.');
         return;
       }
       if (!formData.content_en || !formData.content_ru) {
-        toast.error('Content is required in both languages');
+        toast.error('Content is required in both languages.');
         return;
       }
-      if (!formData.excerpt_en || !formData.excerpt_ru) {
-        toast.error('Excerpt is required in both languages');
-        return;
-      }
-      if (!formData.author) {
-        toast.error('Author is required');
-        return;
-      }
-      if (!formData.category) {
-        toast.error('Category is required');
-        return;
-      }
-      if (!formData.reading_time) {
-        toast.error('Reading time is required');
-        return;
-      }
+    // Add other necessary validations
+
+    let finalImageUrl = formData.image_url; // Start with existing or null if creating new
+    setIsProcessingImage(true); // Show loading state
+
+    try {
+       // Check if a new file was selected and crop area is defined
+       if (selectedFile && croppedAreaPixels && imageSrcForCropper) {
+          console.log('[handleSubmit] Cropping selected image...');
+
+          const croppedBlob = await getCroppedImg(imageSrcForCropper, croppedAreaPixels);
+
+          if (!croppedBlob) {
+            throw new Error('Failed to crop image');
+          }
+
+          // Create a File object from the Blob
+          // Use a generic name or derive from original, ensure correct type
+          const fileName = `cropped-${Date.now()}-${selectedFile.name}`;
+          const croppedFile = new File([croppedBlob], fileName, { type: croppedBlob.type || selectedFile.type });
+
+          console.log('[handleSubmit] Uploading cropped image...');
+          const uploadedUrl = await handleImageUpload(croppedFile);
+
+          if (!uploadedUrl) {
+              throw new Error('Failed to upload cropped image');
+          }
+          finalImageUrl = uploadedUrl; // Use the URL of the cropped image
+          console.log(`[handleSubmit] Using new cropped image URL: ${finalImageUrl}`);
+       } else if (selectedFile && !croppedAreaPixels) {
+           // Case: User selected a file but didn't crop (or closed cropper before completion)
+           // Decide how to handle this - maybe upload original? For now, throw error.
+           // Alternatively, you could automatically upload the original file here.
+           console.warn('[handleSubmit] File selected but no crop area defined. Image not processed.');
+           // toast.info('Image selected but not cropped. Uploading original file.');
+           // const originalUrl = await handleImageUpload(selectedFile);
+           // if (!originalUrl) throw new Error('Failed to upload original image');
+           // finalImageUrl = originalUrl;
+           throw new Error('Image was selected but not cropped. Please crop the image or clear the selection.');
+       } else {
+           console.log(`[handleSubmit] No new image selected or processed. Using existing URL: ${finalImageUrl}`);
+       }
+
+      console.log('[handleSubmit] Preparing to save post data...');
+      // Construct dataToSave *after* potential image upload
+      const dataToSave: Partial<BlogPost> = {
+        ...formData,
+        tags: Array.isArray(formData.tags) ? formData.tags : (formData.tags as string || '').split(',').map(tag => tag.trim()).filter(Boolean), // Ensure tags is array
+        reading_time: String(formData.reading_time || '0'), // Convert to string, defaulting to '0' if empty/null
+        image_url: finalImageUrl // Ensure the final URL is included
+      };
+
+      // Remove undefined/null keys to avoid issues with Supabase update/insert
+       Object.keys(dataToSave).forEach(key => {
+           if (dataToSave[key as keyof BlogPost] === undefined || dataToSave[key as keyof BlogPost] === null) {
+               delete dataToSave[key as keyof BlogPost];
+           }
+       });
 
       if (selectedPost) {
-        await databaseService.updatePost(selectedPost.id, formData);
+        console.log(`[handleSubmit] Updating post ID: ${selectedPost.id}`);
+        console.log(`[handleSubmit] Final data for update:`, dataToSave);
+        await databaseService.updatePost(selectedPost.id, dataToSave);
         toast.success('Post updated successfully');
       } else {
-        await databaseService.createPost(formData as Omit<BlogPost, 'id' | 'created_at' | 'updated_at'>);
+        console.log('[handleSubmit] Creating new post');
+        // Ensure all required fields for creation are present, provide defaults if needed
+        const rawData = { // Renamed to rawData to handle color_scheme validation separately
+            title_en: '',
+            title_ru: '',
+            content_en: '',
+            content_ru: '',
+            excerpt_en: '',
+            excerpt_ru: '',
+            author: '',
+            category: '',
+            reading_time: '0', // Default reading_time as string '0' - matches the fix above
+            tags: [],
+            featured: false,
+            color_scheme: 'blue', // Default color scheme
+            published: false,
+            ...dataToSave // Overwrite defaults with formData
+        };
+
+        // Ensure color_scheme is one of the allowed enum values
+        const validColorSchemes = ['blue', 'orange', 'graphite'] as const;
+        type ValidColorScheme = typeof validColorSchemes[number];
+
+        // Explicitly type dataToCreate and validate color_scheme
+        const dataToCreate: Omit<BlogPostType, 'id' | 'created_at' | 'updated_at'> = {
+          ...rawData,
+          // Validate and set color_scheme
+          color_scheme: validColorSchemes.includes(rawData.color_scheme as any)
+                          ? rawData.color_scheme as ValidColorScheme
+                          : 'blue' // Fallback to default 'blue' if invalid
+        };
+
+        // Final check for required fields before creating
+        if (!dataToCreate.title_en || !dataToCreate.title_ru || !dataToCreate.content_en || !dataToCreate.content_ru) {
+            throw new Error("Missing required fields (title, content) for creating a new post.");
+        }
+
+        console.log('[handleSubmit] Final data for create:', dataToCreate);
+        await databaseService.createPost(dataToCreate);
         toast.success('Post created successfully');
       }
-      setSelectedPost(null);
-      setFormData({
-        title_en: '',
-        title_ru: '',
-        content_en: '',
-        content_ru: '',
-        excerpt_en: '',
-        excerpt_ru: '',
-        image_url: '',
-        author: '',
-        category: '',
-        reading_time: '',
-        tags: [],
-        featured: false,
-        color_scheme: 'blue',
-        published: false,
-      });
-      setImagePreview(null);
-      loadPosts();
-    } catch (error) {
+
+      console.log('[handleSubmit] Save successful. Resetting state...');
+
+      // Reset state after successful save
+      handleCloseDialog(); // Closes the main post form dialog
+      // Reset image/crop specific state outside dialog closure
+      setSelectedFile(null);
+      setImageSrcForCropper(null);
+      setCroppedAreaPixels(null);
+      setImagePreview(null); // Clear preview if necessary
+      loadPosts(); // Reload posts list
+    } catch (error: any) { // Catch errors from cropping, upload, or save
       console.error('Error saving post:', error);
-      toast.error('Failed to save post');
+      toast.error(`Failed to save post: ${error.message || 'Unknown error'}`);
+    } finally {
+       setIsProcessingImage(false); // Hide loading state
     }
   };
 
@@ -164,7 +323,8 @@ export function BlogManagementPanel() {
     let successCount = 0;
     let errorCount = 0;
 
-    const initialPostsToSeed = [
+    // Explicitly type the array to match the expected input type of createPost
+    const initialPostsToSeed: Omit<BlogPostType, 'id' | 'created_at' | 'updated_at'>[] = [
       { title_en: "Guide to Offshore Company Registration in 2025", title_ru: "Руководство по регистрации оффшорных компаний в 2025 году", excerpt_en: "Learn about the benefits, procedures, and considerations for registering an offshore company in today's global business environment.", excerpt_ru: "Узнайте о преимуществах, процедурах и особенностях регистрации оффшорной компании в современной глобальной бизнес-среде.", content_en: "[Placeholder content - please replace in admin panel]", content_ru: "[Замените этот текст в админ-панели]", image_url: "https://images.unsplash.com/photo-1507679799987-c73779587ccf?ixlib=rb-4.0.3&auto=format&fit=crop", author: "Alex Morgan", category: "Company Registration", reading_time: "8 min", tags: ["offshore", "company registration", "international business", "tax optimization"], featured: true, color_scheme: "blue", published: true },
       { title_en: "Banking Options for International Businesses", title_ru: "Банковские решения для международного бизнеса", excerpt_en: "Explore the best banking solutions for international businesses, from traditional banks to modern fintech platforms.", excerpt_ru: "Исследуйте лучшие банковские решения для международного бизнеса, от традиционных банков до современных финтех-платформ.", content_en: "[Placeholder content - please replace in admin panel]", content_ru: "[Замените этот текст в админ-панели]", image_url: "https://images.unsplash.com/photo-1601597111158-2fceff292cdc?ixlib=rb-4.0.3&auto=format&fit=crop", author: "Sarah Johnson", category: "Banking", reading_time: "6 min", tags: ["international banking", "business accounts", "fintech", "payment solutions"], featured: false, color_scheme: "orange", published: true },
       { title_en: "Understanding Nominee Services for Your Business", title_ru: "Понимание номинального сервиса для вашего бизнеса", excerpt_en: "A comprehensive guide to nominee services, including benefits, risks, and regulatory considerations.", excerpt_ru: "Комплексное руководство по номинальным услугам, включая преимущества, риски и нормативные соображения.", content_en: "[Placeholder content - please replace in admin panel]", content_ru: "[Замените этот текст в админ-панели]", image_url: "https://images.unsplash.com/photo-1542744094-24638eff58bb?ixlib=rb-4.0.3&auto=format&fit=crop", author: "Michael Chen", category: "Nominee Services", reading_time: "10 min", tags: ["nominee directors", "nominee shareholders", "business confidentiality", "legal representation"], featured: false, color_scheme: "graphite", published: true },
@@ -224,6 +384,37 @@ export function BlogManagementPanel() {
     setIsCreatingNew(true);
   };
 
+  // Modified handleCropperClose to generate and show cropped preview
+  const handleCropperClose = async () => {
+    setIsCropperOpen(false);
+    console.log('[handleCropperClose] Cropper closed. Attempting to generate preview...');
+    if (imageSrcForCropper && croppedAreaPixels) {
+      try {
+        console.log('[handleCropperClose] Calling getCroppedImg with:', imageSrcForCropper.substring(0, 50) + '...', croppedAreaPixels);
+        const croppedBlob = await getCroppedImg(imageSrcForCropper, croppedAreaPixels);
+        if (croppedBlob) {
+          console.log('[handleCropperClose] Cropped blob generated, converting to Data URL...');
+          const croppedDataUrl = await blobToDataURL(croppedBlob);
+          console.log('[handleCropperClose] Setting imagePreview to cropped Data URL:', croppedDataUrl.substring(0, 50) + '...');
+          setImagePreview(croppedDataUrl); // Show the cropped image preview
+        } else {
+          console.warn('[handleCropperClose] getCroppedImg returned null. Falling back to original preview.');
+          setImagePreview(imageSrcForCropper); // Fallback to original if cropping fails
+        }
+      } catch (error) {
+        console.error('[handleCropperClose] Error generating cropped preview:', error);
+        toast.error('Failed to generate cropped image preview.');
+        setImagePreview(imageSrcForCropper); // Fallback to original on error
+      }
+    } else {
+      console.warn('[handleCropperClose] Missing image source or crop area for preview generation.');
+      // If no crop was really done, maybe just keep the original?
+      // Or clear preview if selectedFile exists but no crop?
+      // Let's stick to showing original if src exists
+      setImagePreview(imageSrcForCropper);
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
@@ -274,41 +465,41 @@ export function BlogManagementPanel() {
                   <DialogTitle>{selectedPost ? 'Edit Post' : 'Create New Post'}</DialogTitle>
                 </DialogHeader>
                 <div className="space-y-4">
-                  <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-4">
                       <div>
-                        <label className="block text-sm font-medium mb-1">Image</label>
+                      <Label htmlFor="blog-image-upload-input" className="block text-sm font-medium mb-1">Image</Label>
                         <div className="flex items-center space-x-4">
-                          <input
+                        <Input
+                          id="blog-image-upload-input"
                             type="file"
                             accept="image/*"
-                            onChange={(e) => {
-                              const file = e.target.files?.[0];
-                              if (file) {
-                                handleImageUpload(file);
-                              }
-                            }}
+                          onChange={handleFileSelect}
                             disabled={isUploading}
-                            className="block w-full text-sm text-gray-500
-                              file:mr-4 file:py-2 file:px-4
+                          className="block w-full text-sm text-gray-500 px-3 py-2
+                            file:mr-4 file:py-1 file:px-3
                               file:rounded-md file:border-0
                               file:text-sm file:font-semibold
                               file:bg-fintech-blue file:text-white
                               hover:file:bg-fintech-blue-dark"
                           />
                         </div>
-                        {imagePreview && (
+                      {/* --- UPDATED PREVIEW LOGIC --- */}
+                      {imagePreview && ( // Show preview if imagePreview state is set
                           <div className="relative mt-2">
                             <img
-                              src={imagePreview}
+                            src={imagePreview} // Use imagePreview state directly
                               alt="Preview"
-                              className="w-full h-48 object-cover rounded"
+                            className="w-full h-32 object-contain rounded"
                             />
                             <button
                               type="button"
                               onClick={() => {
+                              // --- UPDATED CLEAR LOGIC --- Clear all relevant states
                                 setImagePreview(null);
-                                setFormData(prev => ({ ...prev, image_url: '' }));
+                              setFormData(prev => ({ ...prev, image_url: selectedPost?.image_url || '' })); // Reset to original URL if editing, or empty if creating
+                              setSelectedFile(null);
+                              setCroppedAreaPixels(null);
+                              setImageSrcForCropper(null); // Also clear the cropper source
                               }}
                               className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1"
                             >
@@ -318,45 +509,76 @@ export function BlogManagementPanel() {
                         )}
                       </div>
                       <div>
-                        <label className="block text-sm font-medium mb-1">Author</label>
+                      <Label htmlFor="author" className="block text-sm font-medium mb-1">Author</Label>
                         <Input
+                        id="author"
                           value={formData.author}
                           onChange={(e) => setFormData(prev => ({ ...prev, author: e.target.value }))}
                         />
                       </div>
                       <div>
-                        <label className="block text-sm font-medium mb-1">Category</label>
+                      <Label htmlFor="category-select" className="block text-sm font-medium mb-1">Category</Label>
+                      <select
+                        id="category-select"
+                        value={formData.category || ""}
+                        onChange={(e) => {
+                          const selectedCategory = e.target.value;
+                          console.log("Selected category from select:", selectedCategory);
+                          setFormData(prev => ({ ...prev, category: selectedCategory }));
+                          setNewCategoryInputValue("");
+                        }}
+                        className="w-full rounded-md border border-input bg-background px-3 py-2 mb-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                      >
+                        <option value="">-- Select Existing --</option>
+                        {categories.map((cat) => (
+                          <option key={cat} value={cat}>
+                            {cat}
+                          </option>
+                        ))}
+                      </select>
+
                         <Input
-                          value={formData.category}
-                          onChange={(e) => setFormData(prev => ({ ...prev, category: e.target.value }))}
+                        id="new-category-input"
+                        type="text"
+                        placeholder="Or enter new category"
+                        value={newCategoryInputValue}
+                        onChange={(e) => {
+                          const newCatValue = e.target.value;
+                          console.log("Typed in new category input:", newCatValue);
+                          setNewCategoryInputValue(newCatValue);
+                          setFormData(prev => ({ ...prev, category: newCatValue.trim() }));
+                        }}
+                        className="w-full"
                         />
                       </div>
                       <div>
-                        <label className="block text-sm font-medium mb-1">Reading Time</label>
+                      <Label htmlFor="reading-time" className="block text-sm font-medium mb-1">Reading Time</Label>
                         <Input
+                        id="reading-time"
                           value={formData.reading_time}
                           onChange={(e) => setFormData(prev => ({ ...prev, reading_time: e.target.value }))}
                         />
                       </div>
                       <div className="flex items-center space-x-2">
                         <Switch
+                        id="featured-switch"
                           checked={formData.featured}
                           onCheckedChange={(checked) => setFormData(prev => ({ ...prev, featured: checked }))}
                         />
-                        <label className="text-sm font-medium">Featured</label>
+                      <Label htmlFor="featured-switch" className="text-sm font-medium">Featured</Label>
                       </div>
                       <div className="flex items-center space-x-2">
                         <Switch
+                        id="published-switch"
                           checked={formData.published}
                           onCheckedChange={(checked) => setFormData(prev => ({ ...prev, published: checked }))}
                         />
-                        <label className="text-sm font-medium">Published</label>
-                      </div>
+                      <Label htmlFor="published-switch" className="text-sm font-medium">Published</Label>
                     </div>
-                    <div className="space-y-4">
                       <div>
-                        <label className="block text-sm font-medium mb-1">Tags (comma separated)</label>
+                      <Label htmlFor="tags" className="block text-sm font-medium mb-1">Tags (comma separated)</Label>
                         <Input
+                        id="tags"
                           value={formData.tags?.join(', ')}
                           onChange={(e) => {
                             const tags = e.target.value.split(',').map(tag => tag.trim());
@@ -365,8 +587,9 @@ export function BlogManagementPanel() {
                         />
                       </div>
                       <div>
-                        <label className="block text-sm font-medium mb-1">Color Scheme</label>
+                      <Label htmlFor="color-scheme" className="block text-sm font-medium mb-1">Color Scheme</Label>
                         <select
+                        id="color-scheme"
                           value={formData.color_scheme}
                           onChange={(e) => setFormData(prev => ({ ...prev, color_scheme: e.target.value as 'blue' | 'orange' | 'graphite' }))}
                           className="w-full rounded-md border border-input bg-background px-3 py-2"
@@ -377,7 +600,7 @@ export function BlogManagementPanel() {
                         </select>
                       </div>
                     </div>
-                  </div>
+                  <div className="space-y-4">
                   <Tabs defaultValue="en" className="w-full">
                     <TabsList className="grid w-full grid-cols-2">
                       <TabsTrigger value="en">English</TabsTrigger>
@@ -385,23 +608,26 @@ export function BlogManagementPanel() {
                     </TabsList>
                     <TabsContent value="en" className="space-y-4">
                       <div>
-                        <label className="block text-sm font-medium mb-1">Title</label>
+                          <Label htmlFor="title_en" className="block text-sm font-medium mb-1">Title</Label>
                         <Input
+                            id="title_en"
                           value={formData.title_en}
                           onChange={(e) => setFormData(prev => ({ ...prev, title_en: e.target.value }))}
                         />
                       </div>
                       <div>
-                        <label className="block text-sm font-medium mb-1">Excerpt</label>
+                          <Label htmlFor="excerpt_en" className="block text-sm font-medium mb-1">Excerpt</Label>
                         <Textarea
+                            id="excerpt_en"
                           value={formData.excerpt_en}
                           onChange={(e) => setFormData(prev => ({ ...prev, excerpt_en: e.target.value }))}
                           className="min-h-[100px]"
                         />
                       </div>
                       <div>
-                        <label className="block text-sm font-medium mb-1">Content</label>
+                          <Label htmlFor="content_en" className="block text-sm font-medium mb-1">Content</Label>
                         <Textarea
+                            id="content_en"
                           value={formData.content_en}
                           onChange={(e) => setFormData(prev => ({ ...prev, content_en: e.target.value }))}
                           className="min-h-[200px]"
@@ -410,23 +636,26 @@ export function BlogManagementPanel() {
                     </TabsContent>
                     <TabsContent value="ru" className="space-y-4">
                       <div>
-                        <label className="block text-sm font-medium mb-1">Title</label>
+                          <Label htmlFor="title_ru" className="block text-sm font-medium mb-1">Title</Label>
                         <Input
+                            id="title_ru"
                           value={formData.title_ru}
                           onChange={(e) => setFormData(prev => ({ ...prev, title_ru: e.target.value }))}
                         />
                       </div>
                       <div>
-                        <label className="block text-sm font-medium mb-1">Excerpt</label>
+                          <Label htmlFor="excerpt_ru" className="block text-sm font-medium mb-1">Excerpt</Label>
                         <Textarea
+                            id="excerpt_ru"
                           value={formData.excerpt_ru}
                           onChange={(e) => setFormData(prev => ({ ...prev, excerpt_ru: e.target.value }))}
                           className="min-h-[100px]"
                         />
                       </div>
                       <div>
-                        <label className="block text-sm font-medium mb-1">Content</label>
+                          <Label htmlFor="content_ru" className="block text-sm font-medium mb-1">Content</Label>
                         <Textarea
+                            id="content_ru"
                           value={formData.content_ru}
                           onChange={(e) => setFormData(prev => ({ ...prev, content_ru: e.target.value }))}
                           className="min-h-[200px]"
@@ -434,12 +663,15 @@ export function BlogManagementPanel() {
                       </div>
                     </TabsContent>
                   </Tabs>
-                  <div className="flex justify-end space-x-2">
-                    <Button variant="outline" onClick={handleCloseDialog}>
-                      Cancel
-                    </Button>
-                    <Button onClick={handleSubmit}>Save</Button>
                   </div>
+                </div>
+                <div className="flex justify-end space-x-2">
+                  <Button variant="outline" onClick={handleCloseDialog}>
+                    Cancel
+                  </Button>
+                  <Button onClick={handleSubmit} disabled={isUploading}>
+                    {isUploading ? "Processing..." : "Save"}
+                  </Button>
                 </div>
               </DialogContent>
             </Dialog>
@@ -518,6 +750,43 @@ export function BlogManagementPanel() {
           )}
         </CardContent>
       </Card>
+
+      {/* Cropper Dialog */}
+      <Dialog open={isCropperOpen} onOpenChange={setIsCropperOpen}>
+        <DialogContent className="max-w-3xl">
+          <DialogHeader>
+            <DialogTitle>Crop Image</DialogTitle>
+          </DialogHeader>
+          <div className="relative h-[400px] bg-muted">
+            {imageSrcForCropper && (
+              <Cropper
+                image={imageSrcForCropper}
+                crop={crop}
+                zoom={zoom}
+                aspect={16 / 9} // Or your desired aspect ratio
+                onCropChange={setCrop}
+                onZoomChange={setZoom}
+                onCropComplete={onCropComplete} // Automatically saves crop area
+              />
+            )}
+          </div>
+          <div className="flex items-center gap-4 mt-4">
+            <Label className="w-16">Zoom</Label>
+            <Slider
+              min={1}
+              max={3}
+              step={0.1}
+              value={[zoom]}
+              onValueChange={(value) => setZoom(value[0])}
+              className="flex-grow"
+            />
+          </div>
+          <DialogFooter className="mt-4">
+            {/* Removed Apply Crop Area button */}
+            <Button onClick={handleCropperClose}>Done</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 } 

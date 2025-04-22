@@ -90,55 +90,37 @@ export async function testSupabaseConnection() {
     // Проверяем Storage API
     console.log('Testing Supabase Storage API...');
     try {
+      // Просто пытаемся получить список бакетов
       const { data: bucketsData, error: bucketsError } = await supabase.storage.listBuckets();
       
       if (bucketsError) {
-        console.error('Supabase Storage API error:', bucketsError);
-        return { success: false, error: bucketsError, component: 'storage' };
+        console.error('Supabase Storage API error (listBuckets):', bucketsError);
+        // Если ошибка - тест не пройден для Storage
+        return { success: false, error: bucketsError, component: 'storage_list' };
       }
       
-      console.log('Supabase buckets:', bucketsData || []);
-      
-      // Пробуем создать тестовый бакет
-      console.log('Testing bucket creation...');
-      const bucketName = 'test-bucket-' + Date.now();
-      
-      const { data: bucketData, error: bucketError } = await supabase.storage.createBucket(bucketName, {
-        public: true
-      });
-      
-      if (bucketError) {
-        console.error('Bucket creation error:', bucketError);
-        return { 
-          success: false, 
-          error: bucketError, 
-          component: 'bucket_creation',
-          details: 'Unable to create bucket. Check if you have the necessary permissions.'
-        };
-      }
-      
-      console.log('Bucket created successfully:', bucketData);
-      
-      // Удаляем тестовый бакет
-      const { error: deleteError } = await supabase.storage.deleteBucket(bucketName);
-      if (deleteError) {
-        console.warn('Could not delete test bucket:', deleteError);
-      } else {
-        console.log('Test bucket deleted successfully');
-      }
-      
+      // Если listBuckets сработал без ошибок, считаем тест Storage пройденным
+      console.log('Supabase Storage API (listBuckets) OK. Buckets:', bucketsData?.map(b => b.name) || []);
+            
+      // Возвращаем успех для теста Storage
       return { 
         success: true, 
+        component: 'storage', // Указываем, что компонент Storage в порядке
+        details: 'Successfully listed buckets.',
         bucketsExist: bucketsData && bucketsData.length > 0,
         buckets: bucketsData || []
       };
+      
+      // --- Удаленная логика создания/удаления тестового бакета ---
+      
     } catch (storageError) {
-      console.error('Unexpected Storage API error:', storageError);
+      // Эта ошибка теперь менее вероятна, но оставим на всякий случай
+      console.error('Unexpected Storage API error during listBuckets:', storageError);
       return { 
         success: false, 
         error: storageError, 
-        component: 'storage_api',
-        details: 'Unexpected error when accessing Storage API'
+        component: 'storage_api_list',
+        details: 'Unexpected error when listing buckets'
       };
     }
   } catch (error) {

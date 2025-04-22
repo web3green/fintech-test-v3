@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Search, Filter } from 'lucide-react';
 import { Input } from '@/components/ui/input';
@@ -33,6 +32,8 @@ export const BlogSearchBar: React.FC<BlogSearchBarProps> = ({
         <div className="relative flex-grow">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
           <Input
+            id="blog-article-search"
+            name="blog-article-search"
             type="search"
             placeholder={language === 'en' ? "Search articles..." : "Поиск статей..."}
             className="pl-10 pr-4 py-2 rounded-full"
@@ -41,7 +42,11 @@ export const BlogSearchBar: React.FC<BlogSearchBarProps> = ({
           />
         </div>
         <div className="w-full md:w-64">
-          <Select value={categoryFilter} onValueChange={setCategoryFilter}>
+          <Select 
+            name="blog-category-filter"
+            value={categoryFilter} 
+            onValueChange={setCategoryFilter}
+          >
             <SelectTrigger className="bg-background border-input">
               <div className="flex items-center">
                 <Filter className="h-4 w-4 mr-2" />

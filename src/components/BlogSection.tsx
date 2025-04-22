@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
+import useSWR from 'swr';
 import { Button } from '@/components/ui/button';
 import { BlogPostCard } from './blog/BlogPostCard';
 import { BlogPostDialog } from './BlogPostDialog';
@@ -16,15 +17,23 @@ import { blogService, getLocalizedContent, renderPostColor, getImageUrl, BlogPos
 import { Spinner } from '@/components/ui/spinner';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { AlertCircle } from 'lucide-react';
+import { BlogPostCardSkeleton } from './blog/BlogPostCardSkeleton';
+
+// Define the fetcher function for SWR
+// It should receive the key (which we'll construct as an array) and call the service
+const blogPostsFetcher = ([_, page, limit, query, category]: [
+  string, // Key prefix, e.g., 'blogPosts'
+  number, 
+  number, 
+  string | undefined, 
+  string | undefined
+]): Promise<PaginatedBlogPosts> => { 
+  console.log(`SWR Fetcher called: page=${page}, limit=${limit}, query=${query}, category=${category}`); // Debug log
+  return blogService.getPosts(page, limit, query, category);
+};
 
 export const BlogSection: React.FC = () => {
   const { language } = useLanguage();
-  
-  // State for posts, loading, error, and total count
-  const [posts, setPosts] = useState<BlogPost[]>([]);
-  const [totalPostCount, setTotalPostCount] = useState(0);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
   // State for filtering and pagination
   const [searchQuery, setSearchQuery] = useState('');
@@ -33,35 +42,34 @@ export const BlogSection: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const postsPerPage = 8;
 
-  // Fetch posts based on current page, filters
-  const fetchPosts = useCallback(async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      console.log(`Fetching page: ${currentPage}, limit: ${postsPerPage}, search: '${searchQuery}', category: '${categoryFilter}'`);
-      const { posts: fetchedPosts, totalCount } = await blogService.getPosts(
-        currentPage, 
-        postsPerPage, 
-        searchQuery || undefined,
-        categoryFilter !== 'all' ? categoryFilter : undefined
-      ); 
-      console.log('Fetched posts:', fetchedPosts, 'Total count:', totalCount);
-      setPosts(fetchedPosts);
-      setTotalPostCount(totalCount);
-    } catch (err) {
-      console.error("Error fetching posts:", err);
-      setError(language === 'en' ? "Failed to load blog posts." : "Не удалось загрузить записи блога.");
-      setPosts([]);
-      setTotalPostCount(0);
-    } finally {
-      setLoading(false);
-    }
-  }, [currentPage, postsPerPage, searchQuery, categoryFilter, language]);
+  // Construct the key for useSWR based on dependencies
+  const swrKey = [
+    'blogPosts', 
+    currentPage, 
+    postsPerPage, 
+    searchQuery || undefined, 
+    categoryFilter !== 'all' ? categoryFilter : undefined
+  ];
 
-  // Fetch posts on mount and when dependencies change
-  useEffect(() => {
-    fetchPosts();
-  }, [fetchPosts]);
+  // Use SWR to fetch data
+  const { data: paginatedData, error: swrError, isLoading: swrLoading } = useSWR<PaginatedBlogPosts, Error>(
+      swrKey, // Unique key for the request
+      blogPostsFetcher, // The function to fetch data
+      {
+        // Optional SWR configurations:
+        // keepPreviousData: true, // Keep showing previous data while loading new data
+        // revalidateOnFocus: false, // Disable revalidation on window focus if desired
+        // ... other options
+      }
+  );
+
+  // Extract posts and total count from SWR data
+  const posts = useMemo(() => paginatedData?.posts ?? [], [paginatedData]);
+  const totalPostCount = useMemo(() => paginatedData?.totalCount ?? 0, [paginatedData]);
+  
+  // Map SWR error to our component's error state format (optional)
+  const error = swrError ? (language === 'en' ? "Failed to load blog posts." : "Не удалось загрузить записи блога.") : null;
+  const isLoading = swrLoading;
 
   // Memoize categories based on fetched posts (or could fetch categories separately)
   const categories = useMemo(() => {
@@ -81,11 +89,7 @@ export const BlogSection: React.FC = () => {
 
   // Reset to page 1 when filters change
   useEffect(() => {
-    if (currentPage !== 1) {
-       setCurrentPage(1); 
-    } else {
-      fetchPosts();
-    }
+    setCurrentPage(1);
   }, [searchQuery, categoryFilter]); 
 
   // Calculate total pages based on total count from server
@@ -102,7 +106,7 @@ export const BlogSection: React.FC = () => {
 
   const handlePageChange = (pageNumber: number) => {
     if (pageNumber >= 1 && pageNumber <= totalPages) {
-      setCurrentPage(pageNumber);
+    setCurrentPage(pageNumber);
     }
   };
 
@@ -119,17 +123,35 @@ export const BlogSection: React.FC = () => {
     ? 'Stay up-to-date with the latest industry insights and company news from <span class="text-foreground dark:text-foreground">FinTechAssist</span>.' 
     : 'Будьте в курсе последних отраслевых идей и новостей компании <span class="text-foreground dark:text-foreground">FinTechAssist</span>.';
 
-  // Render loading state
-  if (loading) {
+  // Render loading state using isLoading from SWR
+  if (isLoading && !paginatedData) {
     return (
-      <section id="blog" className="py-16 min-h-[50vh] flex items-center justify-center">
-        <Spinner size="lg" />
+      <section id="blog" className="py-16">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto mb-10 text-center">
+            <div className="inline-flex items-center rounded-full px-3 py-1 text-sm font-medium bg-gradient-to-r from-blue-900/40 to-blue-800/30 backdrop-blur-sm border border-white/5">
+              <span className="flex h-2 w-2 rounded-full bg-fintech-orange/80 mr-2"></span>
+              <span className="text-fintech-orange/90">{language === 'en' ? 'Latest Updates' : 'Последние обновления'}</span>
+            </div>
+            <h2 className="text-3xl font-bold mb-4">{language === 'en' ? 'Our Blog' : 'Наш Блог'}</h2>
+            <p 
+              className="text-muted-foreground dark:text-muted-foreground/90"
+              dangerouslySetInnerHTML={{ __html: blogDescription }}
+            />
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-10">
+            {Array.from({ length: postsPerPage }).map((_, index) => (
+              <BlogPostCardSkeleton key={index} />
+            ))}
+          </div>
+        </div>
       </section>
     );
   }
 
-  // Render error state
-  if (error) {
+  // Render error state using error from SWR
+  if (error && !paginatedData) {
     return (
       <section id="blog" className="py-16">
         <div className="container mx-auto px-4">
@@ -168,7 +190,14 @@ export const BlogSection: React.FC = () => {
           language={language}
         />
 
-        {!loading && posts.length > 0 ? (
+        {/* Display loading indicator over existing data if SWR is validating */}
+        {isLoading && paginatedData && (
+           <div className="absolute inset-0 bg-background/50 flex items-center justify-center z-10">
+               <Spinner size="md" />
+           </div>
+        )}
+
+        {posts.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-10">
             {posts.map((post) => (
               <BlogPostCard
@@ -183,14 +212,14 @@ export const BlogSection: React.FC = () => {
             ))}
           </div>
         ) : (
-          !loading && (
-            <div className="text-center py-12 mt-10">
-              <p className="text-lg text-muted-foreground dark:text-muted-foreground/80">
-                {language === 'en' 
-                  ? 'No blog posts found matching your criteria.' 
-                  : 'Не найдено записей блога, соответствующих вашим критериям.'}
-              </p>
-            </div>
+          !isLoading && (
+          <div className="text-center py-12 mt-10">
+            <p className="text-lg text-muted-foreground dark:text-muted-foreground/80">
+              {language === 'en' 
+                ? 'No blog posts found matching your criteria.' 
+                : 'Не найдено записей блога, соответствующих вашим критериям.'}
+            </p>
+          </div>
           )
         )}
 

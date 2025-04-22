@@ -1,4 +1,5 @@
 import { databaseService, BlogPost } from './databaseService';
+import { supabase } from '../lib/supabase'; // Corrected import path
 
 export const blogService = {
   getPosts: databaseService.getPosts,
@@ -63,4 +64,38 @@ export const getImageUrl = (imageUrl: string) => {
     return imageUrl;
   }
   return 'https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?ixlib=rb-4.0.3&auto=format&fit=crop';
+};
+
+/**
+ * Fetches distinct category names from the blog posts table.
+ * @returns {Promise<string[]>} A promise that resolves to an array of unique category strings.
+ */
+export const getDistinctCategories = async (): Promise<string[]> => {
+  console.log('[getDistinctCategories] Fetching distinct categories (simplified query)...');
+  try {
+    // Simplified query: Select all categories and filter client-side
+    const { data, error } = await supabase
+      .from('blog_posts')
+      .select('category');
+      // Removed: .neq('category', '') 
+      // Removed: .is('category', 'not.null');
+
+    if (error) {
+      console.error('[getDistinctCategories] Error fetching categories:', error);
+      throw error;
+    }
+
+    if (data) {
+      // Use Set to get unique values, filter out null/empty/undefined client-side
+      const distinctCategories = [...new Set(data.map(item => item.category).filter(Boolean))] as string[];
+      console.log('[getDistinctCategories] Found categories:', distinctCategories);
+      return distinctCategories.sort(); // Return sorted categories
+    } else {
+      console.log('[getDistinctCategories] No data returned.');
+      return [];
+    }
+  } catch (err) {
+    console.error('[getDistinctCategories] Unexpected error:', err);
+    return []; // Return empty array on error for safety
+  }
 };

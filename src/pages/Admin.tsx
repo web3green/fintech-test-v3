@@ -33,10 +33,10 @@ import { Sidebar } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import { SettingsPanel } from "@/components/admin/SettingsPanel";
-import { authenticateAdmin } from "@/services/adminService";
+import { supabase } from "@/lib/supabase";
 
 const loginSchema = z.object({
-  username: z.string().min(1, { message: "Username is required" }),
+  email: z.string().email({ message: "Invalid email address" }),
   password: z.string().min(1, { message: "Password is required" }),
 });
 
@@ -44,17 +44,30 @@ const Admin = () => {
   const navigate = useNavigate();
   const { language, isLoading } = useLanguage();
   const isMobile = useIsMobile();
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [session, setSession] = useState<any>(null);
+  const [authLoading, setAuthLoading] = useState(true);
   const [isSidebarOpen, setIsSidebarOpen] = useState(!isMobile);
   const [currentTab, setCurrentTab] = useState("blog");
 
   useEffect(() => {
-    const token = localStorage.getItem('admin_token');
-    const isAdmin = localStorage.getItem('isAdmin');
-    if (isAdmin === "true") {
-      setIsAuthenticated(true);
-    }
-  }, [navigate]);
+    const checkAuth = async () => {
+      setAuthLoading(true);
+      const { data: { session } } = await supabase.auth.getSession();
+      console.log('[Admin Auth Check] Initial session:', session);
+      setSession(session);
+      setAuthLoading(false);
+    };
+    checkAuth();
+
+    const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
+      console.log(`[Admin Auth Listener] Event: ${_event}, Session:`, session);
+      setSession(session);
+    });
+
+    return () => {
+      authListener?.subscription?.unsubscribe();
+    };
+  }, []);
 
   useEffect(() => {
     setIsSidebarOpen(!isMobile);
@@ -63,37 +76,44 @@ const Admin = () => {
   const loginForm = useForm({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      username: "",
+      email: "",
       password: "",
     },
   });
 
-  const handleLogin = async (data) => {
+  const handleLogin = async (data: z.infer<typeof loginSchema>) => {
+    loginForm.reset();
     try {
-      // Проверяем учетные данные через Supabase
-      const result = await authenticateAdmin(data.username, data.password);
-      
-      if (result.success) {
-        localStorage.setItem("isAdmin", "true");
-        localStorage.setItem("admin_token", "admin-token-123");
-        localStorage.setItem("admin_id", result.data.id);
-        setIsAuthenticated(true);
+      console.log(`[handleLogin] Attempting Supabase sign in with email: ${data.email}`);
+      const { data: loginData, error } = await supabase.auth.signInWithPassword({
+        email: data.email,
+        password: data.password,
+      });
+
+      if (error) {
+        console.error('Supabase login error:', error);
+        toast.error(error.message || (language === 'en' ? "Invalid credentials or error occurred" : "Неверные учетные данные или произошла ошибка"));
+      } else if (loginData.session) {
+        console.log('[handleLogin] Supabase login successful, session:', loginData.session);
         toast.success(language === 'en' ? "Logged in successfully" : "Успешный вход");
       } else {
-        toast.error(language === 'en' ? "Invalid credentials" : "Неверные учетные данные");
+          toast.error(language === 'en' ? "Login failed. No session received." : "Ошибка входа. Сессия не получена.");
       }
-    } catch (error) {
-      console.error('Login error:', error);
-      toast.error(language === 'en' ? "An error occurred during login" : "Произошла ошибка при входе");
+    } catch (error: any) {
+      console.error('Login error (catch block):', error);
+      toast.error(error.message || (language === 'en' ? "An error occurred during login" : "Произошла ошибка при входе"));
     }
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem("isAdmin");
-    localStorage.removeItem("admin_token");
-    setIsAuthenticated(false);
-    toast.success(language === 'en' ? "Logged out successfully" : "Успешный выход");
-    navigate("/");
+  const handleLogout = async () => {
+    const { error } = await supabase.auth.signOut();
+    if (error) {
+      console.error('Supabase logout error:', error);
+      toast.error(language === 'en' ? "Logout failed" : "Ошибка выхода");
+    } else {
+      toast.success(language === 'en' ? "Logged out successfully" : "Успешный выход");
+      navigate("/");
+    }
   };
 
   const toggleSidebar = () => {
@@ -120,7 +140,7 @@ const Admin = () => {
     }
   };
 
-  if (isLoading) {
+  if (authLoading || isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="text-center">
@@ -131,7 +151,7 @@ const Admin = () => {
     );
   }
 
-  if (!isAuthenticated) {
+  if (!session) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background p-4">
         <Card className="w-full max-w-md">
@@ -153,12 +173,12 @@ const Admin = () => {
               <form onSubmit={loginForm.handleSubmit(handleLogin)} className="space-y-4">
                 <FormField
                   control={loginForm.control}
-                  name="username"
+                  name="email"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>{language === 'en' ? "Username" : "Имя пользователя"}</FormLabel>
+                      <FormLabel>{language === 'en' ? "Email" : "Email"}</FormLabel>
                       <FormControl>
-                        <Input placeholder={language === 'en' ? "Enter username" : "Введите имя пользователя"} {...field} />
+                        <Input placeholder={language === 'en' ? "Enter email" : "Введите email"} {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -290,19 +310,6 @@ const Admin = () => {
           >
             <Menu className="h-6 w-6" />
           </Button>
-          
-          <div className="flex flex-1 items-center gap-4 md:ml-auto md:gap-2 lg:gap-4">
-            <form className="ml-auto flex-1 sm:flex-initial">
-              <div className="relative">
-                <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                <Input
-                  type="search"
-                  placeholder={language === 'en' ? "Search..." : "Поиск..."}
-                  className="pl-8 sm:w-[300px] md:w-[200px] lg:w-[300px]"
-                />
-              </div>
-            </form>
-          </div>
         </div>
 
         <div className="p-4 sm:p-6">

@@ -60,9 +60,9 @@ export function FooterSocialLinks() {
           href={link.url}
           target="_blank"
           rel="noopener noreferrer"
-          className="w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-800/60 hover:bg-fintech-orange/10 dark:hover:bg-fintech-orange/20 flex items-center justify-center transition-colors"
+          className="w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-800/60 hover:bg-fintech-orange/10 dark:hover:bg-fintech-orange/20 flex items-center justify-center transition-colors text-fintech-orange dark:text-fintech-orange/80"
         >
-          <link.icon className="h-4 w-4 text-fintech-orange dark:text-fintech-orange/80" />
+          {renderSocialIcon(link.icon)}
         </a>
       ))}
     </div>

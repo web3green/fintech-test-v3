@@ -28,8 +28,12 @@ export function GlowingEffect({
     const handleMouseMove = (e: MouseEvent) => {
       if (!glow || disabled) return;
 
-      const element = e.currentTarget as HTMLElement;
-      const rect = element.getBoundingClientRect();
+      const targetElement = e.target as HTMLElement;
+      if (!(targetElement instanceof HTMLElement)) {
+        return;
+      }
+
+      const rect = targetElement.getBoundingClientRect();
       
       const x = e.clientX - rect.left;
       const y = e.clientY - rect.top;

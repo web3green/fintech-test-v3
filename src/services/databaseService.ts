@@ -131,12 +131,22 @@ export const databaseService = {
     const fileName = `${Math.random()}.${fileExt}`;
     const filePath = `blog/${fileName}`;
 
+    // Log user auth status before upload
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    if (authError || !user) {
+      console.error('[uploadImage] User not authenticated before upload attempt! Error:', authError);
+    } else {
+      console.log(`[uploadImage] User authenticated: ${user.email} (ID: ${user.id})`);
+    }
+
     const { error: uploadError } = await supabase.storage
       .from('assets')
       .upload(filePath, file);
 
     if (uploadError) {
-      console.error('Error uploading image:', uploadError);
+      console.error('Detailed Upload Error:', uploadError);
+      console.error('Upload Error Message:', uploadError.message);
+      console.error('Upload Error Status:', (uploadError as any).status);
       throw uploadError;
     }
 

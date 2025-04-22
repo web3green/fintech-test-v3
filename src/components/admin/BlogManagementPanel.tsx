@@ -246,19 +246,19 @@ export function BlogManagementPanel() {
         console.log('[handleSubmit] Creating new post');
         // Ensure all required fields for creation are present, provide defaults if needed
         const rawData = { // Renamed to rawData to handle color_scheme validation separately
-            title_en: '',
-            title_ru: '',
-            content_en: '',
-            content_ru: '',
-            excerpt_en: '',
-            excerpt_ru: '',
-            author: '',
-            category: '',
+        title_en: '',
+        title_ru: '',
+        content_en: '',
+        content_ru: '',
+        excerpt_en: '',
+        excerpt_ru: '',
+        author: '',
+        category: '',
             reading_time: '0', // Default reading_time as string '0' - matches the fix above
-            tags: [],
-            featured: false,
+        tags: [],
+        featured: false,
             color_scheme: 'blue', // Default color scheme
-            published: false,
+        published: false,
             ...dataToSave // Overwrite defaults with formData
         };
 

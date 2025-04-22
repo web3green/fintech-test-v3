@@ -1066,7 +1066,10 @@ export const useSiteTexts = create<SiteTextsStore>()(
     (set, get) => ({
       texts: initialTexts,
       isHydrated: false,
-      setHydrated: (state) => set({ isHydrated: state }),
+      setHydrated: (state) => {
+          console.log(`[siteTextsService] Setting isHydrated to: ${state}`);
+          set({ isHydrated: state });
+      },
       
       addText: async (text: TextBlock) => {
         try {
@@ -1180,53 +1183,64 @@ export const useSiteTexts = create<SiteTextsStore>()(
       },
 
       syncWithDatabase: async () => {
+        console.log('[siteTextsService] syncWithDatabase called.'); // Log start
         try {
           const { data, error } = await supabase
             .from('site_texts')
-            .select('*')
+            .select('*');
           
-          if (error) throw error
+          console.log('[siteTextsService] syncWithDatabase fetch completed. Error:', error, 'Data received:', !!data);
+
+          if (error) {
+            console.error('Error fetching site_texts:', error);
+            throw error; // Throw error to be caught below
+          }
           
           if (data) {
             const transformedTexts: TextBlock[] = data.map(item => ({
+              id: item.key, // Use item.key as the id
               key: item.key,
-              section: 'default',
+              section: item.section || 'default', // Use section from DB if exists, otherwise default
               content: {
                 en: item.value_en,
                 ru: item.value_ru
               }
-            }))
+            }));
             
-            set({ texts: transformedTexts })
-            console.log('Texts synced with database successfully')
+            set({ texts: transformedTexts });
+            console.log('[siteTextsService] Texts state updated from database.');
+          } else {
+            console.warn('[siteTextsService] No data received from site_texts, keeping current state.');
           }
+          // Set hydrated ONLY after successful sync OR if no data was returned but no error occurred
+          get().setHydrated(true); 
         } catch (error) {
-          console.error('Error syncing with database:', error)
-          // If sync fails, keep using initial texts
-          set({ texts: initialTexts })
+          console.error('[siteTextsService] Error during syncWithDatabase, falling back to initialTexts and setting hydrated.', error);
+          // If sync fails, keep using initial texts AND mark as hydrated
+          set({ texts: initialTexts });
+          get().setHydrated(true); 
         }
       }
     }),
     {
       name: 'site-texts-storage',
+      storage: createJSONStorage(() => localStorage),
+      // Simpler onRehydrateStorage: just trigger sync after rehydration is done
       onRehydrateStorage: () => (state) => {
-        if (state) {
-          // Clean HTML tags and reset to initial texts if needed
-          state.texts = state.texts.map(text => ({
-            ...text,
-            content: {
-              en: text.content.en.replace(/<[^>]*>/g, ''),
-              ru: text.content.ru.replace(/<[^>]*>/g, '')
-            }
-          }))
-          
-          // Sync with database after rehydration
-          state.syncWithDatabase()
-        }
-      }
+        console.log('[siteTextsService] Rehydration process finished. Triggering sync.');
+        // We don't set hydrated here anymore, syncWithDatabase will do it.
+        // We also don't need access to `state` directly here if sync handles everything.
+        useSiteTexts.getState().syncWithDatabase(); // Trigger sync using the store's state
+      },
+      // Removed onHydrationError and the complex logic from previous attempt
     }
   )
 );
+
+// Initial fetch on load (outside the store definition)
+// This ensures sync runs once when the module is loaded, regardless of component mounts
+console.log('[siteTextsService] Module loaded. Triggering initial sync...');
+useSiteTexts.getState().syncWithDatabase();
 
 export class SiteTextsService {
   static async getSiteTexts() {

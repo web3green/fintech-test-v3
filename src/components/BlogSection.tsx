@@ -20,19 +20,26 @@ import { AlertCircle } from 'lucide-react';
 import { BlogPostCardSkeleton } from './blog/BlogPostCardSkeleton';
 
 // Define the fetcher function for SWR
-// It should receive the key (which we'll construct as an array) and call the service
-const blogPostsFetcher = ([_, page, limit, query, category]: [
+const blogPostsFetcher = async ([key, page, limit, query, category]: [
   string, // Key prefix, e.g., 'blogPosts'
   number, 
   number, 
   string | undefined, 
   string | undefined
 ]): Promise<PaginatedBlogPosts> => { 
-  console.log(`SWR Fetcher called: page=${page}, limit=${limit}, query=${query}, category=${category}`); // Debug log
-  return blogService.getPosts(page, limit, query, category);
+  console.log(`[BlogSectionFetcher] Fetching: key=${key}, page=${page}, limit=${limit}, query=${query}, category=${category}`); // <-- Log fetcher start
+  try {
+    const result = await blogService.getPosts(page, limit, query, category);
+    console.log(`[BlogSectionFetcher] Fetched ${result?.posts?.length ?? 0} posts, total: ${result?.totalCount ?? 0}`); // <-- Log fetcher success
+    return result;
+  } catch (error) {
+    console.error('[BlogSectionFetcher] Error fetching posts:', error); // <-- Log fetcher error
+    throw error;
+  }
 };
 
 export const BlogSection: React.FC = () => {
+  console.log('[BlogSection] Mounting or re-rendering...'); // <-- Log component mount/render
   const { language } = useLanguage();
 
   // State for filtering and pagination
@@ -50,18 +57,16 @@ export const BlogSection: React.FC = () => {
     searchQuery || undefined, 
     categoryFilter !== 'all' ? categoryFilter : undefined
   ];
+  console.log('[BlogSection] SWR Key:', swrKey); // <-- Log SWR key
 
   // Use SWR to fetch data
   const { data: paginatedData, error: swrError, isLoading: swrLoading } = useSWR<PaginatedBlogPosts, Error>(
-      swrKey, // Unique key for the request
-      blogPostsFetcher, // The function to fetch data
-      {
-        // Optional SWR configurations:
-        // keepPreviousData: true, // Keep showing previous data while loading new data
-        // revalidateOnFocus: false, // Disable revalidation on window focus if desired
-        // ... other options
-      }
+      swrKey, 
+      blogPostsFetcher,
+      {}
   );
+
+  console.log('[BlogSection] SWR State: isLoading=', swrLoading, 'error=', swrError, 'dataExists=', !!paginatedData); // <-- Log SWR state
 
   // Extract posts and total count from SWR data
   const posts = useMemo(() => paginatedData?.posts ?? [], [paginatedData]);
@@ -124,7 +129,8 @@ export const BlogSection: React.FC = () => {
     : 'Будьте в курсе последних отраслевых идей и новостей компании <span class="text-foreground dark:text-foreground">FinTechAssist</span>.';
 
   // Render loading state using isLoading from SWR
-  if (isLoading && !paginatedData) {
+  if (swrLoading && !paginatedData) {
+    console.log('[BlogSection] Rendering Skeletons'); // <-- Log rendering skeletons
     return (
       <section id="blog" className="py-16">
         <div className="container mx-auto px-4">
@@ -151,7 +157,8 @@ export const BlogSection: React.FC = () => {
   }
 
   // Render error state using error from SWR
-  if (error && !paginatedData) {
+  if (swrError && !paginatedData) {
+    console.error('[BlogSection] Rendering Error State:', swrError); // <-- Log rendering error state
     return (
       <section id="blog" className="py-16">
         <div className="container mx-auto px-4">
@@ -166,6 +173,7 @@ export const BlogSection: React.FC = () => {
   }
 
   // Render content
+  console.log(`[BlogSection] Rendering content with ${posts.length} posts.`); // <-- Log rendering content
   return (
     <section id="blog" className="py-16 bg-white dark:bg-background">
       <div className="container mx-auto px-4">

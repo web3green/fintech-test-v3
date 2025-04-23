@@ -7,8 +7,6 @@ import { useEffect, useRef, useState, ErrorInfo, Component } from 'react';
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Admin from "./pages/Admin";
-import { updateSocialMetaTags } from "./utils/metaTags/socialMetaTags";
-import { setFavicon } from './utils/logoManager';
 import { toast } from "sonner";
 import { LanguageProvider, useLanguage } from "@/contexts/LanguageContext";
 import { Loader2, AlertTriangle, RefreshCw } from "lucide-react";
@@ -65,30 +63,6 @@ const VersionChecker = () => {
   return null;
 };
 
-const MetaTagUpdater = () => {
-  useEffect(() => {
-    console.log('MetaTagUpdater mounted - setting up branding');
-    
-    // Установка метатегов и фавикона с таймаутом для предотвращения блокировки
-    const timeoutId = setTimeout(() => {
-      try {
-        // Устанавливаем метатеги и фавикон
-        updateSocialMetaTags();
-        setFavicon();
-        console.log('Social meta tags and favicon set.');
-      } catch (error) {
-        console.error('Failed to setup logos:', error);
-      }
-    }, 100);
-    
-    return () => {
-      clearTimeout(timeoutId); // Очищаем только первоначальный таймаут
-    };
-  }, []);
-
-  return null;
-};
-
 const AppContent = () => {
   const { isLoading: isLangLoading } = useLanguage();
   const [isLoaded, setIsLoaded] = useState(false);
@@ -102,7 +76,7 @@ const AppContent = () => {
       const savedTheme = localStorage.getItem('theme');
       
       // По умолчанию используем темную тему, если не сохранена светлая
-      if (savedTheme !== 'light') { // Restoring theme logic
+      if (savedTheme !== 'light') {
         // Add checks before using classList.add
         if (document.documentElement && document.documentElement.classList) {
           document.documentElement.classList.add('dark');

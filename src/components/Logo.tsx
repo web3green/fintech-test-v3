@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '@/contexts/LanguageContext';
-// import { getLogoUrl } from '@/utils/logoManager'; // Removed this unused import
+// import { getLogoUrl } from '@/utils/logoManager';
 // import { FALLBACK_SVG_LOGO } from '@/constants/assets';
 
 interface LogoProps {
@@ -20,10 +20,9 @@ const Logo: React.FC<LogoProps> = ({
   showSlogan = true,
 }) => {
   const { language } = useLanguage();
-
-  // Получаем актуальный логотип
-  // const logoSrc = getLogoUrl().relative; // Old way using base64
-  const logoSrc = '/images/logo.png'; // New way using static URL
+  
+  // Используем статический путь к логотипу из папки public
+  const logoSrc = '/images/logo.png';
   
   // Слоганы для разных языков
   const slogan = language === 'en' 
@@ -36,7 +35,7 @@ const Logo: React.FC<LogoProps> = ({
         <div className="relative">
           <img
             src={logoSrc}
-            alt={"Логотип компании"}
+            alt={"FinTechAssist Logo"}
             style={{ width: `${width}px`, height: `${height}px`, objectFit: 'contain' }}
             className="object-contain"
           />

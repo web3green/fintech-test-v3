@@ -1,0 +1,10 @@
+# Allow all crawlers access to all content
+User-agent: *
+Allow: /
+
+# Disallow access to admin and debug areas if they exist
+Disallow: /admin/
+Disallow: /debug/
+
+# Sitemap URL (add later if you have one)
+# Sitemap: https://fintech-assist.com/sitemap.xml 

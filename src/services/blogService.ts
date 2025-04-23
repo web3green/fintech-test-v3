@@ -34,15 +34,17 @@ export const getLocalizedContent = (post: BlogPost | null | undefined, fieldPref
   return valueEn; // Default to English or if Russian is missing
 };
 
-export const renderPostColor = (colorScheme: string | null | undefined) => {
+export const renderPostColor = (colorScheme: string | null | undefined): string => {
+  // Возвращаем ПОЛНЫЙ набор классов, включая КОНТРАСТНЫЙ ТЕКСТ
   if (colorScheme === 'blue') {
-    return 'bg-fintech-blue text-white';
+    // Синий фон/рамка + синий текст (светлый в темной теме)
+    return 'bg-fintech-blue/10 border-fintech-blue/30 dark:bg-fintech-blue/20 dark:border-fintech-blue/40 text-fintech-blue dark:text-fintech-blue-light';
   } else if (colorScheme === 'orange') {
-    return 'bg-fintech-orange/80 text-white dark:bg-gradient-to-br dark:from-blue-900/40 dark:via-fintech-orange/30 dark:to-blue-950/60 dark:backdrop-blur-sm dark:border dark:border-white/5';
-  } else if (colorScheme === 'graphite') {
-    return 'bg-gray-700 text-white dark:bg-gray-800';
+    // Оранжевый фон/рамка + оранжевый текст (светлый в темной теме)
+    return 'bg-fintech-orange/10 border-fintech-orange/30 dark:bg-fintech-orange/20 dark:border-fintech-orange/40 text-fintech-orange dark:text-fintech-orange-light';
   } else {
-    return 'bg-white text-gray-900 dark:bg-gray-800 dark:text-white';
+    // По умолчанию (для graphite и других): ИСПОЛЬЗУЕМ СИНИЙ СТИЛЬ
+    return 'bg-fintech-blue/10 border-fintech-blue/30 dark:bg-fintech-blue/20 dark:border-fintech-blue/40 text-fintech-blue dark:text-fintech-blue-light'; 
   }
 };
 

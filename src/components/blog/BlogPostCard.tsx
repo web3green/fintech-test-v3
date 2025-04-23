@@ -75,7 +75,10 @@ export const BlogPostCard: React.FC<BlogPostCardProps> = ({
       
       <CardContent className="p-5">
         <div className="mb-2 flex items-center">
-          <Badge variant="outline" className={`text-xs capitalize mr-2 ${colorStyle.split(' ')[0].replace('bg-', 'text-')}`}>
+          <Badge 
+            variant="outline" 
+            className={`text-xs capitalize mr-2 ${colorStyle}`} 
+          >
             {getLocalizedContent(post, 'category', language)}
           </Badge>
           <span className="text-xs text-muted-foreground flex items-center">

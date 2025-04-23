@@ -47,7 +47,10 @@ export const BlogSearchBar: React.FC<BlogSearchBarProps> = ({
             value={categoryFilter} 
             onValueChange={setCategoryFilter}
           >
-            <SelectTrigger className="bg-background border-input">
+            <SelectTrigger 
+              className="bg-background border-input"
+              aria-label={language === 'en' ? 'Filter by category' : 'Фильтр по категории'}
+            >
               <div className="flex items-center">
                 <Filter className="h-4 w-4 mr-2" />
                 <SelectValue placeholder={language === 'en' ? 'Filter by Category' : 'Фильтр по категории'} />

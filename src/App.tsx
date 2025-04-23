@@ -19,6 +19,7 @@ import { checkStorageAccess, ensureLogoExists } from "@/utils/storageUtils";
 import { DebugPanel } from "@/components/Debug";
 import { ErrorBoundary } from "react-error-boundary";
 import { clearBrowserCache } from "./utils/cacheCleanup";
+import { Helmet } from 'react-helmet-async';
 
 // Ставим статичную версию для начала
 const APP_VERSION = '0.1.0';
@@ -180,12 +181,43 @@ const ErrorDisplay = ({ error, resetErrorBoundary }: { error: Error, resetErrorB
 const App = () => {
   return (
     <ErrorBoundary fallback={ErrorDisplay}>
+      <Helmet>
+        <title>FinTechAssist - Ваш Партнер в Лицензировании</title>
+        <meta name="description" content="FinTechAssist предлагает решения для лицензирования и развития вашего бизнеса. Получите лицензию, подготовьтесь и действуйте уверенно." />
+        {/* Schema.org markup for Organization */}
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Organization",
+            "name": "FinTechAssist",
+            "url": "https://fintech-assist.com/",
+            "logo": "https://fintech-assist.com/images/logo.png",
+            // Optional: Add contact points or social links here if available
+            // "contactPoint": {
+            //   "@type": "ContactPoint",
+            //   "telephone": "+1-XXX-XXX-XXXX",
+            //   "contactType": "customer service"
+            // },
+            // "sameAs": [
+            //   "https://www.facebook.com/yourprofile",
+            //   "https://www.linkedin.com/company/yourcompany"
+            // ]
+          })}
+        </script>
+        {/* Schema.org markup for WebSite */}
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            "url": "https://fintech-assist.com/",
+            // No search action defined as there's no internal search
+          })}
+        </script>
+      </Helmet>
       <QueryClientProvider client={queryClient}>
         <TooltipProvider>
           <LanguageProvider>
-            {/* Упрощенная версия - убираем все блокирующие компоненты */}
             <Toaster />
-            {/* Убираем Suspense */}
             <Sonner />
             <AppContent />
           </LanguageProvider>

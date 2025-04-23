@@ -60,6 +60,7 @@ export function FooterSocialLinks() {
           href={link.url}
           target="_blank"
           rel="noopener noreferrer"
+          aria-label={`FinTechAssist on ${link.platform}`}
           className="w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-800/60 hover:bg-fintech-orange/10 dark:hover:bg-fintech-orange/20 flex items-center justify-center transition-colors text-fintech-orange dark:text-fintech-orange/80"
         >
           {renderSocialIcon(link.icon)}

@@ -102,14 +102,14 @@ const AppContent = () => {
       const savedTheme = localStorage.getItem('theme');
       
       // По умолчанию используем темную тему, если не сохранена светлая
-      if (savedTheme !== 'light') {
-        // Add checks before using classList.add
-        if (document.documentElement && document.documentElement.classList) {
-          document.documentElement.classList.add('dark');
-        } else {
-          console.warn('Could not set dark theme: documentElement or classList is not available at this time.');
-        }
-      }
+      // if (savedTheme !== 'light') { // Temporarily commenting out theme logic
+      //   // Add checks before using classList.add
+      //   if (document.documentElement && document.documentElement.classList) {
+      //     document.documentElement.classList.add('dark');
+      //   } else {
+      //     console.warn('Could not set dark theme: documentElement or classList is not available at this time.');
+      //   }
+      // }
       
       // Немедленно разрешаем загрузку без дополнительных проверок
       setIsLoaded(true);

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { getLogoUrl } from '@/utils/logoManager';
+// import { getLogoUrl } from '@/utils/logoManager'; // Removed this unused import
 // import { FALLBACK_SVG_LOGO } from '@/constants/assets';
 
 interface LogoProps {
@@ -22,7 +22,8 @@ const Logo: React.FC<LogoProps> = ({
   const { language } = useLanguage();
 
   // Получаем актуальный логотип
-  const logoSrc = getLogoUrl().relative;
+  // const logoSrc = getLogoUrl().relative; // Old way using base64
+  const logoSrc = '/images/logo.png'; // New way using static URL
   
   // Слоганы для разных языков
   const slogan = language === 'en' 

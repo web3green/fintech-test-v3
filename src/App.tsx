@@ -102,7 +102,7 @@ const AppContent = () => {
       const savedTheme = localStorage.getItem('theme');
       
       // По умолчанию используем темную тему, если не сохранена светлая
-      if (savedTheme !== 'light') {
+      if (savedTheme !== 'light') { // Restoring theme logic
         // Add checks before using classList.add
         if (document.documentElement && document.documentElement.classList) {
           document.documentElement.classList.add('dark');

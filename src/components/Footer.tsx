@@ -11,14 +11,6 @@ export function Footer() {
   const { t } = useLanguage();
   const mainServices = getMainServices(t);
   
-  // Function to scroll to a section
-  const scrollToSection = (sectionId: string) => {
-    const section = document.getElementById(sectionId);
-    if (section) {
-      section.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
-  
   // Function to scroll to top
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -37,16 +29,15 @@ export function Footer() {
           <div className="md:col-span-4 lg:col-span-3">
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
               {/* Navigation Links */}
-              <FooterNavLinks scrollToSection={scrollToSection} />
+              <FooterNavLinks />
               
               {/* Services Links */}
               <FooterServiceLinks 
-                scrollToSection={scrollToSection} 
                 mainServices={mainServices} 
               />
               
               {/* Contact Information */}
-              <FooterContactInfo scrollToSection={scrollToSection} />
+              <FooterContactInfo />
             </div>
           </div>
         </div>

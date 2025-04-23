@@ -4,10 +4,10 @@ import { Button } from '@/components/ui/button';
 import { ChevronRight } from 'lucide-react';
 
 interface FooterContactInfoProps {
-  scrollToSection: (sectionId: string) => void;
+  // scrollToSection: (sectionId: string) => void; // Removed prop
 }
 
-export function FooterContactInfo({ scrollToSection }: FooterContactInfoProps) {
+export function FooterContactInfo({ /* scrollToSection */ }: FooterContactInfoProps) {
   const { t, language } = useLanguage();
 
   return (
@@ -30,10 +30,10 @@ export function FooterContactInfo({ scrollToSection }: FooterContactInfoProps) {
           </a>
         </li>
         <li>
-          <button onClick={() => scrollToSection('contact')} className="text-fintech-blue dark:text-fintech-blue/80 font-medium flex items-center hover:underline">
+          <a href="#contact" className="text-fintech-blue dark:text-fintech-blue/80 font-medium flex items-center hover:underline">
             <ChevronRight className="h-3.5 w-3.5" />
             <span>{language === 'en' ? 'Contact Us' : 'Связаться с нами'}</span>
-          </button>
+          </a>
         </li>
       </ul>
     </div>

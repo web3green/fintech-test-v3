@@ -5,7 +5,7 @@ import { ThemeToggle } from '@/components/ThemeToggle';
 import { LanguageToggle } from '@/components/LanguageToggle';
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { Logo } from '@/components/Logo';
+import Logo from '@/components/Logo';
 import { Menu, X } from 'lucide-react';
 
 export function Header() {

@@ -5,7 +5,7 @@ import {
   Bell, Search, Menu, X, LogOut, MessageSquare,
   Newspaper, Send, Link as LinkIcon, Globe, Webhook, Type, Loader2
 } from "lucide-react";
-import { Logo } from "@/components/Logo";
+import Logo from "@/components/Logo";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { 

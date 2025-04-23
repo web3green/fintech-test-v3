@@ -128,6 +128,7 @@ export const BlogPostDialog = ({ post, isOpen, onClose }: BlogPostDialogProps) =
             src={postImage} 
             alt={getLocalizedContent(post, 'title', language)} 
             className="w-full h-full object-cover"
+            loading="lazy"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end">
             <div className="p-4 sm:p-6">

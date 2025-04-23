@@ -1,4 +1,3 @@
-
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -64,6 +63,7 @@ export default function AboutUs() {
                     src="https://images.unsplash.com/photo-1573164713988-8665fc963095" 
                     alt="Our office" 
                     className="w-full h-full object-cover"
+                    loading="lazy"
                   />
                   <div className="absolute inset-0">
                     <GlowingEffect 
@@ -146,6 +146,7 @@ export default function AboutUs() {
                       src={member.image} 
                       alt={member.name} 
                       className="w-full h-full object-cover"
+                      loading="lazy"
                     />
                   </div>
                   <div className="p-6">

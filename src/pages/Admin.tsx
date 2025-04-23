@@ -1,4 +1,4 @@
-import { useEffect, useState, Suspense } from "react";
+import { useEffect, useState, Suspense, lazy } from "react";
 import { useNavigate } from "react-router-dom";
 import { 
   FileText, Settings, 
@@ -23,7 +23,6 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { BlogManagementPanel } from "@/components/admin/BlogManagementPanel";
 import { WebhookPanel } from "@/components/admin/WebhookPanel";
 import { RequestsPanel } from "@/components/admin/RequestsPanel";
 import { SocialLinksPanel } from "@/components/admin/SocialLinksPanel";
@@ -34,6 +33,11 @@ import { cn } from "@/lib/utils";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import { SettingsPanel } from "@/components/admin/SettingsPanel";
 import { supabase } from "@/lib/supabase";
+
+// Динамический импорт для BlogManagementPanel
+const BlogManagementPanel = lazy(() => 
+  import("@/components/admin/BlogManagementPanel").then(module => ({ default: module.BlogManagementPanel }))
+);
 
 const loginSchema = z.object({
   email: z.string().email({ message: "Invalid email address" }),
@@ -320,10 +324,55 @@ const Admin = () => {
               </div>
             }>
               {currentTab === "blog" && <BlogManagementPanel />}
+            </Suspense>
+          </ErrorBoundary>
+
+          <ErrorBoundary fallback={<div>Error loading requests panel...</div>}>
+            <Suspense fallback={
+              <div className="flex justify-center items-center h-64">
+                <Loader2 className="h-8 w-8 animate-spin text-fintech-blue" />
+              </div>
+            }>
               {currentTab === "requests" && <RequestsPanel />}
+            </Suspense>
+          </ErrorBoundary>
+
+          <ErrorBoundary fallback={<div>Error loading webhook panel...</div>}>
+            <Suspense fallback={
+              <div className="flex justify-center items-center h-64">
+                <Loader2 className="h-8 w-8 animate-spin text-fintech-blue" />
+              </div>
+            }>
               {currentTab === "webhooks" && <WebhookPanel />}
+            </Suspense>
+          </ErrorBoundary>
+
+          <ErrorBoundary fallback={<div>Error loading social links panel...</div>}>
+            <Suspense fallback={
+              <div className="flex justify-center items-center h-64">
+                <Loader2 className="h-8 w-8 animate-spin text-fintech-blue" />
+              </div>
+            }>
               {currentTab === "social" && <SocialLinksPanel />}
+            </Suspense>
+          </ErrorBoundary>
+
+          <ErrorBoundary fallback={<div>Error loading site texts panel...</div>}>
+            <Suspense fallback={
+              <div className="flex justify-center items-center h-64">
+                <Loader2 className="h-8 w-8 animate-spin text-fintech-blue" />
+              </div>
+            }>
               {currentTab === "texts" && <SiteTextsPanel />}
+            </Suspense>
+          </ErrorBoundary>
+
+          <ErrorBoundary fallback={<div>Error loading settings panel...</div>}>
+            <Suspense fallback={
+              <div className="flex justify-center items-center h-64">
+                <Loader2 className="h-8 w-8 animate-spin text-fintech-blue" />
+              </div>
+            }>
               {currentTab === "settings" && <SettingsPanel />}
             </Suspense>
           </ErrorBoundary>

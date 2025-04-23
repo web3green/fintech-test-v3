@@ -1,4 +1,3 @@
-
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -157,22 +156,15 @@ export default function Services() {
                     </Button>
                   </div>
                   <div className={`relative rounded-2xl overflow-hidden ${index % 2 !== 0 ? 'md:order-1' : ''}`}>
-                    <div className="aspect-video bg-gray-200 dark:bg-gray-800 relative">
+                    <div className="aspect-video overflow-hidden rounded-lg">
                       <img 
                         src={`https://source.unsplash.com/random/800x600?business,finance,${service.id}`} 
                         alt={service.title}
-                        className="w-full h-full object-cover"
+                        className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                        width={600}
+                        height={400}
+                        loading="lazy"
                       />
-                      <div className="absolute inset-0">
-                        <GlowingEffect 
-                          blur={2} 
-                          spread={30} 
-                          glow={true} 
-                          disabled={false} 
-                          inactiveZone={0.4}
-                          proximity={60}
-                        />
-                      </div>
                     </div>
                   </div>
                 </div>

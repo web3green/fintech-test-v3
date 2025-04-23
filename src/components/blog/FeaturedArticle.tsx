@@ -39,12 +39,14 @@ export const FeaturedArticle: React.FC<FeaturedArticleProps> = ({
           >
             <div className="grid grid-cols-1 md:grid-cols-2 gap-0">
               <div className="relative">
-                <div className="aspect-video bg-gray-200 dark:bg-gray-800 relative">
+                <div className="relative aspect-[16/9] w-full overflow-hidden rounded-lg group-hover:opacity-90 transition-opacity duration-300">
                   <img 
                     src={getImageUrl(post.image_url)} 
                     alt={getLocalizedContent(post, 'title', language)} 
-                    className="w-full h-full object-cover"
+                    className="object-cover w-full h-full transform group-hover:scale-105 transition-transform duration-500 ease-out"
+                    loading="lazy"
                   />
+                  <div className={`absolute bottom-0 left-0 right-0 h-1 ${post.color_scheme === 'blue' ? 'bg-fintech-blue' : post.color_scheme === 'orange' ? 'bg-fintech-orange' : 'bg-gray-900'}`}></div>
                 </div>
               </div>
               <div className="p-8 md:p-12 flex flex-col justify-between">

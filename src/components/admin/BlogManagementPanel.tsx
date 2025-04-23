@@ -696,17 +696,24 @@ export function BlogManagementPanel() {
               </TableHeader>
               <TableBody>
                 {posts.map((post) => (
-                  <TableRow key={post.id}>
-                    <TableCell>
+                  <TableRow key={post.id} className="hover:bg-muted/50 cursor-pointer" onClick={() => {
+                    setSelectedPost(post);
+                    setFormData(post);
+                    setImagePreview(post.image_url);
+                  }}>
+                    <TableCell className="font-medium flex items-center">
                       {post.image_url && (
                         <img
-                          src={post.image_url}
+                          src={getImageUrl(post.image_url)}
                           alt={getLocalizedContent(post, 'title', 'en')}
-                          className="h-10 w-10 object-cover rounded"
+                          className="h-10 w-10 object-cover rounded mr-3 shrink-0"
+                          loading="lazy"
                         />
                       )}
+                      <span className="truncate group-hover:underline" title={getLocalizedContent(post, 'title', 'en')}>
+                        {getLocalizedContent(post, 'title', 'en')}
+                      </span>
                     </TableCell>
-                    <TableCell className="font-medium">{getLocalizedContent(post, 'title', 'en')}</TableCell>
                     <TableCell>{post.author}</TableCell>
                     <TableCell>{getLocalizedContent(post, 'category', 'en')}</TableCell>
                     <TableCell>
@@ -719,15 +726,11 @@ export function BlogManagementPanel() {
                         <Button
                           variant="ghost"
                           size="sm"
-                          onClick={() => {
-                            const postToEdit = posts.find(p => p.id === post.id);
-                            if (postToEdit) {
-                              setSelectedPost(postToEdit);
-                              setFormData(postToEdit);
-                              setImagePreview(postToEdit.image_url);
-                            } else {
-                              console.error("Could not find post to edit:", post.id);
-                            }
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setSelectedPost(post);
+                            setFormData(post);
+                            setImagePreview(post.image_url);
                           }}
                         >
                           <Pencil className="h-4 w-4 mr-2" />
@@ -736,7 +739,10 @@ export function BlogManagementPanel() {
                         <Button
                           variant="ghost"
                           size="sm"
-                          onClick={() => handleDelete(post.id)}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDelete(post.id);
+                          }}
                         >
                           <Trash2 className="h-4 w-4 mr-2" />
                           Delete

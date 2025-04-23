@@ -24,6 +24,8 @@ export const BlogPostCard: React.FC<BlogPostCardProps> = ({
   language
 }) => {
   const [reactionCounts, setReactionCounts] = useState({ like: 0, useful: 0, dislike: 0 });
+  const [imageLoaded, setImageLoaded] = useState(false);
+  const [imageError, setImageError] = useState(false);
   
   useEffect(() => {
     if (post && post.id) {
@@ -42,19 +44,33 @@ export const BlogPostCard: React.FC<BlogPostCardProps> = ({
   const imageUrl = getImageUrl(post.image_url);
   const colorStyle = renderPostColor(post.color_scheme);
   
+  const handleImageLoad = () => {
+    setImageLoaded(true);
+  };
+
+  const handleImageError = () => {
+    setImageError(true);
+  };
+  
   return (
     <Card 
       className="h-full overflow-hidden group hover:shadow-md transition-all duration-300 cursor-pointer"
       onClick={() => handlePostClick(post)}
     >
       <div className="relative h-48 overflow-hidden">
-        <img 
-          src={imageUrl} 
-          alt={getLocalizedContent(post, 'title', language)} 
-          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-          loading="lazy"
-        />
-        <div className={`absolute bottom-0 left-0 right-0 h-1 ${colorStyle}`}></div>
+        <div className="relative aspect-video w-full overflow-hidden rounded-t-lg group-hover:opacity-90 transition-opacity duration-300">
+          <img 
+            src={imageUrl} 
+            alt={getLocalizedContent(post, 'title', language)} 
+            className={`object-cover w-full h-full transform group-hover:scale-105 transition-transform duration-500 ease-out ${imageLoaded ? 'opacity-100' : 'opacity-0'}`} 
+            onError={handleImageError}
+            onLoad={handleImageLoad}
+            loading="lazy"
+          />
+          {!imageLoaded && !imageError && (
+            <div className={`absolute bottom-0 left-0 right-0 h-1 ${colorStyle}`}></div>
+          )}
+        </div>
       </div>
       
       <CardContent className="p-5">

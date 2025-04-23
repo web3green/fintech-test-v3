@@ -20,7 +20,8 @@ import { DebugPanel } from "@/components/Debug";
 import { ErrorBoundary } from "react-error-boundary";
 import { clearBrowserCache } from "./utils/cacheCleanup";
 
-const APP_VERSION = Date.now().toString();
+// Ставим статичную версию для начала
+const APP_VERSION = '0.1.0';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -37,6 +38,10 @@ const VersionChecker = () => {
     
     if (savedVersion && savedVersion !== APP_VERSION) {
       console.log('Обнаружена новая версия приложения. Обновление...');
+      // Очищаем кеш ПЕРЕД перезагрузкой
+      clearBrowserCache().catch(err => 
+        console.warn('Ошибка при очистке кеша во время обновления:', err)
+      );
       localStorage.setItem('app_version', APP_VERSION);
       
       if ('caches' in window) {
@@ -64,35 +69,19 @@ const MetaTagUpdater = () => {
     console.log('MetaTagUpdater mounted - setting up branding');
     
     // Установка метатегов и фавикона с таймаутом для предотвращения блокировки
-    setTimeout(() => {
+    const timeoutId = setTimeout(() => {
       try {
         // Устанавливаем метатеги и фавикон
         updateSocialMetaTags();
         setFavicon();
+        console.log('Social meta tags and favicon set.');
       } catch (error) {
         console.error('Failed to setup logos:', error);
       }
     }, 100);
     
-    // Проверяем состояние метатегов каждые 30 секунд, но не раньше чем через 5 секунд после загрузки
-    const timeoutId = setTimeout(() => {
-      const intervalId = setInterval(() => {
-        try {
-          // Проверяем, есть ли наш фавикон на странице
-          if (!document.querySelector('link#primary-favicon')) {
-            console.log('Favicon missing, restoring...');
-            setFavicon();
-          }
-        } catch (error) {
-          console.warn('Error checking favicon:', error);
-        }
-      }, 30000);
-      
-      return () => clearInterval(intervalId);
-    }, 5000);
-    
     return () => {
-      clearTimeout(timeoutId);
+      clearTimeout(timeoutId); // Очищаем только первоначальный таймаут
     };
   }, []);
 
@@ -103,37 +92,9 @@ const AppContent = () => {
   const { isLoading: isLangLoading } = useLanguage();
   const [isLoaded, setIsLoaded] = useState(false);
   const [loadErrors, setLoadErrors] = useState<string[]>([]);
-  const [supabaseStatus, setSupabaseStatus] = useState<string>('Checking...'); // State for test result
-
-  // --- Run Supabase Connection Test ---
-  useEffect(() => {
-    const runTest = async () => {
-      console.log("--- Running Supabase Connection Test --- ");
-      setSupabaseStatus('Testing...');
-      const result = await testSupabaseConnection();
-      if (result.success) {
-        setSupabaseStatus('Supabase Connection Test: SUCCESS');
-        console.log("--- Supabase Connection Test Result: SUCCESS ---", result);
-      } else {
-        const errorMsg = `Supabase Connection Test: FAILED - Component: ${result.component || 'unknown'}, Error: ${result.error?.message || 'Unknown error'}`;
-        setSupabaseStatus(errorMsg);
-        console.error("--- Supabase Connection Test Result: FAILED ---", result);
-        // Optionally add to loadErrors
-        // setLoadErrors(prev => [...prev, `Supabase Connection Error: ${result.error?.message || 'Unknown'}`]);
-      }
-      console.log("--- End Supabase Connection Test --- ");
-    };
-    runTest();
-  }, []); // Run only once on mount
-  // --- End Supabase Test ---
 
   useEffect(() => {
     console.log('App component mounted - basic setup only');
-    
-    // Очистка кеша при загрузке для устранения проблем с логотипом
-    clearBrowserCache().catch(err => 
-      console.warn('Ошибка при очистке кеша:', err)
-    );
     
     try {
       // Только базовая настройка темы без обращения к внешним ресурсам
@@ -163,9 +124,6 @@ const AppContent = () => {
       </div>
     );
   }
-
-  // Display Supabase status for debugging
-  console.log("Current Supabase Status:", supabaseStatus);
 
   return (
     <BrowserRouter>
@@ -227,6 +185,7 @@ const App = () => {
           <LanguageProvider>
             {/* Упрощенная версия - убираем все блокирующие компоненты */}
             <Toaster />
+            {/* Убираем Suspense */}
             <Sonner />
             <AppContent />
           </LanguageProvider>

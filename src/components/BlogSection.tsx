@@ -135,9 +135,9 @@ export const BlogSection: React.FC = () => {
       <section id="blog" className="py-16">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto mb-10 text-center">
-            <div className="inline-flex items-center rounded-full px-3 py-1 text-sm font-medium bg-gradient-to-r from-blue-900/40 to-blue-800/30 backdrop-blur-sm border border-white/5">
+            <div className="inline-flex items-center rounded-full px-3 py-1 text-sm font-medium bg-blue-100 dark:bg-gradient-to-r dark:from-blue-900/40 dark:to-blue-800/30 backdrop-blur-sm border border-blue-200 dark:border-white/5">
               <span className="flex h-2 w-2 rounded-full bg-fintech-orange/80 mr-2"></span>
-              <span className="text-fintech-orange/90">{language === 'en' ? 'Latest Updates' : 'Последние обновления'}</span>
+              <span className="text-fintech-orange dark:text-fintech-orange/90">{language === 'en' ? 'Latest Updates' : 'Последние обновления'}</span>
             </div>
             <h2 className="text-3xl font-bold mb-4">{language === 'en' ? 'Our Blog' : 'Наш Блог'}</h2>
             <p 
@@ -178,9 +178,9 @@ export const BlogSection: React.FC = () => {
     <section id="blog" className="py-16 bg-white dark:bg-background">
       <div className="container mx-auto px-4">
         <div className="max-w-4xl mx-auto mb-10 text-center">
-          <div className="inline-flex items-center rounded-full px-3 py-1 text-sm font-medium bg-gradient-to-r from-blue-900/40 to-blue-800/30 backdrop-blur-sm border border-white/5">
+          <div className="inline-flex items-center rounded-full px-3 py-1 text-sm font-medium bg-blue-100 dark:bg-gradient-to-r dark:from-blue-900/40 dark:to-blue-800/30 backdrop-blur-sm border border-blue-200 dark:border-white/5">
             <span className="flex h-2 w-2 rounded-full bg-fintech-orange/80 mr-2"></span>
-            <span className="text-fintech-orange/90">{language === 'en' ? 'Latest Updates' : 'Последние обновления'}</span>
+            <span className="text-fintech-orange dark:text-fintech-orange/90">{language === 'en' ? 'Latest Updates' : 'Последние обновления'}</span>
           </div>
           <h2 className="text-3xl font-bold mb-4">{language === 'en' ? 'Our Blog' : 'Наш Блог'}</h2>
           <p 
@@ -247,7 +247,10 @@ export const BlogSection: React.FC = () => {
                     <PaginationLink
                       onClick={() => handlePageChange(index + 1)}
                       isActive={currentPage === index + 1}
-                      className={`${currentPage === index + 1 ? 'bg-gradient-to-r from-blue-900/40 to-blue-800/30 text-fintech-orange/90 border border-white/5' : 'hover:bg-gradient-to-r hover:from-blue-900/40 hover:to-blue-800/30'} cursor-pointer`}
+                      className={`${currentPage === index + 1 
+                        ? 'bg-blue-100 text-fintech-orange border border-blue-300 dark:bg-gradient-to-r dark:from-blue-900/40 dark:to-blue-800/30 dark:text-fintech-orange/90 dark:border-white/5' 
+                        : 'hover:bg-blue-100 dark:hover:bg-gradient-to-r dark:hover:from-blue-900/40 dark:hover:to-blue-800/30'} 
+                        cursor-pointer transition-colors duration-200 px-3 py-1.5 rounded-md text-sm'`}
                     >
                       {index + 1}
                     </PaginationLink>

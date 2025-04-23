@@ -15,7 +15,7 @@ import { Loader2, AlertTriangle, RefreshCw } from "lucide-react";
 import "@/utils/diagnostics";
 import "@/utils/debug";
 import { testSupabaseConnection, supabase } from "@/integrations/supabase/client";
-import { checkStorageAccess, ensureLogoExists } from "@/utils/storageUtils";
+import { checkStorageAccess } from "@/utils/storageUtils";
 import { DebugPanel } from "@/components/Debug";
 import { ErrorBoundary } from "react-error-boundary";
 import { clearBrowserCache } from "./utils/cacheCleanup";
@@ -103,7 +103,12 @@ const AppContent = () => {
       
       // По умолчанию используем темную тему, если не сохранена светлая
       if (savedTheme !== 'light') {
-        document.documentElement.classList.add('dark');
+        // Add checks before using classList.add
+        if (document.documentElement && document.documentElement.classList) {
+          document.documentElement.classList.add('dark');
+        } else {
+          console.warn('Could not set dark theme: documentElement or classList is not available at this time.');
+        }
       }
       
       // Немедленно разрешаем загрузку без дополнительных проверок
@@ -180,7 +185,7 @@ const ErrorDisplay = ({ error, resetErrorBoundary }: { error: Error, resetErrorB
 // Главный компонент App с обработкой ошибок
 const App = () => {
   return (
-    <ErrorBoundary fallback={ErrorDisplay}>
+    <ErrorBoundary fallbackRender={ErrorDisplay}>
       <Helmet>
         <title>FinTechAssist - Ваш Партнер в Лицензировании</title>
         <meta name="description" content="FinTechAssist предлагает решения для лицензирования и развития вашего бизнеса. Получите лицензию, подготовьтесь и действуйте уверенно." />

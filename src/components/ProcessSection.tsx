@@ -56,19 +56,17 @@ export function ProcessSection() {
                 className="relative flex flex-col items-center text-center animate-fade-up"
                 style={{ animationDelay: `${index * 200}ms` }}
               >
-                <div className="relative z-10 mb-6 hover-scale">
-                  <div className={`glass-card rounded-xl p-6 shadow-lg relative ${step.color}`}>
-                    <step.icon className="h-8 w-8 text-white" />
-                    <div className="absolute inset-0 rounded-xl">
-                      <GlowingEffect 
-                        blur={2} 
-                        spread={30} 
-                        glow={true} 
-                        disabled={false} 
-                        inactiveZone={0.2}
-                        proximity={60}
-                      />
-                    </div>
+                <div className={`glass-card rounded-xl p-6 shadow-lg relative ${step.color} mb-6 hover-scale`}>
+                  <step.icon className="h-8 w-8 text-white" />
+                  <div className="absolute inset-0 rounded-xl">
+                    <GlowingEffect 
+                      blur={2} 
+                      spread={30} 
+                      glow={true} 
+                      disabled={false} 
+                      inactiveZone={0.2}
+                      proximity={60}
+                    />
                   </div>
                 </div>
                 <h3 className="text-xl font-display font-bold mb-3">{step.title}</h3>

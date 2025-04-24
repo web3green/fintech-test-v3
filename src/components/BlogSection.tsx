@@ -18,6 +18,7 @@ import { Spinner } from '@/components/ui/spinner';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { AlertCircle } from 'lucide-react';
 import { BlogPostCardSkeleton } from './blog/BlogPostCardSkeleton';
+import { cn } from '@/lib/utils';
 
 // Define the fetcher function for SWR
 const blogPostsFetcher = async ([key, page, limit, query, category]: [
@@ -135,9 +136,9 @@ export const BlogSection: React.FC = () => {
       <section id="blog" className="py-16">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto mb-10 text-center">
-            <div className="inline-flex items-center rounded-full px-3 py-1 text-sm font-medium bg-blue-100 dark:bg-gradient-to-r dark:from-blue-900/40 dark:to-blue-800/30 backdrop-blur-sm border border-blue-200 dark:border-white/5">
+            <div className="inline-flex items-center rounded-full px-3 py-1 text-sm font-medium bg-fintech-blue/10 text-fintech-blue dark:bg-fintech-blue-dark dark:text-fintech-blue-light mb-4">
               <span className="flex h-2 w-2 rounded-full bg-fintech-orange/80 mr-2"></span>
-              <span className="text-fintech-orange dark:text-fintech-orange/90">{language === 'en' ? 'Latest Updates' : 'Последние обновления'}</span>
+              <span>{language === 'en' ? 'Latest Updates' : 'Последние обновления'}</span>
             </div>
             <h2 className="text-3xl font-bold mb-4">{language === 'en' ? 'Our Blog' : 'Наш Блог'}</h2>
             <p 
@@ -178,9 +179,9 @@ export const BlogSection: React.FC = () => {
     <section id="blog" className="py-16 bg-white dark:bg-background">
       <div className="container mx-auto px-4">
         <div className="max-w-4xl mx-auto mb-10 text-center">
-          <div className="inline-flex items-center rounded-full px-3 py-1 text-sm font-medium bg-blue-100 dark:bg-gradient-to-r dark:from-blue-900/40 dark:to-blue-800/30 backdrop-blur-sm border border-blue-200 dark:border-white/5">
+          <div className="inline-flex items-center rounded-full px-3 py-1 text-sm font-medium bg-fintech-blue/10 text-fintech-blue dark:bg-fintech-blue-dark dark:text-fintech-blue-light mb-4">
             <span className="flex h-2 w-2 rounded-full bg-fintech-orange/80 mr-2"></span>
-            <span className="text-fintech-orange dark:text-fintech-orange/90">{language === 'en' ? 'Latest Updates' : 'Последние обновления'}</span>
+            <span>{language === 'en' ? 'Latest Updates' : 'Последние обновления'}</span>
           </div>
           <h2 className="text-3xl font-bold mb-4">{language === 'en' ? 'Our Blog' : 'Наш Блог'}</h2>
           <p 
@@ -242,22 +243,20 @@ export const BlogSection: React.FC = () => {
                       if (currentPage === 1) e.preventDefault();
                       else handlePageChange(currentPage - 1); 
                     }}
-                    className={`${currentPage === 1 ? "pointer-events-none opacity-50" : "cursor-pointer"} hover:bg-fintech-orange/20 hover:bg-gradient-to-r from-blue-900/40 to-blue-800/30`}
+                    className={`${currentPage === 1 ? "pointer-events-none opacity-50" : "cursor-pointer"} hover:bg-accent dark:hover:bg-fintech-blue-dark dark:hover:text-fintech-blue-light`}
                   />
                 </PaginationItem>
                 
                 {Array.from({ length: totalPages }).map((_, index) => (
                   <PaginationItem key={index}>
-                    <PaginationLink
+                    <PaginationLink 
                       href={`#blog?page=${index + 1}`}
-                      onClick={(e) => { 
-                        if (currentPage === index + 1) e.preventDefault();
-                        handlePageChange(index + 1); 
-                      }}
                       isActive={currentPage === index + 1}
-                      className={`${currentPage === index + 1 
-                        ? "bg-gradient-to-r from-blue-900/40 to-blue-800/30 border border-white/10" 
-                        : "hover:bg-fintech-orange/20 hover:bg-gradient-to-r from-blue-900/40 to-blue-800/30"} cursor-pointer`}
+                      onClick={(e) => { handlePageChange(index + 1); }}
+                      className={cn(
+                        "hover:bg-accent dark:hover:bg-fintech-blue-dark dark:hover:text-fintech-blue-light",
+                        currentPage === index + 1 && "dark:bg-fintech-blue-dark dark:text-fintech-blue-light"
+                      )}
                     >
                       {index + 1}
                     </PaginationLink>
@@ -271,7 +270,7 @@ export const BlogSection: React.FC = () => {
                       if (currentPage === totalPages) e.preventDefault();
                       else handlePageChange(currentPage + 1); 
                     }}
-                    className={`${currentPage === totalPages ? "pointer-events-none opacity-50" : "cursor-pointer"} hover:bg-fintech-orange/20 hover:bg-gradient-to-r from-blue-900/40 to-blue-800/30`}
+                    className={`${currentPage === totalPages ? "pointer-events-none opacity-50" : "cursor-pointer"} hover:bg-accent dark:hover:bg-fintech-blue-dark dark:hover:text-fintech-blue-light`}
                   />
                 </PaginationItem>
               </PaginationContent>

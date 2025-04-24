@@ -237,7 +237,11 @@ export const BlogSection: React.FC = () => {
               <PaginationContent>
                 <PaginationItem>
                   <PaginationPrevious 
-                    onClick={() => handlePageChange(currentPage - 1)}
+                    href={`#blog?page=${currentPage - 1}`}
+                    onClick={(e) => { 
+                      if (currentPage === 1) e.preventDefault();
+                      else handlePageChange(currentPage - 1); 
+                    }}
                     className={`${currentPage === 1 ? "pointer-events-none opacity-50" : "cursor-pointer"} hover:bg-fintech-orange/20 hover:bg-gradient-to-r from-blue-900/40 to-blue-800/30`}
                   />
                 </PaginationItem>
@@ -245,12 +249,15 @@ export const BlogSection: React.FC = () => {
                 {Array.from({ length: totalPages }).map((_, index) => (
                   <PaginationItem key={index}>
                     <PaginationLink
-                      onClick={() => handlePageChange(index + 1)}
+                      href={`#blog?page=${index + 1}`}
+                      onClick={(e) => { 
+                        if (currentPage === index + 1) e.preventDefault();
+                        handlePageChange(index + 1); 
+                      }}
                       isActive={currentPage === index + 1}
                       className={`${currentPage === index + 1 
-                        ? 'bg-blue-100 text-fintech-orange border border-blue-300 dark:bg-gradient-to-r dark:from-blue-900/40 dark:to-blue-800/30 dark:text-fintech-orange/90 dark:border-white/5' 
-                        : 'hover:bg-blue-100 dark:hover:bg-gradient-to-r dark:hover:from-blue-900/40 dark:hover:to-blue-800/30'} 
-                        cursor-pointer transition-colors duration-200 px-3 py-1.5 rounded-md text-sm'`}
+                        ? "bg-gradient-to-r from-blue-900/40 to-blue-800/30 border border-white/10" 
+                        : "hover:bg-fintech-orange/20 hover:bg-gradient-to-r from-blue-900/40 to-blue-800/30"} cursor-pointer`}
                     >
                       {index + 1}
                     </PaginationLink>
@@ -258,8 +265,12 @@ export const BlogSection: React.FC = () => {
                 ))}
                 
                 <PaginationItem>
-                  <PaginationNext
-                    onClick={() => handlePageChange(currentPage + 1)}
+                  <PaginationNext 
+                    href={`#blog?page=${currentPage + 1}`}
+                    onClick={(e) => { 
+                      if (currentPage === totalPages) e.preventDefault();
+                      else handlePageChange(currentPage + 1); 
+                    }}
                     className={`${currentPage === totalPages ? "pointer-events-none opacity-50" : "cursor-pointer"} hover:bg-fintech-orange/20 hover:bg-gradient-to-r from-blue-900/40 to-blue-800/30`}
                   />
                 </PaginationItem>

@@ -252,7 +252,11 @@ export const BlogSection: React.FC = () => {
                     <PaginationLink 
                       href={`#blog?page=${index + 1}`}
                       isActive={currentPage === index + 1}
-                      onClick={(e) => { handlePageChange(index + 1); }}
+                      onClick={(e) => { 
+                        e.preventDefault(); 
+                        handlePageChange(index + 1); 
+                        document.getElementById('blog')?.scrollIntoView({ behavior: 'smooth' });
+                      }}
                       className={cn(
                         "hover:bg-accent dark:hover:bg-fintech-blue-dark dark:hover:text-fintech-blue-light",
                         currentPage === index + 1 && "dark:bg-fintech-blue-dark dark:text-fintech-blue-light"

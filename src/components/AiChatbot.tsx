@@ -1,4 +1,3 @@
-
 import { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -6,6 +5,16 @@ import { Send, X, ChevronDown, Bot, Sparkles, Brain } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useToast } from '@/hooks/use-toast';
 import { generateAIResponse } from '@/utils/contactApi';
+import chatbotResponses from '@/data/chatbotResponses.json'; // Import chatbot responses
+
+// Define type for chatbot response entry
+interface ChatbotResponseEntry {
+  key: string;
+  content: {
+    en: string;
+    ru: string;
+  };
+}
 
 type Message = {
   id: string;
@@ -56,23 +65,26 @@ export function AiChatbot() {
     audioRef.current.play().catch(err => console.error("Error playing sound:", err));
   };
 
-  // Initial bot greeting
+  // Helper function to get text by key from imported JSON
+  const getChatbotText = (key: string): string => {
+    const entry = chatbotResponses.find(item => item.key === key);
+    return entry ? entry.content[language] : `Missing text for key: ${key}`;
+  };
+
+  // Initial bot greeting from JSON
   useEffect(() => {
     if (messages.length === 0) {
-      const greeting = language === 'en' 
-        ? "Hello! I'm the FintechAssist AI assistant. How can I help you today?"
-        : "Здравствуйте! Я ИИ-ассистент FintechAssist. Чем я могу вам помочь сегодня?";
-        
+      const greetingText = getChatbotText('chatbot.greeting');
       setMessages([
         {
           id: '1',
           type: 'bot',
-          text: greeting,
+          text: greetingText,
           timestamp: new Date(),
         },
       ]);
     }
-  }, [language, messages.length]);
+  }, [language, messages.length, getChatbotText]); // Add getChatbotText to dependency array
 
   useEffect(() => {
     // Scroll to bottom when messages change
@@ -109,8 +121,8 @@ export function AiChatbot() {
     setIsLoading(true);
 
     try {
-      // First, use the local AI response generator
-      const aiResponse = generateAIResponse(input);
+      // Get the response key from the AI function
+      const responseKey = generateAIResponse(input);
       
       // Then, if webhook is configured, send data to Make
       const storedWebhookUrl = localStorage.getItem('webhookUrl');
@@ -123,7 +135,7 @@ export function AiChatbot() {
           mode: "no-cors", // Handle CORS issues
           body: JSON.stringify({
             userMessage: input,
-            aiResponse: aiResponse,
+            aiResponse: responseKey,
             language: language,
             timestamp: new Date().toISOString(),
             conversation: messages.map(m => ({ type: m.type, text: m.text }))
@@ -133,10 +145,11 @@ export function AiChatbot() {
       
       // Add bot response after a small delay to simulate processing
       setTimeout(() => {
+        const botResponseText = getChatbotText(responseKey); // Get text using the key
         const botMessage: Message = {
           id: Date.now().toString(),
           type: 'bot',
-          text: aiResponse,
+          text: botResponseText, // Use the retrieved text
           timestamp: new Date(),
         };
         
@@ -147,15 +160,12 @@ export function AiChatbot() {
     } catch (error) {
       console.error('Error getting AI response:', error);
       
-      // Add error message
-      const errorMessage = language === 'en'
-        ? "I'm sorry, I encountered an error while processing your request. Please try again later."
-        : "Извините, произошла ошибка при обработке вашего запроса. Пожалуйста, попробуйте позже.";
-        
+      // Add error message from JSON
+      const errorText = getChatbotText('chatbot.error');
       const botMessage: Message = {
         id: Date.now().toString(),
         type: 'bot',
-        text: errorMessage,
+        text: errorText, // Use the retrieved error text
         timestamp: new Date(),
       };
       

@@ -357,7 +357,12 @@ export function AboutSection() {
                 : "Наша команда обработает всю необходимую документацию, используя наш многолетний опыт для обеспечения гладкого процесса. Все наши услуги полностью покрывают потребности клиентов в финтех и финансовой сфере."}
             </p>
             
-            <Button className="bg-gradient-to-r from-blue-600 to-fintech-blue hover:from-blue-700 hover:to-blue-800 text-white shadow-lg hover:shadow-xl transition-all duration-300">
+            <Button 
+              className="bg-gradient-to-r from-blue-600 to-fintech-blue hover:from-blue-700 hover:to-blue-800 text-white shadow-lg hover:shadow-xl transition-all duration-300"
+              onClick={() => {
+                document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
+              }}
+            >
               {language === 'en' ? 'Contact Us Today' : 'Свяжитесь с нами сегодня'}
             </Button>
           </div>

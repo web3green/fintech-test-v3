@@ -1,9 +1,9 @@
 import { useEffect, useState, Suspense, lazy } from "react";
 import { useNavigate } from "react-router-dom";
 import { 
-  FileText, Settings, 
+  FileText, /* Settings, */ // Remove Settings icon import
   Bell, Search, Menu, X, LogOut, MessageSquare,
-  Newspaper, Send, Link as LinkIcon, Globe, Webhook, Type, Loader2
+  Newspaper, Send, Link as LinkIcon, Globe, Webhook, Type, Loader2, Brain
 } from "lucide-react";
 import Logo from "@/components/Logo";
 import { Button } from "@/components/ui/button";
@@ -31,12 +31,16 @@ import { toast } from "sonner";
 import { Sidebar } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
 import ErrorBoundary from "@/components/ErrorBoundary";
-import { SettingsPanel } from "@/components/admin/SettingsPanel";
 import { supabase } from "@/lib/supabase";
 
 // Динамический импорт для BlogManagementPanel
 const BlogManagementPanel = lazy(() => 
   import("@/components/admin/BlogManagementPanel").then(module => ({ default: module.BlogManagementPanel }))
+);
+
+// Import the new panel
+const ChatbotResponsesPanel = lazy(() => 
+  import("@/components/admin/ChatbotResponsesPanel").then(module => ({ default: module.ChatbotResponsesPanel }))
 );
 
 const loginSchema = z.object({
@@ -279,13 +283,14 @@ const Admin = () => {
               {language === 'en' ? "Site Texts" : "Тексты сайта"}
             </Button>
             
+            {/* Add Chatbot Responses Button */}
             <Button 
-              variant={currentTab === "settings" ? "default" : "ghost"} 
-              onClick={() => setCurrentTab("settings")}
+              variant={currentTab === "chatbot" ? "default" : "ghost"} 
+              onClick={() => setCurrentTab("chatbot")}
               className="w-full justify-start"
             >
-              <Settings className="mr-2 h-4 w-4" />
-              {language === 'en' ? "Settings" : "Настройки"}
+              <Brain className="mr-2 h-4 w-4" /> {/* Using Brain icon as example */}
+              {language === 'en' ? "Chatbot Responses" : "Ответы чат-бота"}
             </Button>
           </nav>
           
@@ -367,13 +372,14 @@ const Admin = () => {
             </Suspense>
           </ErrorBoundary>
 
-          <ErrorBoundary fallback={<div>Error loading settings panel...</div>}>
+          {/* Add Chatbot Responses Panel Rendering */}
+          <ErrorBoundary fallback={<div>Error loading chatbot responses panel...</div>}>
             <Suspense fallback={
-              <div className="flex justify-center items-center h-64">
+              <div className="flex items-center justify-center h-64">
                 <Loader2 className="h-8 w-8 animate-spin text-fintech-blue" />
               </div>
             }>
-              {currentTab === "settings" && <SettingsPanel />}
+              {currentTab === "chatbot" && <ChatbotResponsesPanel />}
             </Suspense>
           </ErrorBoundary>
         </div>

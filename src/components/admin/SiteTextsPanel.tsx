@@ -12,12 +12,8 @@ export const SiteTextsPanel: React.FC = () => {
   const { texts, addText, updateText, deleteText, syncWithDatabase } = useSiteTexts()
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const [newText, setNewText] = useState<TextBlock>({
-    key: '',
-    section: 'default',
-    content: { en: '', ru: '' }
-  })
   const [editingTexts, setEditingTexts] = useState<Record<string, TextBlock>>({})
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     const initializeTexts = async () => {
@@ -43,21 +39,6 @@ export const SiteTextsPanel: React.FC = () => {
     acc[text.section].push(text)
     return acc
   }, {} as Record<string, TextBlock[]>)
-
-  const handleAddText = async () => {
-    try {
-      setError(null)
-      await addText(newText)
-      setNewText({
-        key: '',
-        section: 'default',
-        content: { en: '', ru: '' }
-      })
-    } catch (err) {
-      setError('Failed to add text')
-      console.error(err)
-    }
-  }
 
   const handleUpdateText = async (key: string) => {
     try {
@@ -113,48 +94,15 @@ export const SiteTextsPanel: React.FC = () => {
         </Alert>
       )}
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Add New Text</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
-            <Input
-              placeholder="Key"
-              value={newText.key}
-              onChange={(e) => setNewText({ ...newText, key: e.target.value })}
-            />
-            <Input
-              placeholder="Section"
-              value={newText.section}
-              onChange={(e) => setNewText({ ...newText, section: e.target.value })}
-            />
-          </div>
-          <Input
-            placeholder="English Text"
-            value={newText.content.en}
-            onChange={(e) => setNewText({
-              ...newText,
-              content: { ...newText.content, en: e.target.value }
-            })}
-          />
-          <Input
-            placeholder="Russian Text"
-            value={newText.content.ru}
-            onChange={(e) => setNewText({
-              ...newText,
-              content: { ...newText.content, ru: e.target.value }
-            })}
-          />
-          <Button onClick={handleAddText} className="w-full">
-            <Plus className="mr-2 h-4 w-4" />
-            Add Text
-          </Button>
-        </CardContent>
-      </Card>
+      <Input 
+        placeholder="Search texts (by key or content)..." 
+        value={searchQuery} 
+        onChange={(e) => setSearchQuery(e.target.value)} 
+        className="mb-4"
+      />
 
-      <Tabs defaultValue={Object.keys(groupedTexts)[0]}>
-        <TabsList className="grid w-full grid-cols-4">
+      <Tabs defaultValue={Object.keys(groupedTexts)[0] || 'default'}>
+        <TabsList className="grid w-full grid-cols-4 mb-8">
           {Object.keys(groupedTexts).map((section) => (
             <TabsTrigger key={section} value={section}>
               {section}
@@ -162,49 +110,57 @@ export const SiteTextsPanel: React.FC = () => {
           ))}
         </TabsList>
 
-        {Object.entries(groupedTexts).map(([section, sectionTexts]) => (
-          <TabsContent key={section} value={section}>
-            <div className="space-y-4">
-              {sectionTexts.map((text) => (
-                <Card key={text.key}>
-                  <CardContent className="pt-6 space-y-4">
-                    <div className="flex justify-between items-center">
-                      <span className="font-medium">{text.key}</span>
-                      <div className="space-x-2">
-                        {editingTexts[text.key] && (
+        {Object.entries(groupedTexts).map(([section, sectionTexts]) => {
+          const filteredTexts = sectionTexts.filter(text => 
+            text.key.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            text.content.en.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            text.content.ru.toLowerCase().includes(searchQuery.toLowerCase())
+          );
+
+          return (
+            <TabsContent key={section} value={section}>
+              <div className="space-y-4">
+                {filteredTexts.map((text) => (
+                  <Card key={text.key}>
+                    <CardContent className="pt-6 space-y-4">
+                      <div className="flex justify-between items-center">
+                        <span className="font-medium">{text.key}</span>
+                        <div className="space-x-2">
+                          {editingTexts[text.key] && (
+                            <Button
+                              size="sm"
+                              onClick={() => handleUpdateText(text.key)}
+                            >
+                              <Save className="mr-2 h-4 w-4" />
+                              Save
+                            </Button>
+                          )}
                           <Button
+                            variant="destructive"
                             size="sm"
-                            onClick={() => handleUpdateText(text.key)}
+                            onClick={() => handleDeleteText(text.key)}
                           >
-                            <Save className="mr-2 h-4 w-4" />
-                            Save
+                            <Trash2 className="h-4 w-4" />
                           </Button>
-                        )}
-                        <Button
-                          variant="destructive"
-                          size="sm"
-                          onClick={() => handleDeleteText(text.key)}
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
+                        </div>
                       </div>
-                    </div>
-                    <Input
-                      value={editingTexts[text.key]?.content.en || text.content.en}
-                      onChange={(e) => handleTextChange(text.key, 'en', e.target.value)}
-                      placeholder="English Text"
-                    />
-                    <Input
-                      value={editingTexts[text.key]?.content.ru || text.content.ru}
-                      onChange={(e) => handleTextChange(text.key, 'ru', e.target.value)}
-                      placeholder="Russian Text"
-                    />
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </TabsContent>
-        ))}
+                      <Input
+                        value={editingTexts[text.key]?.content.en || text.content.en}
+                        onChange={(e) => handleTextChange(text.key, 'en', e.target.value)}
+                        placeholder="English Text"
+                      />
+                      <Input
+                        value={editingTexts[text.key]?.content.ru || text.content.ru}
+                        onChange={(e) => handleTextChange(text.key, 'ru', e.target.value)}
+                        placeholder="Russian Text"
+                      />
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </TabsContent>
+          )
+        })}
       </Tabs>
     </div>
   )

@@ -20,7 +20,7 @@ export function LanguageToggle() {
     >
       <Globe className="w-4 h-4" />
       <span className="text-sm font-medium">
-        {language === 'en' ? 'EN' : 'RU'}
+        {language === 'en' ? 'RU' : 'EN'}
       </span>
     </Button>
   );

@@ -183,7 +183,10 @@ export function ServicesSection() {
                           transition={{ duration: 0.3 }}
                           className="px-5 pb-4 pt-0 border-t border-border/30 mt-1"
                         >
-                          <p className="text-sm text-foreground/90 mb-4">{service.details}</p>
+                          <div 
+                              className="text-sm text-foreground/90 mb-4 prose dark:prose-invert max-w-none"
+                              dangerouslySetInnerHTML={{ __html: service.details }}
+                          />
                           <Button 
                             variant="outline" 
                             size="sm"

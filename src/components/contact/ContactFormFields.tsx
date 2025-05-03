@@ -41,26 +41,29 @@ export function ContactFormFields() {
     setIsSubmitting(true);
     
     try {
-      // Process the form submission using the utility function
-      await processContactForm({
-        name: formData.name,
-        email: formData.email,
-        message: `Phone: ${formData.phone}\nService: ${formData.service}\nMessage: ${formData.message}`,
-      });
+      // Call the processing function from contactApi.ts
+      const result = await processContactForm(formData);
       
-      toast.success(t('contact.success'));
-      
-      // Reset form
-      setFormData({
-        name: '',
-        email: '',
-        phone: '',
-        service: '',
-        message: '',
-      });
-    } catch (error) {
-      console.error('Error submitting form:', error);
-      toast.error(language === 'en' ? 'Error sending message. Please try again.' : 'Ошибка отправки сообщения. Пожалуйста, попробуйте еще раз.');
+      if (result.success) {
+          // Use a specific success key if available, otherwise a generic one
+          toast.success(t('contact.success') || (language === 'en' ? 'Message sent successfully!' : 'Сообщение успешно отправлено!'));
+          // Reset form on success
+          setFormData({
+            name: '',
+            email: '',
+            phone: '',
+            service: '',
+            message: '',
+          });
+      } else {
+          // Throw an error if processContactForm indicated failure
+          throw new Error(result.error || (language === 'en' ? 'Submission processing failed.' : 'Ошибка обработки отправки.'));
+      }
+
+    } catch (error: any) {
+      console.error('Error submitting contact form:', error);
+      // Display the specific error message if available, otherwise a generic one
+      toast.error(error.message || (language === 'en' ? 'Error sending message. Please try again.' : 'Ошибка отправки сообщения. Пожалуйста, попробуйте еще раз.'));
     } finally {
       setIsSubmitting(false);
     }
@@ -110,7 +113,6 @@ export function ContactFormFields() {
               type="tel"
               autoComplete="tel"
               placeholder="+44 7123 456789" 
-              required
               value={formData.phone}
               onChange={handleChange}
               className="bg-white/10 border-white/20 text-white placeholder:text-white/50 focus-visible:ring-fintech-orange/80 dark:focus-visible:ring-fintech-orange/60 dark:bg-white/5 dark:border-white/10"

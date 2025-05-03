@@ -9,6 +9,7 @@ import { getLocalizedContent } from '@/services/blogService';
 import { BlogPost } from '@/services/databaseService';
 import { toggleReaction, getReactionCounts, getUserReactions } from '@/services/reactionsService';
 import { Badge } from '@/components/ui/badge';
+import { useSession } from '@supabase/auth-helpers-react';
 
 interface BlogPostDialogProps {
   post: BlogPost | null;
@@ -18,6 +19,8 @@ interface BlogPostDialogProps {
 
 export const BlogPostDialog = ({ post, isOpen, onClose }: BlogPostDialogProps) => {
   const { language } = useLanguage();
+  const session = useSession();
+  const userId = session?.user?.id || null;
   const [selectedReaction, setSelectedReaction] = useState<string | null>(null);
   const [reactionCounts, setReactionCounts] = useState({ like: 0, dislike: 0, useful: 0 });
   const [isLoading, setIsLoading] = useState(false);
@@ -39,7 +42,7 @@ export const BlogPostDialog = ({ post, isOpen, onClose }: BlogPostDialogProps) =
       setReactionCounts(counts);
       
       // Получаем реакции текущего пользователя
-      const { reactions } = await getUserReactions(post.id);
+      const { reactions } = await getUserReactions(post.id, userId);
       
       // Устанавливаем выбранную реакцию
       if (reactions.like) setSelectedReaction('like');
@@ -57,7 +60,7 @@ export const BlogPostDialog = ({ post, isOpen, onClose }: BlogPostDialogProps) =
     
     setIsLoading(true);
     try {
-      const result = await toggleReaction(post.id, reactionType);
+      const result = await toggleReaction(post.id, reactionType, userId);
       
       if (result.success) {
         if (result.action === 'removed') {

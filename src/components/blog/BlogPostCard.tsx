@@ -54,7 +54,7 @@ export const BlogPostCard: React.FC<BlogPostCardProps> = ({
   
   return (
     <Card 
-      className="h-full overflow-hidden group hover:shadow-md transition-all duration-300 cursor-pointer"
+      className="h-full overflow-hidden group hover:shadow-md transition-all duration-300 cursor-pointer flex flex-col"
       onClick={() => handlePostClick(post)}
     >
       <div className="relative h-48 overflow-hidden">
@@ -73,7 +73,7 @@ export const BlogPostCard: React.FC<BlogPostCardProps> = ({
         </div>
       </div>
       
-      <CardContent className="p-5">
+      <CardContent className="p-5 flex flex-col flex-grow">
         <div className="mb-2 flex items-center">
           <Badge 
             variant="outline" 
@@ -87,13 +87,14 @@ export const BlogPostCard: React.FC<BlogPostCardProps> = ({
           </span>
         </div>
         
-        <h3 className="text-lg font-medium mb-2 line-clamp-2 group-hover:text-fintech-blue transition-colors">
-          {getLocalizedContent(post, 'title', language)}
-        </h3>
-        
-        <p className="text-muted-foreground mb-4 text-sm line-clamp-3">
-          {getLocalizedContent(post, 'excerpt', language)}
-        </p>
+        <div className="mb-4">
+          <h3 className="text-lg font-medium mb-2 line-clamp-2 group-hover:text-fintech-blue transition-colors">
+            {getLocalizedContent(post, 'title', language)}
+          </h3>
+          <p className="text-muted-foreground text-sm line-clamp-3">
+            {getLocalizedContent(post, 'excerpt', language)}
+          </p>
+        </div>
         
         <div className="flex items-center justify-between mt-auto">
           <div className="flex items-center space-x-2">

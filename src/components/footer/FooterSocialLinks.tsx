@@ -1,38 +1,51 @@
-import { Facebook, X, Instagram, Linkedin } from 'lucide-react';
+import { Facebook, X, Instagram, Linkedin, Loader2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { databaseService } from '@/services/databaseService';
 
-type SocialLink = {
-  id: number;
-  platform: string;
+// Interface should align with what we display (platform might not be needed)
+interface DisplaySocialLink {
   url: string;
-  icon: string;
-};
+  iconName: string | null; // icon_name from DB
+  platform: string; // Keep platform for aria-label
+}
 
 export function FooterSocialLinks() {
-  const [socialLinks, setSocialLinks] = useState<SocialLink[]>([]);
+  const [displayLinks, setDisplayLinks] = useState<DisplaySocialLink[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   
   useEffect(() => {
-    // Get social links from localStorage if available
-    const storedLinks = localStorage.getItem('socialLinks');
-    if (storedLinks) {
-      setSocialLinks(JSON.parse(storedLinks));
-    } else {
-      // Default social links
-      const defaultLinks = [
-        { id: 1, platform: 'Facebook', url: 'https://facebook.com', icon: 'facebook' },
-        { id: 2, platform: 'Twitter', url: 'https://x.com', icon: 'twitter' },
-        { id: 3, platform: 'Instagram', url: 'https://instagram.com', icon: 'instagram' },
-        { id: 4, platform: 'Telegram', url: 'https://t.me/fintechassist', icon: 'telegram' },
-        { id: 5, platform: 'LinkedIn', url: 'https://linkedin.com', icon: 'linkedin' }
-      ];
-      setSocialLinks(defaultLinks);
-      localStorage.setItem('socialLinks', JSON.stringify(defaultLinks));
-    }
+    loadSocialLinks();
   }, []);
+
+  const loadSocialLinks = async () => {
+      setIsLoading(true);
+      try {
+          // Fetches array: [{ platform: 'facebook', url: '...', icon_name: 'facebook' }, ...]
+          const fetchedDbLinks = await databaseService.getSocialLinks(); 
+          
+          // Filter out links without a URL and map to display structure
+          const linksToDisplay = fetchedDbLinks
+              .filter(link => link.url) // Only include links that have a URL
+              .map(link => ({
+                  url: link.url,
+                  iconName: link.icon_name,
+                  platform: link.platform // Pass platform name for accessibility
+              }));
+          
+          setDisplayLinks(linksToDisplay);
+      } catch (error) {
+          console.error("Error loading social links for footer:", error);
+          setDisplayLinks([]); 
+      } finally {
+          setIsLoading(false);
+      }
+  };
   
-  // Function to render the appropriate icon
-  const renderSocialIcon = (icon: string) => {
-    switch (icon.toLowerCase()) {
+  // Render function remains largely the same, uses iconName
+  const renderSocialIcon = (iconName: string | null) => {
+    if (!iconName) return <X className="h-5 w-5" />; // Default icon if name is missing
+    
+    switch (iconName.toLowerCase()) {
       case 'facebook':
         return <Facebook className="h-5 w-5" />;
       case 'twitter':
@@ -52,18 +65,30 @@ export function FooterSocialLinks() {
     }
   };
 
+  if (isLoading) {
+      return (
+          <div className="flex space-x-4 h-8 items-center">
+              <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+          </div>
+      );
+  }
+  
+  if (displayLinks.length === 0) {
+      return null;
+  }
+
   return (
     <div className="flex space-x-4">
-      {socialLinks.map((link) => (
+      {displayLinks.map((link) => (
         <a
-          key={link.id}
+          key={link.platform}
           href={link.url}
           target="_blank"
           rel="noopener noreferrer"
           aria-label={`FinTechAssist on ${link.platform}`}
           className="w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-800/60 hover:bg-fintech-orange/10 dark:hover:bg-fintech-orange/20 flex items-center justify-center transition-colors text-fintech-orange dark:text-fintech-orange/80"
         >
-          {renderSocialIcon(link.icon)}
+          {renderSocialIcon(link.iconName)}
         </a>
       ))}
     </div>

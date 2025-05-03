@@ -1,9 +1,9 @@
 import { useEffect, useState, Suspense, lazy } from "react";
 import { useNavigate } from "react-router-dom";
 import { 
-  FileText, /* Settings, */ // Remove Settings icon import
+  FileText,
   Bell, Search, Menu, X, LogOut, MessageSquare,
-  Newspaper, Send, Link as LinkIcon, Globe, Webhook, Type, Loader2, Brain
+  Newspaper, Send, Link as LinkIcon, Globe, Webhook, Type, Loader2, Brain, Briefcase, Languages, MailCheck, LayoutDashboard
 } from "lucide-react";
 import Logo from "@/components/Logo";
 import { Button } from "@/components/ui/button";
@@ -32,13 +32,9 @@ import { Sidebar } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import { supabase } from "@/lib/supabase";
+import { BlogManagementPanel } from '@/components/admin/BlogManagementPanel';
 
-// Динамический импорт для BlogManagementPanel
-const BlogManagementPanel = lazy(() => 
-  import("@/components/admin/BlogManagementPanel").then(module => ({ default: module.BlogManagementPanel }))
-);
-
-// Import the new panel
+// Dynamically import other panels
 const ChatbotResponsesPanel = lazy(() => 
   import("@/components/admin/ChatbotResponsesPanel").then(module => ({ default: module.ChatbotResponsesPanel }))
 );
@@ -48,6 +44,41 @@ const loginSchema = z.object({
   password: z.string().min(1, { message: "Password is required" }),
 });
 
+// Define tab structure (Removed Dashboard)
+const adminTabs = [
+  // Removed Dashboard entry
+  {
+    id: 'blog',
+    label: 'Blog Posts',
+    labelRu: 'Посты блога',
+    icon: Newspaper,
+    component: BlogManagementPanel
+  },
+  {
+    id: 'requests',
+    label: 'Requests',
+    labelRu: 'Заявки',
+    icon: MessageSquare,
+    component: RequestsPanel
+  },
+  {
+    id: 'social_links',
+    label: 'Social Links',
+    labelRu: 'Соцсети',
+    icon: LinkIcon,
+    component: SocialLinksPanel
+  },
+  {
+    id: 'site_texts',
+    label: 'Site Texts',
+    labelRu: 'Тексты сайта',
+    icon: FileText,
+    component: SiteTextsPanel
+  },
+  { id: 'webhooks', labelKey: 'admin.tabs.webhooks', component: WebhookPanel, icon: Webhook },
+  { id: 'chatbot', labelKey: 'admin.tabs.chatbot', component: ChatbotResponsesPanel, icon: Brain },
+];
+
 const Admin = () => {
   const navigate = useNavigate();
   const { language, isLoading } = useLanguage();
@@ -55,7 +86,7 @@ const Admin = () => {
   const [session, setSession] = useState<any>(null);
   const [authLoading, setAuthLoading] = useState(true);
   const [isSidebarOpen, setIsSidebarOpen] = useState(!isMobile);
-  const [currentTab, setCurrentTab] = useState("blog");
+  const [currentTab, setCurrentTab] = useState('site_texts');
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -221,6 +252,11 @@ const Admin = () => {
     );
   }
 
+  // Log the adminTabs array right before rendering
+  console.log('Admin Tabs:', adminTabs);
+
+  const ActiveComponent = adminTabs.find(tab => tab.id === currentTab)?.component;
+
   return (
     <div className="flex min-h-screen bg-background">
       <aside 
@@ -238,60 +274,17 @@ const Admin = () => {
           </div>
           
           <nav className="flex-1 space-y-1">
-            <Button 
-              variant={currentTab === "blog" ? "default" : "ghost"} 
-              onClick={() => setCurrentTab("blog")}
-              className="w-full justify-start"
-            >
-              <Newspaper className="mr-2 h-4 w-4" />
-              {language === 'en' ? "Blog" : "Блог"}
-            </Button>
-            
-            <Button 
-              variant={currentTab === "requests" ? "default" : "ghost"} 
-              onClick={() => setCurrentTab("requests")}
-              className="w-full justify-start"
-            >
-              <MessageSquare className="mr-2 h-4 w-4" />
-              {language === 'en' ? "Requests" : "Заявки"}
-            </Button>
-            
-            <Button 
-              variant={currentTab === "webhooks" ? "default" : "ghost"} 
-              onClick={() => setCurrentTab("webhooks")}
-              className="w-full justify-start"
-            >
-              <Webhook className="mr-2 h-4 w-4" />
-              {language === 'en' ? "Webhooks" : "Вебхуки"}
-            </Button>
-            
-            <Button 
-              variant={currentTab === "social" ? "default" : "ghost"} 
-              onClick={() => setCurrentTab("social")}
-              className="w-full justify-start"
-            >
-              <Globe className="mr-2 h-4 w-4" />
-              {language === 'en' ? "Social Links" : "Соц. сети"}
-            </Button>
-            
-            <Button 
-              variant={currentTab === "texts" ? "default" : "ghost"} 
-              onClick={() => setCurrentTab("texts")}
-              className="w-full justify-start"
-            >
-              <Type className="mr-2 h-4 w-4" />
-              {language === 'en' ? "Site Texts" : "Тексты сайта"}
-            </Button>
-            
-            {/* Add Chatbot Responses Button */}
-            <Button 
-              variant={currentTab === "chatbot" ? "default" : "ghost"} 
-              onClick={() => setCurrentTab("chatbot")}
-              className="w-full justify-start"
-            >
-              <Brain className="mr-2 h-4 w-4" /> {/* Using Brain icon as example */}
-              {language === 'en' ? "Chatbot Responses" : "Ответы чат-бота"}
-            </Button>
+            {adminTabs.map(tab => (
+              <Button 
+                key={tab.id}
+                variant={currentTab === tab.id ? "default" : "ghost"} 
+                onClick={() => setCurrentTab(tab.id)}
+                className="w-full justify-start"
+              >
+                <tab.icon className="mr-2 h-4 w-4" />
+                {tab.labelKey?.split('.').pop()?.replace(/([A-Z])/g, ' $1').trim() ?? tab.id}
+              </Button>
+            ))}
           </nav>
           
           <div className="mt-auto">
@@ -307,79 +300,26 @@ const Admin = () => {
         </div>
       </aside>
 
-      <main className={`flex-1 transition-all duration-300 ${
-        isSidebarOpen ? "lg:ml-64" : "ml-0"
-      }`}>
-        <div className="sticky top-0 z-30 flex h-16 items-center gap-4 border-b bg-background px-4 sm:px-6">
-          <Button
-            variant="ghost"
-            size="icon"
-            className="lg:hidden"
-            onClick={toggleSidebar}
-          >
-            <Menu className="h-6 w-6" />
-          </Button>
-        </div>
-
-        <div className="p-4 sm:p-6">
-          <ErrorBoundary>
-            <Suspense fallback={
-              <div className="flex items-center justify-center h-64">
-                <Loader2 className="h-8 w-8 animate-spin text-fintech-blue" />
-              </div>
-            }>
-              {currentTab === "blog" && <BlogManagementPanel />}
-            </Suspense>
-          </ErrorBoundary>
-
-          <ErrorBoundary fallback={<div>Error loading requests panel...</div>}>
-            <Suspense fallback={
-              <div className="flex justify-center items-center h-64">
-                <Loader2 className="h-8 w-8 animate-spin text-fintech-blue" />
-              </div>
-            }>
-              {currentTab === "requests" && <RequestsPanel />}
-            </Suspense>
-          </ErrorBoundary>
-
-          <ErrorBoundary fallback={<div>Error loading webhook panel...</div>}>
-            <Suspense fallback={
-              <div className="flex justify-center items-center h-64">
-                <Loader2 className="h-8 w-8 animate-spin text-fintech-blue" />
-              </div>
-            }>
-              {currentTab === "webhooks" && <WebhookPanel />}
-            </Suspense>
-          </ErrorBoundary>
-
-          <ErrorBoundary fallback={<div>Error loading social links panel...</div>}>
-            <Suspense fallback={
-              <div className="flex justify-center items-center h-64">
-                <Loader2 className="h-8 w-8 animate-spin text-fintech-blue" />
-              </div>
-            }>
-              {currentTab === "social" && <SocialLinksPanel />}
-            </Suspense>
-          </ErrorBoundary>
-
-          <ErrorBoundary fallback={<div>Error loading site texts panel...</div>}>
-            <Suspense fallback={
-              <div className="flex justify-center items-center h-64">
-                <Loader2 className="h-8 w-8 animate-spin text-fintech-blue" />
-              </div>
-            }>
-              {currentTab === "texts" && <SiteTextsPanel />}
-            </Suspense>
-          </ErrorBoundary>
-
-          {/* Add Chatbot Responses Panel Rendering */}
-          <ErrorBoundary fallback={<div>Error loading chatbot responses panel...</div>}>
-            <Suspense fallback={
-              <div className="flex items-center justify-center h-64">
-                <Loader2 className="h-8 w-8 animate-spin text-fintech-blue" />
-              </div>
-            }>
-              {currentTab === "chatbot" && <ChatbotResponsesPanel />}
+      <main className={cn("flex-1 transition-all duration-300", isMobile ? "mt-16" : "lg:ml-64")} >
+        {/* Mobile Header */} 
+        {isMobile && (
+          <header className="fixed top-0 left-0 right-0 h-16 bg-card border-b flex items-center justify-between px-4 z-30">
+            <Button variant="ghost" size="icon" onClick={toggleSidebar}>
+              <Menu className="h-6 w-6" />
+            </Button>
+            <div className="font-bold text-lg">
+               <span className="text-fintech-blue">Admin</span>
+            </div>
+             <Button variant="ghost" size="icon" onClick={handleLogout}>
+               <LogOut className="h-5 w-5" />
+            </Button>
+          </header>
+        )}
+        
+        <div className="p-4 lg:p-6"> 
+          <ErrorBoundary fallback={<div>Error loading panel.</div>}>
+            <Suspense fallback={<div className="flex justify-center items-center h-64"><Loader2 className="h-8 w-8 animate-spin text-fintech-blue" /></div>}>
+              {ActiveComponent && <ActiveComponent />}
             </Suspense>
           </ErrorBoundary>
         </div>

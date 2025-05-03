@@ -5,11 +5,12 @@ import { supabase } from '@/integrations/supabase/client';
 export interface TextBlock {
   id: string;
   key: string;
-  section: string;
-  content: {
-    en: string;
-    ru: string;
-  };
+  section?: string;
+  category?: string;
+  value_en?: string;
+  value_ru?: string;
+  created_at?: string;
+  updated_at?: string;
 }
 
 interface SiteTextsStore {
@@ -46,1018 +47,792 @@ const initialTexts: TextBlock[] = [
     id: 'hero-title',
     key: 'hero.title',
     section: 'Home Page',
-    content: {
-      en: 'Financial Solutions for Your Business',
-      ru: 'Финансовые решения для вашего бизнеса'
-    }
+    value_en: 'Financial Solutions for Your Business',
+    value_ru: 'Финансовые решения для вашего бизнеса'
   },
   {
     id: 'hero-subtitle',
     key: 'hero.subtitle',
     section: 'Home Page',
-    content: {
-      en: 'Open accounts and get licenses with ease',
-      ru: 'Открывайте счета и получайте лицензии легко'
-    }
+    value_en: 'Open accounts and get licenses with ease',
+    value_ru: 'Открывайте счета и получайте лицензии легко'
   },
   {
     id: 'hero-company-tagline',
     key: 'hero.companyTagline',
     section: 'Home Page',
-    content: {
-      en: 'Your Trusted Financial Partner',
-      ru: 'Ваш надежный финансовый партнер'
-    }
+    value_en: 'Your Trusted Financial Partner',
+    value_ru: 'Ваш надежный финансовый партнер'
   },
   {
     id: 'hero-category-fintech',
     key: 'hero.category.fintech',
     section: 'Home Page',
-    content: {
-      en: 'FinTech',
-      ru: 'ФинТех'
-    }
+    value_en: 'FinTech',
+    value_ru: 'ФинТех'
   },
   {
     id: 'hero-category-ecommerce',
     key: 'hero.category.ecommerce',
     section: 'Home Page',
-    content: {
-      en: 'E-commerce',
-      ru: 'E-commerce'
-    }
+    value_en: 'E-commerce',
+    value_ru: 'E-commerce'
   },
   {
     id: 'hero-category-blockchain',
     key: 'hero.category.blockchain',
     section: 'Home Page',
-    content: {
-      en: 'Blockchain',
-      ru: 'Блокчейн'
-    }
+    value_en: 'Blockchain',
+    value_ru: 'Блокчейн'
   },
   {
     id: 'hero-category-startups',
     key: 'hero.category.startups',
     section: 'Home Page',
-    content: {
-      en: 'Startups',
-      ru: 'Стартапы'
-    }
+    value_en: 'Startups',
+    value_ru: 'Стартапы'
   },
   {
     id: 'hero-category-neobanks',
     key: 'hero.category.neobanks',
     section: 'Home Page',
-    content: {
-      en: 'Neobanks',
-      ru: 'Необанки'
-    }
+    value_en: 'Neobanks',
+    value_ru: 'Необанки'
   },
   {
     id: 'hero-category-wallets',
     key: 'hero.category.wallets',
     section: 'Home Page',
-    content: {
-      en: 'Wallets',
-      ru: 'Кошельки'
-    }
+    value_en: 'Wallets',
+    value_ru: 'Кошельки'
   },
   {
     id: 'hero-category-gaming',
     key: 'hero.category.gaming',
     section: 'Home Page',
-    content: {
-      en: 'Gaming',
-      ru: 'Гейминг'
-    }
+    value_en: 'Gaming',
+    value_ru: 'Гейминг'
   },
   {
     id: 'hero-category-saas',
     key: 'hero.category.saas',
     section: 'Home Page',
-    content: {
-      en: 'SaaS',
-      ru: 'SaaS'
-    }
+    value_en: 'SaaS',
+    value_ru: 'SaaS'
   },
   {
     id: 'hero-category-edtech',
     key: 'hero.category.edtech',
     section: 'Home Page',
-    content: {
-      en: 'EdTech',
-      ru: 'EdTech'
-    }
+    value_en: 'EdTech',
+    value_ru: 'EdTech'
   },
   {
     id: 'hero-category-web3',
     key: 'hero.category.web3',
     section: 'Home Page',
-    content: {
-      en: 'Web3',
-      ru: 'Web3'
-    }
+    value_en: 'Web3',
+    value_ru: 'Web3'
   },
   {
     id: 'hero-category-crypto',
     key: 'hero.category.crypto',
     section: 'Home Page',
-    content: {
-      en: 'Crypto',
-      ru: 'Крипто'
-    }
+    value_en: 'Crypto',
+    value_ru: 'Крипто'
   },
   {
     id: 'hero-card-banking-title',
     key: 'hero.card.banking.title',
     section: 'Home Page',
-    content: {
-      en: 'Banking Solutions',
-      ru: 'Банковские решения'
-    }
+    value_en: 'Banking Solutions',
+    value_ru: 'Банковские решения'
   },
   {
     id: 'hero-card-banking-subtitle',
     key: 'hero.card.banking.subtitle',
     section: 'Home Page',
-    content: {
-      en: 'Open accounts worldwide',
-      ru: 'Открытие счетов по всему миру'
-    }
+    value_en: 'Open accounts worldwide',
+    value_ru: 'Открытие счетов по всему миру'
   },
   {
     id: 'hero-card-licenses-title',
     key: 'hero.card.licenses.title',
     section: 'Home Page',
-    content: {
-      en: 'Available Licenses',
-      ru: 'Доступные лицензии'
-    }
+    value_en: 'Available Licenses',
+    value_ru: 'Доступные лицензии'
   },
   {
     id: 'hero-license-emi',
     key: 'hero.license.emi',
     section: 'Home Page',
-    content: {
-      en: 'EMI',
-      ru: 'EMI'
-    }
+    value_en: 'EMI',
+    value_ru: 'EMI'
   },
   {
     id: 'hero-license-crypto',
     key: 'hero.license.crypto',
     section: 'Home Page',
-    content: {
-      en: 'Crypto',
-      ru: 'Крипто'
-    }
+    value_en: 'Crypto',
+    value_ru: 'Крипто'
   },
   {
     id: 'hero-license-igaming',
     key: 'hero.license.igaming',
     section: 'Home Page',
-    content: {
-      en: 'iGaming',
-      ru: 'iGaming'
-    }
+    value_en: 'iGaming',
+    value_ru: 'iGaming'
   },
   {
     id: 'hero-license-psp',
     key: 'hero.license.psp',
     section: 'Home Page',
-    content: {
-      en: 'PSP',
-      ru: 'PSP'
-    }
+    value_en: 'PSP',
+    value_ru: 'PSP'
   },
   {
     id: 'hero-license-gambling',
     key: 'hero.license.gambling',
     section: 'Home Page',
-    content: {
-      en: 'Gambling',
-      ru: 'Гемблинг'
-    }
+    value_en: 'Gambling',
+    value_ru: 'Гемблинг'
   },
   {
     id: 'hero-license-emoney',
     key: 'hero.license.emoney',
     section: 'Home Page',
-    content: {
-      en: 'E-money',
-      ru: 'Электронные деньги'
-    }
+    value_en: 'E-money',
+    value_ru: 'Электронные деньги'
   },
   {
     id: 'hero-card-jurisdictions-title',
     key: 'hero.card.jurisdictions.title',
     section: 'Home Page',
-    content: {
-      en: 'Jurisdictions & Compliance',
-      ru: 'Юрисдикции и комплаенс'
-    }
+    value_en: 'Jurisdictions & Compliance',
+    value_ru: 'Юрисдикции и комплаенс'
   },
   {
     id: 'hero-jurisdiction-mga',
     key: 'hero.jurisdiction.mga',
     section: 'Home Page',
-    content: {
-      en: 'MGA',
-      ru: 'MGA'
-    }
+    value_en: 'MGA',
+    value_ru: 'MGA'
   },
   {
     id: 'hero-jurisdiction-curacao',
     key: 'hero.jurisdiction.curacao',
     section: 'Home Page',
-    content: {
-      en: 'Curacao',
-      ru: 'Кюрасао'
-    }
+    value_en: 'Curacao',
+    value_ru: 'Кюрасао'
   },
   {
     id: 'hero-jurisdiction-fca',
     key: 'hero.jurisdiction.fca',
     section: 'Home Page',
-    content: {
-      en: 'FCA',
-      ru: 'FCA'
-    }
+    value_en: 'FCA',
+    value_ru: 'FCA'
   },
   {
     id: 'hero-jurisdiction-aml',
     key: 'hero.jurisdiction.aml',
     section: 'Home Page',
-    content: {
-      en: 'AML',
-      ru: 'AML'
-    }
+    value_en: 'AML',
+    value_ru: 'AML'
   },
   {
     id: 'hero-jurisdiction-compliance',
     key: 'hero.jurisdiction.compliance',
     section: 'Home Page',
-    content: {
-      en: 'Compliance',
-      ru: 'Комплаенс'
-    }
+    value_en: 'Compliance',
+    value_ru: 'Комплаенс'
   },
   {
     id: 'hero-stats-countries',
     key: 'hero.stats.countries',
     section: 'Home Page',
-    content: {
-      en: '50+ Countries',
-      ru: '50+ Стран'
-    }
+    value_en: '50+ Countries',
+    value_ru: '50+ Стран'
   },
   {
     id: 'hero-stats-clients',
     key: 'hero.stats.clients',
     section: 'Home Page',
-    content: {
-      en: '200+ Clients',
-      ru: '200+ Клиентов'
-    }
+    value_en: '200+ Clients',
+    value_ru: '200+ Клиентов'
   },
   {
     id: 'hero-stats-years',
     key: 'hero.stats.years',
     section: 'Home Page',
-    content: {
-      en: '10+ Years',
-      ru: '10+ Лет'
-    }
+    value_en: '10+ Years',
+    value_ru: '10+ Лет'
   },
   {
     id: 'cta-consultation',
     key: 'cta.consultation',
     section: 'Common',
-    content: {
-      en: 'Get Free Consultation',
-      ru: 'Получить консультацию'
-    }
+    value_en: 'Get Free Consultation',
+    value_ru: 'Получить консультацию'
   },
   {
     id: 'nav-about',
     key: 'nav.about',
     section: 'Navigation',
-    content: {
-      en: 'About Us',
-      ru: 'О нас'
-    }
+    value_en: 'About Us',
+    value_ru: 'О нас'
   },
   {
     id: 'nav-services',
     key: 'nav.services',
     section: 'Navigation',
-    content: {
-      en: 'Services',
-      ru: 'Услуги'
-    }
+    value_en: 'Services',
+    value_ru: 'Услуги'
   },
   {
     id: 'nav-how-it-works',
     key: 'nav.howItWorks',
     section: 'Navigation',
-    content: {
-      en: 'How It Works',
-      ru: 'Как это работает'
-    }
+    value_en: 'How It Works',
+    value_ru: 'Как это работает'
   },
   {
     id: 'nav-blog',
     key: 'nav.blog',
     section: 'Navigation',
-    content: {
-      en: 'Blog',
-      ru: 'Блог'
-    }
+    value_en: 'Blog',
+    value_ru: 'Блог'
   },
   {
     id: 'nav-contact',
     key: 'nav.contact',
     section: 'Navigation',
-    content: {
-      en: 'Contact',
-      ru: 'Контакты'
-    }
+    value_en: 'Contact',
+    value_ru: 'Контакты'
   },
   {
     id: 'cta-get-started',
     key: 'cta.getStarted',
     section: 'Common',
-    content: {
-      en: 'Get Consultation',
-      ru: 'Получить консультацию'
-    }
+    value_en: 'Get Consultation',
+    value_ru: 'Получить консультацию'
   },
   {
     id: 'footer-links',
     key: 'footer.links',
     section: 'Footer',
-    content: {
-      en: 'Quick Links',
-      ru: 'Быстрые ссылки'
-    }
+    value_en: 'Quick Links',
+    value_ru: 'Быстрые ссылки'
   },
   {
     id: 'footer-contact',
     key: 'footer.contact',
     section: 'Footer',
-    content: {
-      en: 'Contact Us',
-      ru: 'Свяжитесь с нами'
-    }
+    value_en: 'Contact Us',
+    value_ru: 'Свяжитесь с нами'
   },
   {
     id: 'footer-rights',
     key: 'footer.rights',
     section: 'Footer',
-    content: {
-      en: 'All rights reserved',
-      ru: 'Все права защищены'
-    }
+    value_en: 'All rights reserved',
+    value_ru: 'Все права защищены'
   },
   {
     id: 'footer-privacy',
     key: 'footer.privacy',
     section: 'Footer',
-    content: {
-      en: 'Privacy Policy',
-      ru: 'Политика конфиденциальности'
-    }
+    value_en: 'Privacy Policy',
+    value_ru: 'Политика конфиденциальности'
   },
   {
     id: 'footer-terms',
     key: 'footer.terms',
     section: 'Footer',
-    content: {
-      en: 'Terms of Service',
-      ru: 'Условия использования'
-    }
+    value_en: 'Terms of Service',
+    value_ru: 'Условия использования'
   },
   {
     id: 'footer-back-to-top',
     key: 'footer.backToTop',
     section: 'Footer',
-    content: {
-      en: 'Back to Top',
-      ru: 'Наверх'
-    }
+    value_en: 'Back to Top',
+    value_ru: 'Наверх'
   },
   {
     id: 'footer-description',
     key: 'footer.description',
     section: 'Footer',
-    content: {
-      en: 'We provide business registration services, banking solutions, and licensing across multiple jurisdictions. Our team of experts helps businesses legally operate in international markets.',
-      ru: 'Мы предоставляем услуги регистрации бизнеса, банковские решения и лицензирование в различных юрисдикциях. Наша команда экспертов помогает бизнесу легально работать на международных рынках.'
-    }
+    value_en: 'We provide business registration services, banking solutions, and licensing across multiple jurisdictions. Our team of experts helps businesses legally operate in international markets.',
+    value_ru: 'Мы предоставляем услуги регистрации бизнеса, банковские решения и лицензирование в различных юрисдикциях. Наша команда экспертов помогает бизнесу легально работать на международных рынках.'
   },
   {
     id: 'footer-services',
     key: 'footer.services',
     section: 'Footer',
-    content: {
-      en: 'Our Services',
-      ru: 'Наши услуги'
-    }
+    value_en: 'Our Services',
+    value_ru: 'Наши услуги'
   },
   {
     id: 'about-title',
     key: 'about.title',
     section: 'About Us',
-    content: {
-      en: 'About Our Company',
-      ru: 'О нашей компании'
-    }
+    value_en: 'About Our Company',
+    value_ru: 'О нашей компании'
   },
   {
     id: 'about-description',
     key: 'about.description',
     section: 'About Us',
-    content: {
-      en: 'We help businesses navigate the complex world of international finance',
-      ru: 'Мы помогаем бизнесу ориентироваться в сложном мире международных финансов'
-    }
+    value_en: 'We help businesses navigate the complex world of international finance',
+    value_ru: 'Мы помогаем бизнесу ориентироваться в сложном мире международных финансов'
   },
   {
     id: 'services-title',
     key: 'services.title',
     section: 'Services',
-    content: {
-      en: 'Our Services',
-      ru: 'Наши услуги'
-    }
+    value_en: 'Our Services',
+    value_ru: 'Наши услуги'
   },
   {
     id: 'contact-title',
     key: 'contact.title',
     section: 'Contact',
-    content: {
-      en: 'Get in Touch',
-      ru: 'Свяжитесь с нами'
-    }
+    value_en: 'Get in Touch',
+    value_ru: 'Свяжитесь с нами'
   },
   {
     id: 'contact-subtitle',
     key: 'contact.subtitle',
     section: 'Contact',
-    content: {
-      en: 'Have questions? We\'re here to help you with any inquiries about our services',
-      ru: 'Есть вопросы? Мы здесь, чтобы помочь вам с любыми запросами о наших услугах'
-    }
+    value_en: 'Have questions? We\'re here to help you with any inquiries about our services',
+    value_ru: 'Есть вопросы? Мы здесь, чтобы помочь вам с любыми запросами о наших услугах'
   },
   {
     id: 'contact-email',
     key: 'contact.email',
     section: 'Contact',
-    content: {
-      en: 'Email',
-      ru: 'Электронная почта'
-    }
+    value_en: 'Email',
+    value_ru: 'Электронная почта'
   },
   {
     id: 'contact-phone',
     key: 'contact.phone',
     section: 'Contact',
-    content: {
-      en: 'WhatsApp',
-      ru: 'WhatsApp'
-    }
+    value_en: 'WhatsApp',
+    value_ru: 'WhatsApp'
   },
   {
     id: 'contact-telegram',
     key: 'contact.telegram',
     section: 'Contact',
-    content: {
-      en: 'Telegram',
-      ru: 'Телеграм'
-    }
+    value_en: 'Telegram',
+    value_ru: 'Телеграм'
   },
   {
     id: 'contact-form-title',
     key: 'contact.form.title',
     section: 'Contact',
-    content: {
-      en: 'Request a Consultation',
-      ru: 'Запросить консультацию'
-    }
+    value_en: 'Request a Consultation',
+    value_ru: 'Запросить консультацию'
   },
   {
     id: 'contact-form-name',
     key: 'contact.form.name',
     section: 'Contact',
-    content: {
-      en: 'Your Name',
-      ru: 'Ваше имя'
-    }
+    value_en: 'Your Name',
+    value_ru: 'Ваше имя'
   },
   {
     id: 'contact-form-email',
     key: 'contact.form.email',
     section: 'Contact',
-    content: {
-      en: 'Your Email',
-      ru: 'Ваша почта'
-    }
+    value_en: 'Your Email',
+    value_ru: 'Ваша почта'
   },
   {
     id: 'contact-form-phone',
     key: 'contact.form.phone',
     section: 'Contact',
-    content: {
-      en: 'Phone Number',
-      ru: 'Номер телефона'
-    }
+    value_en: 'Phone Number',
+    value_ru: 'Номер телефона'
   },
   {
     id: 'contact-form-service',
     key: 'contact.form.service',
     section: 'Contact',
-    content: {
-      en: 'Service of Interest',
-      ru: 'Интересующая услуга'
-    }
+    value_en: 'Service of Interest',
+    value_ru: 'Интересующая услуга'
   },
   {
     id: 'contact-form-message',
     key: 'contact.form.message',
     section: 'Contact',
-    content: {
-      en: 'Your Message',
-      ru: 'Ваше сообщение'
-    }
+    value_en: 'Your Message',
+    value_ru: 'Ваше сообщение'
   },
   {
     id: 'contact-form-select',
     key: 'contact.form.select',
     section: 'Contact',
-    content: {
-      en: 'Select a service',
-      ru: 'Выберите услугу'
-    }
+    value_en: 'Select a service',
+    value_ru: 'Выберите услугу'
   },
   {
     id: 'contact-form-submit',
     key: 'contact.form.submit',
     section: 'Contact',
-    content: {
-      en: 'Send Request',
-      ru: 'Отправить запрос'
-    }
+    value_en: 'Send Request',
+    value_ru: 'Отправить запрос'
   },
   {
     id: 'contact-form-sending',
     key: 'contact.form.sending',
     section: 'Contact',
-    content: {
-      en: 'Sending...',
-      ru: 'Отправка...'
-    }
+    value_en: 'Sending...',
+    value_ru: 'Отправка...'
   },
   {
     id: 'contact-service-registration',
     key: 'contact.service.registration',
     section: 'Contact',
-    content: {
-      en: 'Company Registration',
-      ru: 'Регистрация компании'
-    }
+    value_en: 'Company Registration',
+    value_ru: 'Регистрация компании'
   },
   {
     id: 'contact-service-accounts',
     key: 'contact.service.accounts',
     section: 'Contact',
-    content: {
-      en: 'Bank Accounts',
-      ru: 'Банковские счета'
-    }
+    value_en: 'Bank Accounts',
+    value_ru: 'Банковские счета'
   },
   {
     id: 'contact-service-nominee',
     key: 'contact.service.nominee',
     section: 'Contact',
-    content: {
-      en: 'Nominee Services',
-      ru: 'Номинальные услуги'
-    }
+    value_en: 'Nominee Services',
+    value_ru: 'Номинальные услуги'
   },
   {
     id: 'contact-service-licenses',
     key: 'contact.service.licenses',
     section: 'Contact',
-    content: {
-      en: 'Licensing',
-      ru: 'Лицензирование'
-    }
+    value_en: 'Licensing',
+    value_ru: 'Лицензирование'
   },
   {
     id: 'contact-service-other',
     key: 'contact.service.other',
     section: 'Contact',
-    content: {
-      en: 'Other Services',
-      ru: 'Другие услуги'
-    }
+    value_en: 'Other Services',
+    value_ru: 'Другие услуги'
   },
   {
     id: 'contact-instant-title',
     key: 'contact.instant.title',
     section: 'Contact',
-    content: {
-      en: 'Need Immediate Assistance?',
-      ru: 'Нужна срочная помощь?'
-    }
+    value_en: 'Need Immediate Assistance?',
+    value_ru: 'Нужна срочная помощь?'
   },
   {
     id: 'contact-instant-subtitle',
     key: 'contact.instant.subtitle',
     section: 'Contact',
-    content: {
-      en: 'Get instant support through our Telegram channel. Our experts are ready to help you 24/7.',
-      ru: 'Получите мгновенную поддержку через наш Telegram канал. Наши эксперты готовы помочь вам 24/7.'
-    }
+    value_en: 'Get instant support through our Telegram channel. Our experts are ready to help you 24/7.',
+    value_ru: 'Получите мгновенную поддержку через наш Telegram канал. Наши эксперты готовы помочь вам 24/7.'
   },
   {
     id: 'contact-instant-button',
     key: 'contact.instant.button',
     section: 'Contact',
-    content: {
-      en: 'Chat on Telegram',
-      ru: 'Чат в Telegram'
-    }
+    value_en: 'Chat on Telegram',
+    value_ru: 'Чат в Telegram'
   },
   {
     id: 'contact-our-socials',
     key: 'contact.ourSocials',
     section: 'Contact',
-    content: {
-      en: 'Our Contacts',
-      ru: 'Наши контакты'
-    }
+    value_en: 'Our Contacts',
+    value_ru: 'Наши контакты'
   },
   {
     id: 'services-badge',
     key: 'services.badge',
     section: 'Services',
-    content: {
-      en: 'Our Services',
-      ru: 'Наши услуги'
-    }
+    value_en: 'Our Services',
+    value_ru: 'Наши услуги'
   },
   {
     id: 'services-title',
     key: 'services.title',
     section: 'Services',
-    content: {
-      en: 'Comprehensive Financial Solutions',
-      ru: 'Комплексные финансовые решения'
-    }
+    value_en: 'Comprehensive Financial Solutions',
+    value_ru: 'Комплексные финансовые решения'
   },
   {
     id: 'services-subtitle',
     key: 'services.subtitle',
     section: 'Services',
-    content: {
-      en: 'We provide a wide range of services to help your business succeed in the global financial market',
-      ru: 'Мы предоставляем широкий спектр услуг для успеха вашего бизнеса на мировом финансовом рынке'
-    }
+    value_en: 'We provide a wide range of services to help your business succeed in the global financial market',
+    value_ru: 'Мы предоставляем широкий спектр услуг для успеха вашего бизнеса на мировом финансовом рынке'
   },
   {
     id: 'services-company-formation-title',
     key: 'services.company-formation.title',
     section: 'Services',
-    content: {
-      en: 'Company Formation',
-      ru: 'Регистрация компаний'
-    }
+    value_en: 'Company Formation',
+    value_ru: 'Регистрация компаний'
   },
   {
     id: 'services-company-formation-short',
     key: 'services.company-formation.short',
     section: 'Services',
-    content: {
-      en: 'Quick and efficient company registration in multiple jurisdictions',
-      ru: 'Быстрая и эффективная регистрация компаний в различных юрисдикциях'
-    }
+    value_en: 'Quick and efficient company registration in multiple jurisdictions',
+    value_ru: 'Быстрая и эффективная регистрация компаний в различных юрисдикциях'
   },
   {
     id: 'services-company-formation-details',
     key: 'services.company-formation.details',
     section: 'Services',
-    content: {
-      en: 'We help you establish your business presence globally with our comprehensive company formation services, handling all legal requirements and documentation.',
-      ru: 'Мы помогаем вам создать глобальное присутствие вашего бизнеса с помощью наших комплексных услуг по регистрации компаний, обрабатывая все юридические требования и документацию.'
-    }
+    value_en: 'We help you establish your business presence globally with our comprehensive company formation services, handling all legal requirements and documentation.',
+    value_ru: 'Мы помогаем вам создать глобальное присутствие вашего бизнеса с помощью наших комплексных услуг по регистрации компаний, обрабатывая все юридические требования и документацию.'
   },
   {
     id: 'services-financial-licensing-title',
     key: 'services.financial-licensing.title',
     section: 'Services',
-    content: {
-      en: 'Financial Licensing',
-      ru: 'Финансовое лицензирование'
-    }
+    value_en: 'Financial Licensing',
+    value_ru: 'Финансовое лицензирование'
   },
   {
     id: 'services-financial-licensing-short',
     key: 'services.financial-licensing.short',
     section: 'Services',
-    content: {
-      en: 'Obtain necessary licenses for financial operations',
-      ru: 'Получение необходимых лицензий для финансовых операций'
-    }
+    value_en: 'Obtain necessary licenses for financial operations',
+    value_ru: 'Получение необходимых лицензий для финансовых операций'
   },
   {
     id: 'services-financial-licensing-details',
     key: 'services.financial-licensing.details',
     section: 'Services',
-    content: {
-      en: 'Navigate the complex world of financial regulations with our licensing services. We help you obtain and maintain all necessary permits and licenses.',
-      ru: 'Ориентируйтесь в сложном мире финансовых правил с нашими услугами лицензирования. Мы помогаем получить и поддерживать все необходимые разрешения и лицензии.'
-    }
+    value_en: 'Navigate the complex world of financial regulations with our licensing services. We help you obtain and maintain all necessary permits and licenses.',
+    value_ru: 'Ориентируйтесь в сложном мире финансовых правил с нашими услугами лицензирования. Мы помогаем получить и поддерживать все необходимые разрешения и лицензии.'
   },
   {
     id: 'services-crypto-regulation-title',
     key: 'services.crypto-regulation.title',
     section: 'Services',
-    content: {
-      en: 'Crypto Regulation',
-      ru: 'Регулирование криптовалют'
-    }
+    value_en: 'Crypto Regulation',
+    value_ru: 'Регулирование криптовалют'
   },
   {
     id: 'services-crypto-regulation-short',
     key: 'services.crypto-regulation.short',
     section: 'Services',
-    content: {
-      en: 'Regulatory compliance for cryptocurrency businesses',
-      ru: 'Соответствие нормативным требованиям для криптовалютного бизнеса'
-    }
+    value_en: 'Regulatory compliance for cryptocurrency businesses',
+    value_ru: 'Соответствие нормативным требованиям для криптовалютного бизнеса'
   },
   {
     id: 'services-crypto-regulation-details',
     key: 'services.crypto-regulation.details',
     section: 'Services',
-    content: {
-      en: 'Stay compliant in the evolving cryptocurrency landscape with our specialized regulatory services for digital asset businesses.',
-      ru: 'Оставайтесь в соответствии с развивающимся криптовалютным ландшафтом с нашими специализированными услугами регулирования для бизнеса цифровых активов.'
-    }
+    value_en: 'Stay compliant in the evolving cryptocurrency landscape with our specialized regulatory services for digital asset businesses.',
+    value_ru: 'Оставайтесь в соответствии с развивающимся криптовалютным ландшафтом с нашими специализированными услугами регулирования для бизнеса цифровых активов.'
   },
   {
     id: 'services-gambling-licensing-title',
     key: 'services.gambling-licensing.title',
     section: 'Services',
-    content: {
-      en: 'Gambling Licensing',
-      ru: 'Лицензирование гемблинга'
-    }
+    value_en: 'Gambling Licensing',
+    value_ru: 'Лицензирование гемблинга'
   },
   {
     id: 'services-gambling-licensing-short',
     key: 'services.gambling-licensing.short',
     section: 'Services',
-    content: {
-      en: 'Gaming and betting license acquisition',
-      ru: 'Получение лицензий для игорного бизнеса'
-    }
+    value_en: 'Gaming and betting license acquisition',
+    value_ru: 'Получение лицензий для игорного бизнеса'
   },
   {
     id: 'services-gambling-licensing-details',
     key: 'services.gambling-licensing.details',
     section: 'Services',
-    content: {
-      en: 'Get your gaming operation licensed in major jurisdictions with our comprehensive gambling licensing services.',
-      ru: 'Получите лицензию для вашего игорного бизнеса в основных юрисдикциях с нашими комплексными услугами лицензирования.'
-    }
+    value_en: 'Get your gaming operation licensed in major jurisdictions with our comprehensive gambling licensing services.',
+    value_ru: 'Получите лицензию для вашего игорного бизнеса в основных юрисдикциях с нашими комплексными услугами лицензирования.'
   },
   {
     id: 'services-payment-solutions-title',
     key: 'services.payment-solutions.title',
     section: 'Services',
-    content: {
-      en: 'Payment Solutions',
-      ru: 'Платёжные решения'
-    }
+    value_en: 'Payment Solutions',
+    value_ru: 'Платёжные решения'
   },
   {
     id: 'services-payment-solutions-short',
     key: 'services.payment-solutions.short',
     section: 'Services',
-    content: {
-      en: 'Global payment processing solutions',
-      ru: 'Глобальные решения для обработки платежей'
-    }
+    value_en: 'Global payment processing solutions',
+    value_ru: 'Глобальные решения для обработки платежей'
   },
   {
     id: 'services-payment-solutions-details',
     key: 'services.payment-solutions.details',
     section: 'Services',
-    content: {
-      en: 'Implement secure and efficient payment processing solutions for your business with our comprehensive payment services.',
-      ru: 'Внедрите безопасные и эффективные решения для обработки платежей для вашего бизнеса с нашими комплексными платежными услугами.'
-    }
+    value_en: 'Implement secure and efficient payment processing solutions for your business with our comprehensive payment services.',
+    value_ru: 'Внедрите безопасные и эффективные решения для обработки платежей для вашего бизнеса с нашими комплексными платежными услугами.'
   },
   {
     id: 'services-fiat-crypto-title',
     key: 'services.fiat-crypto.title',
     section: 'Services',
-    content: {
-      en: 'Fiat & Crypto',
-      ru: 'Фиат и крипто'
-    }
+    value_en: 'Fiat & Crypto',
+    value_ru: 'Фиат и крипто'
   },
   {
     id: 'services-fiat-crypto-short',
     key: 'services.fiat-crypto.short',
     section: 'Services',
-    content: {
-      en: 'Integrated fiat and cryptocurrency solutions',
-      ru: 'Интегрированные решения для фиатных и криптовалют'
-    }
+    value_en: 'Integrated fiat and cryptocurrency solutions',
+    value_ru: 'Интегрированные решения для фиатных и криптовалют'
   },
   {
     id: 'services-fiat-crypto-details',
     key: 'services.fiat-crypto.details',
     section: 'Services',
-    content: {
-      en: 'Bridge the gap between traditional and digital finance with our integrated fiat and cryptocurrency solutions.',
-      ru: 'Преодолейте разрыв между традиционными и цифровыми финансами с нашими интегрированными решениями для фиатных и криптовалют.'
-    }
+    value_en: 'Bridge the gap between traditional and digital finance with our integrated fiat and cryptocurrency solutions.',
+    value_ru: 'Преодолейте разрыв между традиционными и цифровыми финансами с нашими интегрированными решениями для фиатных и криптовалют.'
   },
   {
     id: 'services-tax-planning-title',
     key: 'services.tax-planning.title',
     section: 'Services',
-    content: {
-      en: 'Tax Planning',
-      ru: 'Налоговое планирование'
-    }
+    value_en: 'Tax Planning',
+    value_ru: 'Налоговое планирование'
   },
   {
     id: 'services-tax-planning-short',
     key: 'services.tax-planning.short',
     section: 'Services',
-    content: {
-      en: 'Optimize your tax structure globally',
-      ru: 'Оптимизация налоговой структуры в глобальном масштабе'
-    }
+    value_en: 'Optimize your tax structure globally',
+    value_ru: 'Оптимизация налоговой структуры в глобальном масштабе'
   },
   {
     id: 'services-tax-planning-details',
     key: 'services.tax-planning.details',
     section: 'Services',
-    content: {
-      en: 'Maximize efficiency and minimize tax burden with our expert international tax planning services.',
-      ru: 'Максимизируйте эффективность и минимизируйте налоговую нагрузку с нашими экспертными услугами международного налогового планирования.'
-    }
+    value_en: 'Maximize efficiency and minimize tax burden with our expert international tax planning services.',
+    value_ru: 'Максимизируйте эффективность и минимизируйте налоговую нагрузку с нашими экспертными услугами международного налогового планирования.'
   },
   {
     id: 'services-investment-title',
     key: 'services.investment.title',
     section: 'Services',
-    content: {
-      en: 'Investment Solutions',
-      ru: 'Инвестиционные решения'
-    }
+    value_en: 'Investment Solutions',
+    value_ru: 'Инвестиционные решения'
   },
   {
     id: 'services-investment-short',
     key: 'services.investment.short',
     section: 'Services',
-    content: {
-      en: 'Strategic investment planning and management',
-      ru: 'Стратегическое планирование и управление инвестициями'
-    }
+    value_en: 'Strategic investment planning and management',
+    value_ru: 'Стратегическое планирование и управление инвестициями'
   },
   {
     id: 'services-investment-details',
     key: 'services.investment.details',
     section: 'Services',
-    content: {
-      en: 'Grow your wealth with our professional investment solutions and expert portfolio management.',
-      ru: 'Приумножайте ваше богатство с нашими профессиональными инвестиционными решениями и экспертным управлением портфелем.'
-    }
+    value_en: 'Grow your wealth with our professional investment solutions and expert portfolio management.',
+    value_ru: 'Приумножайте ваше богатство с нашими профессиональными инвестиционными решениями и экспертным управлением портфелем.'
   },
   {
     id: 'services-nominee-title',
     key: 'services.nominee.title',
     section: 'Services',
-    content: {
-      en: 'Nominee Services',
-      ru: 'Номинальные услуги'
-    }
+    value_en: 'Nominee Services',
+    value_ru: 'Номинальные услуги'
   },
   {
     id: 'services-nominee-short',
     key: 'services.nominee.short',
     section: 'Services',
-    content: {
-      en: 'Professional nominee director services',
-      ru: 'Профессиональные услуги номинальных директоров'
-    }
+    value_en: 'Professional nominee director services',
+    value_ru: 'Профессиональные услуги номинальных директоров'
   },
   {
     id: 'services-nominee-details',
     key: 'services.nominee.details',
     section: 'Services',
-    content: {
-      en: 'Maintain privacy and compliance with our professional nominee director and shareholder services.',
-      ru: 'Сохраняйте конфиденциальность и соответствие требованиям с нашими профессиональными услугами номинальных директоров и акционеров.'
-    }
+    value_en: 'Maintain privacy and compliance with our professional nominee director and shareholder services.',
+    value_ru: 'Сохраняйте конфиденциальность и соответствие требованиям с нашими профессиональными услугами номинальных директоров и акционеров.'
   },
   {
     id: 'cta-request',
     key: 'cta.request',
     section: 'Common',
-    content: {
-      en: 'Request Service',
-      ru: 'Заказать услугу'
-    }
+    value_en: 'Request Service',
+    value_ru: 'Заказать услугу'
   },
   {
     id: 'process-badge',
     key: 'process.badge',
     section: 'Process',
-    content: {
-      en: 'How It Works',
-      ru: 'Как это работает'
-    }
+    value_en: 'How It Works',
+    value_ru: 'Как это работает'
   },
   {
     id: 'process-title',
     key: 'process.title',
     section: 'Process',
-    content: {
-      en: 'Simple Process, Quick Results',
-      ru: 'Простой процесс, быстрый результат'
-    }
+    value_en: 'Simple Process, Quick Results',
+    value_ru: 'Простой процесс, быстрый результат'
   },
   {
     id: 'process-subtitle',
     key: 'process.subtitle',
     section: 'Process',
-    content: {
-      en: 'Get your business up and running with our streamlined process',
-      ru: 'Запустите свой бизнес с помощью нашего оптимизированного процесса'
-    }
+    value_en: 'Get your business up and running with our streamlined process',
+    value_ru: 'Запустите свой бизнес с помощью нашего оптимизированного процесса'
   },
   {
     id: 'process-step1',
     key: 'process.step1',
     section: 'Process',
-    content: {
-      en: 'Initial Consultation',
-      ru: 'Первичная консультация'
-    }
+    value_en: 'Initial Consultation',
+    value_ru: 'Первичная консультация'
   },
   {
     id: 'process-step1-desc',
     key: 'process.step1.desc',
     section: 'Process',
-    content: {
-      en: 'Schedule a free consultation to discuss your business needs and goals',
-      ru: 'Запланируйте бесплатную консультацию для обсуждения потребностей и целей вашего бизнеса'
-    }
+    value_en: 'Schedule a free consultation to discuss your business needs and goals',
+    value_ru: 'Запланируйте бесплатную консультацию для обсуждения потребностей и целей вашего бизнеса'
   },
   {
     id: 'process-step2',
     key: 'process.step2',
     section: 'Process',
-    content: {
-      en: 'Solution Development',
-      ru: 'Разработка решения'
-    }
+    value_en: 'Solution Development',
+    value_ru: 'Разработка решения'
   },
   {
     id: 'process-step2-desc',
     key: 'process.step2.desc',
     section: 'Process',
-    content: {
-      en: 'We create a tailored solution based on your specific requirements',
-      ru: 'Мы создаем индивидуальное решение на основе ваших конкретных требований'
-    }
+    value_en: 'We create a tailored solution based on your specific requirements',
+    value_ru: 'Мы создаем индивидуальное решение на основе ваших конкретных требований'
   },
   {
     id: 'process-step3',
     key: 'process.step3',
     section: 'Process',
-    content: {
-      en: 'Implementation',
-      ru: 'Реализация'
-    }
+    value_en: 'Implementation',
+    value_ru: 'Реализация'
   },
   {
     id: 'process-step3-desc',
     key: 'process.step3.desc',
     section: 'Process',
-    content: {
-      en: 'Quick and efficient implementation of the selected solution',
-      ru: 'Быстрая и эффективная реализация выбранного решения'
-    }
+    value_en: 'Quick and efficient implementation of the selected solution',
+    value_ru: 'Быстрая и эффективная реализация выбранного решения'
   }
 ];
 
@@ -1077,8 +852,8 @@ export const useSiteTexts = create<SiteTextsStore>()(
             .from('site_texts')
             .insert({
               key: text.key,
-              value_en: text.content.en,
-              value_ru: text.content.ru
+              value_en: text.value_en,
+              value_ru: text.value_ru
             })
           
           if (error) throw error
@@ -1097,8 +872,8 @@ export const useSiteTexts = create<SiteTextsStore>()(
             .from('site_texts')
             .update({
               key: newText.key,
-              value_en: newText.content.en,
-              value_ru: newText.content.ru
+              value_en: newText.value_en,
+              value_ru: newText.value_ru
             })
             .eq('key', key)
           
@@ -1146,7 +921,7 @@ export const useSiteTexts = create<SiteTextsStore>()(
         set((state) => {
           // Проверяем, есть ли тексты с HTML-тегами
           const hasHtmlTags = state.texts.some(text => 
-            containsHtmlTags(text.content.en) || containsHtmlTags(text.content.ru)
+            containsHtmlTags(text.value_en || '') || containsHtmlTags(text.value_ru || '')
           );
           
           // Если нет текстов с HTML-тегами, не делаем изменений
@@ -1155,10 +930,8 @@ export const useSiteTexts = create<SiteTextsStore>()(
           // Очищаем все тексты от HTML-тегов
           const cleanedTexts = state.texts.map(text => ({
             ...text,
-            content: {
-              en: containsHtmlTags(text.content.en) ? stripHtml(text.content.en) : text.content.en,
-              ru: containsHtmlTags(text.content.ru) ? stripHtml(text.content.ru) : text.content.ru
-            }
+            value_en: containsHtmlTags(text.value_en || '') ? stripHtml(text.value_en || '') : text.value_en,
+            value_ru: containsHtmlTags(text.value_ru || '') ? stripHtml(text.value_ru || '') : text.value_ru
           }));
           
           return { texts: cleanedTexts };
@@ -1201,10 +974,11 @@ export const useSiteTexts = create<SiteTextsStore>()(
               id: item.key, // Use item.key as the id
               key: item.key,
               section: item.section || 'default', // Use section from DB if exists, otherwise default
-              content: {
-                en: item.value_en,
-                ru: item.value_ru
-              }
+              category: item.category,
+              value_en: item.value_en,
+              value_ru: item.value_ru,
+              created_at: item.created_at,
+              updated_at: item.updated_at
             }));
             
             set({ texts: transformedTexts });

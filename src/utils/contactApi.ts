@@ -1,48 +1,82 @@
+import { supabase } from '@/integrations/supabase/client';
+
 /**
  * Contact form API utilities for handling form submissions and webhook integration
  */
 
-// Function to process contact form submissions
-export const processContactForm = async (formData: {
+// Define the type for the form data, aligning with ContactFormFields.tsx
+interface ContactFormData {
   name: string;
   email: string;
+  phone: string;
+  service: string;
   message: string;
-}) => {
-  // Save to localStorage for local testing
-  const existingRequests = localStorage.getItem("requests");
-  const requests = existingRequests ? JSON.parse(existingRequests) : [];
+}
+
+// Function to process contact form submissions
+export const processContactForm = async (formData: ContactFormData) => {
   
-  const newRequest = {
-    id: requests.length ? Math.max(...requests.map((r: any) => r.id)) + 1 : 1,
-    ...formData,
-    status: "new",
-    date: new Date().toISOString().split("T")[0],
-  };
-  
-  requests.push(newRequest);
-  localStorage.setItem("requests", JSON.stringify(requests));
-  
-  // Send to webhook if configured
+  // Insert data into Supabase
   try {
-    const webhookUrl = localStorage.getItem("webhookUrl");
-    if (webhookUrl) {
-      await fetch(webhookUrl, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        mode: "no-cors", // Handle CORS issues
-        body: JSON.stringify({
-          event: "new_contact_request",
-          request: newRequest,
-          timestamp: new Date().toISOString()
-        }),
-      });
+    const { data: insertedData, error: insertError } = await supabase
+      .from('contact_requests')
+      .insert([
+        {
+          name: formData.name,
+          email: formData.email,
+          phone: formData.phone,
+          service: formData.service,
+          message: formData.message,
+          status: 'unanswered' // Default status
+        }
+      ])
+      .select() // Return the inserted row(s)
+      .single(); // Expecting a single row back
+
+    if (insertError) {
+      console.error("Error inserting contact request into Supabase:", insertError);
+      throw new Error(`Supabase error: ${insertError.message}`); // Throw an error to be caught below
     }
-    return { success: true, id: newRequest.id };
+
+    // If Supabase insert is successful, proceed with webhook
+    try {
+      const webhookUrl = localStorage.getItem("webhookUrl"); // Keep webhook optional via localStorage for now
+      if (webhookUrl && insertedData) {
+        await fetch(webhookUrl, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          mode: "no-cors", // Handle CORS issues
+          body: JSON.stringify({
+            event: "new_contact_request",
+            request: { // Send the data inserted into Supabase
+              id: insertedData.id,
+              name: insertedData.name,
+              email: insertedData.email,
+              phone: insertedData.phone,
+              service: insertedData.service,
+              message: insertedData.message,
+              status: insertedData.status,
+              created_at: insertedData.created_at
+            },
+            timestamp: new Date().toISOString()
+          }),
+        });
+      }
+      // Return success based on Supabase insert
+      return { success: true, id: insertedData?.id }; 
+
+    } catch (webhookError) {
+      console.error("Error sending webhook (but Supabase insert was successful):", webhookError);
+      // Still return success because the primary action (DB insert) worked
+      return { success: true, id: insertedData?.id }; 
+    }
+
   } catch (error) {
-    console.error("Error sending webhook:", error);
-    return { success: true, id: newRequest.id }; // Still return success since we saved locally
+    console.error("Failed to process contact form submission:", error);
+    // Return failure if Supabase insert failed
+    return { success: false, error: (error as Error).message }; 
   }
 };
 

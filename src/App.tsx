@@ -161,9 +161,9 @@ const App = () => {
   return (
     <ErrorBoundary fallbackRender={ErrorDisplay}>
       <Helmet>
-        <title>FinTechAssist - Ваш Партнер в Лицензировании</title>
-        <meta name="description" content="FinTechAssist предлагает решения для лицензирования и развития вашего бизнеса. Получите лицензию, подготовьтесь и действуйте уверенно." />
-        {/* Schema.org markup for Organization */}
+        <title>FinTechAssist - Business Advisory Group</title>
+        <meta name="description" content="FinTechAssist provides expert business advisory services to help your company grow and navigate complex challenges." />
+        
         <script type="application/ld+json">
           {JSON.stringify({
             "@context": "https://schema.org",
@@ -171,25 +171,15 @@ const App = () => {
             "name": "FinTechAssist",
             "url": "https://fintech-assist.com/",
             "logo": "https://fintech-assist.com/images/logo.png",
-            // Optional: Add contact points or social links here if available
-            // "contactPoint": {
-            //   "@type": "ContactPoint",
-            //   "telephone": "+1-XXX-XXX-XXXX",
-            //   "contactType": "customer service"
-            // },
-            // "sameAs": [
-            //   "https://www.facebook.com/yourprofile",
-            //   "https://www.linkedin.com/company/yourcompany"
-            // ]
+            "description": "Expert business advisory services for growth and navigating complex challenges.",
           })}
         </script>
-        {/* Schema.org markup for WebSite */}
         <script type="application/ld+json">
           {JSON.stringify({
             "@context": "https://schema.org",
             "@type": "WebSite",
             "url": "https://fintech-assist.com/",
-            // No search action defined as there's no internal search
+            "name": "FinTechAssist - Business Advisory Group"
           })}
         </script>
       </Helmet>

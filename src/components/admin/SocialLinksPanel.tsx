@@ -1,62 +1,105 @@
-
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Facebook, Instagram, Linkedin, X, Globe } from 'lucide-react';
+import { Facebook, Instagram, Linkedin, X, Globe, Loader2 } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { toast } from 'sonner';
+import { databaseService } from '@/services/databaseService';
 
-type SocialLink = {
-  id: number;
+interface DisplaySocialLink {
   platform: string;
   url: string;
-  icon: string;
-};
+  iconName: string | null;
+  displayName: string;
+}
+
+const PLATFORMS = [
+  { dbName: 'facebook', displayName: 'Facebook', iconName: 'facebook' },
+  { dbName: 'twitter', displayName: 'Twitter', iconName: 'twitter' },
+  { dbName: 'instagram', displayName: 'Instagram', iconName: 'instagram' },
+  { dbName: 'telegram', displayName: 'Telegram', iconName: 'telegram' },
+  { dbName: 'linkedin', displayName: 'LinkedIn', iconName: 'linkedin' },
+];
 
 export function SocialLinksPanel() {
   const { language } = useLanguage();
-  const [socialLinks, setSocialLinks] = useState<SocialLink[]>([]);
-  const [editingLink, setEditingLink] = useState<{ id: number, url: string } | null>(null);
+  const [displayLinks, setDisplayLinks] = useState<DisplaySocialLink[]>([]);
+  const [editingLink, setEditingLink] = useState<{ platform: string, url: string } | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
-    // Get social links from localStorage if available
-    const storedLinks = localStorage.getItem('socialLinks');
-    if (storedLinks) {
-      setSocialLinks(JSON.parse(storedLinks));
-    } else {
-      // Default social links
-      const defaultLinks = [
-        { id: 1, platform: 'Facebook', url: 'https://facebook.com', icon: 'facebook' },
-        { id: 2, platform: 'Twitter', url: 'https://x.com', icon: 'twitter' },
-        { id: 3, platform: 'Instagram', url: 'https://instagram.com', icon: 'instagram' },
-        { id: 4, platform: 'Telegram', url: 'https://t.me/fintechassist', icon: 'telegram' },
-        { id: 5, platform: 'LinkedIn', url: 'https://linkedin.com', icon: 'linkedin' }
-      ];
-      setSocialLinks(defaultLinks);
-      localStorage.setItem('socialLinks', JSON.stringify(defaultLinks));
-    }
+    loadSocialLinks();
   }, []);
 
-  const handleEditClick = (id: number, url: string) => {
-    setEditingLink({ id, url });
+  const loadSocialLinks = async () => {
+    setIsLoading(true);
+    try {
+      const fetchedDbLinks = await databaseService.getSocialLinks();
+      
+      const fetchedUrlMap = new Map<string, string>();
+      fetchedDbLinks.forEach(link => {
+          fetchedUrlMap.set(link.platform.toLowerCase(), link.url);
+      });
+
+      const linksToDisplay = PLATFORMS.map(p => ({
+        platform: p.dbName,
+        url: fetchedUrlMap.get(p.dbName) || '',
+        iconName: p.iconName,
+        displayName: p.displayName,
+      }));
+      
+      setDisplayLinks(linksToDisplay);
+    } catch (error) {
+        console.error("Error loading social links:", error);
+        toast.error(language === 'en' ? 'Failed to load social links' : 'Не удалось загрузить социальные ссылки');
+        setDisplayLinks(PLATFORMS.map(p => ({ 
+            platform: p.dbName, 
+            url: '', 
+            iconName: p.iconName, 
+            displayName: p.displayName 
+        })));
+    } finally {
+        setIsLoading(false);
+    }
   };
 
-  const handleSaveClick = () => {
-    if (!editingLink) return;
+  const handleEditClick = (platform: string, url: string) => {
+    setEditingLink({ platform, url });
+  };
 
-    const updatedLinks = socialLinks.map(link => 
-      link.id === editingLink.id ? { ...link, url: editingLink.url } : link
-    );
+  const handleSaveClick = async () => {
+    if (!editingLink) return;
+    setIsSaving(true);
     
-    setSocialLinks(updatedLinks);
-    localStorage.setItem('socialLinks', JSON.stringify(updatedLinks));
-    setEditingLink(null);
-    
-    toast.success(language === 'en' 
-      ? "Social link updated successfully" 
-      : "Ссылка на социальную сеть успешно обновлена");
+    try {
+        const platformConfig = PLATFORMS.find(p => p.dbName === editingLink.platform);
+        
+        await databaseService.updateSocialLink(
+            editingLink.platform, 
+            editingLink.url, 
+            platformConfig?.iconName
+        );
+        
+        setDisplayLinks(prevLinks => 
+          prevLinks.map(link => 
+            link.platform === editingLink.platform ? { ...link, url: editingLink.url } : link
+          )
+        );
+        
+        setEditingLink(null);
+        toast.success(language === 'en' 
+          ? "Social link updated successfully" 
+          : "Ссылка на социальную сеть успешно обновлена");
+
+    } catch (error) {
+        console.error("Error saving social link:", error);
+        toast.error(language === 'en' ? 'Failed to save social link' : 'Не удалось сохранить социальную ссылку');
+    } finally {
+        setIsSaving(false);
+    }
   };
 
   const handleCancelClick = () => {
@@ -68,9 +111,10 @@ export function SocialLinksPanel() {
     setEditingLink({ ...editingLink, url: e.target.value });
   };
 
-  // Function to render the appropriate icon
-  const renderSocialIcon = (platform: string) => {
-    switch (platform.toLowerCase()) {
+  const renderSocialIcon = (iconName: string | null) => {
+    if (!iconName) return <Globe className="h-5 w-5" />;
+    
+    switch (iconName.toLowerCase()) {
       case 'facebook':
         return <Facebook className="h-5 w-5" />;
       case 'twitter':
@@ -97,71 +141,82 @@ export function SocialLinksPanel() {
           <CardTitle>{language === 'en' ? "Social Links" : "Социальные ссылки"}</CardTitle>
           <CardDescription>
             {language === 'en' 
-              ? "Manage your social media links that appear in the website footer" 
-              : "Управление ссылками на социальные сети, которые отображаются в футере сайта"}
+              ? "Manage your social media links that appear in the website footer. Links will only be displayed on the site if a URL is provided." 
+              : "Управление ссылками на социальные сети, которые отображаются в футере сайта. Ссылки будут отображаться на сайте только если для них указан URL."}
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>{language === 'en' ? "Platform" : "Платформа"}</TableHead>
-                <TableHead>{language === 'en' ? "URL" : "URL"}</TableHead>
-                <TableHead>{language === 'en' ? "Actions" : "Действия"}</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {socialLinks.map((link) => (
-                <TableRow key={link.id}>
-                  <TableCell className="flex items-center gap-2">
-                    <div className="bg-gray-100 dark:bg-gray-800 p-2 rounded-full">
-                      {renderSocialIcon(link.platform)}
-                    </div>
-                    <span>{link.platform}</span>
-                  </TableCell>
-                  <TableCell className="w-full">
-                    {editingLink && editingLink.id === link.id ? (
-                      <Input 
-                        value={editingLink.url}
-                        onChange={handleUrlChange}
-                        className="w-full"
-                      />
-                    ) : (
-                      link.url
-                    )}
-                  </TableCell>
-                  <TableCell>
-                    {editingLink && editingLink.id === link.id ? (
-                      <div className="flex gap-2">
-                        <Button 
-                          size="sm" 
-                          variant="default" 
-                          onClick={handleSaveClick}
-                        >
-                          {language === 'en' ? "Save" : "Сохранить"}
-                        </Button>
+          {isLoading ? (
+            <div className="flex justify-center p-4">
+              <Loader2 className="h-8 w-8 animate-spin text-fintech-blue" />
+            </div>
+          ) : (
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>{language === 'en' ? "Platform" : "Платформа"}</TableHead>
+                  <TableHead>{language === 'en' ? "URL" : "URL"}</TableHead>
+                  <TableHead>{language === 'en' ? "Actions" : "Действия"}</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {displayLinks.map((link) => (
+                  <TableRow key={link.platform}>
+                    <TableCell className="flex items-center gap-2">
+                      <div className="bg-gray-100 dark:bg-gray-800 p-2 rounded-full">
+                        {renderSocialIcon(link.iconName)}
+                      </div>
+                      <span>{link.displayName}</span>
+                    </TableCell>
+                    <TableCell className="w-full">
+                      {editingLink && editingLink.platform === link.platform ? (
+                        <Input 
+                          value={editingLink.url}
+                          onChange={handleUrlChange}
+                          className="w-full"
+                          disabled={isSaving}
+                        />
+                      ) : (
+                        <span className="block truncate" title={link.url}>{link.url || '-'}</span>
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      {editingLink && editingLink.platform === link.platform ? (
+                        <div className="flex gap-2">
+                          <Button 
+                            size="sm" 
+                            variant="default" 
+                            onClick={handleSaveClick}
+                            disabled={isSaving}
+                          >
+                            {isSaving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+                            {language === 'en' ? "Save" : "Сохранить"}
+                          </Button>
+                          <Button 
+                            size="sm" 
+                            variant="outline" 
+                            onClick={handleCancelClick}
+                            disabled={isSaving}
+                          >
+                            {language === 'en' ? "Cancel" : "Отмена"}
+                          </Button>
+                        </div>
+                      ) : (
                         <Button 
                           size="sm" 
                           variant="outline" 
-                          onClick={handleCancelClick}
+                          onClick={() => handleEditClick(link.platform, link.url)}
+                          disabled={editingLink !== null}
                         >
-                          {language === 'en' ? "Cancel" : "Отмена"}
+                          {language === 'en' ? "Edit" : "Изменить"}
                         </Button>
-                      </div>
-                    ) : (
-                      <Button 
-                        size="sm" 
-                        variant="outline" 
-                        onClick={() => handleEditClick(link.id, link.url)}
-                      >
-                        {language === 'en' ? "Edit" : "Изменить"}
-                      </Button>
-                    )}
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+                      )}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          )}
         </CardContent>
       </Card>
     </div>

@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { BlogPostCard } from './BlogPostCard';
-import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '@/components/ui/pagination';
 import { BlogPost } from '@/services/databaseService';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface BlogPostsGridProps {
   searchQuery: string;
@@ -37,6 +37,8 @@ export const BlogPostsGrid: React.FC<BlogPostsGridProps> = ({
   setSearchQuery,
   setCategoryFilter
 }) => {
+  const sectionRef = useRef<HTMLDivElement>(null);
+
   return (
     <section className="py-12 md:py-16">
       <div className="container mx-auto px-8 md:px-12 lg:px-16">
@@ -77,40 +79,6 @@ export const BlogPostsGrid: React.FC<BlogPostsGridProps> = ({
                   language={language}
                 />
               ))}
-            </div>
-          )}
-          
-          {filteredPosts.length > 0 && totalPages > 1 && (
-            <div className="mt-12">
-              <Pagination>
-                <PaginationContent>
-                  <PaginationItem>
-                    <PaginationPrevious 
-                      onClick={() => setCurrentPage(Math.max(currentPage - 1, 1))}
-                      className={currentPage === 1 ? 'pointer-events-none opacity-50' : 'cursor-pointer'} 
-                    />
-                  </PaginationItem>
-                  
-                  {Array.from({ length: totalPages }).map((_, index) => (
-                    <PaginationItem key={index}>
-                      <PaginationLink 
-                        isActive={currentPage === index + 1}
-                        onClick={() => setCurrentPage(index + 1)}
-                        className="cursor-pointer"
-                      >
-                        {index + 1}
-                      </PaginationLink>
-                    </PaginationItem>
-                  ))}
-                  
-                  <PaginationItem>
-                    <PaginationNext 
-                      onClick={() => setCurrentPage(Math.min(currentPage + 1, totalPages))}
-                      className={currentPage === totalPages ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
-                    />
-                  </PaginationItem>
-                </PaginationContent>
-              </Pagination>
             </div>
           )}
         </div>

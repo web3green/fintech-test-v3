@@ -65,10 +65,12 @@ export async function toggleReaction(
       return { success: true, action: 'added', reactionType };
     }
   } catch (error) {
-    console.error('Error toggling reaction:', error);
+    // Improved error logging
+    console.error('Error toggling reaction:', JSON.stringify(error, null, 2));
     return { 
       success: false, 
-      error: error instanceof Error ? error.message : 'Unknown error',
+      // Return more detailed error if possible
+      error: error instanceof Error ? error.message : (typeof error === 'object' && error !== null && 'message' in error ? String(error.message) : 'Unknown error'),
       reactionType 
     };
   }

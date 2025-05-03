@@ -108,11 +108,23 @@ export const BlogSection: React.FC = () => {
       setCurrentPage(totalPages);
     }
   }, [currentPage, totalPages, totalPostCount]);
+  
+  // Add useEffect for scrolling when currentPage changes
+  useEffect(() => {
+    // Scroll to the top of the blog section smoothly
+    console.log(`[BlogSection] useEffect - Attempting scrollIntoView for page ${currentPage}, sectionRef.current:`, sectionRef.current);
+    sectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    // window.scrollTo({ top: 0, behavior: 'smooth' }); // Keep commented out
+  }, [currentPage]); // Dependency array includes currentPage
 
   // ВОССТАНАВЛИВАЕМ ПРОСТУЮ ФУНКЦИЮ
   const handlePageChange = (pageNumber: number) => {
     if (pageNumber >= 1 && pageNumber <= totalPages && pageNumber !== currentPage) {
-      setCurrentPage(pageNumber); // <-- ТОЛЬКО СМЕНА СОСТОЯНИЯ
+      setCurrentPage(pageNumber); // <-- Смена состояния
+      
+      // REMOVE scroll from here
+      // console.log('[BlogSection] handlePageChange - Scrolling, sectionRef.current:', sectionRef.current);
+      // window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 
@@ -251,26 +263,6 @@ export const BlogSection: React.FC = () => {
             >
               &lt; {language === 'en' ? 'Previous' : 'Назад'}
             </button>
-
-            {/* Номера страниц */} 
-            {Array.from({ length: totalPages }).map((_, index) => {
-              const pageNumber = index + 1;
-              return (
-                <button
-                  key={pageNumber}
-                  onClick={() => handlePageChange(pageNumber)}
-                  disabled={currentPage === pageNumber}
-                  className={cn(
-                    "px-3 py-1 border rounded-md text-sm",
-                    "disabled:opacity-50 disabled:cursor-not-allowed",
-                    currentPage === pageNumber ? "bg-primary text-primary-foreground dark:bg-fintech-blue-dark dark:text-fintech-blue-light" : "hover:bg-accent dark:hover:bg-gray-700",
-                    "focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-1"
-                  )}
-                >
-                  {pageNumber}
-                </button>
-              );
-            })}
 
             {/* Кнопка Next */} 
             <button

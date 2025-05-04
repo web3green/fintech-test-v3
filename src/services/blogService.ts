@@ -61,11 +61,15 @@ export const getButtonStyle = (colorScheme: string) => {
   }
 };
 
-export const getImageUrl = (imageUrl: string) => {
-  if (imageUrl && imageUrl.startsWith('http')) {
+export const getImageUrl = (imageUrl: string | null | undefined): string => {
+  // If imageUrl is provided (and not an empty string), return it directly.
+  // The URL from Supabase Storage (getPublicUrl) should be a complete, valid URL.
+  if (imageUrl) {
     return imageUrl;
   }
-  return 'https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?ixlib=rb-4.0.3&auto=format&fit=crop';
+  // Otherwise, return an empty string or a placeholder path if you have one.
+  // Returning empty string will likely show the alt text or a broken image icon.
+  return ''; // Or return '/placeholder-image.png'; if you add a placeholder
 };
 
 /**

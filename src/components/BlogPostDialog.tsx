@@ -5,7 +5,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Calendar, User, Clock, ThumbsUp, ThumbsDown, Star, X } from 'lucide-react';
 import { toast } from 'sonner';
-import { getLocalizedContent } from '@/services/blogService';
+import { getLocalizedContent, getImageUrl } from '@/services/blogService';
 import { BlogPost } from '@/services/databaseService';
 import { toggleReaction, getReactionCounts, getUserReactions } from '@/services/reactionsService';
 import { Badge } from '@/components/ui/badge';
@@ -114,10 +114,8 @@ export const BlogPostDialog = ({ post, isOpen, onClose }: BlogPostDialogProps) =
 
   if (!post) return null;
 
-  // Use image_url and provide a fallback
-  const postImage = post.image_url && post.image_url.startsWith('http') 
-    ? post.image_url 
-    : 'https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80';
+  // Use the centralized getImageUrl function
+  const postImage = getImageUrl(post.image_url);
 
   return (
     <Dialog open={isOpen} onOpenChange={() => onClose()}>

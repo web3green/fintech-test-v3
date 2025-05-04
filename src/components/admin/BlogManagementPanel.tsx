@@ -233,7 +233,7 @@ export function BlogManagementPanel() {
     setLoading(true);
     setError(null);
     try {
-      const result = await databaseService.getPosts();
+      const result = await databaseService.getPosts(1, 1000);
       if (result && Array.isArray(result.posts)) {
          setPosts(result.posts);
       } else {

@@ -31,11 +31,15 @@ import StarterKit from '@tiptap/starter-kit';
 import Link from '@tiptap/extension-link';
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Slider } from "@/components/ui/slider";
+import slugify from 'slugify';
 
 const blogPostSchema = z.object({
   title_en: z.string().min(1, { message: "English title is required." }),
   title_ru: z.string().min(1, { message: "Russian title is required." }),
-  slug: z.string().min(1, { message: "Slug is required." }).regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, { message: "Slug must be lowercase alphanumeric with hyphens." }),
+  slug: z.string()
+          .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, { message: "Slug must be lowercase alphanumeric with hyphens." })
+          .optional()
+          .or(z.literal('')),
   content_en: z.string().min(1, { message: "English content is required." }),
   content_ru: z.string().min(1, { message: "Russian content is required." }),
   excerpt_en: z.string().optional(),
@@ -436,72 +440,54 @@ export function BlogManagementPanel() {
   };
 
   const onSubmitForm = async (formData: BlogPostFormData) => {
-    console.log("[onSubmitForm] Form Data received:", formData);
+    console.log("Form Data Submitted:", formData);
+    let finalImageUrl = formData.image_url;
+
+    if (selectedFile && !watchedImageUrl) {
+      toast.info("Processing image...");
+      setIsProcessingImage(true);
+      const uploadedUrl = await handleImageUpload(selectedFile);
+      setIsProcessingImage(false);
+      if (uploadedUrl) {
+        finalImageUrl = uploadedUrl;
+        setValue('image_url', uploadedUrl);
+      } else {
+        toast.error("Image upload failed. Please try again.");
+        return;
+      }
+    }
+
+    let finalSlug = formData.slug;
+    if (!finalSlug && formData.title_en) {
+      finalSlug = slugify(formData.title_en, { lower: true, strict: true });
+      console.log(`Generated slug: ${finalSlug}`);
+    }
+
+    const postData = {
+      ...formData,
+      image_url: finalImageUrl,
+      slug: finalSlug,
+      tags: formData.tags || [],
+      featured: formData.featured || false,
+      published: formData.published || false,
+    };
+
     setIsProcessingImage(true);
 
-    let finalImageUrl: string | null = null;
-
     try {
-        if (selectedFile) {
-             console.log(`[onSubmitForm] New file detected (${selectedFile.name}). Uploading...`);
-            finalImageUrl = await handleImageUpload(selectedFile);
-             if (!finalImageUrl) {
-                 throw new Error("Image upload process failed, received null URL.");
-            }
-             console.log(`[onSubmitForm] Upload successful. Using new URL: ${finalImageUrl}`);
-             setValue('image_url', finalImageUrl);
-         } else {
-             console.log(`[onSubmitForm] No new file selected/processed. Using existing/cleared URL: ${finalImageUrl}`);
-         }
-
-        const dataToSave: Partial<BlogPost> = {
-            title_en: formData.title_en,
-            title_ru: formData.title_ru,
-            slug: formData.slug,
-            content_en: formData.content_en,
-            content_ru: formData.content_ru,
-            excerpt_en: formData.excerpt_en,
-            excerpt_ru: formData.excerpt_ru,
-            author: formData.author,
-            category: formData.category,
-            reading_time: formData.reading_time,
-            tags: formData.tags || [],
-            image_url: finalImageUrl,
-            featured: formData.featured,
-            published: formData.published,
-            color_scheme: formData.color_scheme,
-        };
-
       if (selectedPost) {
         console.log(`[onSubmitForm] Updating post ID: ${selectedPost.id}`);
-        await databaseService.updatePost(selectedPost.id, dataToSave);
+        await databaseService.updatePost(selectedPost.id, postData);
         toast.success('Post updated successfully');
-    } else {
+      } else {
         console.log('[onSubmitForm] Creating new post');
-         const dataToCreate: Omit<BlogPost, 'id' | 'created_at' | 'updated_at'> = {
-            title_en: dataToSave.title_en!,
-            title_ru: dataToSave.title_ru!,
-            slug: dataToSave.slug!,
-            content_en: dataToSave.content_en!,
-            content_ru: dataToSave.content_ru!,
-            excerpt_en: dataToSave.excerpt_en || '',
-            excerpt_ru: dataToSave.excerpt_ru || '',
-            author: dataToSave.author || '',
-            category: dataToSave.category || '',
-            reading_time: dataToSave.reading_time || '',
-            tags: dataToSave.tags || [],
-            image_url: dataToSave.image_url || null,
-            featured: dataToSave.featured || false,
-            published: dataToSave.published || false,
-            color_scheme: dataToSave.color_scheme || 'blue',
-        };
-        await databaseService.createPost(dataToCreate);
+        await databaseService.createPost(postData);
         toast.success('Post created successfully');
       }
 
       setIsDialogOpen(false);
       loadPosts();
-    setSelectedPost(null);
+      setSelectedPost(null);
       setImageSrcForCropper(null);
       setSelectedFile(null);
       setCroppedAreaPixels(null);

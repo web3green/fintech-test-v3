@@ -88,11 +88,16 @@ export const databaseService = {
       .from('blog_posts')
       .insert([post])
       .select()
-      .single();
+      .maybeSingle();
 
     if (error) {
       console.error('Error creating post in \'blog_posts\' table:', error);
       throw error;
+    }
+    
+    if (!data) {
+        console.error('Create post operation did not return data (possibly RLS issue).');
+        throw new Error('Failed to create post or retrieve created data.');
     }
 
     return blogPostSchema.parse(data);
@@ -104,11 +109,16 @@ export const databaseService = {
       .update(post)
       .eq('id', id)
       .select()
-      .single();
+      .maybeSingle();
 
     if (error) {
       console.error('Error updating post in \'blog_posts\' table:', error);
       throw error;
+    }
+    
+    if (!data) {
+        console.error(`Update post operation did not return data for id ${id} (not found or RLS issue?).`);
+        throw new Error('Failed to update post or retrieve updated data.');
     }
 
     return blogPostSchema.parse(data);

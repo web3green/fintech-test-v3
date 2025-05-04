@@ -147,28 +147,37 @@ export async function getReactionCounts(postId: string) {
 /**
  * Проверяет, поставил ли пользователь реакцию на статью
  * @param postId - ID статьи
- * @param userId - ID пользователя (опционально)
  * @returns Объект с информацией о реакциях пользователя
  */
-export async function getUserReactions(postId: string, userId: string | null = null) {
+export async function getUserReactions(postId: string /* Убираем userId: string | null = null */) {
   try {
-    const anonymousId = userId || localStorage.getItem('anonymous_user_id');
-    
-    // Если нет ID пользователя или анонимного ID, значит реакций нет
-    if (!anonymousId) {
-      return { 
-        success: true, 
-        reactions: { like: false, dislike: false, useful: false } 
-      };
+    // Получаем текущую сессию
+    const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+
+    if (sessionError) {
+      console.error('[getUserReactions] Error getting session:', sessionError);
+      // Если сессии нет, считаем, что реакций нет
+      return { success: true, reactions: { like: false, dislike: false, useful: false } };
     }
-    
+
+    const currentUserId = session?.user?.id;
+
+    // Если нет ID пользователя (сессия есть, но user.id пустой - маловероятно), считаем, что реакций нет
+    if (!currentUserId) {
+       console.warn('[getUserReactions] No user ID found in session, returning no reactions.');
+      return { success: true, reactions: { like: false, dislike: false, useful: false } };
+    }
+
+    console.log(`[getUserReactions] Checking reactions for User ID: ${currentUserId}, Post ID: ${postId}`);
+
     const { data, error } = await supabase
       .from('blog_post_reactions')
       .select('reaction_type')
       .eq('blog_post_id', postId)
-      .eq('user_id', anonymousId);
+      .eq('user_id', currentUserId); // Используем актуальный ID
     
     if (error) {
+      console.error('[getUserReactions] Error fetching user reactions from DB:', error);
       throw error;
     }
     
@@ -186,12 +195,13 @@ export async function getUserReactions(postId: string, userId: string | null = n
       });
     }
     
+    console.log(`[getUserReactions] Found reactions:`, userReactions);
     return { success: true, reactions: userReactions };
-  } catch (error) {
-    console.error('Error fetching user reactions:', error);
+  } catch (error: any) {
+    console.error('[getUserReactions] Failed to get user reactions:', error);
     return { 
       success: false, 
-      error: error instanceof Error ? error.message : 'Unknown error',
+      error: error.message || 'Unknown error fetching user reactions',
       reactions: { like: false, dislike: false, useful: false } 
     };
   }

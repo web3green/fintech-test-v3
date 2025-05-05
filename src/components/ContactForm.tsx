@@ -13,8 +13,9 @@ export function ContactForm() {
   const emailAddress = t('contact.email.address', 'info@fintech-assist.com');
   const consultationLocation = t('contact.consultation.location', 'London, United Kingdom');
   const consultationEmail = t('contact.consultation.email', emailAddress);
-  const consultationPhone = t('contact.consultation.phone', whatsappNumber);
+  const consultationPhone = t('contact.phone.primary', '');
 
+  // Original return uncommented
   return (
     <section id="contact" className="section-padding bg-blue-500 contact-form-section relative overflow-hidden">
       <div className="absolute top-0 right-0 w-64 h-64 bg-fintech-orange/20 dark:bg-fintech-orange/15 rounded-full blur-xl"></div>
@@ -26,7 +27,7 @@ export function ContactForm() {
             {t('contact.title', 'Get in Touch')}
           </h2>
           <p className="text-xl text-white/90 mb-8 max-w-3xl mx-auto animate-fade-up" style={{ animationDelay: '100ms' }}>
-            {t('contact.subtitle', 'Have questions? We're here to help you with any inquiries about our services')}
+            {t('contact.subtitle', 'Have questions? We\'re here to help you with any inquiries about our services')}
           </p>
         </div>
         
@@ -97,7 +98,7 @@ export function ContactForm() {
               {/* Contact form */}
               <ContactFormFields />
               
-              {/* Contact Info */}
+              {/* Contact Info Side Panel */}
               <div className="md:w-1/3 bg-gradient-to-tr from-fintech-orange/90 to-fintech-blue-light dark:from-fintech-orange/60 dark:to-fintech-blue-light/80 backdrop-blur-sm p-8 flex flex-col justify-center shadow-lg relative overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-r from-[#FF6B00]/90 to-fintech-blue-light dark:from-[#FF6B00]/60 dark:to-fintech-blue-light/80 opacity-100"></div>
                 <div className="absolute -top-10 -right-10 w-32 h-32 bg-white/10 rounded-full blur-xl"></div>
@@ -136,14 +137,17 @@ export function ContactForm() {
                       <a href={`mailto:${consultationEmail}`} className="text-white text-sm hover:text-white/80 break-all">{consultationEmail}</a>
                     </div>
                     
-                    <div className="flex items-center gap-3">
-                      <div className="bg-white/20 backdrop-blur-sm p-2 rounded-full shadow-md border border-white/20">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-white">
-                          <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
-                        </svg>
+                    {/* Conditionally render phone section */}
+                    {consultationPhone && (
+                      <div className="flex items-center gap-3">
+                        <div className="bg-white/20 backdrop-blur-sm p-2 rounded-full shadow-md border border-white/20">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-white">
+                            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                          </svg>
+                        </div>
+                        <a href={`tel:${consultationPhone.replace(/\D/g, '')}`} className="text-white text-sm hover:text-white/80">{consultationPhone}</a>
                       </div>
-                      <a href={`tel:${consultationPhone.replace(/\D/g, '')}`} className="text-white text-sm hover:text-white/80">{consultationPhone}</a>
-                    </div>
+                    )}
                   </div>
                 </div>
               </div>

@@ -113,7 +113,7 @@ export const RequestsPanel = () => {
           console.error("Error loading notification emails:", error);
       } finally {
           setIsLoadingEmails(false);
-      }
+    }
   };
 
   // Function to add a new notification email
@@ -130,7 +130,7 @@ export const RequestsPanel = () => {
           console.error("Error adding notification email:", error);
       } finally {
           setIsAddingEmail(false);
-      }
+    }
   };
 
   // Function to delete a notification email
@@ -177,7 +177,7 @@ export const RequestsPanel = () => {
       );
       
       toast.success(language === 'en' ? "Request status updated successfully" : "Статус заявки успешно обновлен");
-      setIsDialogOpen(false);
+    setIsDialogOpen(false);
       setSelectedRequest(null);
     } catch (err: any) {
       console.error('Error updating request status:', err);
@@ -325,7 +325,7 @@ export const RequestsPanel = () => {
                   </form>
                 </FormProvider>
              </> 
-           )}
+      )}
         </CardContent>
       </Card>
 
@@ -388,23 +388,23 @@ export const RequestsPanel = () => {
           <FormProvider {...requestForm}>
             <form onSubmit={requestForm.handleSubmit(handleRequestStatusSubmit)} className="space-y-4 mt-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <FormField
-                  control={requestForm.control}
-                  name="name"
-                  render={({ field }) => (
-                    <FormItem>
+              <FormField
+                control={requestForm.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
                       <FormLabel>{language === 'en' ? 'Name' : 'Имя'}</FormLabel>
-                      <FormControl>
+                    <FormControl>
                         <Input {...field} readOnly className="bg-muted/50" />
-                      </FormControl>
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={requestForm.control}
-                  name="email"
-                  render={({ field }) => (
-                    <FormItem>
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={requestForm.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
                       <FormLabel>{language === 'en' ? 'Email' : 'Email'}</FormLabel>
                       <FormControl>
                         <Input {...field} readOnly className="bg-muted/50" />
@@ -431,59 +431,59 @@ export const RequestsPanel = () => {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>{language === 'en' ? 'Service Requested' : 'Запрошенная услуга'}</FormLabel>
-                      <FormControl>
+                    <FormControl>
                         <Input {...field} readOnly className="bg-muted/50" />
-                      </FormControl>
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={requestForm.control}
-                  name="message"
-                  render={({ field }) => (
-                    <FormItem>
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={requestForm.control}
+                name="message"
+                render={({ field }) => (
+                  <FormItem>
                       <FormLabel>{language === 'en' ? 'Message' : 'Сообщение'}</FormLabel>
-                      <FormControl>
+                    <FormControl>
                         <Textarea {...field} readOnly rows={5} className="bg-muted/50" />
-                      </FormControl>
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={requestForm.control}
-                  name="status"
-                  render={({ field }) => (
-                    <FormItem>
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={requestForm.control}
+                name="status"
+                render={({ field }) => (
+                  <FormItem>
                       <FormLabel>{language === 'en' ? 'Status' : 'Статус'}</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder={language === 'en' ? "Select status" : "Выберите статус"} />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          <SelectItem value="new">{language === 'en' ? "New" : "Новая"}</SelectItem>
-                          <SelectItem value="in-progress">{language === 'en' ? "In Progress" : "В обработке"}</SelectItem>
-                          <SelectItem value="resolved">{language === 'en' ? "Resolved" : "Решена"}</SelectItem>
-                          <SelectItem value="rejected">{language === 'en' ? "Rejected" : "Отклонена"}</SelectItem>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder={language === 'en' ? "Select status" : "Выберите статус"} />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="new">{language === 'en' ? "New" : "Новая"}</SelectItem>
+                        <SelectItem value="in-progress">{language === 'en' ? "In Progress" : "В обработке"}</SelectItem>
+                        <SelectItem value="resolved">{language === 'en' ? "Resolved" : "Решена"}</SelectItem>
+                        <SelectItem value="rejected">{language === 'en' ? "Rejected" : "Отклонена"}</SelectItem>
                            <SelectItem value="unanswered">{language === 'en' ? "Unanswered" : "Без ответа"}</SelectItem>
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
                 <div className="flex justify-between items-center pt-4 border-t">
                    <Button type="button" variant="outline" onClick={handleSendEmail}>
                      <Mail className="mr-2 h-4 w-4"/>
                       {language === 'en' ? 'Reply via Email' : 'Ответить по Email'}
-                   </Button>
+                  </Button>
                    <Button type="submit" disabled={isUpdatingStatus}>
                      {isUpdatingStatus && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                      {language === 'en' ? 'Update Status' : 'Обновить статус'}
-                   </Button>
-                </div>
-              </form>
+                  </Button>
+              </div>
+            </form>
             </FormProvider>
         </DialogContent>
       </Dialog>

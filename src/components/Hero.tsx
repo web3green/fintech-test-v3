@@ -3,10 +3,23 @@ import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { GlowingEffect } from './ui/glowing-effect';
 import { Card } from './ui/card';
+
 export function Hero() {
-  const {
-    t
-  } = useLanguage();
+  const { t } = useLanguage();
+
+  // Define keys for jurisdictions and licenses
+  const jurisdictionKeys = Array.from({ length: 12 }, (_, i) => `hero.jurisdiction.${i + 1}`);
+  const licenseKeys = Array.from({ length: 8 }, (_, i) => `hero.license.${i + 1}`);
+
+  // Get translated values and filter out empty ones
+  const activeJurisdictions = jurisdictionKeys
+    .map(key => t(key, '')) // Get value or empty string if key missing
+    .filter(value => value.trim() !== ''); // Keep only non-empty values
+
+  const activeLicenses = licenseKeys
+    .map(key => t(key, '')) // Get value or empty string if key missing
+    .filter(value => value.trim() !== ''); // Keep only non-empty values
+
   const scrollToContact = () => {
     const contactSection = document.getElementById('contact');
     if (contactSection) {
@@ -185,12 +198,13 @@ export function Hero() {
                       <Card className="p-4 rounded-lg border-0 bg-gradient-to-br from-fintech-orange/45 to-fintech-orange/65 dark:from-fintech-orange/30 dark:to-fintech-orange/50 dark:shadow-[0_0_20px_rgba(255,165,0,0.15)]">
                         <div className="text-xs text-white dark:text-white/90 mb-2">{t('hero.card.licenses.title')}</div>
                         <div className="flex flex-wrap gap-2">
-                          <span className="inline-block text-xs bg-fintech-blue/90 dark:bg-fintech-blue/70 text-white dark:text-white/90 px-2 py-1 rounded shadow-[0_0_8px_rgba(59,130,246,0.25)] dark:shadow-[0_0_8px_rgba(59,130,246,0.35)]">{t('hero.license.emi')}</span>
-                          <span className="inline-block text-xs bg-fintech-orange/65 dark:bg-fintech-orange/40 text-white dark:text-white/90 px-2 py-1 rounded shadow-[0_0_8px_rgba(255,165,0,0.15)] dark:shadow-[0_0_8px_rgba(255,165,0,0.25)]">{t('hero.license.crypto')}</span>
-                          <span className="inline-block text-xs bg-fintech-blue/90 dark:bg-fintech-blue/70 text-white dark:text-white/90 px-2 py-1 rounded shadow-[0_0_8px_rgba(59,130,246,0.25)] dark:shadow-[0_0_8px_rgba(59,130,246,0.35)]">{t('hero.license.igaming')}</span>
-                          <span className="inline-block text-xs bg-fintech-orange/65 dark:bg-fintech-orange/40 text-white dark:text-white/90 px-2 py-1 rounded shadow-[0_0_8px_rgba(255,165,0,0.15)] dark:shadow-[0_0_8px_rgba(255,165,0,0.25)]">{t('hero.license.psp')}</span>
-                          <span className="inline-block text-xs bg-fintech-blue/90 dark:bg-fintech-blue/70 text-white dark:text-white/90 px-2 py-1 rounded shadow-[0_0_8px_rgba(59,130,246,0.25)] dark:shadow-[0_0_8px_rgba(59,130,246,0.35)]">{t('hero.license.gambling')}</span>
-                          <span className="inline-block text-xs bg-fintech-orange/65 dark:bg-fintech-orange/40 text-white dark:text-white/90 px-2 py-1 rounded shadow-[0_0_8px_rgba(255,165,0,0.15)] dark:shadow-[0_0_8px_rgba(255,165,0,0.25)]">{t('hero.license.emoney')}</span>
+                          {/* Render active licenses from Site Texts */}
+                          {activeLicenses.map((licenseName, index) => (
+                            <span key={`license-${index}`} className="inline-block text-xs bg-fintech-orange/65 dark:bg-fintech-orange/40 text-white dark:text-white/90 px-2 py-1 rounded shadow-[0_0_8px_rgba(255,165,0,0.15)] dark:shadow-[0_0_8px_rgba(255,165,0,0.25)]">
+                              {licenseName}
+                            </span>
+                            // TODO: Alternate colors/styles if needed based on index or data
+                          ))}
                         </div>
                       </Card>
                     </div>
@@ -198,11 +212,13 @@ export function Hero() {
                     <Card className="p-4 rounded-lg border-0 bg-gradient-to-br from-fintech-blue/45 to-fintech-blue/65">
                       <div className="text-xs text-white dark:text-white mb-2">{t('hero.card.jurisdictions.title')}</div>
                       <div className="flex flex-wrap gap-2">
-                        <span className="inline-block text-xs bg-fintech-blue-light/45 dark:bg-fintech-blue-dark/45 text-white dark:text-white px-2 py-1 rounded">{t('hero.jurisdiction.mga')}</span>
-                        <span className="inline-block text-xs bg-fintech-blue-light/55 dark:bg-fintech-blue-dark/55 text-white dark:text-white px-2 py-1 rounded">{t('hero.jurisdiction.curacao')}</span>
-                        <span className="inline-block text-xs bg-fintech-blue-light/45 dark:bg-fintech-blue-dark/45 text-white dark:text-white px-2 py-1 rounded">{t('hero.jurisdiction.fca')}</span>
-                        <span className="inline-block text-xs bg-fintech-blue-light/55 dark:bg-fintech-blue-dark/55 text-white dark:text-white px-2 py-1 rounded">{t('hero.jurisdiction.aml')}</span>
-                        <span className="inline-block text-xs bg-fintech-blue-light/45 dark:bg-fintech-blue-dark/45 text-white dark:text-white px-2 py-1 rounded">{t('hero.jurisdiction.compliance')}</span>
+                         {/* Render active jurisdictions from Site Texts */}
+                         {activeJurisdictions.map((jurisdictionName, index) => (
+                          <span key={`jurisdiction-${index}`} className="inline-block text-xs bg-fintech-blue-light/50 dark:bg-fintech-blue-dark/50 text-white dark:text-white px-2 py-1 rounded">
+                            {jurisdictionName}
+                          </span>
+                           // TODO: Alternate colors/styles if needed based on index or data
+                        ))}
                       </div>
                     </Card>
                     

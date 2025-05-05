@@ -570,15 +570,15 @@ export const SiteTextsPanel: React.FC = () => {
         {generalTexts.length > 0 && (
           <div className="flex flex-wrap gap-2 p-1 bg-muted rounded-md">
              {generalTexts.map((group) => (
-                <Button
+                            <Button
                  key={group.section}
                  variant={selectedOtherSection === group.section ? 'default' : 'ghost'}
-                 size="sm"
+                              size="sm"
                  onClick={() => setSelectedOtherSection(group.section)}
                  className="capitalize"
-                >
+                            >
                  {group.section.replace(/[-_]/g, ' ')}
-                </Button>
+                            </Button>
              ))}
           </div>
         )}
@@ -592,9 +592,9 @@ export const SiteTextsPanel: React.FC = () => {
             <div key={text.key} className="space-y-2 border rounded-lg p-4 shadow-sm">
                  <div className="flex justify-between items-center">
                     <h4 className="font-semibold text-base flex-grow mr-4">{text.key}</h4>
-                    <Button
+                          <Button
                          variant="outline" 
-                         size="sm"
+                            size="sm"
                          onClick={() => handleSaveSingleText(text)}
                          disabled={isSavingSingleText === text.key}
                          className="whitespace-nowrap"
@@ -605,8 +605,8 @@ export const SiteTextsPanel: React.FC = () => {
                             <Save className="h-4 w-4" />
                          )}
                          <span className="ml-2 hidden sm:inline">{language === 'en' ? 'Save' : 'Сохранить'}</span>
-                    </Button>
-                 </div>
+                          </Button>
+                        </div>
                  <div className="flex flex-col sm:flex-row gap-4">
                     <div className="flex-1">
                          <label className="block text-sm font-medium mb-1">Value (EN)</label>
@@ -616,7 +616,7 @@ export const SiteTextsPanel: React.FC = () => {
                             rows={3}
                             placeholder={`Enter value for ${text.key} in English...`}
                          />
-                    </div>
+                      </div>
                     <div className="flex-1">
                          <label className="block text-sm font-medium mb-1">Value (RU)</label>
                          <Textarea
@@ -641,7 +641,7 @@ export const SiteTextsPanel: React.FC = () => {
                 </Button>
               </div>
         )}
-      </TabsContent>
-    </Tabs>
+            </TabsContent>
+      </Tabs>
   )
 } 

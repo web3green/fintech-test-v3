@@ -275,15 +275,15 @@ const Admin = () => {
           
           <nav className="flex-1 space-y-1">
             {adminTabs.map(tab => (
-              <Button 
+            <Button 
                 key={tab.id}
                 variant={currentTab === tab.id ? "default" : "ghost"} 
                 onClick={() => setCurrentTab(tab.id)}
-                className="w-full justify-start"
-              >
+              className="w-full justify-start"
+            >
                 <tab.icon className="mr-2 h-4 w-4" />
                 {tab.labelKey?.split('.').pop()?.replace(/([A-Z])/g, ' $1').trim() ?? tab.id}
-              </Button>
+            </Button>
             ))}
           </nav>
           
@@ -305,11 +305,11 @@ const Admin = () => {
         {isMobile && (
           <header className="fixed top-0 left-0 right-0 h-16 bg-card border-b flex items-center justify-between px-4 z-30">
             <Button variant="ghost" size="icon" onClick={toggleSidebar}>
-              <Menu className="h-6 w-6" />
-            </Button>
+            <Menu className="h-6 w-6" />
+          </Button>
             <div className="font-bold text-lg">
                <span className="text-fintech-blue">Admin</span>
-            </div>
+        </div>
              <Button variant="ghost" size="icon" onClick={handleLogout}>
                <LogOut className="h-5 w-5" />
             </Button>

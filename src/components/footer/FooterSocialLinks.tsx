@@ -16,7 +16,7 @@ export function FooterSocialLinks() {
   useEffect(() => {
     loadSocialLinks();
   }, []);
-
+  
   const loadSocialLinks = async () => {
       setIsLoading(true);
       try {

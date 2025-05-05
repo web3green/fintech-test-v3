@@ -88,12 +88,12 @@ export const BlogPostCard: React.FC<BlogPostCardProps> = ({
         </div>
         
         <div className="mb-4">
-          <h3 className="text-lg font-medium mb-2 line-clamp-2 group-hover:text-fintech-blue transition-colors">
-            {getLocalizedContent(post, 'title', language)}
-          </h3>
+        <h3 className="text-lg font-medium mb-2 line-clamp-2 group-hover:text-fintech-blue transition-colors">
+          {getLocalizedContent(post, 'title', language)}
+        </h3>
           <p className="text-muted-foreground text-sm line-clamp-3">
-            {getLocalizedContent(post, 'excerpt', language)}
-          </p>
+          {getLocalizedContent(post, 'excerpt', language)}
+        </p>
         </div>
         
         <div className="flex items-center justify-between mt-auto">

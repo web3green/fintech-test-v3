@@ -48,13 +48,13 @@ export function ContactFormFields() {
           // Use a specific success key if available, otherwise a generic one
           toast.success(t('contact.success') || (language === 'en' ? 'Message sent successfully!' : 'Сообщение успешно отправлено!'));
           // Reset form on success
-          setFormData({
-            name: '',
-            email: '',
-            phone: '',
-            service: '',
-            message: '',
-          });
+      setFormData({
+        name: '',
+        email: '',
+        phone: '',
+        service: '',
+        message: '',
+      });
       } else {
           // Throw an error if processContactForm indicated failure
           throw new Error(result.error || (language === 'en' ? 'Submission processing failed.' : 'Ошибка обработки отправки.'));

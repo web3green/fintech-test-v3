@@ -41,12 +41,12 @@ export async function toggleReaction(
       .eq('user_id', currentUserId) // Используем актуальный ID
       .eq('reaction_type', reactionType)
       .maybeSingle(); // Ожидаем одну строку или null
-
+    
     if (fetchError) {
       console.error('[toggleReaction] Error fetching existing reaction:', fetchError);
       throw fetchError;
     }
-
+    
     // 4. Удаляем или добавляем реакцию
     if (existingReaction) {
       // Реакция существует, удаляем её
@@ -55,7 +55,7 @@ export async function toggleReaction(
         .from('blog_post_reactions')
         .delete()
         .eq('id', existingReaction.id); // Удаляем по ID найденной реакции
-
+      
       if (deleteError) {
         console.error('[toggleReaction] Error deleting reaction:', deleteError);
         // Проверяем, не RLS ли это ошибка
@@ -64,7 +64,7 @@ export async function toggleReaction(
         }
         throw deleteError;
       }
-
+      
       console.log(`[toggleReaction] Reaction removed successfully.`);
       return { success: true, action: 'removed', reactionType };
     } else {
@@ -78,7 +78,7 @@ export async function toggleReaction(
           user_id: currentUserId, // Используем актуальный ID
           // created_at устанавливается базой данных по умолчанию
         });
-
+      
       if (insertError) {
         console.error('[toggleReaction] Error inserting reaction:', insertError);
          // Проверяем, не RLS ли это ошибка (хотя мы ее уже видели)
@@ -93,11 +93,11 @@ export async function toggleReaction(
   } catch (error: any) {
     // Улучшенное логирование ошибок
     console.error(`[toggleReaction] Failed for Post ID: ${postId}, Reaction: ${reactionType}. Error:`, error);
-    return {
-      success: false,
+    return { 
+      success: false, 
       error: error.message || 'Unknown error toggling reaction',
       code: error.code, // Добавляем код ошибки для диагностики
-      reactionType
+      reactionType 
     };
   }
 }
@@ -161,7 +161,7 @@ export async function getUserReactions(postId: string /* Убираем userId: 
     }
 
     const currentUserId = session?.user?.id;
-
+    
     // Если нет ID пользователя (сессия есть, но user.id пустой - маловероятно), считаем, что реакций нет
     if (!currentUserId) {
        console.warn('[getUserReactions] No user ID found in session, returning no reactions.');
@@ -169,7 +169,7 @@ export async function getUserReactions(postId: string /* Убираем userId: 
     }
 
     console.log(`[getUserReactions] Checking reactions for User ID: ${currentUserId}, Post ID: ${postId}`);
-
+    
     const { data, error } = await supabase
       .from('blog_post_reactions')
       .select('reaction_type')

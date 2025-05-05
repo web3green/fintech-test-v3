@@ -31,9 +31,9 @@ export function FooterContactInfo({ /* scrollToSection */ }: FooterContactInfoPr
         <Phone className="h-4 w-4 mr-2 text-fintech-orange dark:text-fintech-orange/80" />
         {t('footer.contact')}
       </h3>
-      <ul className="space-y-3">
+      <ul className="space-y-2">
         {isSecondaryPhoneVisible && secondaryPhone && (
-          <li>
+        <li>
             <a
               href={secondaryPhoneLink}
               className="text-muted-foreground hover:text-fintech-blue dark:hover:text-fintech-blue/80 transition-colors flex items-center"
@@ -53,7 +53,7 @@ export function FooterContactInfo({ /* scrollToSection */ }: FooterContactInfoPr
           </a>
         </li>
         {whatsappPhone && (
-          <li>
+        <li>
             <a
               href={whatsappLink}
               target="_blank"
@@ -75,8 +75,8 @@ export function FooterContactInfo({ /* scrollToSection */ }: FooterContactInfoPr
             >
               <Send className="h-3.5 w-3.5 mr-1.5 text-fintech-orange/70 dark:text-fintech-orange/60 flex-shrink-0" />
               <span className="text-sm">Telegram</span>
-            </a>
-          </li>
+          </a>
+        </li>
         )}
         <li>
           <a href="#contact" className="text-fintech-blue dark:text-fintech-blue/80 font-medium flex items-center hover:underline">

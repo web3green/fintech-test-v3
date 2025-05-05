@@ -24,7 +24,7 @@ export function FooterServiceLinks({
         <Briefcase className="h-4 w-4 mr-2 text-fintech-orange dark:text-fintech-orange/80" />
         {t('footer.services')}
       </h3>
-      <ul className="space-y-3">
+      <ul className="space-y-2">
         {mainServices.slice(0, 5).map(service => <li key={service.id}>
             <a href="#services" className="text-muted-foreground hover:text-fintech-blue dark:hover:text-fintech-blue/80 transition-colors flex items-center">
               <service.icon className="h-3.5 w-3.5 mr-1.5 text-fintech-orange/70 dark:text-fintech-orange/60" />

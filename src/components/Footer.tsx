@@ -18,9 +18,9 @@ export function Footer() {
   
   return (
     <footer className="bg-gray-50 dark:bg-gray-900/80 border-t border-gray-200 dark:border-gray-800/60">
-      <div className="container mx-auto px-4 md:px-8 py-12 md:py-16">
+      <div className="container mx-auto px-4 md:px-8 py-8 md:py-10">
         {/* Top section with logo and description */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-10 mb-10">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-10 mb-8">
           <div className="md:col-span-4 lg:col-span-1 space-y-6">
             <FooterLogo />
             <FooterSocialLinks />

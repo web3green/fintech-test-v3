@@ -81,18 +81,18 @@ export function SocialLinksPanel() {
             editingLink.platform, 
             editingLink.url, 
             platformConfig?.iconName
-        );
-        
+    );
+    
         setDisplayLinks(prevLinks => 
           prevLinks.map(link => 
             link.platform === editingLink.platform ? { ...link, url: editingLink.url } : link
           )
         );
         
-        setEditingLink(null);
-        toast.success(language === 'en' 
-          ? "Social link updated successfully" 
-          : "Ссылка на социальную сеть успешно обновлена");
+    setEditingLink(null);
+    toast.success(language === 'en' 
+      ? "Social link updated successfully" 
+      : "Ссылка на социальную сеть успешно обновлена");
 
     } catch (error) {
         console.error("Error saving social link:", error);
@@ -151,71 +151,71 @@ export function SocialLinksPanel() {
               <Loader2 className="h-8 w-8 animate-spin text-fintech-blue" />
             </div>
           ) : (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>{language === 'en' ? "Platform" : "Платформа"}</TableHead>
-                  <TableHead>{language === 'en' ? "URL" : "URL"}</TableHead>
-                  <TableHead>{language === 'en' ? "Actions" : "Действия"}</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>{language === 'en' ? "Platform" : "Платформа"}</TableHead>
+                <TableHead>{language === 'en' ? "URL" : "URL"}</TableHead>
+                <TableHead>{language === 'en' ? "Actions" : "Действия"}</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
                 {displayLinks.map((link) => (
                   <TableRow key={link.platform}>
-                    <TableCell className="flex items-center gap-2">
-                      <div className="bg-gray-100 dark:bg-gray-800 p-2 rounded-full">
+                  <TableCell className="flex items-center gap-2">
+                    <div className="bg-gray-100 dark:bg-gray-800 p-2 rounded-full">
                         {renderSocialIcon(link.iconName)}
-                      </div>
+                    </div>
                       <span>{link.displayName}</span>
-                    </TableCell>
-                    <TableCell className="w-full">
+                  </TableCell>
+                  <TableCell className="w-full">
                       {editingLink && editingLink.platform === link.platform ? (
-                        <Input 
-                          value={editingLink.url}
-                          onChange={handleUrlChange}
-                          className="w-full"
+                      <Input 
+                        value={editingLink.url}
+                        onChange={handleUrlChange}
+                        className="w-full"
                           disabled={isSaving}
-                        />
-                      ) : (
+                      />
+                    ) : (
                         <span className="block truncate" title={link.url}>{link.url || '-'}</span>
-                      )}
-                    </TableCell>
-                    <TableCell>
+                    )}
+                  </TableCell>
+                  <TableCell>
                       {editingLink && editingLink.platform === link.platform ? (
-                        <div className="flex gap-2">
-                          <Button 
-                            size="sm" 
-                            variant="default" 
-                            onClick={handleSaveClick}
+                      <div className="flex gap-2">
+                        <Button 
+                          size="sm" 
+                          variant="default" 
+                          onClick={handleSaveClick}
                             disabled={isSaving}
-                          >
+                        >
                             {isSaving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
-                            {language === 'en' ? "Save" : "Сохранить"}
-                          </Button>
-                          <Button 
-                            size="sm" 
-                            variant="outline" 
-                            onClick={handleCancelClick}
-                            disabled={isSaving}
-                          >
-                            {language === 'en' ? "Cancel" : "Отмена"}
-                          </Button>
-                        </div>
-                      ) : (
+                          {language === 'en' ? "Save" : "Сохранить"}
+                        </Button>
                         <Button 
                           size="sm" 
                           variant="outline" 
+                          onClick={handleCancelClick}
+                            disabled={isSaving}
+                        >
+                          {language === 'en' ? "Cancel" : "Отмена"}
+                        </Button>
+                      </div>
+                    ) : (
+                      <Button 
+                        size="sm" 
+                        variant="outline" 
                           onClick={() => handleEditClick(link.platform, link.url)}
                           disabled={editingLink !== null}
-                        >
-                          {language === 'en' ? "Edit" : "Изменить"}
-                        </Button>
-                      )}
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+                      >
+                        {language === 'en' ? "Edit" : "Изменить"}
+                      </Button>
+                    )}
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
           )}
         </CardContent>
       </Card>

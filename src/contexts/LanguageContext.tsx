@@ -24,7 +24,7 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
     const savedLang = localStorage.getItem('language');
     return (savedLang === 'en' || savedLang === 'ru') ? savedLang : 'en';
   });
-  
+
   // State for storing fetched texts as a dictionary
   const [texts, setTexts] = useState<TextMap>({});
   // State for loading status

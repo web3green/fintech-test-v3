@@ -9,7 +9,16 @@ import { databaseService } from "@/services/databaseService"
 import { useLanguage } from '@/contexts/LanguageContext'
 import { RichTextEditor } from '@/components/ui/rich-text-editor'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
-import { TextBlock } from '@/services/siteTextsService'
+// Define TextBlock interface locally
+interface TextBlock {
+    id?: string; // Assuming id might be optional or not always needed here
+    key: string;
+    value_en: string | null;
+    value_ru: string | null;
+    section?: string | null; // Allow section to be optional
+    created_at?: string;
+    updated_at?: string;
+}
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 // Keep this for service-specific structure
@@ -40,20 +49,25 @@ interface GeneralTextGroup {
 }
 
 export const SiteTextsPanel: React.FC = () => {
-  const { language } = useLanguage();
+  const { language, reloadTexts } = useLanguage();
   const [servicesData, setServicesData] = useState<ServiceTexts[]>([]);
   const [sectionTexts, setSectionTexts] = useState<SectionTexts>({
       badge_en: '', badge_ru: '', title_en: '', title_ru: '', subtitle_en: '', subtitle_ru: ''
   });
-  const [generalTexts, setGeneralTexts] = useState<GeneralTextGroup[]>([]);
+  // State for the new Contact/Form tab
+  const [contactFormTexts, setContactFormTexts] = useState<GeneralTextGroup[]>([]); 
+  // State for the remaining Other texts
+  const [generalTexts, setGeneralTexts] = useState<GeneralTextGroup[]>([]); 
   const [isLoading, setIsLoading] = useState(true);
   const [isSavingSection, setIsSavingSection] = useState(false);
   const [isSavingService, setIsSavingService] = useState<string | null>(null);
   const [isSavingGeneral, setIsSavingGeneral] = useState<string | null>(null);
   const [isSavingSingleText, setIsSavingSingleText] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
-  // State to track the currently selected general text section for editing
-  const [selectedGeneralSection, setSelectedGeneralSection] = useState<string | null>(null); 
+  // State to track the currently selected general/other text section for editing
+  const [selectedOtherSection, setSelectedOtherSection] = useState<string | null>(null);
+  // State to track the currently selected contact/form text section for editing
+  const [selectedContactSection, setSelectedContactSection] = useState<string | null>(null);
 
   useEffect(() => {
     loadAllTexts();
@@ -67,11 +81,21 @@ export const SiteTextsPanel: React.FC = () => {
         console.log('[SiteTextsPanel] All texts received:', allTexts);
 
         const serviceRelatedTexts: TextBlock[] = [];
+        const contactRelatedTexts: TextBlock[] = []; // New array for contact texts
         const otherTexts: TextBlock[] = [];
 
+        // Define prefixes/sections for contact-related texts
+        const contactPrefixes = ['contact.', 'footer.']; 
+        const contactSections = ['ContactForm', 'GetInTouch', 'ContactInfo', 'FooterContacts']; 
+
         allTexts.forEach(item => {
-            if (item.key?.startsWith('services.')) {
+            const key = item.key || '';
+            const section = item.section || '';
+            
+            if (key.startsWith('services.')) {
                 serviceRelatedTexts.push(item);
+            } else if (contactPrefixes.some(prefix => key.startsWith(prefix)) || contactSections.includes(section)) {
+                contactRelatedTexts.push(item);
             } else {
                 otherTexts.push(item);
             }
@@ -115,7 +139,42 @@ export const SiteTextsPanel: React.FC = () => {
         }));
         setServicesData(formattedServices);
 
-        // --- Process General Texts ---
+        // --- Process Contact/Form Texts ---
+        const groupedContact = contactRelatedTexts.reduce<Record<string, TextBlock[]>>((acc, item) => {
+             // Assign more specific section names for better grouping in the admin UI
+             let sectionKey = item.section || 'contact_other'; // Default
+             const key = item.key || '';
+
+             if (!item.section) { // Only assign if section is not already set in DB
+                if (key.startsWith('contact.form.') || key.startsWith('contact.service.')) {
+                    sectionKey = 'ContactFormInputs';
+                } else if (key.startsWith('contact.consultation.')) {
+                    sectionKey = 'ConsultationPanel';
+                } else if (key.startsWith('contact.instant.')) {
+                    sectionKey = 'GetInTouchBanner';
+                } else if (key.startsWith('contact.telegram.') || key.startsWith('contact.whatsapp.') || key.startsWith('contact.email.')) {
+                    sectionKey = 'ContactCards';
+                } else if (key.startsWith('footer.')) {
+                    sectionKey = 'FooterInfo';
+                } else if (key === 'contact.title' || key === 'contact.subtitle' || key === 'contact.cta.text') {
+                     sectionKey = 'GetInTouchHeader'; // Group main title/subtitle/CTA
+                }
+             }
+            
+            if (!acc[sectionKey]) { acc[sectionKey] = []; }
+            acc[sectionKey].push({ ...item, section: sectionKey }); // Ensure item has the calculated section
+            return acc;
+        }, {});
+        const formattedContactFormTexts = Object.entries(groupedContact).map(([section, texts]) => ({
+            section,
+            texts: texts.sort((a, b) => a.key.localeCompare(b.key)),
+        }));
+        setContactFormTexts(formattedContactFormTexts);
+        if (formattedContactFormTexts.length > 0) {
+             setSelectedContactSection(formattedContactFormTexts[0].section);
+        }
+
+        // --- Process General (Other) Texts ---
         const groupedGeneral = otherTexts.reduce<Record<string, TextBlock[]>>((acc, item) => {
              const sectionKey = item.section || item.key?.split('.')[0] || 'other'; 
             if (!acc[sectionKey]) { acc[sectionKey] = []; }
@@ -127,9 +186,9 @@ export const SiteTextsPanel: React.FC = () => {
             texts: texts.sort((a, b) => a.key.localeCompare(b.key)),
         }));
         setGeneralTexts(formattedGeneral);
-        // Set the initially selected section to the first one, if available
+        // Set the initially selected other section 
         if (formattedGeneral.length > 0) {
-            setSelectedGeneralSection(formattedGeneral[0].section);
+             setSelectedOtherSection(formattedGeneral[0].section);
         }
 
     } catch (err: any) { 
@@ -163,11 +222,61 @@ export const SiteTextsPanel: React.FC = () => {
     );
   };
 
-  const handleSaveSectionTexts = async () => { /* ... */ };
-  const handleSaveService = async (serviceId: string) => { /* ... */ };
+  const handleSaveSectionTexts = async () => {
+      setIsSavingSection(true);
+      setError(null);
+      try {
+          await Promise.all([
+              databaseService.upsertSiteText('services.badge', sectionTexts.badge_en, sectionTexts.badge_ru || sectionTexts.badge_en, 'ServicesHeader'),
+              databaseService.upsertSiteText('services.title', sectionTexts.title_en, sectionTexts.title_ru || sectionTexts.title_en, 'ServicesHeader'),
+              databaseService.upsertSiteText('services.subtitle', sectionTexts.subtitle_en, sectionTexts.subtitle_ru || sectionTexts.subtitle_en, 'ServicesHeader'),
+          ]);
+          await reloadTexts();
+          toast.success(language === 'en' ? 'Service section header saved successfully!' : 'Заголовок секции услуг успешно сохранен!');
+      } catch (err: any) {
+          console.error('Error saving section texts:', err);
+          const message = err.message || 'Failed to save service section header.';
+          setError(message);
+          toast.error(message);
+      } finally {
+          setIsSavingSection(false);
+      }
+  };
 
-  const handleGeneralInputChange = (section: string, key: string, lang: 'en' | 'ru', value: string) => {
-      setGeneralTexts(prevGroups => 
+  const handleSaveService = async (serviceId: string) => { 
+      const service = servicesData.find(s => s.id === serviceId);
+      if (!service) return;
+      
+      setIsSavingService(serviceId);
+      setError(null);
+      try {
+          await Promise.all([
+              databaseService.upsertSiteText(`services.${serviceId}.title`, service.title_en, service.title_ru || service.title_en, 'ServicesItem'),
+              databaseService.upsertSiteText(`services.${serviceId}.short`, service.short_en, service.short_ru || service.short_en, 'ServicesItem'),
+              databaseService.upsertSiteText(`services.${serviceId}.details`, service.details_en, service.details_ru || service.details_en, 'ServicesItem'),
+          ]);
+          await reloadTexts();
+          toast.success(`${language === 'en' ? 'Service' : 'Услуга'} '${service.title_en}' ${language === 'en' ? 'saved successfully!' : 'успешно сохранена!'}`);
+      } catch (err: any) { 
+          console.error(`Error saving service ${serviceId}:`, err);
+          const message = err.message || `Failed to save service ${service.title_en}.`;
+          setError(message);
+          toast.error(message);
+      } finally {
+          setIsSavingService(null);
+      }
+   };
+
+  // Adapt handleGeneralInputChange for different state targets
+  const handleTextGroupInputChange = (
+      targetState: 'general' | 'contact',
+      section: string, 
+      key: string, 
+      lang: 'en' | 'ru', 
+      value: string
+  ) => {
+      const setter = targetState === 'general' ? setGeneralTexts : setContactFormTexts;
+      setter(prevGroups => 
           prevGroups.map(group => 
               group.section === section
                   ? { 
@@ -183,14 +292,18 @@ export const SiteTextsPanel: React.FC = () => {
       );
   };
 
-  const handleSaveGeneralGroup = async (section: string) => {
-      setIsSavingGeneral(section);
+  // Adapt handleSaveGeneralGroup for different state targets
+  const handleSaveTextGroup = async (targetState: 'general' | 'contact', section: string) => {
+      const state = targetState === 'general' ? generalTexts : contactFormTexts;
+      const stateSetter = targetState === 'general' ? setIsSavingGeneral : setIsSavingContact; // Need new state setIsSavingContact
+      
+      stateSetter(section);
       setError(null);
-      const groupToSave = generalTexts.find(g => g.section === section);
+      const groupToSave = state.find(g => g.section === section);
 
       if (!groupToSave) {
           toast.error(language === 'en' ? `Group ${section} not found.` : `Группа ${section} не найдена.`);
-          setIsSavingGeneral(null);
+          stateSetter(null);
           return;
       }
 
@@ -199,16 +312,20 @@ export const SiteTextsPanel: React.FC = () => {
               databaseService.upsertSiteText(text.key, text.value_en || '', text.value_ru || '', text.section)
           );
           await Promise.all(promises);
+          await reloadTexts();
           toast.success(`${language === 'en' ? 'Texts for group' : 'Тексты для группы'} '${section}' ${language === 'en' ? 'saved successfully!' : 'успешно сохранены!'}`);
       } catch (err: any) { 
-          console.error(`Error saving general texts for group ${section}:`, err);
+          console.error(`Error saving texts for group ${section}:`, err);
           const message = err.message || `Failed to save texts for group ${section}.`;
           setError(message);
           toast.error(message);
       } finally {
-          setIsSavingGeneral(null);
+          stateSetter(null);
       }
   };
+  
+  // Need state for saving contact group
+  const [isSavingContact, setIsSavingContact] = useState<string | null>(null);
 
   const handleSaveSingleText = async (text: TextBlock) => {
     if (!text || !text.key) {
@@ -225,6 +342,7 @@ export const SiteTextsPanel: React.FC = () => {
         text.value_ru || '', 
         text.section
       );
+      await reloadTexts();
       toast.success(`${language === 'en' ? 'Text' : 'Текст'} '${keyToSave}' ${language === 'en' ? 'saved successfully!' : 'успешно сохранен!'}`);
     } catch (err: any) { 
       console.error(`Error saving single text ${keyToSave}:`, err);
@@ -246,10 +364,11 @@ export const SiteTextsPanel: React.FC = () => {
 
   return (
     <Tabs defaultValue="services" className="space-y-4">
-      <TabsList className="grid w-full grid-cols-2">
+      <TabsList className="grid w-full grid-cols-3">
         <TabsTrigger value="services">{language === 'en' ? 'Services Texts' : 'Тексты Услуг'}</TabsTrigger>
+        <TabsTrigger value="contact">{language === 'en' ? 'Contact & Form' : 'Контакты и Форма'}</TabsTrigger>
         <TabsTrigger value="other">{language === 'en' ? 'Other Texts' : 'Остальные Тексты'}</TabsTrigger>
-        </TabsList>
+      </TabsList>
 
       <TabsContent value="services" className="space-y-6">
         <Card>
@@ -350,96 +469,179 @@ export const SiteTextsPanel: React.FC = () => {
         ))}
       </TabsContent>
 
-      <TabsContent value="other" className="space-y-6">
+      <TabsContent value="contact" className="space-y-6">
         <Card>
             <CardHeader>
-                <CardTitle>{language === 'en' ? 'Edit General Site Texts' : 'Редактировать общие тексты сайта'}</CardTitle>
+                <CardTitle>{language === 'en' ? 'Edit Contact & Form Texts' : 'Редактировать тексты Контактов и Формы'}</CardTitle>
                  <CardDescription>
-                     {language === 'en' ? 'Manage other text content used across the website.' : 'Управляйте другим текстовым контентом, используемым на сайте.'}
+                     {language === 'en' ? 'Manage content related to contact information and consultation forms.' : 'Управляйте контентом, связанным с контактной информацией и формами консультации.'}
                  </CardDescription>
              </CardHeader>
         </Card>
 
-        {/* Horizontal Navigation Buttons for Sections */}
-        {generalTexts.length > 0 && (
+        {/* Horizontal Navigation Buttons for Contact Sections */} 
+        {contactFormTexts.length > 0 && (
           <div className="flex flex-wrap gap-2 p-1 bg-muted rounded-md">
-             {generalTexts.map((group) => (
-                            <Button
+             {contactFormTexts.map((group) => (
+                <Button
                  key={group.section}
-                 variant={selectedGeneralSection === group.section ? 'default' : 'ghost'}
-                              size="sm"
-                 onClick={() => setSelectedGeneralSection(group.section)}
+                 variant={selectedContactSection === group.section ? 'default' : 'ghost'}
+                 size="sm"
+                 onClick={() => setSelectedContactSection(group.section)}
                  className="capitalize"
-                            >
-                 {group.section.replace(/-/g, ' ')}
-                            </Button>
+                >
+                 {group.section.replace(/[-_]/g, ' ')}
+                </Button>
              ))}
           </div>
         )}
 
-        {/* Content Area for the Selected Section */}
-        {generalTexts.length === 0 && !isLoading && (
-            <p className="text-center text-muted-foreground p-4">No general site texts found (excluding services.*).</p>
+        {contactFormTexts.length === 0 && !isLoading && (
+            <p className="text-center text-muted-foreground p-4">No contact or form related texts found.</p>
         )}
 
-        {/* Find and render the selected section's content */}
-        {generalTexts.find(group => group.section === selectedGeneralSection)?.texts.map((text) => (
+        {/* Render the selected contact section's content */} 
+        {contactFormTexts.find(group => group.section === selectedContactSection)?.texts.map((text) => (
             <div key={text.key} className="space-y-2 border rounded-lg p-4 shadow-sm">
-                {/* Header with Key and Individual Save Button */}
-                <div className="flex justify-between items-center">
+                 <div className="flex justify-between items-center">
                     <h4 className="font-semibold text-base flex-grow mr-4">{text.key}</h4>
-                          <Button
-                        variant="outline" 
-                            size="sm"
-                        onClick={() => handleSaveSingleText(text)}
-                        disabled={isSavingSingleText === text.key}
-                        className="whitespace-nowrap"
+                    <Button
+                         variant="outline" 
+                         size="sm"
+                         onClick={() => handleSaveSingleText(text)}
+                         disabled={isSavingSingleText === text.key}
+                         className="whitespace-nowrap"
                     >
                          {isSavingSingleText === text.key ? (
                             <Loader2 className="h-4 w-4 animate-spin" />
-                        ) : (
+                         ) : (
                             <Save className="h-4 w-4" />
-                        )}
-                        <span className="ml-2 hidden sm:inline">{language === 'en' ? 'Save' : 'Сохранить'}</span>
-                          </Button>
-                        </div>
-                {/* Horizontal Layout for Textareas */}
-                <div className="flex flex-col sm:flex-row gap-4">
+                         )}
+                         <span className="ml-2 hidden sm:inline">{language === 'en' ? 'Save' : 'Сохранить'}</span>
+                    </Button>
+                 </div>
+                 <div className="flex flex-col sm:flex-row gap-4">
                     <div className="flex-1">
-                        <label className="block text-sm font-medium mb-1">Value (EN)</label>
-                        <Textarea
+                         <label className="block text-sm font-medium mb-1">Value (EN)</label>
+                         <Textarea
                             value={text.value_en || ''}
-                            onChange={(e) => handleGeneralInputChange(selectedGeneralSection!, text.key, 'en', e.target.value)} // Use selectedGeneralSection here
+                            onChange={(e) => handleTextGroupInputChange('contact', selectedContactSection!, text.key, 'en', e.target.value)}
                             rows={3}
                             placeholder={`Enter value for ${text.key} in English...`}
-                        />
-                      </div>
+                         />
+                    </div>
                     <div className="flex-1">
-                        <label className="block text-sm font-medium mb-1">Value (RU)</label>
-                        <Textarea
+                         <label className="block text-sm font-medium mb-1">Value (RU)</label>
+                         <Textarea
                             value={text.value_ru || ''}
-                            onChange={(e) => handleGeneralInputChange(selectedGeneralSection!, text.key, 'ru', e.target.value)} // Use selectedGeneralSection here
+                            onChange={(e) => handleTextGroupInputChange('contact', selectedContactSection!, text.key, 'ru', e.target.value)}
                             rows={3}
                             placeholder={`Введите значение для ${text.key} на русском...`}
-                        />
+                         />
                     </div>
                  </div>
             </div>
         ))}
-
-        {/* Save All Button for the Selected Section */}
-        {selectedGeneralSection && generalTexts.find(group => group.section === selectedGeneralSection) && (
+        {/* Save All Button for the Selected Contact Section */} 
+        {selectedContactSection && contactFormTexts.find(group => group.section === selectedContactSection) && (
            <div className="flex justify-end pt-4 border-t mt-4">
                 <Button 
-                    onClick={() => handleSaveGeneralGroup(selectedGeneralSection)}
-                    disabled={isSavingGeneral === selectedGeneralSection}
+                    onClick={() => handleSaveTextGroup('contact', selectedContactSection)} 
+                    disabled={isSavingContact === selectedContactSection}
                 >
-                     {isSavingGeneral === selectedGeneralSection && <Loader2 className="mr-2 h-4 w-4 animate-spin" />} 
-                     {language === 'en' ? 'Save All' : 'Сохранить все'} {selectedGeneralSection.replace(/-/g, ' ')} {language === 'en' ? 'Texts' : 'Тексты'}
+                     {isSavingContact === selectedContactSection && <Loader2 className="mr-2 h-4 w-4 animate-spin" />} 
+                     {language === 'en' ? 'Save All' : 'Сохранить все'} {selectedContactSection.replace(/[-_]/g, ' ')} {language === 'en' ? 'Texts' : 'Тексты'}
                 </Button>
               </div>
         )}
-            </TabsContent>
-      </Tabs>
+      </TabsContent>
+
+      <TabsContent value="other" className="space-y-6">
+         <Card>
+            <CardHeader>
+                <CardTitle>{language === 'en' ? 'Edit Other Site Texts' : 'Редактировать Остальные Тексты Сайта'}</CardTitle>
+                 <CardDescription>
+                     {language === 'en' ? 'Manage miscellaneous text content not covered in other sections.' : 'Управляйте прочим текстовым контентом, не вошедшим в другие разделы.'}
+                 </CardDescription>
+             </CardHeader>
+        </Card>
+
+        {/* Horizontal Navigation Buttons for Other Sections */} 
+        {generalTexts.length > 0 && (
+          <div className="flex flex-wrap gap-2 p-1 bg-muted rounded-md">
+             {generalTexts.map((group) => (
+                <Button
+                 key={group.section}
+                 variant={selectedOtherSection === group.section ? 'default' : 'ghost'}
+                 size="sm"
+                 onClick={() => setSelectedOtherSection(group.section)}
+                 className="capitalize"
+                >
+                 {group.section.replace(/[-_]/g, ' ')}
+                </Button>
+             ))}
+          </div>
+        )}
+
+        {generalTexts.length === 0 && !isLoading && (
+            <p className="text-center text-muted-foreground p-4">No other site texts found.</p>
+        )}
+
+        {/* Render the selected other section's content */} 
+        {generalTexts.find(group => group.section === selectedOtherSection)?.texts.map((text) => (
+            <div key={text.key} className="space-y-2 border rounded-lg p-4 shadow-sm">
+                 <div className="flex justify-between items-center">
+                    <h4 className="font-semibold text-base flex-grow mr-4">{text.key}</h4>
+                    <Button
+                         variant="outline" 
+                         size="sm"
+                         onClick={() => handleSaveSingleText(text)}
+                         disabled={isSavingSingleText === text.key}
+                         className="whitespace-nowrap"
+                    >
+                         {isSavingSingleText === text.key ? (
+                            <Loader2 className="h-4 w-4 animate-spin" />
+                         ) : (
+                            <Save className="h-4 w-4" />
+                         )}
+                         <span className="ml-2 hidden sm:inline">{language === 'en' ? 'Save' : 'Сохранить'}</span>
+                    </Button>
+                 </div>
+                 <div className="flex flex-col sm:flex-row gap-4">
+                    <div className="flex-1">
+                         <label className="block text-sm font-medium mb-1">Value (EN)</label>
+                         <Textarea
+                            value={text.value_en || ''}
+                            onChange={(e) => handleTextGroupInputChange('general', selectedOtherSection!, text.key, 'en', e.target.value)}
+                            rows={3}
+                            placeholder={`Enter value for ${text.key} in English...`}
+                         />
+                    </div>
+                    <div className="flex-1">
+                         <label className="block text-sm font-medium mb-1">Value (RU)</label>
+                         <Textarea
+                            value={text.value_ru || ''}
+                            onChange={(e) => handleTextGroupInputChange('general', selectedOtherSection!, text.key, 'ru', e.target.value)}
+                            rows={3}
+                            placeholder={`Введите значение для ${text.key} на русском...`}
+                         />
+                    </div>
+                 </div>
+            </div>
+        ))}
+        {/* Save All Button for the Selected Other Section */} 
+        {selectedOtherSection && generalTexts.find(group => group.section === selectedOtherSection) && (
+           <div className="flex justify-end pt-4 border-t mt-4">
+                <Button 
+                    onClick={() => handleSaveTextGroup('general', selectedOtherSection)} 
+                    disabled={isSavingGeneral === selectedOtherSection}
+                >
+                     {isSavingGeneral === selectedOtherSection && <Loader2 className="mr-2 h-4 w-4 animate-spin" />} 
+                     {language === 'en' ? 'Save All' : 'Сохранить все'} {selectedOtherSection.replace(/[-_]/g, ' ')} {language === 'en' ? 'Texts' : 'Тексты'}
+                </Button>
+              </div>
+        )}
+      </TabsContent>
+    </Tabs>
   )
 } 

@@ -14,6 +14,7 @@ interface LanguageContextType {
   t: (key: string, fallback?: string) => string;
   isLoading: boolean;
   texts: TextMap; // Expose texts if needed elsewhere, though 't' is primary
+  reloadTexts: () => Promise<void>; // Add reload function
 }
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
@@ -29,31 +30,31 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
   // State for loading status
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  // Load texts from the database on component mount
-  useEffect(() => {
-    const loadTexts = async () => {
-      setIsLoading(true);
-      try {
-        const allTextsArray = await databaseService.getAllSiteTexts();
-        // Convert array to a dictionary for easier lookup
-        const textsMap = allTextsArray.reduce<TextMap>((acc, text) => {
-          if (text.key) {
-            acc[text.key] = { value_en: text.value_en, value_ru: text.value_ru };
-          }
-          return acc;
-        }, {});
-        setTexts(textsMap);
-        console.log(`[LanguageContext] Loaded ${Object.keys(textsMap).length} texts.`);
-      } catch (error) {
-        console.error("[LanguageContext] Failed to load site texts:", error);
-        // Keep the state empty or handle error appropriately
-      } finally {
-        setIsLoading(false);
-      }
-    };
+  // Function to load all site texts
+  const loadAllTexts = useCallback(async () => {
+    console.log("[LanguageContext] Reloading all site texts...");
+    setIsLoading(true);
+    try {
+      const allTextsArray = await databaseService.getAllSiteTexts();
+      const textsMap = allTextsArray.reduce<TextMap>((acc, text) => {
+        if (text.key) {
+          acc[text.key] = { value_en: text.value_en, value_ru: text.value_ru };
+        }
+        return acc;
+      }, {});
+      setTexts(textsMap);
+      console.log(`[LanguageContext] Successfully reloaded ${Object.keys(textsMap).length} texts.`);
+    } catch (error) {
+      console.error("[LanguageContext] Failed to reload site texts:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []); // No dependencies needed for useCallback as it captures everything
 
-    loadTexts();
-  }, []); // Empty dependency array means run only once on mount
+  // Load texts on initial mount
+  useEffect(() => {
+    loadAllTexts();
+  }, [loadAllTexts]); // Use loadAllTexts in dependency array
 
   useEffect(() => {
     localStorage.setItem('language', language);
@@ -95,8 +96,9 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
       language, 
       setLanguage, 
       t,
-      isLoading, // Use the new loading state
-      texts // Provide the texts dictionary
+      isLoading,
+      texts,
+      reloadTexts: loadAllTexts // Expose the reload function
     }}>
       {children}
     </LanguageContext.Provider>

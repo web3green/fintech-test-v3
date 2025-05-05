@@ -34,7 +34,8 @@ const blogPostsFetcher = async ([key, page, limit, query, category]: [
 export const BlogSection: React.FC = () => {
   console.log('[BlogSection] Mounting or re-rendering...'); // <-- Log component mount/render
   const { language } = useLanguage();
-  const sectionRef = useRef<HTMLElement>(null); // <-- Создаем ref
+  const sectionRef = useRef<HTMLElement>(null);
+  const isInitialMount = useRef(true); // Ref to track initial mount
 
   // State for filtering and pagination
   const [searchQuery, setSearchQuery] = useState('');
@@ -109,22 +110,26 @@ export const BlogSection: React.FC = () => {
     }
   }, [currentPage, totalPages, totalPostCount]);
   
-  // Add useEffect for scrolling when currentPage changes
+  // REMOVE the useEffect for scrolling based on currentPage
+  /*
   useEffect(() => {
-    // Scroll to the top of the blog section smoothly
+    if (isInitialMount.current) {
+      isInitialMount.current = false; // Set to false after first run
+      return; // Don't scroll on initial mount
+    }
+
+    // Scroll to the top of the blog section smoothly on subsequent page changes
     console.log(`[BlogSection] useEffect - Attempting scrollIntoView for page ${currentPage}, sectionRef.current:`, sectionRef.current);
     sectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    // window.scrollTo({ top: 0, behavior: 'smooth' }); // Keep commented out
   }, [currentPage]); // Dependency array includes currentPage
+  */
 
-  // ВОССТАНАВЛИВАЕМ ПРОСТУЮ ФУНКЦИЮ
   const handlePageChange = (pageNumber: number) => {
     if (pageNumber >= 1 && pageNumber <= totalPages && pageNumber !== currentPage) {
-      setCurrentPage(pageNumber); // <-- Смена состояния
-      
-      // REMOVE scroll from here
-      // console.log('[BlogSection] handlePageChange - Scrolling, sectionRef.current:', sectionRef.current);
-      // window.scrollTo({ top: 0, behavior: 'smooth' });
+      setCurrentPage(pageNumber);
+      // Scroll to the top of the blog section when page changes via buttons
+      console.log('[BlogSection] handlePageChange - Scrolling after page change, sectionRef.current:', sectionRef.current);
+      sectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   };
 

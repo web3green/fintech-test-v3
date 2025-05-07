@@ -3,12 +3,15 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
-import { Save, Plus, Trash2, Loader2, ChevronDown, ChevronUp } from 'lucide-react'
+import { Save, Plus, Trash2, Loader2, ChevronDown, ChevronUp, Edit, Check, X } from 'lucide-react'
 import { toast } from "sonner"
 import { databaseService } from "@/services/databaseService"
 import { useLanguage } from '@/contexts/LanguageContext'
 import { RichTextEditor } from '@/components/ui/rich-text-editor'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+
 // Define TextBlock interface locally
 interface TextBlock {
     id?: string; // Assuming id might be optional or not always needed here
@@ -19,7 +22,6 @@ interface TextBlock {
     created_at?: string;
     updated_at?: string;
 }
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 // Keep this for service-specific structure
 interface ServiceTexts {
@@ -58,16 +60,29 @@ export const SiteTextsPanel: React.FC = () => {
   const [contactFormTexts, setContactFormTexts] = useState<GeneralTextGroup[]>([]); 
   // State for the remaining Other texts
   const [generalTexts, setGeneralTexts] = useState<GeneralTextGroup[]>([]); 
+  // State for the new About Us tab
+  const [aboutUsTexts, setAboutUsTexts] = useState<GeneralTextGroup[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isSavingSection, setIsSavingSection] = useState(false);
   const [isSavingService, setIsSavingService] = useState<string | null>(null);
   const [isSavingGeneral, setIsSavingGeneral] = useState<string | null>(null);
+  const [isSavingContact, setIsSavingContact] = useState<string | null>(null);
+  const [isSavingAboutUs, setIsSavingAboutUs] = useState<string | null>(null);
   const [isSavingSingleText, setIsSavingSingleText] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   // State to track the currently selected general/other text section for editing
   const [selectedOtherSection, setSelectedOtherSection] = useState<string | null>(null);
   // State to track the currently selected contact/form text section for editing
   const [selectedContactSection, setSelectedContactSection] = useState<string | null>(null);
+  // State to track the currently selected About Us section for editing
+  const [selectedAboutUsSection, setSelectedAboutUsSection] = useState<string | null>(null);
+  const [otherSearchTerm, setOtherSearchTerm] = useState('');
+  const [contactSearchTerm, setContactSearchTerm] = useState('');
+  const [aboutUsSearchTerm, setAboutUsSearchTerm] = useState('');
+  const [serviceSearchTerm, setServiceSearchTerm] = useState('');
+
+  // States for saving status of text groups
+  const [isSavingGroup, setIsSavingGroup] = useState<{ [key: string]: boolean }>({});
 
   useEffect(() => {
     loadAllTexts();
@@ -82,11 +97,16 @@ export const SiteTextsPanel: React.FC = () => {
 
         const serviceRelatedTexts: TextBlock[] = [];
         const contactRelatedTexts: TextBlock[] = []; // New array for contact texts
+        const aboutUsRelatedTexts: TextBlock[] = []; // New array for About Us texts
         const otherTexts: TextBlock[] = [];
 
         // Define prefixes/sections for contact-related texts
         const contactPrefixes = ['contact.', 'footer.']; 
-        const contactSections = ['ContactForm', 'GetInTouch', 'ContactInfo', 'FooterContacts']; 
+        const contactSections = ['ContactForm', 'GetInTouch', 'ContactInfo', 'FooterContacts', 'ConsultationPanel', 'GetInTouchBanner', 'ContactCards', 'FooterInfo', 'GetInTouchHeader']; 
+
+        // Define prefixes/sections for About Us related texts
+        const aboutUsKeyPrefixes = ['about.', 'aboutus.', 'whychooseus.', 'companystats.', 'team.', 'mission.', 'values.', 'hero.', 'ourexpertise.', 'cta.']; // Added 'ourexpertise.', 'cta.'
+        const aboutUsSectionNames = ['AboutUs', 'AboutHero', 'WhyChooseUs', 'CompanyStats', 'TeamSection', 'MissionVision', 'CoreValues', 'AboutPage', 'OurExpertiseWhyChooseUs', 'AboutIntro', 'AboutExpertise', 'AboutWhyChooseUs', 'AboutCTA']; // Added specific section names user might use or we generate
 
         allTexts.forEach(item => {
             const key = item.key || '';
@@ -94,8 +114,18 @@ export const SiteTextsPanel: React.FC = () => {
             
             if (key.startsWith('services.')) {
                 serviceRelatedTexts.push(item);
+                // ---- START MANUAL CHANGE 1 ----
+                // Если это один из общих ключей секции услуг, также добавим его в otherTexts
+                // чтобы он был виден и редактируем во вкладке "Остальные тексты"
+                if (['services.badge', 'services.title', 'services.subtitle'].includes(key)) {
+                    // Создаем копию и принудительно ставим section, чтобы он точно попал в нужную группу
+                    otherTexts.push({...item, section: 'other_general_services_header'}); 
+                }
+                // ---- END MANUAL CHANGE 1 ----
             } else if (contactPrefixes.some(prefix => key.startsWith(prefix)) || contactSections.includes(section)) {
                 contactRelatedTexts.push(item);
+            } else if (aboutUsKeyPrefixes.some(prefix => key.startsWith(prefix)) || aboutUsSectionNames.includes(section)) {
+                aboutUsRelatedTexts.push(item);
             } else {
                 otherTexts.push(item);
             }
@@ -170,15 +200,52 @@ export const SiteTextsPanel: React.FC = () => {
             texts: texts.sort((a, b) => a.key.localeCompare(b.key)),
         }));
         setContactFormTexts(formattedContactFormTexts);
-        if (formattedContactFormTexts.length > 0) {
+        if (formattedContactFormTexts.length > 0 && !selectedContactSection) { // Ensure not to override
              setSelectedContactSection(formattedContactFormTexts[0].section);
         }
+
+        // --- Process About Us Texts ---
+        const groupedAboutUs = aboutUsRelatedTexts.reduce<Record<string, TextBlock[]>>((acc, item) => {
+            let sectionKey = item.section || 'AboutGeneral'; // Default if no specific section
+            const key = item.key || '';
+
+            // Try to derive a more specific section from key if item.section is generic or missing
+            // This logic prioritizes more specific key patterns.
+            if (!item.section || item.section === 'other' || item.section === 'AboutUs' || item.section === 'AboutGeneral' || aboutUsKeyPrefixes.some(p => key.startsWith(p))) {
+                if (key.startsWith('about.intro.') || key.startsWith('aboutus.intro.')) sectionKey = 'AboutIntro';
+                else if (key.startsWith('hero.about.') || key.startsWith('about.hero.')) sectionKey = 'AboutHero'; // For hero section specifically within About Us context
+                else if (key.startsWith('about.expertise.') || key.startsWith('ourexpertise.about.')) sectionKey = 'AboutExpertise';
+                else if (key.startsWith('about.whychooseus.') || key.startsWith('whychooseus.about.')) sectionKey = 'AboutWhyChooseUs';
+                else if (key.startsWith('about.cta.') || key.startsWith('cta.about.')) sectionKey = 'AboutCTA';
+                else if (key.startsWith('about.team.') || key.startsWith('team.about.')) sectionKey = 'AboutTeam';
+                else if (key.startsWith('about.mission.') || key.startsWith('mission.about.')) sectionKey = 'AboutMission';
+                else if (key.startsWith('about.values.') || key.startsWith('values.about.')) sectionKey = 'AboutValues';
+                else if (key.startsWith('companystats.') || key.startsWith('about.stats.')) sectionKey = 'AboutCompanyStats';
+                // If item.section was already one of the specific names, it would be preserved unless a more specific key pattern matches.
+                // If item.section from DB is specific (e.g., 'AboutIntro'), and no key pattern above matches more specifically, that DB section name is used.
+            }
+           
+           if (!acc[sectionKey]) { acc[sectionKey] = []; }
+           acc[sectionKey].push({ ...item, section: sectionKey }); 
+           return acc;
+       }, {});
+       const formattedAboutUsTexts = Object.entries(groupedAboutUs).map(([section, texts]) => ({
+           section,
+           texts: texts.sort((a, b) => a.key.localeCompare(b.key)),
+       }));
+       setAboutUsTexts(formattedAboutUsTexts);
+       if (formattedAboutUsTexts.length > 0 && !selectedAboutUsSection) {
+            setSelectedAboutUsSection(formattedAboutUsTexts[0].section);
+       }
 
         // --- Process General (Other) Texts ---
         const groupedGeneral = otherTexts.reduce<Record<string, TextBlock[]>>((acc, item) => {
              const sectionKey = item.section || item.key?.split('.')[0] || 'other'; 
             if (!acc[sectionKey]) { acc[sectionKey] = []; }
-            acc[sectionKey].push(item);
+            // Проверяем, нет ли уже текста с таким же ключом в этой секции
+            if (!acc[sectionKey].some(existingText => existingText.key === item.key)) {
+                acc[sectionKey].push(item);
+            }
             return acc;
         }, {});
         const formattedGeneral = Object.entries(groupedGeneral).map(([section, texts]) => ({
@@ -187,7 +254,7 @@ export const SiteTextsPanel: React.FC = () => {
         }));
         setGeneralTexts(formattedGeneral);
         // Set the initially selected other section 
-        if (formattedGeneral.length > 0) {
+        if (formattedGeneral.length > 0 && !selectedOtherSection) { // Ensure not to override if already set
              setSelectedOtherSection(formattedGeneral[0].section);
         }
 
@@ -269,13 +336,15 @@ export const SiteTextsPanel: React.FC = () => {
 
   // Adapt handleGeneralInputChange for different state targets
   const handleTextGroupInputChange = (
-      targetState: 'general' | 'contact',
+      targetState: 'general' | 'contact' | 'aboutus',
       section: string, 
       key: string, 
       lang: 'en' | 'ru', 
       value: string
   ) => {
-      const setter = targetState === 'general' ? setGeneralTexts : setContactFormTexts;
+      const setter = targetState === 'general' ? setGeneralTexts : 
+                     targetState === 'contact' ? setContactFormTexts : 
+                     setAboutUsTexts; // Added 'aboutus'
       setter(prevGroups => 
           prevGroups.map(group => 
               group.section === section
@@ -293,9 +362,13 @@ export const SiteTextsPanel: React.FC = () => {
   };
 
   // Adapt handleSaveGeneralGroup for different state targets
-  const handleSaveTextGroup = async (targetState: 'general' | 'contact', section: string) => {
-      const state = targetState === 'general' ? generalTexts : contactFormTexts;
-      const stateSetter = targetState === 'general' ? setIsSavingGeneral : setIsSavingContact; // Need new state setIsSavingContact
+  const handleSaveTextGroup = async (targetState: 'general' | 'contact' | 'aboutus', section: string) => {
+      const state = targetState === 'general' ? generalTexts : 
+                    targetState === 'contact' ? contactFormTexts :
+                    aboutUsTexts; // Added 'aboutus'
+      const stateSetter = targetState === 'general' ? setIsSavingGeneral : 
+                          targetState === 'contact' ? setIsSavingContact :
+                          setIsSavingAboutUs; // Added 'aboutus'
       
       stateSetter(section);
       setError(null);
@@ -324,9 +397,6 @@ export const SiteTextsPanel: React.FC = () => {
       }
   };
   
-  // Need state for saving contact group
-  const [isSavingContact, setIsSavingContact] = useState<string | null>(null);
-
   const handleSaveSingleText = async (text: TextBlock) => {
     if (!text || !text.key) {
       toast.error('Invalid text data provided.');
@@ -354,6 +424,97 @@ export const SiteTextsPanel: React.FC = () => {
     }
   };
 
+  // Filtering logic
+  const createFilteredList = (sourceTexts: GeneralTextGroup[], term: string): GeneralTextGroup[] => {
+    console.log(`[createFilteredList] Term: "${term}", Source groups:`, sourceTexts.length);
+    if (!term.trim()) {
+      console.log('[createFilteredList] Term is empty, returning all source texts.');
+      return sourceTexts;
+    }
+    const lowerTerm = term.toLowerCase();
+    const result = sourceTexts
+      .map(group => {
+        const originalGroupTextCount = group.texts.length;
+        const sectionNameMatches = group.section && group.section.toLowerCase().includes(lowerTerm);
+        const textsWithinGroupMatching = group.texts.filter(text =>
+          (text.key && text.key.toLowerCase().includes(lowerTerm)) ||
+          (text.value_en && text.value_en.toLowerCase().includes(lowerTerm)) ||
+          (text.value_ru && text.value_ru.toLowerCase().includes(lowerTerm))
+        );
+
+        if (sectionNameMatches) {
+          return group; 
+        }
+        if (textsWithinGroupMatching.length > 0) {
+          return { ...group, texts: textsWithinGroupMatching }; 
+        }
+        return null; 
+      })
+      .filter(group => group !== null) as GeneralTextGroup[];
+    console.log('[createFilteredList] Filtered result groups:', result.length, result);
+    return result;
+  };
+
+  const filteredContactFormTexts = useMemo(() => {
+    console.log('[useMemo] Filtering ContactFormTexts with term:', contactSearchTerm);
+    return createFilteredList(contactFormTexts, contactSearchTerm);
+  }, [contactFormTexts, contactSearchTerm]);
+
+  const filteredAboutUsTexts = useMemo(() => {
+    console.log('[useMemo] Filtering AboutUsTexts with term:', aboutUsSearchTerm);
+    return createFilteredList(aboutUsTexts, aboutUsSearchTerm);
+  }, [aboutUsTexts, aboutUsSearchTerm]);
+
+  const filteredOtherGeneralTexts = useMemo(() => {
+    console.log('[SiteTextsPanel] filteredOtherGeneralTexts useMemo - Source generalTexts:', generalTexts);
+    console.log('[SiteTextsPanel] filteredOtherGeneralTexts useMemo - Current otherSearchTerm:', otherSearchTerm);
+    return createFilteredList(generalTexts, otherSearchTerm);
+  }, [generalTexts, otherSearchTerm]);
+
+  const filteredServicesData = useMemo(() => {
+    if (!serviceSearchTerm.trim()) return servicesData;
+    const lowerTerm = serviceSearchTerm.toLowerCase();
+    return servicesData.filter(service =>
+      service.id.toLowerCase().includes(lowerTerm) ||
+      service.title_en.toLowerCase().includes(lowerTerm) ||
+      service.title_ru.toLowerCase().includes(lowerTerm) ||
+      service.short_en.toLowerCase().includes(lowerTerm) ||
+      service.short_ru.toLowerCase().includes(lowerTerm)
+    );
+  }, [servicesData, serviceSearchTerm]);
+
+  // useEffects to manage selected section on search
+  useEffect(() => {
+    if (filteredContactFormTexts.length > 0) {
+      if (!selectedContactSection || !filteredContactFormTexts.some(g => g.section === selectedContactSection)) {
+        setSelectedContactSection(filteredContactFormTexts[0].section);
+      }
+    } else if (contactSearchTerm) { setSelectedContactSection(null); }
+  }, [filteredContactFormTexts, selectedContactSection, contactSearchTerm]);
+
+  useEffect(() => {
+    if (filteredAboutUsTexts.length > 0) {
+      if (!selectedAboutUsSection || !filteredAboutUsTexts.some(g => g.section === selectedAboutUsSection)) {
+        setSelectedAboutUsSection(filteredAboutUsTexts[0].section);
+      }
+    } else if (aboutUsSearchTerm) { setSelectedAboutUsSection(null); }
+  }, [filteredAboutUsTexts, selectedAboutUsSection, aboutUsSearchTerm]);
+
+  // Clean up the useEffect for Other Texts tab selection
+  useEffect(() => {
+    // When the filtered list changes or search term changes
+    if (filteredOtherGeneralTexts.length > 0) {
+      if (!selectedOtherSection || !filteredOtherGeneralTexts.some(g => g.section === selectedOtherSection)) {
+        // If no section is selected or the current selection is not in the filtered results
+        console.log('[SiteTextsPanel] Auto-selecting section:', filteredOtherGeneralTexts[0].section);
+        setSelectedOtherSection(filteredOtherGeneralTexts[0].section);
+      }
+    } else if (otherSearchTerm) {
+      // If filtering resulted in no sections, clear the selection
+      setSelectedOtherSection(null);
+    }
+  }, [filteredOtherGeneralTexts, otherSearchTerm]);
+
   if (isLoading) {
     return <div className="flex justify-center items-center h-32"><Loader2 className="h-8 w-8 animate-spin text-muted-foreground" /></div>;
   }
@@ -364,9 +525,10 @@ export const SiteTextsPanel: React.FC = () => {
 
   return (
     <Tabs defaultValue="services" className="space-y-4">
-      <TabsList className="grid w-full grid-cols-3">
+      <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 gap-1"> {/* Adjusted to grid-cols-4 for medium screens and up, 2 for small */}
         <TabsTrigger value="services">{language === 'en' ? 'Services Texts' : 'Тексты Услуг'}</TabsTrigger>
-        <TabsTrigger value="contact">{language === 'en' ? 'Contact & Form' : 'Контакты и Форма'}</TabsTrigger>
+        <TabsTrigger value="contact-form">{language === 'en' ? 'Contacts & Form' : 'Контакты и Форма'}</TabsTrigger>
+        <TabsTrigger value="about-us">{language === 'en' ? 'About Us' : 'О Нас'}</TabsTrigger>
         <TabsTrigger value="other">{language === 'en' ? 'Other Texts' : 'Остальные Тексты'}</TabsTrigger>
       </TabsList>
 
@@ -424,12 +586,26 @@ export const SiteTextsPanel: React.FC = () => {
             </CardContent>
         </Card>
 
-        {servicesData.map((service) => (
-          <Card key={service.id}>
-             <CardHeader>
-                <CardTitle className="capitalize">{service.id.replace(/-/g, ' ')}</CardTitle>
-             </CardHeader>
-             <CardContent className="space-y-4">
+        <Input
+          placeholder={language === 'en' ? 'Search services by ID, title, short description...' : 'Поиск услуг по ID, названию, краткому описанию...'}
+          value={serviceSearchTerm}
+          onChange={(e) => setServiceSearchTerm(e.target.value)}
+          className="my-4"
+        />
+
+        {filteredServicesData.length === 0 && serviceSearchTerm && (
+          <p className="text-center text-muted-foreground p-4">
+            {language === 'en' ? `No services found matching "${serviceSearchTerm}".` : `Услуги, соответствующие "${serviceSearchTerm}", не найдены.`}
+          </p>
+        )}
+
+        {filteredServicesData.map((service) => (
+          <Collapsible key={service.id} className="border rounded-lg">
+            <CollapsibleTrigger className="w-full p-4 bg-muted/50 hover:bg-muted/80 flex justify-between items-center text-left">
+              {service.id.replace(/-/g, ' ')}
+            </CollapsibleTrigger>
+            <CollapsibleContent>
+              <CardContent className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium mb-1">Title (EN)</label>
@@ -464,12 +640,13 @@ export const SiteTextsPanel: React.FC = () => {
                          {language === 'en' ? 'Save This Service' : 'Сохранить эту услугу'}
                     </Button>
                  </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </CollapsibleContent>
+          </Collapsible>
         ))}
       </TabsContent>
 
-      <TabsContent value="contact" className="space-y-6">
+      <TabsContent value="contact-form" className="space-y-6">
         <Card>
             <CardHeader>
                 <CardTitle>{language === 'en' ? 'Edit Contact & Form Texts' : 'Редактировать тексты Контактов и Формы'}</CardTitle>
@@ -479,10 +656,17 @@ export const SiteTextsPanel: React.FC = () => {
              </CardHeader>
         </Card>
 
+      <Input 
+          placeholder="Search in Contacts & Form..."
+          value={contactSearchTerm}
+          onChange={(e) => setContactSearchTerm(e.target.value)}
+        className="mb-4"
+      />
+
         {/* Horizontal Navigation Buttons for Contact Sections */} 
-        {contactFormTexts.length > 0 && (
+        {filteredContactFormTexts.length > 0 && (
           <div className="flex flex-wrap gap-2 p-1 bg-muted rounded-md">
-             {contactFormTexts.map((group) => (
+             {filteredContactFormTexts.map((group) => (
                 <Button
                  key={group.section}
                  variant={selectedContactSection === group.section ? 'default' : 'ghost'}
@@ -496,12 +680,16 @@ export const SiteTextsPanel: React.FC = () => {
           </div>
         )}
 
-        {contactFormTexts.length === 0 && !isLoading && (
-            <p className="text-center text-muted-foreground p-4">No contact or form related texts found.</p>
+        {filteredContactFormTexts.length === 0 && !isLoading && (
+            <p className="text-center text-muted-foreground p-4">
+              {contactSearchTerm 
+                ? (language === 'en' ? 'No texts found matching your search.' : 'Тексты, соответствующие вашему поиску, не найдены.') 
+                : (language === 'en' ? 'No contact or form related texts found.' : 'Тексты для контактов и форм не найдены.')}
+            </p>
         )}
 
         {/* Render the selected contact section's content */} 
-        {contactFormTexts.find(group => group.section === selectedContactSection)?.texts.map((text) => (
+        {filteredContactFormTexts.find(group => group.section === selectedContactSection)?.texts.map((text) => (
             <div key={text.key} className="space-y-2 border rounded-lg p-4 shadow-sm">
                  <div className="flex justify-between items-center">
                     <h4 className="font-semibold text-base flex-grow mr-4">{text.key}</h4>
@@ -556,6 +744,104 @@ export const SiteTextsPanel: React.FC = () => {
         )}
       </TabsContent>
 
+      <TabsContent value="about-us" className="space-y-6">
+        <Card>
+            <CardHeader>
+                <CardTitle>{language === 'en' ? 'Edit "About Us" Page Texts' : 'Редактировать тексты страницы "О Нас"'}</CardTitle>
+                 <CardDescription>
+                     {language === 'en' ? 'Manage content related to the About Us page, including intros, stats, team, mission, etc.' : 'Управляйте контентом, связанным со страницей "О Нас", включая вступления, статистику, команду, миссию и т.д.'}
+                 </CardDescription>
+             </CardHeader>
+        </Card>
+
+        <Input 
+          placeholder={language === 'en' ? 'Search in "About Us" sections...' : 'Поиск в разделах "О Нас"...'}
+          value={aboutUsSearchTerm}
+          onChange={(e) => setAboutUsSearchTerm(e.target.value)}
+          className="mb-4"
+        />
+
+        {/* Horizontal Navigation Buttons for About Us Sub-Sections */} 
+        {filteredAboutUsTexts.length > 0 && (
+          <div className="flex flex-wrap gap-2 p-1 bg-muted rounded-md">
+             {filteredAboutUsTexts.map((group) => (
+                <Button
+                 key={group.section}
+                 variant={selectedAboutUsSection === group.section ? 'default' : 'ghost'}
+                 size="sm"
+                 onClick={() => setSelectedAboutUsSection(group.section)}
+                 className="capitalize"
+                >
+                 {group.section.replace(/[-_]/g, ' ').replace(/([A-Z])/g, ' $1').trim()} {/* For better display of camelCase/PascalCase sections */}
+                </Button>
+             ))}
+          </div>
+        )}
+
+        {filteredAboutUsTexts.length === 0 && !isLoading && (
+            <p className="text-center text-muted-foreground p-4">
+              {aboutUsSearchTerm 
+                ? (language === 'en' ? 'No texts found matching your search.' : 'Тексты, соответствующие вашему поиску, не найдены.') 
+                : (language === 'en' ? 'No "About Us" related texts found.' : 'Тексты для раздела "О Нас" не найдены.')}
+            </p>
+        )}
+
+        {/* Render the selected About Us sub-section's content */} 
+        {filteredAboutUsTexts.find(group => group.section === selectedAboutUsSection)?.texts.map((text) => (
+            <div key={text.key} className="space-y-2 border rounded-lg p-4 shadow-sm">
+                      <div className="flex justify-between items-center">
+                    <h4 className="font-semibold text-base flex-grow mr-4">{text.key}</h4>
+                    <Button
+                         variant="outline" 
+                         size="sm"
+                         onClick={() => handleSaveSingleText(text)} // Uses existing single save
+                         disabled={isSavingSingleText === text.key}
+                         className="whitespace-nowrap"
+                    >
+                         {isSavingSingleText === text.key ? (
+                            <Loader2 className="h-4 w-4 animate-spin" />
+                         ) : (
+                            <Save className="h-4 w-4" />
+                         )}
+                         <span className="ml-2 hidden sm:inline">{language === 'en' ? 'Save' : 'Сохранить'}</span>
+                    </Button>
+                 </div>
+                 <div className="flex flex-col sm:flex-row gap-4">
+                    <div className="flex-1">
+                         <label className="block text-sm font-medium mb-1">Value (EN)</label>
+                         <Textarea
+                            value={text.value_en || ''}
+                            onChange={(e) => handleTextGroupInputChange('aboutus', selectedAboutUsSection!, text.key, 'en', e.target.value)}
+                            rows={3}
+                            placeholder={`Enter value for ${text.key} in English...`}
+                         />
+                    </div>
+                    <div className="flex-1">
+                         <label className="block text-sm font-medium mb-1">Value (RU)</label>
+                         <Textarea
+                            value={text.value_ru || ''}
+                            onChange={(e) => handleTextGroupInputChange('aboutus', selectedAboutUsSection!, text.key, 'ru', e.target.value)}
+                            rows={3}
+                            placeholder={`Введите значение для ${text.key} на русском...`}
+                         />
+                    </div>
+                 </div>
+            </div>
+        ))}
+        {/* Save All Button for the Selected About Us Sub-Section */} 
+        {selectedAboutUsSection && aboutUsTexts.find(group => group.section === selectedAboutUsSection) && (
+           <div className="flex justify-end pt-4 border-t mt-4">
+                <Button 
+                    onClick={() => handleSaveTextGroup('aboutus', selectedAboutUsSection)} 
+                    disabled={isSavingAboutUs === selectedAboutUsSection}
+                >
+                     {isSavingAboutUs === selectedAboutUsSection && <Loader2 className="mr-2 h-4 w-4 animate-spin" />} 
+                     {language === 'en' ? 'Save All' : 'Сохранить все'} {selectedAboutUsSection.replace(/[-_]/g, ' ').replace(/([A-Z])/g, ' $1').trim()} {language === 'en' ? 'Texts' : 'Тексты'}
+                </Button>
+              </div>
+        )}
+      </TabsContent>
+
       <TabsContent value="other" className="space-y-6">
          <Card>
             <CardHeader>
@@ -566,29 +852,60 @@ export const SiteTextsPanel: React.FC = () => {
              </CardHeader>
         </Card>
 
+        {/* Search Input for Other Texts */}
+        <div className="px-1 py-2"> {/* Added padding similar to other controls if needed */}
+          <Input
+            placeholder={language === 'en' ? 'Search in Other Texts (key, EN, RU, section)...' : 'Поиск по Остальным Текстам (ключ, EN, RU, секция)...'}
+            value={otherSearchTerm}
+            onChange={(e) => setOtherSearchTerm(e.target.value)}
+            className="w-full md:max-w-lg"
+          />
+        </div>
+
         {/* Horizontal Navigation Buttons for Other Sections */} 
-        {generalTexts.length > 0 && (
-          <div className="flex flex-wrap gap-2 p-1 bg-muted rounded-md">
-             {generalTexts.map((group) => (
-                            <Button
-                 key={group.section}
-                 variant={selectedOtherSection === group.section ? 'default' : 'ghost'}
-                              size="sm"
-                 onClick={() => setSelectedOtherSection(group.section)}
-                 className="capitalize"
-                            >
-                 {group.section.replace(/[-_]/g, ' ')}
-                            </Button>
-             ))}
+        {filteredOtherGeneralTexts.length > 0 && (
+          <div className="flex flex-wrap gap-2 p-1 bg-muted rounded-md mb-4">
+             {/* Create simple buttons that use direct onClick without complex state management */}
+             {filteredOtherGeneralTexts.map((group) => {
+                const isActive = selectedOtherSection === group.section;
+                return (
+                  <button
+                    key={group.section}
+                    className={`px-3 py-1.5 text-sm rounded font-medium capitalize ${
+                      isActive 
+                        ? 'bg-primary text-primary-foreground' 
+                        : 'bg-background text-foreground hover:bg-secondary'
+                    }`}
+                    onClick={() => {
+                      console.log('[SiteTextsPanel] Button clicked for section:', group.section);
+                      // No dependencies, directly set the state
+                      setSelectedOtherSection(group.section);
+                    }}
+                  >
+                    {group.section.replace(/[-_]/g, ' ')}
+                  </button>
+                );
+             })}
           </div>
         )}
 
-        {generalTexts.length === 0 && !isLoading && (
-            <p className="text-center text-muted-foreground p-4">No other site texts found.</p>
+        {/* Debug info to help diagnose issues */}
+        <div className="text-xs text-muted-foreground mb-4 border-b pb-2">
+          <p>Selected section: <strong>{selectedOtherSection || 'none'}</strong></p>
+          <p>Available sections: {filteredOtherGeneralTexts.length}</p>
+        </div>
+        
+        {/* Message when no texts are available or search yields no results */}
+        {!isLoading && filteredOtherGeneralTexts.length === 0 && (
+            <p className="text-center text-muted-foreground p-4">
+              {otherSearchTerm 
+                ? (language === 'en' ? 'No texts found matching your search.' : 'Тексты, соответствующие вашему поиску, не найдены.') 
+                : (language === 'en' ? 'No other site texts found.' : 'Остальные тексты сайта не найдены.')}
+            </p>
         )}
-
-        {/* Render the selected other section's content */} 
-        {generalTexts.find(group => group.section === selectedOtherSection)?.texts.map((text) => (
+        
+        {/* Render the selected other section's content - using filteredGeneralTexts */} 
+        {filteredOtherGeneralTexts.find(group => group.section === selectedOtherSection)?.texts.map((text) => (
             <div key={text.key} className="space-y-2 border rounded-lg p-4 shadow-sm">
                  <div className="flex justify-between items-center">
                     <h4 className="font-semibold text-base flex-grow mr-4">{text.key}</h4>

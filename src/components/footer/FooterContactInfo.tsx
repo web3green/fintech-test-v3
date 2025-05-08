@@ -10,7 +10,7 @@ interface FooterContactInfoProps {
 export function FooterContactInfo({ /* scrollToSection */ }: FooterContactInfoProps) {
   const { t, language, isLoading } = useLanguage();
 
-  const email = t('contact.email', 'info@fintech-assist.com');
+  const email = t('contact.email.address', 'info@fintech-assist.com');
   const whatsappPhone = t('contact.phone.primary', '');
   const telegramUsernameRaw = t('contact.telegram.username', '');
   const telegramUsername = telegramUsernameRaw.startsWith('@') ? telegramUsernameRaw.substring(1) : telegramUsernameRaw;

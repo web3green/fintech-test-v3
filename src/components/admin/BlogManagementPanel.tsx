@@ -479,7 +479,7 @@ export function BlogManagementPanel() {
         console.log(`[onSubmitForm] Updating post ID: ${selectedPost.id}`);
         await databaseService.updatePost(selectedPost.id, postData);
         toast.success('Post updated successfully');
-      } else {
+        } else {
         console.log('[onSubmitForm] Creating new post');
         await databaseService.createPost(postData);
         toast.success('Post created successfully');

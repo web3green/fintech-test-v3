@@ -116,7 +116,7 @@ export function Hero() {
                       <div className="font-bold text-xl">
                         <span className="text-foreground dark:text-white/90">FinTechAssist</span>
                       </div>
-                      <div className="text-sm text-muted-foreground dark:text-white/70">{t('hero.companyTagline')}</div>
+                      <div className="text-sm text-muted-foreground dark:text-white/70">{t('about.hero.subtitle', 'Your global fintech partner')}</div>
                     </div>
                   </div>
                   
@@ -222,11 +222,18 @@ export function Hero() {
                       </div>
                     </Card>
                     
-                    <div className="pt-4 border-t border-blue-100 dark:border-blue-800">
-                      <div className="flex items-center justify-between text-sm">
-                        <div className="text-white dark:text-white bg-fintech-blue/45 dark:bg-fintech-blue/70 px-2 py-1 rounded shadow-[0_0_8px_rgba(59,130,246,0.25)] dark:shadow-[0_0_8px_rgba(59,130,246,0.35)]">{t('hero.stats.countries')}</div>
-                        <div className="text-white dark:text-white bg-fintech-blue/45 dark:bg-fintech-blue/70 px-2 py-1 rounded shadow-[0_0_8px_rgba(59,130,246,0.25)] dark:shadow-[0_0_8px_rgba(59,130,246,0.35)]">{t('hero.stats.clients')}</div>
-                        <div className="text-white dark:text-white bg-fintech-blue/45 dark:bg-fintech-blue/70 px-2 py-1 rounded shadow-[0_0_8px_rgba(59,130,246,0.25)] dark:shadow-[0_0_8px_rgba(59,130,246,0.35)]">{t('hero.stats.years')}</div>
+                    <div className="pt-6 grid grid-cols-3 gap-3 text-center border-t border-blue-100 dark:border-blue-800">
+                      <div>
+                        <div className="text-xs text-muted-foreground dark:text-white/70">{t('about.hero.stat_founded_label', 'Founded')}</div>
+                        <div className="font-semibold text-lg text-foreground dark:text-white/90">{t('about.hero.stat_founded_value', '2015')}</div>
+                      </div>
+                      <div>
+                        <div className="text-xs text-muted-foreground dark:text-white/70">{t('about.hero.stat_team_label', 'Team')}</div>
+                        <div className="font-semibold text-lg text-foreground dark:text-white/90">{t('about.hero.stat_team_value', '10+ experts')}</div>
+                      </div>
+                      <div>
+                        <div className="text-xs text-muted-foreground dark:text-white/70">{t('about.hero.stat_clients_label', 'Clients')}</div>
+                        <div className="font-semibold text-lg text-foreground dark:text-white/90">{t('about.hero.stat_clients_value', '500+')}</div>
                       </div>
                     </div>
                   </div>

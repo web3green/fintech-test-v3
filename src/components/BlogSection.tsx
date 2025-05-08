@@ -109,7 +109,7 @@ export const BlogSection: React.FC = () => {
       setCurrentPage(totalPages);
     }
   }, [currentPage, totalPages, totalPostCount]);
-  
+
   // REMOVE the useEffect for scrolling based on currentPage
   /*
   useEffect(() => {

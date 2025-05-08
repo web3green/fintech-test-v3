@@ -23,13 +23,11 @@ export function AboutSection() {
           </div>
           
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-display font-bold mb-6 md:mb-8 bg-gradient-to-r from-blue-700 via-blue-600 to-blue-800 dark:from-blue-400 dark:via-blue-300 dark:to-blue-500 bg-clip-text text-transparent">
-            {language === 'en' ? 'FintechAssist' : 'FintechAssist'}
+            {t('about.main_title_header', 'FintechAssist')}
           </h2>
           
           <p className="max-w-3xl mx-auto text-muted-foreground text-lg md:text-xl">
-            {language === 'en' 
-              ? 'UK-based full-service consulting company with deep experience in banking, finance, law, and compliance' 
-              : 'Британская консалтингово-сервисная компания полного цикла с большим опытом в банковской, финансовой, юридической сфере и комплаенса'}
+            {t('about.main_subtitle_header', 'UK-based full-service consulting company with deep experience in banking, finance, law, and compliance')}
           </p>
         </div>
       </section>
@@ -60,7 +58,7 @@ export function AboutSection() {
                           <div className="text-sm md:text-base font-medium text-gray-900 dark:text-white">
                             <span className="text-foreground dark:text-foreground">FinTechAssist</span>
                           </div>
-                          <div className="text-xs text-gray-600 dark:text-white/70">{language === 'en' ? 'Your global fintech partner' : 'Ваш глобальный финтех-партнер'}</div>
+                          <div className="text-xs text-gray-600 dark:text-white/70">{t('about.hero.subtitle', 'Your global fintech partner')}</div>
                         </div>
                       </div>
                       
@@ -69,34 +67,34 @@ export function AboutSection() {
                           <div className="h-7 w-7 md:h-8 md:w-8 rounded-full bg-blue-100 dark:bg-blue-900/60 flex items-center justify-center">
                             <UserRound className="h-3.5 w-3.5 md:h-4 md:w-4 text-fintech-blue dark:text-fintech-blue-light" />
                           </div>
-                          <div className="text-xs md:text-sm font-medium">{language === 'en' ? 'Personal manager for every client' : 'Персональный менеджер для каждого клиента'}</div>
+                          <div className="text-xs md:text-sm font-medium">{t('about.hero.feature1', 'Personal manager for every client')}</div>
                         </div>
                         <div className="flex items-center space-x-2 text-gray-800 dark:text-white">
                           <div className="h-7 w-7 md:h-8 md:w-8 rounded-full bg-orange-100 dark:bg-fintech-orange/15 flex items-center justify-center">
                             <Handshake className="h-3.5 w-3.5 md:h-4 md:w-4 text-fintech-orange dark:text-fintech-orange" />
                           </div>
-                          <div className="text-xs md:text-sm font-medium">{language === 'en' ? 'Full support at all stages' : 'Полное сопровождение на всех этапах'}</div>
+                          <div className="text-xs md:text-sm font-medium">{t('about.hero.feature2', 'Full support at all stages')}</div>
                         </div>
                         <div className="flex items-center space-x-2 text-gray-800 dark:text-white">
                           <div className="h-7 w-7 md:h-8 md:w-8 rounded-full bg-blue-100 dark:bg-blue-900/60 flex items-center justify-center">
                             <ShieldCheck className="h-3.5 w-3.5 md:h-4 md:w-4 text-fintech-blue dark:text-fintech-blue-light" />
                           </div>
-                          <div className="text-xs md:text-sm font-medium">{language === 'en' ? 'Working through escrow services' : 'Работа через сервисы гаранта'}</div>
+                          <div className="text-xs md:text-sm font-medium">{t('about.hero.feature3', 'Working through escrow services')}</div>
                         </div>
                       </div>
                       
                       <div className="grid grid-cols-3 gap-1 md:gap-2 pt-1">
                         <div className="bg-gradient-to-br from-blue-50/80 to-blue-100/60 dark:from-blue-900/40 dark:to-blue-800/60 rounded-lg p-2 md:p-3 border border-blue-100/50 dark:border-blue-700/30 text-center">
-                          <div className="text-2xs md:text-xs text-blue-600 dark:text-blue-300">{language === 'en' ? 'Founded' : 'Основано'}</div>
-                          <div className="mt-0.5 md:mt-1 font-semibold text-xs md:text-sm text-blue-700 dark:text-blue-200">2015</div>
+                          <div className="text-2xs md:text-xs text-blue-600 dark:text-blue-300">{t('about.hero.stat_founded_label', 'Founded')}</div>
+                          <div className="mt-0.5 md:mt-1 font-semibold text-xs md:text-sm text-blue-700 dark:text-blue-200">{t('about.hero.stat_founded_value', '2015')}</div>
                         </div>
                         <div className="bg-gradient-to-br from-orange-50/80 to-orange-100/60 dark:from-fintech-orange/10 dark:to-fintech-orange/15 rounded-lg p-2 md:p-3 border border-orange-100/50 dark:border-fintech-orange/20 text-center">
-                          <div className="text-2xs md:text-xs text-fintech-orange dark:text-fintech-orange">{language === 'en' ? 'Team' : 'Команда'}</div>
-                          <div className="mt-0.5 md:mt-1 font-semibold text-xs md:text-sm text-fintech-orange dark:text-fintech-orange">10+ {language === 'en' ? 'experts' : 'экспертов'}</div>
+                          <div className="text-2xs md:text-xs text-fintech-orange dark:text-fintech-orange">{t('about.hero.stat_team_label', 'Team')}</div>
+                          <div className="mt-0.5 md:mt-1 font-semibold text-xs md:text-sm text-fintech-orange dark:text-fintech-orange">{t('about.hero.stat_team_value', '10+ experts')}</div>
                         </div>
                         <div className="bg-gradient-to-br from-blue-50/80 to-blue-100/60 dark:from-blue-900/40 dark:to-blue-800/60 rounded-lg p-2 md:p-3 border border-blue-100/50 dark:border-blue-700/30 text-center">
-                          <div className="text-2xs md:text-xs text-blue-600 dark:text-blue-300">{language === 'en' ? 'Clients' : 'Клиенты'}</div>
-                          <div className="mt-0.5 md:mt-1 font-semibold text-xs md:text-sm text-blue-700 dark:text-blue-200">500+</div>
+                          <div className="text-2xs md:text-xs text-blue-600 dark:text-blue-300">{t('about.hero.stat_clients_label', 'Clients')}</div>
+                          <div className="mt-0.5 md:mt-1 font-semibold text-xs md:text-sm text-blue-700 dark:text-blue-200">{t('about.hero.stat_clients_value', '500+')}</div>
                         </div>
                       </div>
                     </CardContent>
@@ -186,15 +184,11 @@ export function AboutSection() {
         <div className="container mx-auto px-4 md:px-6 lg:px-8">
           <div className="max-w-4xl mx-auto text-center">
             <h3 className="text-2xl md:text-3xl font-bold mb-6 text-blue-700 dark:text-blue-400">
-              {language === 'en' 
-                ? 'Your Trusted Financial Partner' 
-                : 'Ваш надежный финансовый партнер'}
+              {t('about.intro.title', 'Your Trusted Financial Partner')}
             </h3>
             
             <p className="text-muted-foreground mb-8 text-base md:text-lg leading-relaxed">
-              {language === 'en' 
-                ? "Whether you're a startup or a growing company, we attentively study your goals and demands, developing tailor-made solutions that perfectly align with your needs. We provide a comprehensive range of services, from company registration and account opening to financial licensing and accounting support."
-                : "Вы старт-ап или развивающаяся компания, мы внимательно выслушаем ваши пожелания и цели, подберем для вас оптимальное индивидуальное решение и реализуем в точности под ваши потребности. Мы предоставляем полный спектр услуг от регистраций компаний и открытия счетов, до получения финансовых лицензий и бухгалтерского обслуживания."}
+              {t('about.intro.description', "Whether you're a startup or a growing company, we attentively study your goals and demands, developing tailor-made solutions that perfectly align with your needs. We provide a comprehensive range of services, from company registration and account opening to financial licensing and accounting support.")}
             </p>
             
             <div className="flex justify-center">
@@ -211,9 +205,7 @@ export function AboutSection() {
             {/* Левая колонка */}
             <div>
               <h3 className="text-xl md:text-2xl font-bold mb-6 text-blue-700 dark:text-blue-400">
-                {language === 'en' 
-                  ? 'Our Expertise' 
-                  : 'Наша экспертиза'}
+                {t('about.expertise.main_title', 'Our Expertise')}
               </h3>
               
               <div className="space-y-4">
@@ -224,12 +216,10 @@ export function AboutSection() {
                     </div>
                     <div>
                       <h4 className="font-semibold text-lg mb-1 text-blue-800 dark:text-blue-300">
-                        {language === 'en' ? 'Company Formation' : 'Регистрация компаний'}
+                        {t('about.expertise.company_formation.title', 'Company Formation')}
                       </h4>
                       <p className="text-muted-foreground text-sm">
-                        {language === 'en' 
-                          ? 'We help establish your business entity in various jurisdictions with all necessary documentation.' 
-                          : 'Помогаем зарегистрировать ваш бизнес в различных юрисдикциях со всей необходимой документацией.'}
+                        {t('about.expertise.company_formation.description', 'We help establish your business entity in various jurisdictions with all necessary documentation.')}
                       </p>
                     </div>
                   </CardContent>
@@ -242,12 +232,10 @@ export function AboutSection() {
                     </div>
                     <div>
                       <h4 className="font-semibold text-lg mb-1 text-blue-800 dark:text-blue-300">
-                        {language === 'en' ? 'Financial Licensing' : 'Финансовое лицензирование'}
+                        {t('about.expertise.financial_licensing.title', 'Financial Licensing')}
                       </h4>
                       <p className="text-muted-foreground text-sm">
-                        {language === 'en' 
-                          ? 'Obtain regulatory approval and financial licenses across multiple international jurisdictions.' 
-                          : 'Получение регуляторных разрешений и финансовых лицензий в различных международных юрисдикциях.'}
+                        {t('about.expertise.financial_licensing.description', 'Obtain regulatory approval and financial licenses across multiple international jurisdictions.')}
                       </p>
                     </div>
                   </CardContent>
@@ -260,12 +248,10 @@ export function AboutSection() {
                     </div>
                     <div>
                       <h4 className="font-semibold text-lg mb-1 text-blue-800 dark:text-blue-300">
-                        {language === 'en' ? 'Accounting Services' : 'Бухгалтерские услуги'}
+                        {t('about.expertise.accounting_services.title', 'Accounting Services')}
                       </h4>
                       <p className="text-muted-foreground text-sm">
-                        {language === 'en' 
-                          ? 'Professional accounting and financial reporting tailored to your business needs.' 
-                          : 'Профессиональный бухгалтерский учет и финансовая отчетность, адаптированные под потребности вашего бизнеса.'}
+                        {t('about.expertise.accounting_services.description', 'Professional accounting and financial reporting tailored to your business needs.')}
                       </p>
                     </div>
                   </CardContent>
@@ -276,9 +262,7 @@ export function AboutSection() {
             {/* Правая колонка */}
             <div>
               <h3 className="text-xl md:text-2xl font-bold mb-6 text-fintech-orange dark:text-fintech-orange">
-                {language === 'en' 
-                  ? 'Why Choose Us' 
-                  : 'Почему выбирают нас'}
+                {t('about.why_choose_us.main_title', 'Why Choose Us')}
               </h3>
               
               <div className="space-y-4">
@@ -289,12 +273,10 @@ export function AboutSection() {
                     </div>
                     <div>
                       <h4 className="font-semibold text-lg mb-1 text-fintech-orange dark:text-fintech-orange">
-                        {language === 'en' ? 'Expert Team' : 'Команда экспертов'}
+                        {t('about.why_choose_us.expert_team.title', 'Expert Team')}
                       </h4>
                       <p className="text-muted-foreground text-sm">
-                        {language === 'en' 
-                          ? 'Our team has deep experience in banking, finance, law, and compliance across multiple jurisdictions.' 
-                          : 'Наша команда имеет глубокий опыт в банковской, финансовой, юридической сфере и комплаенсе в различных юрисдикциях.'}
+                        {t('about.why_choose_us.expert_team.description', 'Our team has deep experience in banking, finance, law, and compliance across multiple jurisdictions.')}
                       </p>
                     </div>
                   </CardContent>
@@ -307,12 +289,10 @@ export function AboutSection() {
                     </div>
                     <div>
                       <h4 className="font-semibold text-lg mb-1 text-fintech-orange dark:text-fintech-orange">
-                        {language === 'en' ? 'Tailored Solutions' : 'Индивидуальные решения'}
+                        {t('about.why_choose_us.tailored_solutions.title', 'Tailored Solutions')}
                       </h4>
                       <p className="text-muted-foreground text-sm">
-                        {language === 'en' 
-                          ? 'We develop custom solutions aligned perfectly with your business goals and specific needs.' 
-                          : 'Мы разрабатываем индивидуальные решения, идеально соответствующие целям и особым потребностям вашего бизнеса.'}
+                        {t('about.why_choose_us.tailored_solutions.description', 'We develop custom solutions aligned perfectly with your business goals and specific needs.')}
                       </p>
                     </div>
                   </CardContent>
@@ -325,12 +305,10 @@ export function AboutSection() {
                     </div>
                     <div>
                       <h4 className="font-semibold text-lg mb-1 text-fintech-orange dark:text-fintech-orange">
-                        {language === 'en' ? 'Complete Documentation' : 'Полный пакет документов'}
+                        {t('about.why_choose_us.complete_documentation.title', 'Complete Documentation')}
                       </h4>
                       <p className="text-muted-foreground text-sm">
-                        {language === 'en' 
-                          ? 'We prepare all necessary documentation, including business plans, AML policies, and application forms.' 
-                          : 'Мы подготовим для вас весь необходимый пакет документов, включая бизнес-план, AML политики, и заполним документы на подачу.'}
+                        {t('about.why_choose_us.complete_documentation.description', 'We prepare all necessary documentation, including business plans, AML policies, and application forms.')}
                       </p>
                     </div>
                   </CardContent>
@@ -346,15 +324,11 @@ export function AboutSection() {
         <div className="container mx-auto px-4 md:px-6 lg:px-8">
           <div className="max-w-3xl mx-auto text-center">
             <h3 className="text-2xl md:text-3xl font-bold mb-6 bg-gradient-to-r from-blue-700 to-fintech-orange bg-clip-text text-transparent">
-              {language === 'en' 
-                ? 'Ready to Transform Your Financial Future?' 
-                : 'Готовы трансформировать ваше финансовое будущее?'}
+              {t('about.conclusion.main_title', 'Ready to Transform Your Financial Future?')}
             </h3>
             
             <p className="text-muted-foreground mb-8 text-base md:text-lg leading-relaxed">
-              {language === 'en' 
-                ? "Our team will handle all the necessary documentation, leveraging our years of expertise to ensure a smooth process. Our services are designed to fully meet our clients' needs in the fintech and financial sectors."
-                : "Наша команда обработает всю необходимую документацию, используя наш многолетний опыт для обеспечения гладкого процесса. Все наши услуги полностью покрывают потребности клиентов в финтех и финансовой сфере."}
+              {t('about.conclusion.description', "Our team will handle all the necessary documentation, leveraging our years of expertise to ensure a smooth process. Our services are designed to fully meet our clients' needs in the fintech and financial sectors.")}
             </p>
             
             <Button 
@@ -363,7 +337,7 @@ export function AboutSection() {
                 document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
               }}
             >
-              {language === 'en' ? 'Contact Us Today' : 'Свяжитесь с нами сегодня'}
+              {t('about.conclusion.cta_button', 'Contact Us Today')}
             </Button>
           </div>
         </div>

@@ -82,7 +82,7 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
           if (fallbackValue !== null && fallbackValue !== undefined) {
               // console.warn(`[t] Translation for key '${key}' in '${language}' missing, using fallback language.`);
               return fallbackValue;
-          }
+    }
       }
     }
     

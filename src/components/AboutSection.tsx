@@ -26,7 +26,7 @@ export function AboutSection() {
             {t('about.main_title_header', 'FintechAssist')}
           </h2>
           
-          <p className="max-w-3xl mx-auto text-muted-foreground text-lg md:text-xl">
+          <p className="max-w-3xl mx-auto text-muted-foreground text-lg md:text-xl text-justify">
             {t('about.main_subtitle_header', 'UK-based full-service consulting company with deep experience in banking, finance, law, and compliance')}
           </p>
         </div>
@@ -94,7 +94,7 @@ export function AboutSection() {
                         </div>
                         <div className="bg-gradient-to-br from-blue-50/80 to-blue-100/60 dark:from-blue-900/40 dark:to-blue-800/60 rounded-lg p-2 md:p-3 border border-blue-100/50 dark:border-blue-700/30 text-center">
                           <div className="text-2xs md:text-xs text-blue-600 dark:text-blue-300">{t('about.hero.stat_clients_label', 'Clients')}</div>
-                          <div className="mt-0.5 md:mt-1 font-semibold text-xs md:text-sm text-blue-700 dark:text-blue-200">{t('about.hero.stat_clients_value', '500+')}</div>
+                          <div className="mt-0.5 md:mt-1 font-semibold text-xs md:text-sm text-blue-700 dark:text-blue-200">{t('about.hero.stat_clients_value', '300+')}</div>
                         </div>
                       </div>
                     </CardContent>
@@ -119,7 +119,7 @@ export function AboutSection() {
                   <div className="h-10 w-10 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 dark:from-blue-500 dark:to-blue-700 flex items-center justify-center shadow-md shadow-blue-400/20 group-hover:shadow-blue-400/30 transition-all duration-300">
                     <Globe className="h-5 w-5 text-white" />
                   </div>
-                  <div className="text-xl md:text-2xl font-bold text-blue-600 dark:text-blue-300 group-hover:scale-105 transition-transform duration-300">15+</div>
+                  <div className="text-xl md:text-2xl font-bold text-blue-600 dark:text-blue-300 group-hover:scale-105 transition-transform duration-300">20+</div>
                 </div>
                 <div className="text-sm text-blue-800 dark:text-blue-200 font-medium">{language === 'en' ? 'Countries' : 'Стран'}</div>
               </div>
@@ -129,7 +129,7 @@ export function AboutSection() {
                   <div className="h-10 w-10 rounded-full bg-gradient-to-br from-fintech-orange to-fintech-orange-light dark:from-fintech-orange/40 dark:to-fintech-orange/60 flex items-center justify-center shadow-md shadow-fintech-orange/20 group-hover:shadow-fintech-orange/15 transition-all duration-300">
                     <UserRound className="h-5 w-5 text-white" />
                   </div>
-                  <div className="text-xl md:text-2xl font-bold text-fintech-orange dark:text-fintech-orange group-hover:scale-105 transition-transform duration-300">500+</div>
+                  <div className="text-xl md:text-2xl font-bold text-fintech-orange dark:text-fintech-orange group-hover:scale-105 transition-transform duration-300">300+</div>
                 </div>
                 <div className="text-sm text-fintech-orange dark:text-fintech-orange font-medium">{language === 'en' ? 'Clients' : 'Клиентов'}</div>
               </div>

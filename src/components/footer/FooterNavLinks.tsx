@@ -17,7 +17,7 @@ export function FooterNavLinks({ /* scrollToSection */ }: FooterNavLinksProps) {
       <ul className="space-y-2">
         <li>
           {/* Changed button to anchor link */}
-          <a href="#about" className="text-muted-foreground hover:text-fintech-blue dark:hover:text-fintech-blue/80 transition-colors flex items-center">
+          <a href="#about-header" className="text-muted-foreground hover:text-fintech-blue dark:hover:text-fintech-blue/80 transition-colors flex items-center">
             <Info className="h-3.5 w-3.5 mr-1.5 text-fintech-orange/70 dark:text-fintech-orange/60" />
             <span className="text-sm">{t('nav.about')}</span>
           </a>

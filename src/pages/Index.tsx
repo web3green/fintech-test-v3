@@ -5,6 +5,7 @@ import { AiChatbot } from '@/components/AiChatbot';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Loader2 } from 'lucide-react';
 import { Suspense, lazy } from 'react';
+import { TranslationFixer } from '@/components/TranslationFixer';
 
 const AboutSection = lazy(() => 
   import('@/components/AboutSection').then(module => ({ default: module.AboutSection }))
@@ -38,6 +39,8 @@ const Index = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
+      <TranslationFixer />
+      
       <Header />
       <main className="flex-grow">
         <Hero />

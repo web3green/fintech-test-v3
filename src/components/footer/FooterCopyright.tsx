@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Check, ArrowUp } from 'lucide-react'; 
 import { useLanguage } from '@/contexts/LanguageContext';
 import { PrivacyPolicyDialog } from './PrivacyPolicyDialog';
-import { TermsOfServiceDialog } from './TermsOfServiceDialog';
+import TermsOfServiceDialog from './TermsOfServiceDialog';
 
 interface FooterCopyrightProps {
   scrollToTop: () => void;

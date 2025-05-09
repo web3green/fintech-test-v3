@@ -1,4 +1,3 @@
-
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useLanguage } from '@/contexts/LanguageContext';
 
@@ -18,7 +17,7 @@ export function PrivacyPolicyDialog({ open, onOpenChange }: PrivacyPolicyDialogP
             {language === 'en' ? 'Privacy Policy' : 'Политика конфиденциальности'}
           </DialogTitle>
           <DialogDescription>
-            {language === 'en' ? 'Last updated: June 2023' : 'Последнее обновление: Июнь 2023'}
+            {language === 'en' ? 'Last updated: February 2025' : 'Последнее обновление: Февраль 2025'}
           </DialogDescription>
         </DialogHeader>
         <div className="space-y-4 text-left">
@@ -108,3 +107,6 @@ export function PrivacyPolicyDialog({ open, onOpenChange }: PrivacyPolicyDialogP
     </Dialog>
   );
 }
+
+// Добавляем экспорт по умолчанию
+export default PrivacyPolicyDialog;

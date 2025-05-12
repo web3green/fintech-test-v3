@@ -39,10 +39,14 @@ export default function AboutUs() {
     <div className="min-h-screen flex flex-col">
       <Header />
       <main className="flex-grow">
-        {/* Hero Section */}
-        <section className="py-20 md:py-28 bg-gray-50 dark:bg-gray-900">
+        {/* Hero Section with fixed padding to match other sections */}
+        <section id="about-us" className="pt-28 pb-20 md:pt-36 md:pb-28 bg-gray-50 dark:bg-gray-900">
           <div className="container mx-auto px-4">
             <div className="max-w-3xl mx-auto text-center mb-12">
+              <div className="inline-flex items-center rounded-full px-3 py-1 text-sm font-medium bg-fintech-blue/10 text-fintech-blue dark:bg-fintech-blue/20 dark:text-fintech-blue-light mb-4">
+                <span className="flex h-2 w-2 rounded-full bg-fintech-blue mr-2"></span>
+                About Us
+              </div>
               <h1 className="text-4xl md:text-5xl font-display font-bold mb-6">
                 About <span className="text-foreground dark:text-foreground">FinTechAssist</span>
               </h1>

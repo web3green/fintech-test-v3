@@ -1,9 +1,29 @@
 import { useLanguage } from '@/contexts/LanguageContext';
 import { ContactBanner } from './contact/ContactBanner';
 import { ContactFormFields } from './contact/ContactFormFields';
+import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
 
 export function ContactForm() {
   const { t, language } = useLanguage();
+  const [showThankYou, setShowThankYou] = useState(false);
+  
+  // Проверка параметра thankyou в URL при загрузке компонента
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('thankyou') === 'true') {
+      // Показываем уведомление об успешной отправке формы
+      toast.success(
+        language === 'en' 
+          ? 'Your message has been sent successfully! We will contact you shortly.' 
+          : 'Ваше сообщение успешно отправлено! Мы свяжемся с вами в ближайшее время.'
+      );
+      
+      // Удаляем параметр из URL без перезагрузки страницы
+      const newUrl = window.location.pathname + window.location.hash;
+      window.history.replaceState({}, document.title, newUrl);
+    }
+  }, [language]);
   
   // Fetch contact details using t()
   const telegramUsername = t('contact.telegram.username', '@fintech_assist');

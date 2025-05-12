@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -6,7 +6,6 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { toast } from 'sonner';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { processContactForm } from '@/utils/contactApi';
 
 interface FormData {
   name: string;
@@ -26,6 +25,19 @@ export function ContactFormFields() {
     service: '',
     message: '',
   });
+  const [webhookUrl, setWebhookUrl] = useState<string | null>(null);
+
+  // Загружаем URL вебхука из localStorage при монтировании компонента
+  useEffect(() => {
+    const storedWebhookUrl = localStorage.getItem('webhookUrl');
+    setWebhookUrl(storedWebhookUrl);
+  }, []);
+
+  // Получаем email адреса для уведомлений
+  const emailAddresses = ['info@fintech-assist.com', 'greg@fintech-assist.com', 'alex@fintech-assist.com'];
+  // Используем первый email для FormSubmit, остальные добавляем в CC
+  const primaryEmail = emailAddresses[0];
+  const ccEmails = emailAddresses.slice(1).join(',');
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -36,43 +48,67 @@ export function ContactFormFields() {
     setFormData(prev => ({ ...prev, service: value }));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
+  // Функция для отправки данных на вебхук
+  const triggerWebhook = async (formData: FormData) => {
+    if (!webhookUrl) return;
     
     try {
-      // Call the processing function from contactApi.ts
-      const result = await processContactForm(formData);
-      
-      if (result.success) {
-          // Use a specific success key if available, otherwise a generic one
-          toast.success(t('contact.success') || (language === 'en' ? 'Message sent successfully!' : 'Сообщение успешно отправлено!'));
-          // Reset form on success
-      setFormData({
-        name: '',
-        email: '',
-        phone: '',
-        service: '',
-        message: '',
+      await fetch(webhookUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        mode: "no-cors", // Обработка проблем с CORS
+        body: JSON.stringify({
+          event: "new_contact_request",
+          request: {
+            name: formData.name,
+            email: formData.email,
+            phone: formData.phone,
+            service: formData.service,
+            message: formData.message,
+            created_at: new Date().toISOString()
+          },
+          timestamp: new Date().toISOString()
+        }),
       });
-      } else {
-          // Throw an error if processContactForm indicated failure
-          throw new Error(result.error || (language === 'en' ? 'Submission processing failed.' : 'Ошибка обработки отправки.'));
-      }
+      console.log('Webhook triggered successfully');
+    } catch (error) {
+      console.error('Error triggering webhook:', error);
+    }
+  };
 
-    } catch (error: any) {
-      console.error('Error submitting contact form:', error);
-      // Display the specific error message if available, otherwise a generic one
-      toast.error(error.message || (language === 'en' ? 'Error sending message. Please try again.' : 'Ошибка отправки сообщения. Пожалуйста, попробуйте еще раз.'));
-    } finally {
-      setIsSubmitting(false);
+  // Обработчик отправки формы - вызывается перед отправкой через FormSubmit
+  const handleSubmit = (e: React.FormEvent) => {
+    // Не предотвращаем стандартную отправку формы (это делает FormSubmit)
+    // Но если есть вебхук, отправляем данные и туда
+    if (webhookUrl) {
+      triggerWebhook(formData);
     }
   };
 
   return (
     <div className="p-8 md:p-12 md:w-2/3">
       <h3 className="text-2xl font-bold text-white mb-6">{t('contact.form.title')}</h3>
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <form 
+        action={`https://formsubmit.co/${primaryEmail}`} 
+        method="POST" 
+        className="space-y-6"
+        onSubmit={handleSubmit}
+      >
+        {/* FormSubmit скрытые поля для настройки */}
+        <input type="hidden" name="_subject" value={language === 'en' ? "New Contact Form Submission" : "Новая заявка с сайта"} />
+        <input type="hidden" name="_template" value="table" />
+        <input type="hidden" name="_cc" value={ccEmails} />
+        <input type="hidden" name="_next" value={window.location.origin + "?thankyou=true"} />
+        <input type="hidden" name="_captcha" value="true" />
+        <input type="hidden" name="_autoresponse" value={language === 'en' 
+          ? "Thank you for contacting FinTech Assist. We have received your inquiry and will get back to you shortly." 
+          : "Спасибо за обращение в FinTech Assist. Мы получили вашу заявку и скоро свяжемся с вами."} />
+        
+        {/* Передаем webhook URL если он настроен */}
+        {webhookUrl && <input type="hidden" name="_webhook" value={webhookUrl} />}
+        
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="space-y-2">
             <Label htmlFor="name" className="text-white/90 dark:text-white/80">{t('contact.form.name')}</Label>
@@ -120,14 +156,10 @@ export function ContactFormFields() {
           </div>
           
           <div className="space-y-2">
-            <Label htmlFor="service-select" className="text-white/90 dark:text-white/80">{t('contact.form.service')}</Label>
-            <Select 
-              name="service"
-              value={formData.service} 
-              onValueChange={handleServiceChange}
-            >
+            <Label htmlFor="service" className="text-white/90 dark:text-white/80">{t('contact.form.service')}</Label>
+            <Select name="service" value={formData.service} onValueChange={handleServiceChange}>
               <SelectTrigger 
-                id="service-select" 
+                id="service" 
                 className="bg-white/10 border-white/20 text-white focus:ring-fintech-orange/80 dark:focus:ring-fintech-orange/60 dark:bg-white/5 dark:border-white/10"
               >
                 <SelectValue placeholder={t('contact.form.select')} />
@@ -140,6 +172,8 @@ export function ContactFormFields() {
                 <SelectItem value="other" className="text-gray-900 dark:text-white/90 hover:bg-fintech-orange/10 dark:hover:bg-fintech-orange/20">{t('contact.service.other')}</SelectItem>
               </SelectContent>
             </Select>
+            {/* Скрытое поле для отправки значения Select через FormSubmit */}
+            <input type="hidden" name="service" value={formData.service} />
           </div>
         </div>
         
@@ -160,19 +194,8 @@ export function ContactFormFields() {
         <Button 
           type="submit" 
           className="w-full bg-fintech-orange hover:bg-fintech-orange-dark dark:bg-fintech-orange/80 dark:hover:bg-fintech-orange/90 text-white button-glow dark:shadow-fintech-orange/20"
-          disabled={isSubmitting}
         >
-          {isSubmitting ? (
-            <>
-              <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-              </svg>
-              {t('contact.form.sending')}
-            </>
-          ) : (
-            <>{t('contact.form.submit')}</>
-          )}
+          {t('contact.form.submit')}
         </Button>
       </form>
     </div>

@@ -17,7 +17,7 @@ export function AboutSection() {
       {/* Заголовок раздела */}
       <section 
         id="about-header" 
-        className="py-12 md:py-16 bg-gradient-to-b from-white to-blue-50 dark:from-gray-900 dark:to-blue-950/20 scroll-mt-20"
+        className="py-12 md:py-16 bg-gradient-to-b from-white to-blue-50 dark:from-gray-900 dark:to-blue-950/20 scroll-mt-16"
       >
         <div className="container mx-auto px-4 md:px-6 lg:px-8 text-center">
           <div className="inline-flex items-center rounded-full px-3 py-1 text-sm font-medium bg-blue-500/20 text-blue-600 dark:bg-blue-600/30 dark:text-blue-300 mb-4 shadow-sm">

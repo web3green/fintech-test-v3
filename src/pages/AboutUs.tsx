@@ -39,8 +39,11 @@ export default function AboutUs() {
     <div className="min-h-screen flex flex-col">
       <Header />
       <main className="flex-grow">
-        {/* Hero Section with fixed padding to match other sections */}
-        <section id="about-us" className="pt-28 pb-20 md:pt-36 md:pb-28 bg-gray-50 dark:bg-gray-900">
+        {/* Невидимый маркер с id для правильной навигации */}
+        <div id="about-header" className="absolute" style={{ top: '-1px' }}></div>
+        
+        {/* Hero Section c корректным отступом */}
+        <section className="py-20 md:py-28 bg-gray-50 dark:bg-gray-900 mt-16">
           <div className="container mx-auto px-4">
             <div className="max-w-3xl mx-auto text-center mb-12">
               <div className="inline-flex items-center rounded-full px-3 py-1 text-sm font-medium bg-fintech-blue/10 text-fintech-blue dark:bg-fintech-blue/20 dark:text-fintech-blue-light mb-4">

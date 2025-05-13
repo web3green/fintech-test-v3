@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Facebook, Instagram, Linkedin, X, Globe, Loader2 } from 'lucide-react';
+import { Facebook, Instagram, Linkedin, X, Globe, Loader2, RefreshCw } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { toast } from 'sonner';
 import { databaseService } from '@/services/databaseService';
@@ -29,15 +29,21 @@ export function SocialLinksPanel() {
   const [editingLink, setEditingLink] = useState<{ platform: string, url: string } | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
+  const [lastSaved, setLastSaved] = useState<Date | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    console.log('[SocialLinksPanel] Компонент инициализирован, загружаем социальные ссылки');
     loadSocialLinks();
   }, []);
 
   const loadSocialLinks = async () => {
     setIsLoading(true);
+    setError(null);
     try {
+      console.log('[SocialLinksPanel] Запрос к базе данных для получения социальных ссылок');
       const fetchedDbLinks = await databaseService.getSocialLinks();
+      console.log('[SocialLinksPanel] Получены ссылки:', fetchedDbLinks);
       
       const fetchedUrlMap = new Map<string, string>();
       fetchedDbLinks.forEach(link => {
@@ -51,10 +57,13 @@ export function SocialLinksPanel() {
         displayName: p.displayName,
       }));
       
+      console.log('[SocialLinksPanel] Подготовленные ссылки для отображения:', linksToDisplay);
       setDisplayLinks(linksToDisplay);
     } catch (error) {
-        console.error("Error loading social links:", error);
+        console.error("[SocialLinksPanel] Ошибка загрузки социальных ссылок:", error);
+        setError(error instanceof Error ? error.message : 'Неизвестная ошибка при загрузке ссылок');
         toast.error(language === 'en' ? 'Failed to load social links' : 'Не удалось загрузить социальные ссылки');
+        // Создаем пустые заглушки для всех платформ
         setDisplayLinks(PLATFORMS.map(p => ({ 
             platform: p.dbName, 
             url: '', 
@@ -68,34 +77,47 @@ export function SocialLinksPanel() {
 
   const handleEditClick = (platform: string, url: string) => {
     setEditingLink({ platform, url });
+    setError(null);
   };
 
   const handleSaveClick = async () => {
     if (!editingLink) return;
     setIsSaving(true);
+    setError(null);
     
     try {
         const platformConfig = PLATFORMS.find(p => p.dbName === editingLink.platform);
+        console.log(`[SocialLinksPanel] Сохраняем ссылку для ${editingLink.platform}: ${editingLink.url}`);
+        
+        // Проверка URL на правильность формата
+        let url = editingLink.url.trim();
+        if (url && !url.startsWith('http://') && !url.startsWith('https://') && !url.startsWith('mailto:')) {
+            url = 'https://' + url;
+        }
         
         await databaseService.updateSocialLink(
             editingLink.platform, 
-            editingLink.url, 
+            url, 
             platformConfig?.iconName
     );
     
+        // Обновляем отображение
         setDisplayLinks(prevLinks => 
           prevLinks.map(link => 
-            link.platform === editingLink.platform ? { ...link, url: editingLink.url } : link
+            link.platform === editingLink.platform ? { ...link, url: url } : link
           )
         );
         
     setEditingLink(null);
+        setLastSaved(new Date());
+        
     toast.success(language === 'en' 
       ? "Social link updated successfully" 
       : "Ссылка на социальную сеть успешно обновлена");
 
     } catch (error) {
-        console.error("Error saving social link:", error);
+        console.error("[SocialLinksPanel] Ошибка сохранения социальной ссылки:", error);
+        setError(error instanceof Error ? error.message : 'Неизвестная ошибка при сохранении');
         toast.error(language === 'en' ? 'Failed to save social link' : 'Не удалось сохранить социальную ссылку');
     } finally {
         setIsSaving(false);
@@ -104,6 +126,7 @@ export function SocialLinksPanel() {
 
   const handleCancelClick = () => {
     setEditingLink(null);
+    setError(null);
   };
 
   const handleUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -138,12 +161,35 @@ export function SocialLinksPanel() {
     <div className="space-y-4">
       <Card>
         <CardHeader>
+          <div className="flex justify-between items-center">
+            <div>
           <CardTitle>{language === 'en' ? "Social Links" : "Социальные ссылки"}</CardTitle>
           <CardDescription>
             {language === 'en' 
               ? "Manage your social media links that appear in the website footer. Links will only be displayed on the site if a URL is provided." 
               : "Управление ссылками на социальные сети, которые отображаются в футере сайта. Ссылки будут отображаться на сайте только если для них указан URL."}
           </CardDescription>
+            </div>
+            <Button 
+              variant="outline" 
+              size="sm" 
+              onClick={loadSocialLinks} 
+              disabled={isLoading}
+            >
+              {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <RefreshCw className="h-4 w-4" />}
+              <span className="ml-2 hidden sm:inline">{language === 'en' ? 'Refresh' : 'Обновить'}</span>
+            </Button>
+          </div>
+          {lastSaved && (
+            <div className="text-xs text-muted-foreground mt-1">
+              {language === 'en' ? 'Last saved:' : 'Последнее сохранение:'} {lastSaved.toLocaleTimeString()}
+            </div>
+          )}
+          {error && (
+            <div className="text-sm text-red-500 mt-2 p-2 bg-red-50 dark:bg-red-950/20 rounded-md">
+              {error}
+            </div>
+          )}
         </CardHeader>
         <CardContent>
           {isLoading ? (
@@ -175,6 +221,7 @@ export function SocialLinksPanel() {
                         onChange={handleUrlChange}
                         className="w-full"
                           disabled={isSaving}
+                        placeholder={language === 'en' ? 'Enter URL (e.g. https://facebook.com/yourpage)' : 'Введите URL (например, https://facebook.com/yourpage)'}
                       />
                     ) : (
                         <span className="block truncate" title={link.url}>{link.url || '-'}</span>

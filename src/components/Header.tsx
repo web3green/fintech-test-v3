@@ -101,7 +101,7 @@ export function Header() {
           <div className="hidden md:flex items-center justify-center flex-1">
             <nav className="flex space-x-3 lg:space-x-5 items-center overflow-x-auto scrollbar-hide">
               <a 
-                href="#about"
+                href="#about-header"
                 className="px-3 py-2 text-sm font-medium text-foreground hover:text-fintech-blue dark:hover:text-fintech-blue-light rounded-md transition-colors"
               >
                 {t('nav.about')}
@@ -161,7 +161,7 @@ export function Header() {
           
           <nav className="flex flex-col space-y-3">
             <a 
-              href="#about"
+              href="#about-header"
               onClick={handleLinkClick}
               className="px-3 py-2 text-sm font-medium text-foreground hover:text-fintech-blue dark:hover:text-fintech-blue-light hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md transition-colors flex items-center"
             >

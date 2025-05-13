@@ -20,7 +20,7 @@ import { z } from "zod";
 import { useForm, useForm as useReactHookForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { AlertCircle, Mail, MessageSquare, ExternalLink, Loader2, Settings, X as XIcon, PlusCircle } from "lucide-react";
+import { AlertCircle, Mail, MessageSquare, ExternalLink, Loader2, Settings, X as XIcon, PlusCircle, Plus } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { databaseService } from "@/services/databaseService";
 
@@ -119,15 +119,46 @@ export const RequestsPanel = () => {
   // Function to add a new notification email
   const handleAddEmail = async (values: z.infer<typeof newEmailSchema>) => {
       setIsAddingEmail(true);
-      const emailToAdd = values.newEmail;
+      // Чистим email от пробелов и приводим к нижнему регистру
+      const emailToAdd = values.newEmail.trim().toLowerCase();
+      
       try {
+          // Проверяем, не добавляли ли мы этот email уже
+          if (notificationEmails.includes(emailToAdd)) {
+              toast.error(language === 'en' 
+                ? `Email ${emailToAdd} is already in the notification list` 
+                : `Email ${emailToAdd} уже есть в списке уведомлений`);
+              return;
+          }
+          
+          console.log(`[RequestsPanel] Добавляем email для уведомлений: ${emailToAdd}`);
+          
+          // Пробуем добавить через нашу функцию в databaseService
           await databaseService.addNotificationEmail(emailToAdd);
-          setNotificationEmails(prev => [...prev, emailToAdd]); // Add to local list
-          newEmailForm.reset(); // Clear input field
+          
+          // Если успешно - добавляем в локальный список и обновляем форму
+          setNotificationEmails(prev => [...prev, emailToAdd]);
+          newEmailForm.reset();
           toast.success(language === 'en' ? `Email ${emailToAdd} added successfully` : `Email ${emailToAdd} успешно добавлен`);
+          
+          // Если после добавления нужно перегрузить список всех email - делаем это
+          await loadNotificationEmails();
+          
       } catch (error: any) {
+          console.error(`[RequestsPanel] Ошибка добавления email ${emailToAdd}:`, error);
+          
+          // Более понятное сообщение об ошибке
+          if (error.message && error.message.includes('check constraint')) {
+              toast.error(language === 'en' 
+                ? `Email format not accepted by the database. Please try a simpler email format.` 
+                : `Формат email не принят базой данных. Пожалуйста, попробуйте более простой формат email.`);
+          } else if (error.message && error.message.includes('already exists')) {
+              toast.error(language === 'en' 
+                ? `Email ${emailToAdd} already exists in the database` 
+                : `Email ${emailToAdd} уже существует в базе данных`);
+          } else {
           toast.error(error.message || (language === 'en' ? 'Failed to add email' : 'Не удалось добавить email'));
-          console.error("Error adding notification email:", error);
+          }
       } finally {
           setIsAddingEmail(false);
     }
@@ -228,6 +259,51 @@ export const RequestsPanel = () => {
     window.open(`mailto:${selectedRequest.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`);
   };
 
+  // Функция добавления предустановленных email-адресов
+  const handleAddDefaultEmails = async () => {
+    setIsAddingEmail(true);
+    const defaultEmails = [
+      'info@fintech-assist.com',
+      'greg@fintech-assist.com',
+      'alex@fintech-assist.com'
+    ];
+    
+    try {
+      console.log('[RequestsPanel] Добавляем предустановленные email адреса:', defaultEmails);
+      const result = await databaseService.addNotificationEmails(defaultEmails);
+      
+      if (result.success.length > 0) {
+        // Обновляем список email-адресов, добавляя только новые
+        setNotificationEmails(prev => {
+          const newList = [...prev];
+          for (const email of result.success) {
+            if (!newList.includes(email)) {
+              newList.push(email);
+            }
+          }
+          return newList;
+        });
+        
+        toast.success(language === 'en' 
+          ? `Successfully added ${result.success.length} default emails` 
+          : `Успешно добавлено ${result.success.length} стандартных email-адресов`);
+      }
+      
+      if (result.failed.length > 0) {
+        toast.error(language === 'en' 
+          ? `Failed to add ${result.failed.length} emails: ${result.failed.join(', ')}` 
+          : `Не удалось добавить ${result.failed.length} email-адресов: ${result.failed.join(', ')}`);
+      }
+    } catch (error) {
+      console.error('[RequestsPanel] Error adding default emails:', error);
+      toast.error(language === 'en' 
+        ? 'Failed to add default emails' 
+        : 'Не удалось добавить стандартные email-адреса');
+    } finally {
+      setIsAddingEmail(false);
+    }
+  };
+
   if (loadingRequests) {
     return <div className="flex justify-center p-4"><Loader2 className="h-8 w-8 animate-spin text-fintech-blue" /></div>
   }
@@ -319,11 +395,23 @@ export const RequestsPanel = () => {
                       )}
                     />
                     <Button type="submit" disabled={isAddingEmail}>
-                       {isAddingEmail ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <PlusCircle className="mr-2 h-4 w-4" />} 
-                       {language === 'en' ? 'Add Email' : 'Добавить Email'}
+                       {isAddingEmail ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plus className="h-4 w-4" />}
+                       <span className="ml-2">{language === 'en' ? 'Add Email' : 'Добавить Email'}</span>
                     </Button>
                   </form>
                 </FormProvider>
+
+                {/* Кнопка для добавления стандартных email-адресов */}
+                <Button 
+                  type="button" 
+                  variant="outline" 
+                  onClick={handleAddDefaultEmails} 
+                  disabled={isAddingEmail}
+                  className="mt-2 md:mt-0 md:ml-2 w-full md:w-auto"
+                >
+                  {isAddingEmail ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
+                  <span>{language === 'en' ? 'Add Default Emails' : 'Добавить стандартные email'}</span>
+                </Button>
              </> 
       )}
         </CardContent>

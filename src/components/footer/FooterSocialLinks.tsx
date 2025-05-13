@@ -12,30 +12,53 @@ interface DisplaySocialLink {
 export function FooterSocialLinks() {
   const [displayLinks, setDisplayLinks] = useState<DisplaySocialLink[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   
+  // Запускаем загрузку при монтировании и с интервалом обновления
   useEffect(() => {
+    console.log('[FooterSocialLinks] Компонент запущен, загружаем социальные ссылки...');
     loadSocialLinks();
+    
+    // Добавляем интервал обновления каждые 10 секунд для автоматической проверки новых ссылок
+    const interval = setInterval(() => {
+      console.log('[FooterSocialLinks] Обновляем социальные ссылки...');
+      loadSocialLinks();
+    }, 10000);
+    
+    // Очищаем интервал при размонтировании
+    return () => clearInterval(interval);
   }, []);
   
   const loadSocialLinks = async () => {
+      if (isLoading && displayLinks.length > 0) {
+        // Не запускаем повторную загрузку, если уже загружаем и ссылки есть
+        return;
+      }
+      
       setIsLoading(true);
+      setError(null);
+      
       try {
+          console.log('[FooterSocialLinks] Запрос к базе данных для получения социальных ссылок...');
           // Fetches array: [{ platform: 'facebook', url: '...', icon_name: 'facebook' }, ...]
           const fetchedDbLinks = await databaseService.getSocialLinks(); 
+          console.log('[FooterSocialLinks] Получены данные из базы:', fetchedDbLinks);
           
           // Filter out links without a URL and map to display structure
           const linksToDisplay = fetchedDbLinks
-              .filter(link => link.url) // Only include links that have a URL
+              .filter(link => link.url && link.url.trim() !== '') // Only include links that have a non-empty URL
               .map(link => ({
                   url: link.url,
                   iconName: link.icon_name,
                   platform: link.platform // Pass platform name for accessibility
               }));
           
+          console.log('[FooterSocialLinks] Отфильтрованные ссылки для отображения:', linksToDisplay);
           setDisplayLinks(linksToDisplay);
       } catch (error) {
-          console.error("Error loading social links for footer:", error);
-          setDisplayLinks([]); 
+          console.error("[FooterSocialLinks] Ошибка загрузки социальных ссылок:", error);
+          setError(error instanceof Error ? error.message : 'Неизвестная ошибка');
+          // Не сбрасываем существующие ссылки, чтобы не нарушать отображение
       } finally {
           setIsLoading(false);
       }
@@ -65,7 +88,8 @@ export function FooterSocialLinks() {
     }
   };
 
-  if (isLoading) {
+  // Если при повторной загрузке возникла ошибка, но есть отображаемые ссылки - продолжаем их показывать
+  if (isLoading && displayLinks.length === 0) {
       return (
           <div className="flex space-x-4 h-8 items-center">
               <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
@@ -74,6 +98,10 @@ export function FooterSocialLinks() {
   }
   
   if (displayLinks.length === 0) {
+      // Если есть ошибка, но нет ссылок, можно добавить скрытый элемент с сообщением для отладки
+      if (error) {
+        return <div className="hidden">{error}</div>;
+      }
       return null;
   }
 

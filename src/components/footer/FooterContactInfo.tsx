@@ -11,7 +11,7 @@ export function FooterContactInfo({ /* scrollToSection */ }: FooterContactInfoPr
   const { t, language, isLoading } = useLanguage();
 
   const email = t('contact.email.address', 'info@fintech-assist.com');
-  const whatsappPhone = t('contact.phone.primary', '');
+  const whatsappPhone = t('contact.whatsapp.number', '');
   const telegramUsernameRaw = t('contact.telegram.username', '');
   const telegramUsername = telegramUsernameRaw.startsWith('@') ? telegramUsernameRaw.substring(1) : telegramUsernameRaw;
   const secondaryPhone = t('contact.phone.secondary', '');

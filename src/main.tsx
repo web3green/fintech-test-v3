@@ -91,7 +91,7 @@ function sessionStorageProvider(): Map<string, any> {
 
 /// React app initialization
 ReactDOM.createRoot(document.getElementById('root')!).render( // <--- Открывающая скобка render
-  <SWRConfig value={{ provider: sessionStorageProvider }}>
+  <SWRConfig value={{ /* provider: sessionStorageProvider */ }}> {/* Отключаем sessionStorageProvider */}
     <HelmetProvider>
   <React.StrictMode>
     <App />

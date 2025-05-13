@@ -39,8 +39,11 @@ export default function AboutUs() {
     <div className="min-h-screen flex flex-col">
       <Header />
       <main className="flex-grow">
-        {/* Заголовок раздела - это формат, используемый в AboutSection */}
-        <section id="about-header" className="py-12 md:py-16 bg-gradient-to-b from-white to-blue-50 dark:from-gray-900 dark:to-blue-950/20">
+        <div id="about-header" className="h-20 -mb-20 md:h-24 md:-mb-24"></div>
+
+        <section 
+          className="py-12 md:py-16 bg-gradient-to-b from-white to-blue-50 dark:from-gray-900 dark:to-blue-950/20"
+        >
           <div className="container mx-auto px-4">
             <div className="max-w-3xl mx-auto text-center mb-12">
               <div className="inline-flex items-center rounded-full px-3 py-1 text-sm font-medium bg-fintech-blue/10 text-fintech-blue dark:bg-fintech-blue/20 dark:text-fintech-blue-light mb-4">

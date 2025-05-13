@@ -11,6 +11,8 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { AlertCircle } from 'lucide-react';
 import { BlogPostCardSkeleton } from './blog/BlogPostCardSkeleton';
 import { cn } from '@/lib/utils';
+import { databaseService } from '@/services/databaseService';
+import type { TextBlock } from '@/types/textBlock';
 
 // Define the fetcher function for SWR
 const blogPostsFetcher = async ([key, page, limit, query, category]: [
@@ -36,6 +38,15 @@ export const BlogSection: React.FC = () => {
   const { language } = useLanguage();
   const sectionRef = useRef<HTMLElement>(null);
   const isInitialMount = useRef(true); // Ref to track initial mount
+
+  // State for Blog Section Title and Subtitle
+  const [blogTitle, setBlogTitle] = useState(language === 'en' ? 'Our Blog' : 'Наш Блог');
+  const [blogSubtitle, setBlogSubtitle] = useState(
+    language === 'en'
+    ? 'Stay up-to-date with the latest industry insights and company news from <span class="text-foreground dark:text-foreground">FinTechAssist</span>.'
+    : 'Будьте в курсе последних отраслевых идей и новостей компании <span class="text-foreground dark:text-foreground">FinTechAssist</span>.'
+  );
+  const [badgeText, setBadgeText] = useState(language === 'en' ? 'Latest Updates' : 'Последние обновления');
 
   // State for filtering and pagination
   const [searchQuery, setSearchQuery] = useState('');
@@ -76,6 +87,51 @@ export const BlogSection: React.FC = () => {
   // Map SWR error to our component's error state format (optional)
   const error = swrError ? (language === 'en' ? "Failed to load blog posts." : "Не удалось загрузить записи блога.") : null;
   const isLoading = swrLoading;
+
+  // Fetch blog title and subtitle
+  useEffect(() => {
+    const fetchTexts = async () => {
+      try {
+        const titleText = await databaseService.getSiteText('blog.title');
+        const subtitleText = await databaseService.getSiteText('blog.subtitle');
+        const badgeContentText = await databaseService.getSiteText('blog.badge');
+
+        if (titleText) {
+          setBlogTitle(language === 'ru' ? titleText.value_ru || titleText.value_en : titleText.value_en || (language === 'en' ? 'Our Blog' : 'Наш Блог'));
+        } else {
+          setBlogTitle(language === 'en' ? 'Our Blog' : 'Наш Блог'); // Fallback
+        }
+        if (subtitleText) {
+          setBlogSubtitle(language === 'ru' ? subtitleText.value_ru || subtitleText.value_en : subtitleText.value_en || (
+            language === 'en'
+            ? 'Stay up-to-date with the latest industry insights and company news from <span class="text-foreground dark:text-foreground">FinTechAssist</span>.'
+            : 'Будьте в курсе последних отраслевых идей и новостей компании <span class="text-foreground dark:text-foreground">FinTechAssist</span>.'
+          ));
+        } else {
+          setBlogSubtitle( language === 'en' // Fallback
+            ? 'Stay up-to-date with the latest industry insights and company news from <span class="text-foreground dark:text-foreground">FinTechAssist</span>.'
+            : 'Будьте в курсе последних отраслевых идей и новостей компании <span class="text-foreground dark:text-foreground">FinTechAssist</span>.');
+        }
+        if (badgeContentText) {
+            setBadgeText(language === 'ru' ? badgeContentText.value_ru || badgeContentText.value_en : badgeContentText.value_en || (language === 'en' ? 'Latest Updates' : 'Последние обновления'));
+        } else {
+            setBadgeText(language === 'en' ? 'Latest Updates' : 'Последние обновления'); // Fallback
+        }
+
+      } catch (err) {
+        console.error("Error fetching blog section texts:", err);
+        // Fallback to hardcoded if fetch fails
+        setBlogTitle(language === 'en' ? 'Our Blog' : 'Наш Блог');
+        setBlogSubtitle(
+          language === 'en'
+          ? 'Stay up-to-date with the latest industry insights and company news from <span class="text-foreground dark:text-foreground">FinTechAssist</span>.'
+          : 'Будьте в курсе последних отраслевых идей и новостей компании <span class="text-foreground dark:text-foreground">FinTechAssist</span>.'
+        );
+        setBadgeText(language === 'en' ? 'Latest Updates' : 'Последние обновления');
+      }
+    };
+    fetchTexts();
+  }, [language]);
 
   // Memoize categories based on fetched posts (or could fetch categories separately)
   const categories = useMemo(() => {
@@ -141,11 +197,6 @@ export const BlogSection: React.FC = () => {
     setSelectedPost(null);
   };
   
-  // Prepare the description text with brand highlighting
-  const blogDescription = language === 'en' 
-    ? 'Stay up-to-date with the latest industry insights and company news from <span class="text-foreground dark:text-foreground">FinTechAssist</span>.' 
-    : 'Будьте в курсе последних отраслевых идей и новостей компании <span class="text-foreground dark:text-foreground">FinTechAssist</span>.';
-
   // Initial loading state (ONLY for the very first load)
   if (!paginatedData && isLoading && !error) { 
     return (
@@ -154,12 +205,12 @@ export const BlogSection: React.FC = () => {
           <div className="max-w-4xl mx-auto mb-10 text-center">
             <div className="inline-flex items-center rounded-full px-3 py-1 text-sm font-medium bg-fintech-blue/10 text-fintech-blue dark:bg-fintech-blue-dark dark:text-fintech-blue-light mb-4">
               <span className="flex h-2 w-2 rounded-full bg-fintech-orange/80 mr-2"></span>
-              <span>{language === 'en' ? 'Latest Updates' : 'Последние обновления'}</span>
+              <span>{badgeText}</span>
             </div>
-            <h2 className="text-3xl font-bold mb-4">{language === 'en' ? 'Our Blog' : 'Наш Блог'}</h2>
+            <h2 className="text-3xl font-bold mb-4">{blogTitle}</h2>
             <p 
               className="text-muted-foreground dark:text-muted-foreground/90"
-              dangerouslySetInnerHTML={{ __html: blogDescription }}
+              dangerouslySetInnerHTML={{ __html: blogSubtitle }}
             />
           </div>
           
@@ -196,12 +247,12 @@ export const BlogSection: React.FC = () => {
         <div className="max-w-4xl mx-auto mb-10 text-center">
           <div className="inline-flex items-center rounded-full px-3 py-1 text-sm font-medium bg-fintech-blue/10 text-fintech-blue dark:bg-fintech-blue-dark dark:text-fintech-blue-light mb-4">
             <span className="flex h-2 w-2 rounded-full bg-fintech-orange/80 mr-2"></span>
-            <span>{language === 'en' ? 'Latest Updates' : 'Последние обновления'}</span>
+            <span>{badgeText}</span>
           </div>
-          <h2 className="text-3xl font-bold mb-4">{language === 'en' ? 'Our Blog' : 'Наш Блог'}</h2>
+          <h2 className="text-3xl font-bold mb-4">{blogTitle}</h2>
           <p 
             className="text-muted-foreground dark:text-muted-foreground/90"
-            dangerouslySetInnerHTML={{ __html: blogDescription }}
+            dangerouslySetInnerHTML={{ __html: blogSubtitle }}
           />
         </div>
 

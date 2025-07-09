@@ -19,15 +19,13 @@ const Logo: React.FC<LogoProps> = ({
   showText = true,
   showSlogan = true,
 }) => {
-  const { language } = useLanguage();
+  const { language, t } = useLanguage();
   
   // Используем статический путь к логотипу из папки public
   const logoSrc = '/images/logo.png';
   
-  // Слоганы для разных языков
-  const slogan = language === 'en' 
-    ? "Get Licensed, Get Ready, Go Steady" 
-    : "Бизнес растёт — FinTechAssist всё учтёт";
+  // Слоганы для разных языков - используем переводы из базы данных
+  const slogan = t('slogan.en', 'Where Business Meets the Right Route');
   
   return (
     <Link to="/" className={`relative inline-flex flex-col items-start ${className}`}>

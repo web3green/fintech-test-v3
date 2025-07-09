@@ -3,16 +3,13 @@ import { Link } from 'react-router-dom';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 export function FooterLogo() {
-  const { language } = useLanguage();
+  const { language, t } = useLanguage();
 
   // Используем статический путь к логотипу из папки public
   const logoSrc = '/images/logo.png';
 
-  // Слоганы для разных языков (из старой версии, можно заменить на t('footer.description') если он подходит)
-  const slogan = language === 'en'
-    ? "Get Licensed, Get Ready, Go Steady"
-    : "Бизнес растёт — FinTechAssist всё учтёт";
-    // Или используйте: const slogan = t('footer.description');
+  // Слоганы для разных языков - используем переводы из базы данных
+  const slogan = t('slogan.en', 'Where Business Meets the Right Route');
   
   return (
     <div className="flex flex-col space-y-4 items-start">

@@ -79,6 +79,14 @@ export const SiteTextsPanel: React.FC = () => {
   const [otherSearchTerm, setOtherSearchTerm] = useState('');
   const [contactSearchTerm, setContactSearchTerm] = useState('');
   const [aboutUsSearchTerm, setAboutUsSearchTerm] = useState('');
+  const [sloganTexts, setSloganTexts] = useState<{
+    slogan_en: string;
+    slogan_ru: string;
+  }>({
+    slogan_en: '',
+    slogan_ru: ''
+  });
+  const [isSavingSlogan, setIsSavingSlogan] = useState(false);
   const [serviceSearchTerm, setServiceSearchTerm] = useState('');
 
   // States for saving status of text groups
@@ -258,6 +266,14 @@ export const SiteTextsPanel: React.FC = () => {
              setSelectedOtherSection(formattedGeneral[0].section);
         }
 
+        // --- Load Slogan Texts ---
+        const sloganEnData = allTexts.find(t => t.key === 'slogan.en');
+        const sloganRuData = allTexts.find(t => t.key === 'slogan.ru');
+        setSloganTexts({
+          slogan_en: sloganEnData?.value_en ?? 'Where Business Meets the Right Route',
+          slogan_ru: sloganRuData?.value_ru ?? 'Где бизнес встречает правильный путь'
+        });
+
     } catch (err: any) { 
       console.error('Error loading texts:', err);
       const message = err.message || 'Failed to load texts.';
@@ -287,6 +303,27 @@ export const SiteTextsPanel: React.FC = () => {
         service.id === serviceId ? { ...service, [field]: newContent } : service
       )
     );
+  };
+
+  const handleSloganInputChange = (lang: 'en' | 'ru', value: string) => {
+    setSloganTexts(prev => ({ ...prev, [`slogan_${lang}`]: value }));
+  };
+
+  const handleSaveSlogan = async () => {
+    setIsSavingSlogan(true);
+    try {
+      await Promise.all([
+        databaseService.upsertSiteText('slogan.en', sloganTexts.slogan_en, sloganTexts.slogan_en, 'Slogan'),
+        databaseService.upsertSiteText('slogan.ru', sloganTexts.slogan_ru, sloganTexts.slogan_ru, 'Slogan')
+      ]);
+      await reloadTexts();
+      toast.success(language === 'en' ? 'Slogan saved successfully!' : 'Слоган успешно сохранен!');
+    } catch (error) {
+      console.error('Error saving slogan:', error);
+      toast.error(language === 'en' ? 'Failed to save slogan.' : 'Не удалось сохранить слоган.');
+    } finally {
+      setIsSavingSlogan(false);
+    }
   };
 
   const handleSaveSectionTexts = async () => {
@@ -525,10 +562,11 @@ export const SiteTextsPanel: React.FC = () => {
 
   return (
     <Tabs defaultValue="services" className="space-y-4">
-      <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 gap-1"> {/* Adjusted to grid-cols-4 for medium screens and up, 2 for small */}
+      <TabsList className="grid w-full grid-cols-2 md:grid-cols-5 gap-1"> {/* Adjusted to grid-cols-5 for medium screens and up, 2 for small */}
         <TabsTrigger value="services">{language === 'en' ? 'Services Texts' : 'Тексты Услуг'}</TabsTrigger>
         <TabsTrigger value="contact-form">{language === 'en' ? 'Contacts & Form' : 'Контакты и Форма'}</TabsTrigger>
         <TabsTrigger value="about-us">{language === 'en' ? 'About Us' : 'О Нас'}</TabsTrigger>
+        <TabsTrigger value="slogan">{language === 'en' ? 'Slogan' : 'Слоган'}</TabsTrigger>
         <TabsTrigger value="other">{language === 'en' ? 'Other Texts' : 'Остальные Тексты'}</TabsTrigger>
       </TabsList>
 
@@ -840,6 +878,53 @@ export const SiteTextsPanel: React.FC = () => {
                 </Button>
               </div>
         )}
+      </TabsContent>
+
+      <TabsContent value="slogan" className="space-y-6">
+        <Card>
+          <CardHeader>
+            <CardTitle>{language === 'en' ? 'Edit Slogan' : 'Редактировать Слоган'}</CardTitle>
+            <CardDescription>
+              {language === 'en' 
+                ? 'Manage the company slogan that appears in the header and footer. Keep it concise to maintain layout integrity.' 
+                : 'Управляйте слоганом компании, который отображается в шапке и подвале. Сохраняйте краткость для поддержания целостности макета.'}
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium mb-1">Slogan (EN)</label>
+                <Input 
+                  value={sloganTexts.slogan_en} 
+                  onChange={(e) => handleSloganInputChange('en', e.target.value)} 
+                  placeholder="e.g., Where Business Meets the Right Route"
+                  maxLength={50}
+                />
+                <p className="text-xs text-muted-foreground mt-1">
+                  {language === 'en' ? 'Max 50 characters to maintain layout' : 'Максимум 50 символов для сохранения макета'}
+                </p>
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">Slogan (RU)</label>
+                <Input 
+                  value={sloganTexts.slogan_ru} 
+                  onChange={(e) => handleSloganInputChange('ru', e.target.value)} 
+                  placeholder="напр., Где бизнес встречает правильный путь"
+                  maxLength={50}
+                />
+                <p className="text-xs text-muted-foreground mt-1">
+                  {language === 'en' ? 'Max 50 characters to maintain layout' : 'Максимум 50 символов для сохранения макета'}
+                </p>
+              </div>
+            </div>
+            <div className="flex justify-end pt-4 border-t">
+              <Button onClick={handleSaveSlogan} disabled={isSavingSlogan}>
+                {isSavingSlogan && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                {language === 'en' ? 'Save Slogan' : 'Сохранить Слоган'}
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
       </TabsContent>
 
       <TabsContent value="other" className="space-y-6">

@@ -7,12 +7,12 @@ const blogPostSchema = z.object({
   title_ru: z.string().min(1, 'Title is required'),
   content_en: z.string().min(1, 'Content is required'),
   content_ru: z.string().min(1, 'Content is required'),
-  excerpt_en: z.string().min(1, 'Excerpt is required'),
-  excerpt_ru: z.string().min(1, 'Excerpt is required'),
+  excerpt_en: z.string().nullable().default(''),
+  excerpt_ru: z.string().nullable().default(''),
   image_url: z.string().nullable(),
-  author: z.string().min(1, 'Author is required'),
-  category: z.string().min(1, 'Category is required'),
-  reading_time: z.string().min(1, 'Reading time is required'),
+  author: z.string().nullable().default('FinTechAssist Team'),
+  category: z.string().nullable().default('General'),
+  reading_time: z.string().nullable().default('5 мин'),
   tags: z.array(z.string()),
   featured: z.boolean(),
   color_scheme: z.enum(['blue', 'orange', 'graphite']).nullable(),
@@ -62,7 +62,18 @@ export const databaseService = {
       throw error;
     }
     
-    const posts = data.map(post => blogPostSchema.parse(post));
+    // Обрабатываем данные для совместимости со старыми записями
+    const posts = data.map(post => {
+      const processedPost = {
+        ...post,
+        excerpt_en: post.excerpt_en || '',
+        excerpt_ru: post.excerpt_ru || '',
+        author: post.author || 'FinTechAssist Team',
+        category: post.category || 'General',
+        reading_time: post.reading_time || '5 мин'
+      };
+      return blogPostSchema.parse(processedPost);
+    });
     const totalCount = count ?? 0;
 
     return { posts, totalCount };
@@ -80,7 +91,17 @@ export const databaseService = {
       throw error;
     }
 
-    return blogPostSchema.parse(data);
+    // Обрабатываем данные для совместимости со старыми записями
+    const processedPost = {
+      ...data,
+      excerpt_en: data.excerpt_en || '',
+      excerpt_ru: data.excerpt_ru || '',
+      author: data.author || 'FinTechAssist Team',
+      category: data.category || 'General',
+      reading_time: data.reading_time || '5 мин'
+    };
+
+    return blogPostSchema.parse(processedPost);
   },
 
   async createPost(post: Omit<BlogPost, 'id' | 'created_at' | 'updated_at'>) {

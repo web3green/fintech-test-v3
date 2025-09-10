@@ -470,6 +470,12 @@ export function BlogManagementPanel() {
       tags: formData.tags || [],
       featured: formData.featured || false,
       published: formData.published || false,
+      // Добавляем дефолтные значения для совместимости
+      excerpt_en: formData.excerpt_en || '',
+      excerpt_ru: formData.excerpt_ru || '',
+      author: formData.author || 'FinTechAssist Team',
+      category: formData.category || 'General',
+      reading_time: formData.reading_time || '5 мин',
     };
 
     setIsProcessingImage(true);
